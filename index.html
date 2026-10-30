@@ -128,6 +128,20 @@ button { font: inherit; color: inherit; }
 .pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
 .pill.demo { color: var(--demo); background: var(--demo-bg); }
 .pill.live { color: var(--live); background: var(--live-bg); }
+.pill.late { color: #A86A0B; background: #FBF1DE; }
+.pill.off { color: #B3261E; background: #FCE8E6; }
+.stalenote { margin: 0; padding: 10px 14px; border-radius: 12px; font-size: 14px; line-height: 1.45; background: #FCE8E6; color: #7A1A14; }
+.stalenote.late { background: #FBF1DE; color: #6B3F00; }
+.rose-wrap { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 16px 28px; align-items: center; }
+.rose-wrap svg { width: 100%; height: auto; display: block; }
+.rose-wrap .rring { fill: none; stroke: var(--line); }
+.rose-wrap .rax { stroke: var(--line); }
+.rose-wrap .rlab { font: 600 12px var(--font-data, sans-serif); fill: var(--muted); }
+.rose-wrap .rpct { font: 400 10px var(--font-data, sans-serif); fill: var(--muted); }
+.rose-leg { display: grid; gap: 6px; font-size: 14px; }
+.rose-leg span { display: inline-flex; align-items: center; gap: 8px; }
+.rose-leg i { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
+@media (max-width: 620px) { .rose-wrap { grid-template-columns: minmax(0, 1fr); } .rose-wrap svg { max-width: 340px; margin: 0 auto; } }
 .stamp { font: 400 12px/1.4 var(--font-data); color: var(--muted); }
 .refresh {
   border: 1px solid var(--line); background: var(--surface); border-radius: 8px;
@@ -562,6 +576,7 @@ button { font: inherit; color: inherit; }
     <button id="refresh" class="refresh" type="button">Aktualisieren</button>
   </div>
   <p id="error" class="error" hidden></p>
+  <p id="staleNote" class="stalenote" hidden aria-live="polite"></p>
 
   <section id="frostBand" class="frostband" hidden aria-live="polite"></section>
 
@@ -1169,14 +1184,39 @@ function render() {
   $('stamp').textContent = 'Stand ' + (isNaN(upd) ? '–' : hhmm(upd) + ' Uhr');
 
   var pill = $('pill');
-  pill.className = 'pill ' + (state.demo ? 'demo' : 'live');
-  pill.textContent = state.demo ? 'Beispieldaten' : 'Live';
+  renderStationStatus();
   $('note').hidden = !state.demo;
 
   renderRecords();
   drawLive();
   renderFrost();
 }
+
+/* ---------- Stationsstatus: meldet sich die Station noch? ---------- */
+var STALE_LATE_MIN = 20, STALE_OFF_MIN = 60;
+function renderStationStatus() {
+  var d = state.data, pill = $('pill'), note = $('staleNote');
+  if (!d || !pill) return;
+  if (state.demo) { pill.className = 'pill demo'; pill.textContent = 'Beispieldaten'; note.hidden = true; return; }
+  var upd = new Date(d.updated), age = isNaN(upd) ? null : (Date.now() - upd.getTime()) / 60000;
+  if (age === null || age < STALE_LATE_MIN) {
+    pill.className = 'pill live'; pill.textContent = 'Live'; pill.title = 'Die Station sendet regelmäßig Daten';
+    note.hidden = true; return;
+  }
+  var off = age >= STALE_OFF_MIN, txt;
+  if (age < 120) txt = Math.round(age) + ' Minuten';
+  else if (age < 48 * 60) txt = Math.round(age / 60) + ' Stunden';
+  else txt = Math.round(age / 1440) + ' Tagen';
+  pill.className = 'pill ' + (off ? 'off' : 'late');
+  pill.textContent = off ? 'Station offline' : 'Verzögert';
+  pill.title = 'Letzte Meldung vor ' + txt;
+  note.className = 'stalenote' + (off ? '' : ' late');
+  note.textContent = off
+    ? 'Die Wetterstation hat sich seit ' + txt + ' nicht mehr gemeldet (letzte Meldung ' + hhmm(upd) + ' Uhr' + (age >= 1440 ? ', ' + upd.toLocaleDateString('de-DE') : '') + '). Die angezeigten Werte sind deshalb nicht aktuell – möglicherweise ist das WLAN oder die Stromversorgung der Station unterbrochen.'
+    : 'Die letzte Meldung der Station ist ' + txt + ' alt. Neue Werte kommen vermutlich gleich.';
+  note.hidden = false;
+}
+setInterval(renderStationStatus, 60000);
 
 /* ---------- Diagramm ---------- */
 function niceScale(min, max, count) {
@@ -2996,7 +3036,8 @@ function grPoint(o) {
     temp: pickNum(o, ['tempAvg', 'temp']), dew: pickNum(o, ['dewptAvg', 'dewpt']), hum: pickNum(o, ['humidityAvg', 'humidity']),
     pres: pmax != null && pmin != null ? (pmax + pmin) / 2 : (pmax != null ? pmax : (pmin != null ? pmin : pickNum(o, ['pressure']))),
     wind: pickNum(o, ['windspeedAvg', 'windSpeed']), gust: pickNum(o, ['windgustHigh', 'windGust']),
-    solar: pickNum(o, ['solarRadiationHigh', 'solarRadiation']), uv: pickNum(o, ['uvHigh', 'uv']), ptot: pickNum(o, ['precipTotal'])
+    solar: pickNum(o, ['solarRadiationHigh', 'solarRadiation']), uv: pickNum(o, ['uvHigh', 'uv']), ptot: pickNum(o, ['precipTotal']),
+    dir: pickNum(o, ['winddirAvg', 'winddir'])
   };
 }
 function grClean(list) {
@@ -3013,7 +3054,8 @@ function grDemo(range) {
     var temp = 7 + 1.5 * Math.sin(k * 1.3) + 4 * Math.sin((hr - 9) / 24 * 2 * Math.PI), sun = Math.max(0, Math.sin((hr - 7.5) / 9.5 * Math.PI));
     out.push({ t: t, temp: temp, dew: temp - 2 - 2 * Math.max(0, Math.sin((hr - 9) / 24 * 2 * Math.PI)), hum: clamp(88 - 12 * sun + 4 * Math.sin(k * 3), 40, 99),
       pres: 1016 + 6 * Math.sin(k * 0.9), wind: Math.abs(6 + 5 * Math.sin(k * 7 + hr / 3)), gust: Math.abs(14 + 9 * Math.sin(k * 7 + hr / 3)),
-      solar: Math.round(380 * sun * (0.7 + 0.3 * Math.sin(k * 4))), uv: Math.round(2.4 * sun * 10) / 10, ptot: Math.round(ptot * 10) / 10 });
+      solar: Math.round(380 * sun * (0.7 + 0.3 * Math.sin(k * 4))), uv: Math.round(2.4 * sun * 10) / 10, ptot: Math.round(ptot * 10) / 10,
+      dir: (235 + 50 * Math.sin(k * 2.1 + hr / 4) + 25 * Math.sin(k * 9) + 360) % 360 });
   }
   return out;
 }
@@ -3255,9 +3297,77 @@ function renderGraphs() {
     sec('grWind', 'Wind und Böen', maxW ? 'Stärkste Böe <b>' + nf(maxW.gust, 0) + ' km/h</b> (' + grTimeLabel(maxW.t, wd) + ')' : '') +
     sec('grRain', r === '7d' ? 'Niederschlag (Tagessumme)' : 'Niederschlag (Stundensumme)', any ? 'Summe der letzten ' + span + ': <b>' + nf(rsum, 1) + ' l/m²</b>' : '') +
     sec('grSolar', 'Sonne und UV – Globalstrahlung', maxS ? 'Höchstwert <b>' + nf(maxS.solar, 0) + ' W/m²</b> (' + grTimeLabel(maxS.t, wd) + ')' : '') +
+    '<div class="gsec"><h3>Windrose – woher weht der Wind?</h3><div class="gsum">' + roseSummary(pts) + '</div><div id="grRose"></div></div>' +
     sec('grUv', 'UV-Index', maxU ? 'Höchstwert <b>' + nf(maxU.uv, 1) + '</b> (' + grTimeLabel(maxU.t, wd) + ', ' + uvCategory(maxU.uv) + ')' : '');
   GR.buckets = buckets;
   drawGraphs();
+}
+/* ---------- Windrose ---------- */
+var ROSE_CLS = [
+  { max: 5, label: 'unter 5 km/h', color: '#BFDCEB' },
+  { max: 12, label: '5 bis 12 km/h', color: '#6FAFD2' },
+  { max: 20, label: '12 bis 20 km/h', color: '#2F7FC1' },
+  { max: 1e9, label: 'über 20 km/h', color: '#1D4F87' }
+];
+var ROSE_DIRS = ['N', 'NNO', 'NO', 'ONO', 'O', 'OSO', 'SO', 'SSO', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+function roseData(pts) {
+  var bins = ROSE_DIRS.map(function () { return [0, 0, 0, 0]; }), n = 0, calm = 0;
+  pts.forEach(function (p) {
+    if (p.wind == null) return;
+    if (p.wind < 1 || p.dir == null) { if (p.wind < 1) { calm++; n++; } return; }
+    var s = Math.round(((p.dir % 360) + 360) % 360 / 22.5) % 16, c = 0;
+    while (p.wind >= ROSE_CLS[c].max) c++;
+    bins[s][c]++; n++;
+  });
+  return { bins: bins, n: n, calm: calm };
+}
+function roseSummary(pts) {
+  var r = roseData(pts);
+  if (!r.n) return '';
+  var best = 0, tot = r.bins.map(function (b) { return b[0] + b[1] + b[2] + b[3]; });
+  tot.forEach(function (t, i) { if (t > tot[best]) best = i; });
+  return 'Am häufigsten aus <b>' + ROSE_DIRS[best] + '</b> (' + nf(tot[best] / r.n * 100, 0) + ' %)' +
+    (r.calm ? ' · Windstille ' + nf(r.calm / r.n * 100, 0) + ' %' : '');
+}
+function drawRose(box, pts) {
+  if (!box) return;
+  var r = roseData(pts);
+  if (!r.n || r.n === r.calm) { box.innerHTML = '<p class="empty">Für diesen Zeitraum liegen keine Windrichtungen vor.</p>'; return; }
+  var tot = r.bins.map(function (b) { return (b[0] + b[1] + b[2] + b[3]) / r.n * 100; });
+  var mx = Math.max.apply(null, tot), step = mx > 30 ? 10 : (mx > 12 ? 5 : 2), top = Math.max(step, Math.ceil(mx / step) * step);
+  var R = 120, c = 160, out = '<svg viewBox="0 0 320 320" role="img" aria-label="Windrose: Häufigkeit der Windrichtungen">';
+  for (var g = step; g <= top; g += step) {
+    var gr = g / top * R;
+    out += '<circle class="rring" cx="' + c + '" cy="' + c + '" r="' + gr.toFixed(1) + '"/>' +
+      '<text class="rpct" x="' + (c + 3) + '" y="' + (c - gr - 2).toFixed(1) + '">' + g + ' %</text>';
+  }
+  for (var a = 0; a < 16; a += 2) {
+    var ang = a * 22.5 * Math.PI / 180;
+    out += '<line class="rax" x1="' + c + '" y1="' + c + '" x2="' + (c + R * Math.sin(ang)).toFixed(1) + '" y2="' + (c - R * Math.cos(ang)).toFixed(1) + '"/>';
+  }
+  function wedge(i, r0, r1) {
+    var a0 = (i * 22.5 - 9) * Math.PI / 180, a1 = (i * 22.5 + 9) * Math.PI / 180;
+    function P(rr, aa) { return (c + rr * Math.sin(aa)).toFixed(1) + ' ' + (c - rr * Math.cos(aa)).toFixed(1); }
+    return 'M' + P(r0, a0) + ' L' + P(r1, a0) + ' A' + r1.toFixed(1) + ' ' + r1.toFixed(1) + ' 0 0 1 ' + P(r1, a1) +
+      ' L' + P(r0, a1) + (r0 > 0 ? ' A' + r0.toFixed(1) + ' ' + r0.toFixed(1) + ' 0 0 0 ' + P(r0, a0) : '') + ' Z';
+  }
+  r.bins.forEach(function (b, i) {
+    var acc = 0;
+    b.forEach(function (cnt, k) {
+      if (!cnt) return;
+      var p0 = acc / r.n * 100, p1 = (acc + cnt) / r.n * 100; acc += cnt;
+      out += '<path d="' + wedge(i, p0 / top * R, p1 / top * R) + '" fill="' + ROSE_CLS[k].color + '" stroke="#fff" stroke-width="0.8">' +
+        '<title>' + ROSE_DIRS[i] + ', ' + ROSE_CLS[k].label + ': ' + nf(cnt / r.n * 100, 1) + ' %</title></path>';
+    });
+  });
+  ['N', 'O', 'S', 'W'].forEach(function (l, i) {
+    var ang = i * 90 * Math.PI / 180, rr = R + 18;
+    out += '<text class="rlab" x="' + (c + rr * Math.sin(ang)).toFixed(1) + '" y="' + (c - rr * Math.cos(ang)).toFixed(1) + '" text-anchor="middle" dominant-baseline="central">' + l + '</text>';
+  });
+  out += '</svg>';
+  box.innerHTML = '<div class="rose-wrap">' + out + '<div class="rose-leg">' +
+    ROSE_CLS.map(function (k) { return '<span><i style="background:' + k.color + '"></i>' + k.label + '</span>'; }).join('') +
+    '<p class="fc-daytext" style="margin:6px 0 0">Jeder Strahl zeigt, wie oft der Wind aus dieser Richtung kam – je länger, desto häufiger. Die Farben zeigen die Windstärke.</p></div></div>';
 }
 function drawGraphs() {
   var pts = GR.data[GR.range];
@@ -3269,6 +3379,7 @@ function drawGraphs() {
   drawLines($('grWind'), { series: [ser('wind', 'Wind', GR_COL.wind), ser('gust', 'Böen', GR_COL.gust)], unit: 'km/h', dec: 0, zero: true, minSpan: 10, aria: 'Wind und Böen' });
   drawRain($('grRain'), GR.buckets);
   drawLines($('grSolar'), { series: [ser('solar', 'Globalstrahlung', GR_COL.solar)], unit: 'W/m²', dec: 0, zero: true, minSpan: 100, area: true, aria: 'Globalstrahlung' });
+  drawRose($('grRose'), pts);
   drawLines($('grUv'), { series: [ser('uv', 'UV-Index', GR_COL.uv)], unit: '', dec: 1, zero: true, minSpan: 2, area: true, aria: 'UV-Index' });
 }
 function setupGraphs() {
