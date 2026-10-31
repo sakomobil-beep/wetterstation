@@ -4441,8 +4441,8 @@ setInterval(renderSaison, 600000);
   var $ = function (id) { return document.getElementById(id); };
   var BASE = 'https://services.swpc.noaa.gov/';
   var URLS = {
-    plasma: BASE + 'products/solar-wind/plasma-2-hour.json',
-    mag: BASE + 'products/solar-wind/mag-2-hour.json',
+    plasma: BASE + 'json/rtsw/rtsw_wind_1m.json', // seit 30.04.2026 Ersatz für products/solar-wind/plasma-*.json
+    mag: BASE + 'json/rtsw/rtsw_mag_1m.json',
     kp: BASE + 'products/noaa-planetary-k-index.json',
     kpfc: BASE + 'products/noaa-planetary-k-index-forecast.json',
     prob: BASE + 'json/solar_probabilities.json',
@@ -4458,6 +4458,17 @@ setInterval(renderSaison, 600000);
   }
   function num(v) { var n = parseFloat(v); return isFinite(n) ? n : null; }
   function lastVal(list, key) { for (var i = list.length - 1; i >= 0; i--) { var v = num(list[i][key]); if (v !== null) return v; } return null; }
+  // Neuester Wert eines Feldes (RTSW: mehrere Satelliten, Reihenfolge unklar -> nach Zeit sortieren, aktive Quelle bevorzugen)
+  function latest(list, keys) {
+    var best = null, bestT = -1, bestA = false;
+    list.forEach(function (o) {
+      var v = null; for (var i = 0; i < keys.length && v === null; i++) v = num(o[keys[i]]);
+      if (v === null) return;
+      var tt = t(o.time_tag).getTime() || 0, act = o.active !== false;
+      if ((act && !bestA) || (act === bestA && tt > bestT)) { best = v; bestT = tt; bestA = act; }
+    });
+    return best;
+  }
   function t(s) { return new Date(String(s).replace(' ', 'T').replace(/(\d)$/, '$1Z')); }
   function getJ(u) { return fetch(u, { cache: 'no-store' }).then(function (r) { if (!r.ok) throw r.status; return r.json(); }); }
 
@@ -4478,8 +4489,8 @@ setInterval(renderSaison, 600000);
       if (!r.kp && !r.plasma) return sample();
       var d = { live: true };
       var pl = rows(r.plasma), mg = rows(r.mag);
-      d.speed = lastVal(pl, 'speed'); d.dens = lastVal(pl, 'density');
-      d.bz = lastVal(mg, 'bz_gsm'); d.bt = lastVal(mg, 'bt');
+      d.speed = latest(pl, ['proton_speed', 'speed']); d.dens = latest(pl, ['proton_density', 'density']);
+      d.bz = latest(mg, ['bz_gsm']); d.bt = latest(mg, ['bt']);
       var xr = (r.xray || []).filter(function (o) { return o.energy === '0.1-0.8nm'; });
       d.flux = lastVal(xr, 'flux');
       var cut = Date.now() - 72 * 3600e3;
