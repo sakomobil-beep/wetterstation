@@ -474,7 +474,7 @@ button { font: inherit; color: inherit; }
 .app-install[hidden] { display: none; }
 .radar-src { margin: 0; font-size: 13px; color: var(--muted); }
 .radar-src a, .radar-consent a { color: inherit; text-underline-offset: 3px; }
-/* ---------- Saison-Deko: Halloween (24.–31.10.) und Weihnachten (23.11.–28.12.) ---------- */
+/* ---------- Saison-Deko: Halloween (24.–31.10.), Herbstlaub (1.–22.11.) und Weihnachten (23.11.–28.12.) ---------- */
 .deko { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
 .deko[hidden] { display: none; }
 .deko .bat { position: absolute; left: 0; width: var(--w, 46px); top: var(--y, 60px); color: #2B1E33; opacity: .9;
@@ -494,6 +494,13 @@ button { font: inherit; color: inherit; }
 @keyframes snowFall { from { transform: translate3d(0, -20px, 0); } 50% { transform: translate3d(var(--sw), 50vh, 0); } to { transform: translate3d(0, 104vh, 0); } }
 .saison-chip { display: inline-flex; align-items: center; gap: 6px; margin-left: 10px; padding: 2px 10px 2px 6px; border-radius: 999px; font-size: 12px; font-weight: 600; letter-spacing: .02em; text-transform: none; vertical-align: middle; }
 .saison-chip svg { width: 18px; height: 18px; display: block; }
+.deko .leaf { position: absolute; top: -40px; left: var(--x); width: var(--s); opacity: var(--o, .9);
+  animation: leafFall var(--d) linear var(--del) infinite; }
+.deko .leaf svg { display: block; width: 100%; height: auto; animation: leafSpin var(--r) ease-in-out infinite alternate; filter: drop-shadow(0 2px 2px rgba(80, 40, 10, .18)); }
+@keyframes leafFall { 0% { transform: translate3d(0, -40px, 0); } 25% { transform: translate3d(var(--sw), 25vh, 0); } 50% { transform: translate3d(calc(var(--sw) * -0.6), 52vh, 0); }
+  75% { transform: translate3d(var(--sw), 78vh, 0); } 100% { transform: translate3d(0, 106vh, 0); } }
+@keyframes leafSpin { from { transform: rotate(-35deg) rotateY(0deg); } to { transform: rotate(40deg) rotateY(160deg); } }
+.saison-chip.herbst { background: #7A3B12; color: #FFE2B8; }
 .saison-chip.halloween { background: #2B1E33; color: #FFB25B; }
 .saison-chip.weihnachten { background: #8E1B22; color: #FFF3DE; }
 .photo .web { position: absolute; left: 0; top: 0; width: clamp(70px, 12vw, 130px); height: auto; pointer-events: none; opacity: .85; }
@@ -4164,14 +4171,16 @@ function frostBlock(rows, ags, last) {
 }
 
 /* ---------- Saison-Deko ---------- */
-/* Halloween vom 24. bis 31. Oktober, Weihnachten vom 23. November bis 28. Dezember (jedes Jahr).
-   Zum Testen: ?deko=halloween, ?deko=weihnachten oder ?deko=aus */
+/* Halloween vom 24. bis 31. Oktober, fallende Blätter vom 1. bis 22. November,
+   Weihnachten vom 23. November bis 28. Dezember (jedes Jahr).
+   Zum Testen: ?deko=halloween, ?deko=herbst, ?deko=weihnachten oder ?deko=aus */
 function saisonHeute(d) {
   var q = (typeof SKYQ !== 'undefined' && SKYQ) ? SKYQ.get('deko') : null;
-  if (q === 'halloween' || q === 'weihnachten') return q;
+  if (q === 'halloween' || q === 'herbst' || q === 'weihnachten') return q;
   if (q === 'aus') return null;
   var m = d.getMonth() + 1, t = d.getDate();
   if (m === 10 && t >= 24) return 'halloween';
+  if (m === 11 && t <= 22) return 'herbst';
   if ((m === 11 && t >= 23) || (m === 12 && t <= 28)) return 'weihnachten';
   return null;
 }
@@ -4230,6 +4239,14 @@ function treeSvg() {
     '<circle cx="22" cy="46" r="2.6" fill="#E63946"/><circle cx="38" cy="56" r="2.6" fill="#4DA8FF"/><circle cx="33" cy="30" r="2.3" fill="#E63946"/><circle cx="26" cy="60" r="2.3" fill="#F4D35E"/><circle cx="44" cy="44" r="2.3" fill="#F4D35E"/>' +
     '<path d="M30 0 L32.4 5.6 L38.4 5.8 L33.7 9.5 L35.4 15.3 L30 12 L24.6 15.3 L26.3 9.5 L21.6 5.8 L27.6 5.6 Z" fill="#FFD54A"/></svg>';
 }
+function leafSvg(i) {
+  var cols = ['#D9622B', '#E8A23A', '#B8432A', '#C98A2E', '#9C5A2A', '#E07B39'], c = cols[i % cols.length];
+  if (i % 3 === 0) /* Ahorn */
+    return '<svg viewBox="0 0 40 44" aria-hidden="true"><path fill="' + c + '" d="M20 1 L23 10 L29 6 L28 14 L37 12 L32 20 L39 23 L30 27 L32 33 L23 30 L21 38 H19 L17 30 L8 33 L10 27 L1 23 L8 20 L3 12 L12 14 L11 6 L17 10 Z"/><path d="M20 12 V43" stroke="#6B3A16" stroke-width="1.2" fill="none"/></svg>';
+  if (i % 3 === 1) /* Eiche */
+    return '<svg viewBox="0 0 30 46" aria-hidden="true"><path fill="' + c + '" d="M15 2 C19 4 18 8 21 9 C25 10 24 14 21 16 C25 18 25 22 21 24 C25 26 24 31 20 32 C22 36 19 39 15 40 C11 39 8 36 10 32 C6 31 5 26 9 24 C5 22 5 18 9 16 C6 14 5 10 9 9 C12 8 11 4 15 2 Z"/><path d="M15 6 V45" stroke="#6B3A16" stroke-width="1.1" fill="none"/></svg>';
+  return '<svg viewBox="0 0 30 44" aria-hidden="true"><path fill="' + c + '" d="M15 2 C26 10 27 26 15 38 C3 26 4 10 15 2 Z"/><path d="M15 6 V43 M15 16 L9 12 M15 16 L21 12 M15 24 L8 19 M15 24 L22 19" stroke="#6B3A16" stroke-width="1" fill="none"/></svg>';
+}
 function renderSaison() {
   var art = saisonHeute(new Date());
   if (art === SAISON_AKTIV) return;
@@ -4252,6 +4269,13 @@ function renderSaison() {
     chip.className = 'saison-chip halloween';
     chip.innerHTML = pumpkinSvg(18, true) + 'Happy Halloween';
     photo.insertAdjacentHTML('beforeend', '<span class="saison">' + webSvg() + '</span><span class="saison pumpkins">' + pumpkinSvg(54, true) + pumpkinSvg(34, false) + '</span>');
+  } else if (art === 'herbst') {
+    for (i = 0; i < 16; i++) {
+      var ls = 20 + (i * 17 % 18), lx = (i * 53 % 96), ld = 13 + (i * 11 % 10), ldel = -(i * 9 % 23), lsw = ((i % 2 ? 1 : -1) * (30 + i * 13 % 50)), lr = (2.2 + (i % 4) * .7).toFixed(1);
+      html += '<span class="leaf" style="--x:' + lx + 'vw;--s:' + ls + 'px;--d:' + ld + 's;--del:' + ldel + 's;--sw:' + lsw + 'px;--r:' + lr + 's;--o:' + (0.7 + (i % 4) * 0.08).toFixed(2) + '">' + leafSvg(i) + '</span>';
+    }
+    chip.className = 'saison-chip herbst';
+    chip.innerHTML = '<svg viewBox="0 0 40 44" aria-hidden="true"><path fill="#F0A040" d="M20 1 L23 10 L29 6 L28 14 L37 12 L32 20 L39 23 L30 27 L32 33 L23 30 L21 38 H19 L17 30 L8 33 L10 27 L1 23 L8 20 L3 12 L12 14 L11 6 L17 10 Z"/></svg>Goldener Herbst';
   } else {
     for (i = 0; i < 46; i++) {
       var s = 4 + (i * 37 % 6), x = (i * 61 % 100), d = 9 + (i * 13 % 11), del = -(i * 7 % 19), sw = ((i % 2 ? 1 : -1) * (8 + i * 5 % 22));
