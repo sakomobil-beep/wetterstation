@@ -483,5 +483,6 @@ thead th { border-top: 0; font-size: 12px; letter-spacing: .06em; text-transform
     (navigator.clipboard ? navigator.clipboard.writeText(txt()) : Promise.reject()).then(function () { b.textContent = 'Kopiert ✓'; setTimeout(function () { b.textContent = 'Text kopieren'; }, 1800); }).catch(function () { b.textContent = 'Bitte manuell markieren'; }); };
 })();
 </script>
+<script>(function(){var a=document.querySelector('.subnav [aria-current="page"]'),n=document.querySelector('.subnav');if(a&&n&&n.scrollWidth>n.clientWidth){n.scrollLeft=a.offsetLeft-n.clientWidth/2+a.offsetWidth/2;}})();</script>
 </body>
 </html>
