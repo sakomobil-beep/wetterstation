@@ -636,6 +636,17 @@ button { font: inherit; color: inherit; }
 .vmeta .d { font-size: 13.5px; color: #3D4F57; }
 .vmeta a { font-size: 13px; }
 .vhint { font-size: 13.5px; color: var(--muted); max-width: 75ch; }
+
+/* Frühwarnung */
+.ew-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+.ew-box { background: var(--surface); border-radius: 14px; padding: 14px; display: grid; gap: 8px; align-content: start; }
+.ew-box h4 { margin: 0; font-size: 15px; }
+.ew-plot svg { width: 100%; height: auto; display: block; }
+.ew-plot text { font: 400 10px var(--font-display, sans-serif); fill: var(--muted); }
+.ew-t { font-size: 13px !important; line-height: 1.4; }
+.ew-ov { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; }
+.ew-ov b { display: block; font: 600 1.6rem/1.1 var(--font-display); font-variant-numeric: tabular-nums; }
+.ew-ov span { font-size: 12px; color: var(--muted); }
 .sw-hist { overflow-x: auto; }
 .sw-hist td:first-child { width: 150px; vertical-align: top; }
 .sw-hist td { vertical-align: top; line-height: 1.45; }
@@ -1107,6 +1118,29 @@ button { font: inherit; color: inherit; }
         <span><i style="background:#E57A1F"></i>Sturm G1–G2 (5–6)</span><span><i style="background:#C93030"></i>starker Sturm G3+ (7–9)</span>
         <span><i style="background:#fff;border:1.5px dashed #56707C"></i>Prognose</span>
       </div>
+    </section>
+
+    <section class="chart" aria-label="Frühwarnung Sonnensturm">
+      <div class="sw-head"><div><div class="label">Frühwarnung</div><h2>Kommt ein Sturm? Die schnellen Anzeichen</h2></div><span class="pill demo" id="ewPill">wird geladen</span></div>
+      <div class="ew-grid">
+        <div class="ew-box">
+          <h4>Magnetfeld Bz, letzte 6 Stunden</h4>
+          <div id="ewBz" class="ew-plot"></div>
+          <p class="sw-muted ew-t" id="ewBzT">Zeigt Bz eine Stunde oder länger deutlich ins Minus (unter −10 nT), wird ein Sturm sehr wahrscheinlich. Die Daten kommen vom Messpunkt L1, die Wirkung erreicht die Erde etwa 30 bis 60 Minuten später.</p>
+        </div>
+        <div class="ew-box">
+          <h4>Hp30-Index, letzte 24 Stunden</h4>
+          <div id="ewHp" class="ew-plot"></div>
+          <p class="sw-muted ew-t" id="ewHpT">Wie der Kp-Index, aber alle 30 Minuten statt alle 3 Stunden. So sieht man einen beginnenden Sturm deutlich früher. Werte ab 5 bedeuten Sturm.</p>
+        </div>
+        <div class="ew-box">
+          <h4>Polarlichtoval über Bad König</h4>
+          <div class="ew-ov"><div><b id="ewOvHere">–</b><span>direkt über uns</span></div><div><b id="ewOvNorth">–</b><span>am Nordhorizont (50–55° N)</span></div><div><b id="ewOvMax">–</b><span>höchster Wert über Europa</span></div></div>
+          <p class="sw-muted ew-t" id="ewOvT">Wahrscheinlichkeit für Polarlicht nach dem NOAA-Modell OVATION für die nächsten 30 bis 90 Minuten. Schon wenige Prozent am Nordhorizont reichen oft für Fotos.</p>
+        </div>
+      </div>
+      <p class="sw-muted" style="font-size:13.5px">Eine Karte der Polarlicht-Wahrscheinlichkeit für Deutschland, Magnetometer-Kurven und Sichtbarkeitskarten gibt es bei <a href="https://aurora.mtwetter.de/" target="_blank" rel="noopener">aurora.mtwetter.de</a>.</p>
+      <p class="sw-muted" style="font-size:12.5px">Quellen: <a href="https://www.swpc.noaa.gov/products/aurora-30-minute-forecast" target="_blank" rel="noopener">NOAA SWPC</a> (Bz und OVATION-Modell), <a href="https://kp.gfz.de/" target="_blank" rel="noopener">GFZ Potsdam</a> (Hp30-Index, CC BY 4.0). Aktualisierung alle 5 Minuten.</p>
     </section>
 
     <div class="sw-two">
@@ -4716,6 +4750,99 @@ setInterval(renderSaison, 600000);
     var f = b.parentNode;
     f.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + f.getAttribute('data-id') + '?autoplay=1&rel=0" title="YouTube-Video" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>';
   });
+})();
+</script>
+<script>
+/* Frühwarnung Sonnensturm: Bz-Verlauf (NOAA RTSW), Hp30 (GFZ), OVATION (NOAA) */
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  if (!$('ewBz')) return;
+  var LAT = 49.7, LON = 9.0;
+  function getJ(u) { return fetch(u, { cache: 'no-store' }).then(function (r) { if (!r.ok) throw r.status; return r.json(); }); }
+  function tt(s) { return new Date(String(s).replace(' ', 'T').replace(/(\d)$/, '$1Z')); }
+  function hm(d) { return d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }); }
+  function de(n, d) { return n == null ? '–' : n.toFixed(d).replace('.', ','); }
+
+  // Linien-/Balkengrafik als SVG
+  function plot(el, pts, opt) {
+    if (!pts.length) { el.innerHTML = '<p class="sw-muted ew-t">Keine Daten verfügbar.</p>'; return; }
+    var W = 320, H = 130, L = 30, R = 6, T = 8, B = 20, t0 = opt.t0, t1 = opt.t1, lo = opt.lo, hi = opt.hi;
+    pts.forEach(function (p) { if (p.v < lo) lo = Math.floor(p.v); if (p.v > hi) hi = Math.ceil(p.v); });
+    var x = function (t) { return L + (t - t0) / (t1 - t0) * (W - L - R); }, y = function (v) { return T + (hi - v) / (hi - lo) * (H - T - B); };
+    var g = '';
+    opt.grid.forEach(function (v) { if (v >= lo && v <= hi) g += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + y(v).toFixed(1) + '" y2="' + y(v).toFixed(1) + '" stroke="' + (v === 0 ? '#9AAAB4' : '#E1E7EA') + '"/><text x="' + (L - 4) + '" y="' + (y(v) + 3).toFixed(1) + '" text-anchor="end">' + v + '</text>'; });
+    if (opt.band != null) g += '<rect x="' + L + '" y="' + y(opt.band[1]).toFixed(1) + '" width="' + (W - L - R) + '" height="' + Math.max(0, y(opt.band[0]) - y(opt.band[1])).toFixed(1) + '" fill="' + opt.bandC + '"/>';
+    for (var k = 0; k <= 4; k++) { var tk = t0 + (t1 - t0) * k / 4; g += '<text x="' + x(tk).toFixed(1) + '" y="' + (H - 5) + '" text-anchor="middle">' + hm(new Date(tk)) + '</text>'; }
+    if (opt.bars) {
+      var bw = Math.max(2, (W - L - R) / pts.length - 1);
+      pts.forEach(function (p) { g += '<rect x="' + (x(p.t) - bw / 2).toFixed(1) + '" y="' + y(p.v).toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + (y(lo) - y(p.v)).toFixed(1) + '" rx="1" fill="' + opt.color(p.v) + '"/>'; });
+    } else {
+      var d = pts.map(function (p, i) { return (i ? 'L' : 'M') + x(p.t).toFixed(1) + ' ' + y(p.v).toFixed(1); }).join('');
+      g += '<path d="' + d + '" fill="none" stroke="#1F5E8C" stroke-width="1.6" stroke-linejoin="round"/>';
+    }
+    el.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + opt.label + '">' + g + '</svg>';
+  }
+
+  function loadBz() {
+    return getJ('https://services.swpc.noaa.gov/json/rtsw/rtsw_mag_1m.json').then(function (j) {
+      var now = Date.now(), t0 = now - 6 * 3600e3, by = {};
+      (Array.isArray(j) ? j : []).forEach(function (o) {
+        var t = tt(o.time_tag).getTime(), v = parseFloat(o.bz_gsm);
+        if (!isFinite(v) || t < t0) return;
+        var k = Math.round(t / 60000), act = o.active !== false;
+        if (!by[k] || (act && !by[k].a)) by[k] = { t: t, v: v, a: act };
+      });
+      var pts = Object.keys(by).map(function (k) { return by[k]; }).sort(function (a, b) { return a.t - b.t; });
+      plot($('ewBz'), pts, { t0: t0, t1: now, lo: -15, hi: 15, grid: [-20, -10, 0, 10, 20], band: [-30, -10], bandC: 'rgba(201,48,48,.08)', label: 'Bz-Verlauf der letzten 6 Stunden' });
+      // wie lange war Bz zuletzt unter -10 nT?
+      var cnt = 0; for (var i = pts.length - 1; i >= 0 && pts[i].v < -10; i--) cnt++;
+      var last = pts.length ? pts[pts.length - 1].v : null;
+      if (last != null) $('ewBzT').textContent = 'Aktuell ' + de(last, 1) + ' nT' + (cnt >= 20 ? ', seit etwa ' + cnt + ' Minuten deutlich südlich: erhöhte Polarlicht-Chance in der nächsten Stunde!' : last < -5 ? ', leicht südlich.' : '.') +
+        ' Zeigt Bz länger unter −10 nT, wird ein Sturm sehr wahrscheinlich. Die Wirkung erreicht die Erde etwa 30 bis 60 Minuten später.';
+      return true;
+    });
+  }
+
+  function loadHp() {
+    var e = new Date(), s = new Date(e - 24 * 3600e3), iso = function (d) { return d.toISOString().slice(0, 19) + 'Z'; };
+    return getJ('https://kp.gfz.de/app/json/?start=' + iso(s) + '&end=' + iso(e) + '&index=Hp30').then(function (j) {
+      var ts = j.datetime || [], vs = j.Hp30 || [], pts = [];
+      ts.forEach(function (t, i) { var v = parseFloat(vs[i]); if (isFinite(v)) pts.push({ t: new Date(t).getTime() + 15 * 60000, v: v }); });
+      plot($('ewHp'), pts, { t0: s.getTime(), t1: e.getTime(), lo: 0, hi: 6, grid: [0, 3, 5, 7, 9], bars: true, label: 'Hp30-Index der letzten 24 Stunden',
+        color: function (v) { return v >= 7 ? '#C93030' : v >= 5 ? '#E57A1F' : v >= 4 ? '#E0B020' : '#3FA36B'; } });
+      if (pts.length) { var l = pts[pts.length - 1].v; $('ewHpT').textContent = 'Zuletzt Hp30 ' + de(l, 2) + '. Wie der Kp-Index, aber alle 30 Minuten statt alle 3 Stunden, so sieht man einen beginnenden Sturm früher. Werte ab 5 bedeuten Sturm.'; }
+      return true;
+    }).catch(function () { $('ewHp').innerHTML = '<p class="sw-muted ew-t">Der Hp30-Index konnte gerade nicht geladen werden.</p>'; return false; });
+  }
+
+  function loadOv() {
+    return getJ('https://services.swpc.noaa.gov/json/ovation_aurora_latest.json').then(function (j) {
+      var c = j.coordinates || [], here = null, north = 0, eu = 0;
+      c.forEach(function (p) {
+        var lon = +p[0], lat = +p[1], v = +p[2];
+        if (lon > 180) lon -= 360;
+        if (Math.abs(lon - LON) <= 1 && Math.abs(lat - LAT) <= 0.5) here = Math.max(here || 0, v);
+        if (Math.abs(lon - LON) <= 3 && lat >= 50 && lat <= 55) north = Math.max(north, v);
+        if (lon >= -10 && lon <= 30 && lat >= 45 && lat <= 72) eu = Math.max(eu, v);
+      });
+      $('ewOvHere').textContent = (here || 0) + ' %'; $('ewOvNorth').textContent = north + ' %'; $('ewOvMax').textContent = eu + ' %';
+      $('ewOvNorth').style.color = north >= 10 ? '#1C8A5A' : north >= 3 ? '#B07A00' : '';
+      var ft = j['Forecast Time'] ? new Date(j['Forecast Time']) : null;
+      if (ft && !isNaN(ft)) $('ewOvT').textContent = 'Polarlicht-Wahrscheinlichkeit nach dem NOAA-Modell OVATION, gültig für ' + hm(ft) + ' Uhr. Schon wenige Prozent am Nordhorizont reichen bei klarem Himmel oft für Fotos.';
+      return true;
+    });
+  }
+
+  function run() {
+    var pill = $('ewPill');
+    Promise.all([loadBz().catch(function () { $('ewBz').innerHTML = '<p class="sw-muted ew-t">Die Bz-Daten konnten gerade nicht geladen werden.</p>'; return false; }), loadHp(), loadOv().catch(function () { return false; })]).then(function (r) {
+      var ok = r.filter(Boolean).length;
+      pill.className = 'pill ' + (ok ? 'live' : 'off'); pill.textContent = ok ? 'Live · ' + hm(new Date()) + ' Uhr' : 'nicht verfügbar';
+    });
+  }
+  var started = false;
+  function maybe() { if (!started && location.hash === '#solar') { started = true; run(); setInterval(run, 300000); } }
+  window.addEventListener('hashchange', maybe); maybe();
 })();
 </script>
 </body>
