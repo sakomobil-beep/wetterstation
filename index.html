@@ -565,6 +565,57 @@ button { font: inherit; color: inherit; }
 @media (prefers-reduced-motion: no-preference) {
   .bar > i { transition: width .5s ease; }
 }
+/* Solarwetter */
+
+.sw-hero { display: grid; grid-template-columns: 150px minmax(0,1fr); gap: 18px 26px; align-items: center;
+  background: linear-gradient(135deg, #10202B 0%, #1B3442 100%); color: #F4F1EA; }
+.sw-hero .label { color: #9FB4BE; }
+.sw-sun { width: 150px; height: 150px; }
+.sw-level { font: 700 clamp(1.8rem, 5vw, 2.6rem)/1.05 var(--font-display); margin: 4px 0 6px; }
+.sw-sub { font-size: 15px; color: #D5DEE2; max-width: 60ch; }
+.sw-scale { display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; margin-top: 14px; max-width: 420px; }
+.sw-scale i { height: 8px; border-radius: 3px; background: rgba(255,255,255,.14); }
+.sw-scale-lab { display: flex; justify-content: space-between; max-width: 420px; font-size: 11px; color: #9FB4BE; margin-top: 4px; }
+@media (max-width: 560px) { .sw-hero { grid-template-columns: 1fr; } .sw-sun { width: 110px; height: 110px; } }
+
+/* Kacheln */
+.sw-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+.sw-tile { background: var(--surface); border-radius: 16px; padding: 16px; display: grid; gap: 4px; align-content: start; }
+.sw-val { font: 600 1.7rem/1.1 var(--font-display); font-variant-numeric: tabular-nums; }
+.sw-val small { font-size: .95rem; font-weight: 500; color: var(--muted); margin-left: 3px; }
+.sw-hint { font-size: 13px; color: var(--muted); line-height: 1.35; }
+.sw-tag { justify-self: start; font: 600 11.5px/1.4 var(--font-display); padding: 2px 8px; border-radius: 6px; }
+
+/* Kp-Diagramm */
+.kp-plot svg { width: 100%; height: auto; display: block; }
+.kp-plot .ax { font: 400 11px var(--font-display); fill: var(--muted); }
+.kp-plot .grid { stroke: var(--line); }
+.kp-leg { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); }
+.kp-leg span { display: inline-flex; align-items: center; gap: 6px; }
+.kp-leg i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+
+/* Tabellen, Polarlicht, Sonne */
+.sw-two { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 16px; }
+@media (max-width: 760px) { .sw-two { grid-template-columns: 1fr; } }
+#panel-solar table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+#panel-solar th, #panel-solar td { padding: 9px 8px; border-bottom: 1px solid var(--line); text-align: left; }
+#panel-solar td.num, #panel-solar th.num { text-align: right; }
+#panel-solar thead th { font: 500 11px/1.3 var(--font-display); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.sw-prob { display: inline-block; min-width: 46px; text-align: center; padding: 2px 6px; border-radius: 6px; font-weight: 600; }
+.aur-meter { height: 14px; border-radius: 7px; background: linear-gradient(90deg, #DDE7EA, #8FD3B0 45%, #3FB58A 65%, #B05CC8 85%, #E0457B); position: relative; }
+.aur-meter b { position: absolute; top: -5px; width: 4px; height: 24px; border-radius: 2px; background: var(--ink); transform: translateX(-2px); transition: left .6s ease; }
+.aur-lab { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+.sunimg { width: 100%; max-width: 320px; aspect-ratio: 1; border-radius: 50%; display: block; margin: 0 auto; background: #000; object-fit: cover; }
+.sunbtns { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.sunbtns button { border: 1px solid var(--line); background: var(--bg); border-radius: 8px; padding: 5px 12px; font: inherit; font-size: 13.5px; cursor: pointer; }
+.sunbtns button[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+.gloss { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px 26px; }
+.gloss h4 { margin: 0 0 3px; font-size: 15px; }
+.gloss p { font-size: 14px; color: var(--muted); }
+#panel-solar .sw-muted { color: var(--muted); }
+#panel-solar .sw-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 20px; }
+#panel-solar h2 { margin: 2px 0 0; }
+#panel-solar .chart p { margin: 0; }
 </style>
 
 </head>
@@ -586,6 +637,7 @@ button { font: inherit; color: inherit; }
       <a id="nav-historie" href="#historie" data-tab="historie">Historie</a>
       <a id="nav-klima" href="#klima" data-tab="klima">Klima</a>
       <a id="nav-station" href="#station" data-tab="station">Station</a>
+      <a id="nav-solar" href="#solar" data-tab="solar">Solarwetter</a>
       <a id="nav-elnino" href="elnino.html">El Niño</a>
       <a id="nav-polarwirbel" href="polarwirbel.html">Polarwirbel</a>
     </nav>
@@ -973,6 +1025,87 @@ button { font: inherit; color: inherit; }
     </ol>
     <p class="src">Technische Angaben laut Hersteller: <a href="https://www.bresser.de/p/bresser-8-in-1-wlan-wetterstation-mit-hitzeindex-sahara-tb-7003400" target="_blank" rel="noopener">Bresser</a>.</p>
   </section>
+  </div>
+
+  <!-- Solarwetter -->
+  <div id="panel-solar" class="panel" hidden>
+    <section class="chart sw-hero" aria-label="Lage im Weltraumwetter">
+      <svg class="sw-sun" viewBox="0 0 150 150" aria-hidden="true">
+        <defs><radialGradient id="sg" cx="45%" cy="40%"><stop offset="0" stop-color="#FFF3B0"/><stop offset=".55" stop-color="#FFB020"/><stop offset="1" stop-color="#E5600B"/></radialGradient></defs>
+        <g id="swRays" stroke="#FFB020" stroke-width="4" stroke-linecap="round" opacity=".7"></g>
+        <circle cx="75" cy="75" r="44" fill="url(#sg)"/>
+      </svg>
+      <div>
+        <div class="label">Weltraumwetter jetzt · <span id="swStamp">–</span></div>
+        <div class="sw-level" id="swLevel">–</div>
+        <p class="sw-sub" id="swText">Daten werden geladen …</p>
+        <div class="sw-scale" id="swScale"></div>
+        <div class="sw-scale-lab"><span>Kp 0 · ruhig</span><span>Kp 5 · Sturm</span><span>Kp 9 · extrem</span></div>
+      </div>
+    </section>
+
+    <div class="sw-tiles">
+      <div class="sw-tile"><div class="label">Sonnenwind</div><div class="sw-val" id="tSpeed">–</div><div class="sw-hint">Geschwindigkeit am Messpunkt L1, 1,5 Mio. km vor der Erde. Normal: 300–450 km/s.</div></div>
+      <div class="sw-tile"><div class="label">Dichte</div><div class="sw-val" id="tDens">–</div><div class="sw-hint">Teilchen pro cm³. Normal: 2–10.</div></div>
+      <div class="sw-tile"><div class="label">Magnetfeld Bz</div><div class="sw-val" id="tBz">–</div><span class="sw-tag" id="tBzTag"></span><div class="sw-hint">Negativ (nach Süden) öffnet das Tor für Polarlichter.</div></div>
+      <div class="sw-tile"><div class="label">Röntgenstrahlung</div><div class="sw-val" id="tXray">–</div><div class="sw-hint">Flare-Klasse aktuell (A, B, C, M, X – je eine Stufe 10× stärker).</div></div>
+      <div class="sw-tile"><div class="label">Starker Flare heute</div><div class="sw-val" id="tFlare">–</div><div class="sw-hint">Wahrscheinlichkeit für einen Flare der Klasse M oder X.</div></div>
+    </div>
+
+    <section class="chart" aria-label="Kp-Index Verlauf und Prognose">
+      <div class="sw-head">
+        <div><div class="label">Geomagnetische Aktivität</div><h2>Kp-Index: 3 Tage zurück, 3 Tage voraus</h2></div>
+        <span class="pill demo" id="swPill">Beispieldaten</span>
+      </div>
+      <div class="kp-plot" id="kpPlot"></div>
+      <div class="kp-leg">
+        <span><i style="background:#3FA36B"></i>ruhig (0–3)</span><span><i style="background:#E0B020"></i>aktiv (4)</span>
+        <span><i style="background:#E57A1F"></i>Sturm G1–G2 (5–6)</span><span><i style="background:#C93030"></i>starker Sturm G3+ (7–9)</span>
+        <span><i style="background:#fff;border:1.5px dashed #56707C"></i>Prognose</span>
+      </div>
+    </section>
+
+    <div class="sw-two">
+      <section class="chart" aria-label="Polarlicht über Bad König">
+        <div><div class="label">Bad König · 49,7° Nord</div><h2>Polarlicht-Chance</h2></div>
+        <p class="sw-val" id="aurText" style="font-size:1.35rem">–</p>
+        <div class="aur-meter"><b id="aurMark" style="left:0%"></b></div>
+        <div class="aur-lab"><span>Kp 0</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span></div>
+        <p class="sw-muted" id="aurNote" style="font-size:14px"></p>
+      </section>
+
+      <section class="chart" aria-label="Wahrscheinlichkeiten der nächsten Tage">
+        <div><div class="label">Prognose NOAA</div><h2>Wahrscheinlichkeiten</h2></div>
+        <table><thead><tr><th></th><th class="num">Heute</th><th class="num">Morgen</th><th class="num">Übermorgen</th></tr></thead>
+        <tbody id="probBody"></tbody></table>
+        <p class="sw-muted" style="font-size:13px">Sturm = geomagnetischer Sturm (Kp ab 5). Protonen = Strahlungssturm, wichtig für Satelliten und Flugzeuge.</p>
+      </section>
+    </div>
+
+    <div class="sw-two">
+      <section class="chart" aria-label="Die Sonne heute">
+        <div><div class="label">Satellit SDO der NASA</div><h2>Die Sonne heute</h2></div>
+        <div class="sunbtns" id="sunBtns">
+          <button data-img="0193" aria-pressed="true">Korona</button>
+          <button data-img="0304">Eruptionen</button>
+          <button data-img="HMIIC">Sonnenflecken</button>
+        </div>
+        <img class="sunimg" id="sunImg" alt="Aktuelles Bild der Sonne vom Satelliten SDO">
+        <p class="sw-muted" style="font-size:13px;text-align:center">Wird alle 15 Minuten neu aufgenommen.</p>
+      </section>
+
+      <section class="chart" aria-label="Kurz erklärt">
+        <div><div class="label">Kurz erklärt</div><h2>Was bedeuten die Werte?</h2></div>
+        <div class="gloss">
+          <div><h4>Sonnenwind</h4><p>Ein ständiger Strom geladener Teilchen von der Sonne. Bei Ausbrüchen (CME) wird er schneller und dichter.</p></div>
+          <div><h4>Kp-Index</h4><p>Maß von 0 bis 9 für die Unruhe im Erdmagnetfeld, ermittelt alle drei Stunden. Ab 5 spricht man von einem Sturm.</p></div>
+          <div><h4>Flares</h4><p>Strahlungsblitze auf der Sonne. Sie erreichen die Erde in 8 Minuten und können den Kurzwellenfunk stören.</p></div>
+          <div><h4>Bz</h4><p>Die Nord-Süd-Richtung des Magnetfelds im Sonnenwind. Zeigt es länger nach Süden, koppelt es an das Erdfeld an.</p></div>
+        </div>
+      </section>
+    </div>
+
+    <p class="src">Quellen: <a href="https://www.swpc.noaa.gov/" target="_blank" rel="noopener">NOAA Space Weather Prediction Center</a> (Sonnenwind von DSCOVR/ACE, Kp-Index, Röntgenfluss von GOES, Wahrscheinlichkeiten) und <a href="https://sdo.gsfc.nasa.gov/" target="_blank" rel="noopener">NASA SDO</a> (Sonnenbilder). Aktualisierung jede Minute.</p>
   </div>
 
   <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a></p>
@@ -3883,7 +4016,7 @@ loadYearRecords(true);
 document.addEventListener('visibilitychange', function () { if (!document.hidden) updateSky(); });
 
 /* ---------- Tabs ---------- */
-var TABS = ['aktuell', 'grafiken', 'woche', 'vorhersage', 'statistik', 'historie', 'klima', 'station'];
+var TABS = ['aktuell', 'grafiken', 'woche', 'vorhersage', 'statistik', 'historie', 'klima', 'station', 'solar'];
 var currentTab = 'aktuell';
 HS.started = false;
 
@@ -3906,6 +4039,8 @@ function showTab(name) {
     // Die Historie wird erst beim ersten Öffnen geladen
     if (!HS.started) { HS.started = true; showDay(todayStr()); loadWeek(); }
     else if (HS.date === todayStr()) showDay(HS.date, true);
+  } else if (name === 'solar') {
+    if (window.solarStart) window.solarStart();
   } else if (name === 'station') {
     renderStation();
     getYear(new Date().getFullYear()).then(renderStation);
@@ -4298,6 +4433,173 @@ function renderSaison() {
 }
 renderSaison();
 setInterval(renderSaison, 600000);
+</script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var BASE = 'https://services.swpc.noaa.gov/';
+  var URLS = {
+    plasma: BASE + 'products/solar-wind/plasma-2-hour.json',
+    mag: BASE + 'products/solar-wind/mag-2-hour.json',
+    kp: BASE + 'products/noaa-planetary-k-index.json',
+    kpfc: BASE + 'products/noaa-planetary-k-index-forecast.json',
+    prob: BASE + 'json/solar_probabilities.json',
+    xray: BASE + 'json/goes/primary/xrays-1-day.json'
+  };
+
+  // NOAA liefert teils Tabellen (erste Zeile = Spaltennamen), teils Objektlisten
+  function rows(j) {
+    if (!Array.isArray(j) || !j.length) return [];
+    if (!Array.isArray(j[0])) return j;
+    var h = j[0];
+    return j.slice(1).map(function (r) { var o = {}; h.forEach(function (k, i) { o[k] = r[i]; }); return o; });
+  }
+  function num(v) { var n = parseFloat(v); return isFinite(n) ? n : null; }
+  function lastVal(list, key) { for (var i = list.length - 1; i >= 0; i--) { var v = num(list[i][key]); if (v !== null) return v; } return null; }
+  function t(s) { return new Date(String(s).replace(' ', 'T').replace(/(\d)$/, '$1Z')); }
+  function getJ(u) { return fetch(u, { cache: 'no-store' }).then(function (r) { if (!r.ok) throw r.status; return r.json(); }); }
+
+  // ---------- Beispieldaten für die Vorschau ----------
+  function sample() {
+    var now = Date.now(), h3 = 3 * 3600e3, start = Math.floor(now / h3) * h3, kp = [], fc = [];
+    var past = [2,2,1.67,2,3,3.33,2.67,2, 2,3,4,4.33,3.67,3,2.33,2, 3,3.67,5,5.33,4.67,4,3.33,3];
+    past.forEach(function (v, i) { kp.push({ time: new Date(start - (23 - i) * h3), kp: v, fc: false }); });
+    [3,3.33,4,4.67,5,4.33,3.67,3, 3,2.67,2.33,2.33,2,2,2.33,2.67, 2,2,1.67,1.67,2,2,2.33,2].forEach(function (v, i) { fc.push({ time: new Date(start + (i + 1) * h3), kp: v, fc: true }); });
+    return { speed: 512, dens: 6.8, bz: -7.2, bt: 9.1, flux: 3.4e-6, kp: kp, fc: fc,
+      prob: { m: [35, 30, 25], x: [8, 5, 5], storm: [40, 20, 10], prot: [5, 5, 5] }, live: false };
+  }
+
+  function load() {
+    var keys = Object.keys(URLS);
+    return Promise.all(keys.map(function (k) { return getJ(URLS[k]).catch(function () { return null; }); })).then(function (res) {
+      var r = {}; keys.forEach(function (k, i) { r[k] = res[i]; });
+      if (!r.kp && !r.plasma) return sample();
+      var d = { live: true };
+      var pl = rows(r.plasma), mg = rows(r.mag);
+      d.speed = lastVal(pl, 'speed'); d.dens = lastVal(pl, 'density');
+      d.bz = lastVal(mg, 'bz_gsm'); d.bt = lastVal(mg, 'bt');
+      var xr = (r.xray || []).filter(function (o) { return o.energy === '0.1-0.8nm'; });
+      d.flux = lastVal(xr, 'flux');
+      var cut = Date.now() - 72 * 3600e3;
+      d.kp = rows(r.kp).map(function (o) { return { time: t(o.time_tag), kp: num(o.Kp != null ? o.Kp : (o.kp != null ? o.kp : o.kp_index)), fc: false }; })
+        .filter(function (o) { return o.kp !== null && o.time.getTime() > cut; });
+      var lastObs = d.kp.length ? d.kp[d.kp.length - 1].time.getTime() : Date.now();
+      d.fc = rows(r.kpfc).filter(function (o) { return o.observed === 'predicted'; })
+        .map(function (o) { return { time: t(o.time_tag), kp: num(o.kp), fc: true }; })
+        .filter(function (o) { return o.kp !== null && o.time.getTime() > lastObs; }).slice(0, 24);
+      var p = (r.prob && r.prob[0]) || {};
+      d.prob = {
+        m: [p.m_class_1_day, p.m_class_2_day, p.m_class_3_day].map(num),
+        x: [p.x_class_1_day, p.x_class_2_day, p.x_class_3_day].map(num),
+        prot: [p['10mev_protons_1_day'], p['10mev_protons_2_day'], p['10mev_protons_3_day']].map(num),
+        storm: [0, 1, 2].map(function (i) { // aus der Kp-Prognose: Anteil der Tage mit Kp >= 5
+          var day = new Date(); day.setHours(0, 0, 0, 0); day.setDate(day.getDate() + i);
+          var e = d.fc.filter(function (o) { return o.time.toDateString() === day.toDateString(); });
+          return e.length ? (Math.max.apply(null, e.map(function (o) { return o.kp; })) >= 5 ? 'ja' : 'nein') : null;
+        })
+      };
+      return d;
+    });
+  }
+
+  // ---------- Darstellung ----------
+  function kpColor(k) { return k >= 7 ? '#C93030' : k >= 5 ? '#E57A1F' : k >= 4 ? '#E0B020' : '#3FA36B'; }
+  function level(k) {
+    if (k >= 9) return ['Extremer Sturm (G5)', 'Polarlichter bis weit in den Süden Europas möglich.'];
+    if (k >= 8) return ['Schwerer Sturm (G4)', 'Polarlichter in ganz Deutschland gut möglich.'];
+    if (k >= 7) return ['Starker Sturm (G3)', 'Polarlichter auch in Südhessen möglich – nach Norden schauen!'];
+    if (k >= 6) return ['Mäßiger Sturm (G2)', 'Polarlichter in Norddeutschland möglich, bei uns nur mit Kamera am Horizont.'];
+    if (k >= 5) return ['Kleiner Sturm (G1)', 'Polarlichter in Skandinavien und an der Ostsee möglich.'];
+    if (k >= 4) return ['Aktiv', 'Das Erdmagnetfeld ist unruhig, aber noch kein Sturm.'];
+    return ['Ruhig', 'Das Erdmagnetfeld ist ruhig. Keine Auswirkungen zu erwarten.'];
+  }
+  function xclass(f) {
+    if (f == null) return '–';
+    var L = [['X', 1e-4], ['M', 1e-5], ['C', 1e-6], ['B', 1e-7], ['A', 1e-8]];
+    for (var i = 0; i < L.length; i++) if (f >= L[i][1]) return L[i][0] + (f / L[i][1]).toFixed(1).replace('.', ',');
+    return 'A0';
+  }
+  function de(n, d) { return n == null ? '–' : n.toFixed(d).replace('.', ','); }
+  function probStyle(p) {
+    if (p == null) return '';
+    var c = p >= 50 ? ['#FBE1DE', '#8E1F1F'] : p >= 20 ? ['#FBEBD6', '#8A4A06'] : ['#E2F3EA', '#1C6A44'];
+    return 'background:' + c[0] + ';color:' + c[1];
+  }
+
+  function render(d) {
+    var all = d.kp.concat(d.fc), now = d.kp.length ? d.kp[d.kp.length - 1].kp : 0;
+    var maxNext = d.fc.slice(0, 8).reduce(function (m, o) { return Math.max(m, o.kp); }, now);
+    var lv = level(now);
+    $('swLevel').textContent = lv[0]; $('swLevel').style.color = now >= 4 ? '#FFC36B' : '#9BE3B8';
+    $('swText').textContent = 'Kp ' + de(now, 1) + ' – ' + lv[1] + (maxNext > now + 0.9 ? ' In den nächsten 24 Stunden bis Kp ' + de(maxNext, 1) + ' erwartet.' : '');
+    $('swStamp').textContent = new Date().toLocaleString('de-DE', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) + ' Uhr';
+    var sc = ''; for (var i = 0; i < 10; i++) sc += '<i style="' + (now >= i ? 'background:' + kpColor(i) : '') + '"></i>'; $('swScale').innerHTML = sc;
+    var rays = ''; for (var a = 0; a < 12; a++) { var ang = a * Math.PI / 6, r1 = 54, r2 = 58 + Math.min(now, 9) * 1.6;
+      rays += '<line x1="' + (75 + r1 * Math.cos(ang)).toFixed(1) + '" y1="' + (75 + r1 * Math.sin(ang)).toFixed(1) + '" x2="' + (75 + r2 * Math.cos(ang)).toFixed(1) + '" y2="' + (75 + r2 * Math.sin(ang)).toFixed(1) + '"/>'; }
+    $('swRays').innerHTML = rays;
+
+    $('tSpeed').innerHTML = (d.speed == null ? '–' : Math.round(d.speed)) + '<small>km/s</small>';
+    $('tDens').innerHTML = de(d.dens, 1) + '<small>p/cm³</small>';
+    $('tBz').innerHTML = de(d.bz, 1) + '<small>nT</small>';
+    var south = d.bz != null && d.bz < -5;
+    $('tBzTag').textContent = d.bz == null ? '' : d.bz < 0 ? (south ? 'deutlich südlich' : 'leicht südlich') : 'nördlich';
+    $('tBzTag').style.cssText = south ? 'background:#FBE1DE;color:#8E1F1F' : 'background:#E2F3EA;color:#1C6A44';
+    $('tXray').textContent = xclass(d.flux);
+    var mx = d.prob.m[0] == null ? null : Math.min(99, d.prob.m[0] + (d.prob.x[0] || 0));
+    $('tFlare').innerHTML = (mx == null ? '–' : mx) + '<small>%</small>';
+
+    // Wahrscheinlichkeiten
+    var rowsP = [['Flare Klasse M', d.prob.m], ['Flare Klasse X', d.prob.x], ['Sturm (Kp ≥ 5)', d.prob.storm], ['Protonen-Ereignis', d.prob.prot]];
+    $('probBody').innerHTML = rowsP.map(function (r) {
+      return '<tr><th scope="row">' + r[0] + '</th>' + r[1].map(function (v) {
+        if (typeof v === 'string') return '<td class="num"><span class="sw-prob" style="' + probStyle(v === 'ja' ? 60 : 0) + '">' + v + '</span></td>';
+        return '<td class="num"><span class="sw-prob" style="' + probStyle(v) + '">' + (v == null ? '–' : v + ' %') + '</span></td>';
+      }).join('') + '</tr>';
+    }).join('');
+
+    // Polarlicht
+    var peak = Math.max(now, maxNext), pos = peak <= 5 ? peak / 5 * 45 : 45 + (peak - 5) / 4 * 55;
+    $('aurMark').style.left = pos.toFixed(1) + '%';
+    $('aurText').textContent = peak >= 8 ? 'Gute Chancen!' : peak >= 7 ? 'Möglich – Kamera bereithalten' : peak >= 6 ? 'Nur mit Glück am Nordhorizont' : 'Heute keine Chance';
+    $('aurNote').textContent = 'Erwartetes Maximum in den nächsten 24 Stunden: Kp ' + de(peak, 1) + '. In Bad König braucht es etwa Kp 7, damit Polarlichter sichtbar werden. Am besten mit freiem Blick nach Norden, weg von Straßenlaternen, z. B. auf den Höhen rund um den Ort.';
+
+    // Kp-Balkendiagramm
+    var W = 760, H = 230, L = 26, B = 28, T = 10, n = all.length || 1, bw = (W - L - 6) / n;
+    var y = function (k) { return T + (H - T - B) * (1 - k / 9); };
+    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Kp-Index als Balkendiagramm">';
+    [0, 3, 5, 7, 9].forEach(function (k) { s += '<line class="grid" x1="' + L + '" x2="' + W + '" y1="' + y(k) + '" y2="' + y(k) + '"' + (k === 5 ? ' stroke-dasharray="4 4" stroke="#E57A1F"' : '') + '/><text class="ax" x="' + (L - 6) + '" y="' + (y(k) + 4) + '" text-anchor="end">' + k + '</text>'; });
+    all.forEach(function (o, i) {
+      var x = L + i * bw + 1.5, h = Math.max(2, y(0) - y(o.kp)), c = kpColor(o.kp);
+      s += o.fc ? '<rect x="' + x.toFixed(1) + '" y="' + y(o.kp).toFixed(1) + '" width="' + (bw - 3).toFixed(1) + '" height="' + h.toFixed(1) + '" rx="2" fill="' + c + '" fill-opacity=".28" stroke="' + c + '" stroke-dasharray="3 2"/>'
+                : '<rect x="' + x.toFixed(1) + '" y="' + y(o.kp).toFixed(1) + '" width="' + (bw - 3).toFixed(1) + '" height="' + h.toFixed(1) + '" rx="2" fill="' + c + '"><title>' + o.time.toLocaleString('de-DE', { weekday: 'short', hour: '2-digit', minute: '2-digit' }) + ': Kp ' + de(o.kp, 1) + '</title></rect>';
+      if (o.time.getHours() < 3 && i > 0) {
+        s += '<line class="grid" x1="' + (x - 1.5) + '" x2="' + (x - 1.5) + '" y1="' + T + '" y2="' + y(0) + '"/><text class="ax" x="' + (x + 2) + '" y="' + (H - 8) + '">' + o.time.toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit' }) + '</text>';
+      }
+    });
+    if (d.fc.length) { var xn = L + d.kp.length * bw; s += '<line x1="' + xn + '" x2="' + xn + '" y1="' + T + '" y2="' + y(0) + '" stroke="#12252E" stroke-width="1.5"/><text class="ax" x="' + (xn + 4) + '" y="' + (T + 10) + '" style="fill:#12252E;font-weight:600">jetzt</text>'; }
+    $('kpPlot').innerHTML = s + '</svg>';
+
+    var pill = $('swPill'); pill.className = 'pill ' + (d.live ? 'live' : 'demo'); pill.textContent = d.live ? 'Live' : 'Beispieldaten';
+  }
+
+  // Sonnenbild (NASA SDO). In der Vorschau werden fremde Bilder blockiert → gezeichnete Ersatzsonne
+  var FALLBACK = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><defs><radialGradient id="g" cx="50%" cy="50%"><stop offset=".6" stop-color="#F6B13A"/><stop offset=".92" stop-color="#C9520C"/><stop offset="1" stop-color="#000"/></radialGradient></defs><rect width="200" height="200" fill="#000"/><circle cx="100" cy="100" r="92" fill="url(#g)"/><circle cx="72" cy="84" r="6" fill="#5A1E02" opacity=".7"/><circle cx="126" cy="118" r="4" fill="#5A1E02" opacity=".7"/><text x="100" y="150" font-family="sans-serif" font-size="8" fill="#5A1E02" text-anchor="middle">Platzhalter – live auf der Website</text></svg>');
+  function setSun(code) {
+    var img = $('sunImg');
+    img.onerror = function () { img.onerror = null; img.src = FALLBACK; };
+    img.src = 'https://sdo.gsfc.nasa.gov/assets/img/latest/latest_512_' + code + '.jpg';
+  }
+  $('sunBtns').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    [].forEach.call(this.querySelectorAll('button'), function (x) { x.setAttribute('aria-pressed', x === b); });
+    setSun(b.getAttribute('data-img'));
+  });
+
+  function tick() { load().then(render).catch(function () { render(sample()); }); }
+  var timer = null;
+  window.solarStart = function () { if (!$('sunImg').getAttribute('src')) setSun('0193'); tick(); if (!timer) timer = setInterval(function () { if (!$('panel-solar').hidden) tick(); }, 60000); };
+  if (!$('panel-solar').hidden) window.solarStart();
+})();
 </script>
 </body>
 </html>
