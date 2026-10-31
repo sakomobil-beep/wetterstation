@@ -2877,7 +2877,7 @@ function tipText(kind, i) {
     return '<b>' + name + '</b><br>Mittel ' + nf(a.mean, 1) + ' °C<br>Höchst ' + nf(a.hi, 1) + ' °C am ' + dd(a.hiR.d) + '<br>Tiefst ' + nf(a.lo, 1) + ' °C am ' + dd(a.loR.d);
   }
   return '<b>' + name + '</b><br>' + (a.rainSum === null ? 'keine Regendaten' : nf(a.rainSum, 1) + ' l/m² an ' + a.rainDays + ' Regentagen' +
-    (a.rainMaxR ? '<br>Meister Regen: ' + nf(a.rainMax, 1) + ' l/m² am ' + dd(a.rainMaxR.d) : ''));
+    (a.rainMaxR ? '<br>Größte Tagesmenge: ' + nf(a.rainMax, 1) + ' l/m² am ' + dd(a.rainMaxR.d) : ''));
 }
 function chartHover(e) {
   var box = e.target.closest ? e.target.closest('.mchart') : null;
@@ -2955,18 +2955,22 @@ function streak(rows, pred) {
 }
 function renderExtremeView(rows) {
   var ya = aggregate(rows);
+  // Für Rekorde, die einen vollständigen Tag brauchen (Tagesmittel, kältester Höchstwert, Schwankung),
+  // den laufenden Tag und den ersten Messtag (Station ab Mittag) nicht werten
+  var t0 = todayStr(), firstDay = rows.length ? rows[0].d : null, firstEver = firstYear && ST.year === firstYear() ? firstDay : null;
+  var full = rows.filter(function (r) { return r.d !== t0 && r.d !== firstEver; });
   function recRow(label, x, dec, unit) {
     return '<tr><th scope="row">' + label + '</th><td class="num">' + (x ? nf(x.v, dec) + ' ' + unit : '–') + '</td><td>' + (x ? fullDay(x.r.d) : '') + '</td></tr>';
   }
   var recs = [
     recRow('Höchste Temperatur', extreme(rows, function (r) { return r.hi; }, true), 1, '°C'),
     recRow('Tiefste Temperatur', extreme(rows, function (r) { return r.lo; }, false), 1, '°C'),
-    recRow('Wärmster Tag (Tagesmittel)', extreme(rows, dayMean, true), 1, '°C'),
-    recRow('Kältester Tag (Tagesmittel)', extreme(rows, dayMean, false), 1, '°C'),
+    recRow('Wärmster Tag (Tagesmittel)', extreme(full, dayMean, true), 1, '°C'),
+    recRow('Kältester Tag (Tagesmittel)', extreme(full, dayMean, false), 1, '°C'),
     recRow('Wärmste Nacht (höchster Tiefstwert)', extreme(rows, function (r) { return r.lo; }, true), 1, '°C'),
-    recRow('Kältester Höchstwert', extreme(rows, function (r) { return r.hi; }, false), 1, '°C'),
-    recRow('Größte Tagesschwankung', extreme(rows, function (r) { return r.hi != null && r.lo != null ? r.hi - r.lo : null; }, true), 1, 'K'),
-    recRow('Meister Regen an einem Tag', extreme(rows, function (r) { return r.rain; }, true), 1, 'l/m²'),
+    recRow('Kältester Höchstwert', extreme(full, function (r) { return r.hi; }, false), 1, '°C'),
+    recRow('Größte Tagesschwankung', extreme(full, function (r) { return r.hi != null && r.lo != null ? r.hi - r.lo : null; }, true), 1, 'K'),
+    recRow('Größte Regenmenge an einem Tag', extreme(rows, function (r) { return r.rain; }, true), 1, 'l/m²'),
     recRow('Stärkste Böe', extreme(rows, function (r) { return r.gust; }, true), 0, 'km/h'),
     recRow('Höchster Luftdruck', extreme(rows, function (r) { return r.pmax; }, true), 1, 'hPa'),
     recRow('Tiefster Luftdruck', extreme(rows, function (r) { return r.pmin; }, false), 1, 'hPa')
@@ -2991,7 +2995,7 @@ function renderExtremeView(rows) {
     '<h3 class="st-h">Rekorde ' + ST.year + '</h3><div class="tablewrap"><table class="st-table st-rec"><tbody>' + recs + '</tbody></table></div>' +
     '<h3 class="st-h">Kenntage ' + ST.year + '</h3><div class="kt-grid">' + tiles + '</div>' +
     '<h3 class="st-h">Serien</h3><div class="tablewrap"><table class="st-table st-rec"><tbody>' + streaks + '</tbody></table></div>' +
-    '<h3 class="st-h">Extremwerte je Monat</h3><div class="tablewrap"><table class="st-table"><thead><tr><th scope="col">Monat</th><th scope="col">Höchstwert</th><th scope="col">Tiefstwert</th><th scope="col">Meister Regen</th><th scope="col">Stärkste Böe</th></tr></thead><tbody>' + mt + '</tbody></table></div>';
+    '<h3 class="st-h">Extremwerte je Monat</h3><div class="tablewrap"><table class="st-table"><thead><tr><th scope="col">Monat</th><th scope="col">Höchstwert</th><th scope="col">Tiefstwert</th><th scope="col">Größte Regenmenge</th><th scope="col">Stärkste Böe</th></tr></thead><tbody>' + mt + '</tbody></table></div>';
 }
 
 /* CSV-Export */
@@ -3249,7 +3253,7 @@ function renderKlima() {
     rr2('Tiefste Temperatur', extreme(all, function (r) { return r.lo; }, false), 1, '°C') +
     rr2('Wärmste Nacht', extreme(all, function (r) { return r.lo; }, true), 1, '°C') +
     rr2('Kältester Tag (Tagesmittel)', extreme(all, dayMean, false), 1, '°C');
-  var recR = rr2('Meister Tagesniederschlag', extreme(all, function (r) { return r.rain; }, true), 1, 'l/m²') +
+  var recR = rr2('Größte Tagesregenmenge', extreme(all, function (r) { return r.rain; }, true), 1, 'l/m²') +
     rr2('Stärkste Böe', extreme(all, function (r) { return r.gust; }, true), 0, 'km/h') +
     rr2('Nassester Monat', mExt(function (a) { return a.rainSum; }, true), 1, 'l/m²', lblFmt) +
     rr2('Trockenster Monat', mExt(function (a) { return a.rainSum; }, false), 1, 'l/m²', lblFmt);
@@ -3273,7 +3277,7 @@ function renderKlima() {
     '<div><h4>Monate und Luftdruck</h4><div class="tablewrap"><table class="st-table st-rec"><tbody>' + recM + '</tbody></table></div></div>' +
     '<div><h4>Hitze und Frost</h4><div class="tablewrap"><table class="st-table st-rec"><tbody>' + recH + '</tbody></table></div></div>' +
     '</div>' +
-    '<h4 class="st-h" style="font-size:14px">Rekorde je Kalendermonat</h4><div class="tablewrap"><table class="st-table"><thead><tr><th scope="col">Monat</th><th scope="col">Höchste Temperatur</th><th scope="col">Tiefste Temperatur</th><th scope="col">Meister Tagesniederschlag</th></tr></thead><tbody>' + calRows + '</tbody></table></div>' +
+    '<h4 class="st-h" style="font-size:14px">Rekorde je Kalendermonat</h4><div class="tablewrap"><table class="st-table"><thead><tr><th scope="col">Monat</th><th scope="col">Höchste Temperatur</th><th scope="col">Tiefste Temperatur</th><th scope="col">Größte Tagesregenmenge</th></tr></thead><tbody>' + calRows + '</tbody></table></div>' +
     '<p class="note">Nassester, trockenster, wärmster und kältester Monat berücksichtigen nur abgeschlossene Monate mit nahezu vollständigen Daten.</p>';
 
   /* 5. Daten herunterladen */
