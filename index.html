@@ -618,6 +618,11 @@ button { font: inherit; color: inherit; }
 #panel-solar .sw-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 20px; }
 #panel-solar h2 { margin: 2px 0 0; }
 #panel-solar .chart p { margin: 0; }
+.sw-hist { overflow-x: auto; }
+.sw-hist td:first-child { width: 150px; vertical-align: top; }
+.sw-hist td { vertical-align: top; line-height: 1.45; }
+.sw-hist tr.now td { background: #FFF6E0; }
+@media (max-width: 560px) { .sw-hist thead { display: none; } .sw-hist tr, .sw-hist td { display: block; width: auto !important; } .sw-hist td:first-child { border-bottom: 0; padding-bottom: 2px; } }
 </style>
 
 </head>
@@ -1107,6 +1112,32 @@ button { font: inherit; color: inherit; }
         </div>
       </section>
     </div>
+
+    <section class="chart" aria-label="Historische Sonnenstürme">
+      <div><div class="label">Rückblick</div><h2>Große Sonnenstürme der Vergangenheit</h2></div>
+      <p class="sw-muted" style="font-size:14.5px">Die Sonne hat schon oft Teilchenwolken genau in Richtung Erde geschleudert. Diese Ereignisse zeigen, was dabei passieren kann, von Polarlichtern bis in die Tropen bis zu Stromausfällen.</p>
+      <div class="sw-hist">
+        <table>
+          <thead><tr><th>Wann</th><th>Was passiert ist</th></tr></thead>
+          <tbody>
+            <tr><td><b>1.–2. Sept. 1859</b><br><span class="sw-muted">Carrington-Ereignis</span></td><td>Der stärkste bekannte Sonnensturm. Der Astronom Richard Carrington sah am 1. September als Erster einen Flare mit bloßem Auge durchs Teleskop. Nur rund 17,5 Stunden später traf die Wolke die Erde. Polarlichter leuchteten bis in die Karibik, in den USA war es nachts so hell, dass man Zeitung lesen konnte. Telegrafenleitungen sprühten Funken, manche Telegrafisten bekamen Stromschläge, einige Leitungen funktionierten sogar ohne Batterie weiter.</td></tr>
+            <tr><td><b>13.–15. Mai 1921</b><br><span class="sw-muted">„Eisenbahn-Sturm“</span></td><td>Einer der stärksten Stürme des 20. Jahrhunderts. In New York brannte ein Stellwerk der Eisenbahn ab, Telefon- und Telegrafennetze fielen in Europa und Nordamerika aus. Polarlichter waren bis weit in den Süden zu sehen.</td></tr>
+            <tr><td><b>4. Aug. 1972</b></td><td>Ein extrem schneller Ausbruch erreichte die Erde in nur etwa 15 Stunden. Vor Vietnam explodierten dadurch Seeminen der US-Marine, die auf Magnetfelder reagierten. Zum Glück lag der Sturm zwischen zwei Apollo-Mondflügen, die Strahlung hätte Astronauten gefährden können.</td></tr>
+            <tr><td><b>13. März 1989</b><br><span class="sw-muted">Québec-Blackout</span></td><td>Das Stromnetz der kanadischen Provinz Québec brach in nur 90 Sekunden zusammen, rund sechs Millionen Menschen waren etwa neun Stunden ohne Strom. In den USA wurde ein großer Transformator zerstört. Polarlichter gab es bis Texas und auch in Deutschland.</td></tr>
+            <tr><td><b>Ende Okt. 2003</b><br><span class="sw-muted">Halloween-Stürme</span></td><td>Eine Serie heftiger Ausbrüche, darunter einer der stärksten je gemessenen Flares. In Schweden fiel in Malmö kurz der Strom aus, Satelliten wurden beschädigt, Flugzeuge mussten Polarrouten meiden. Polarlichter waren in ganz Deutschland zu sehen.</td></tr>
+            <tr><td><b>23. Juli 2012</b><br><span class="sw-muted">knapp verfehlt</span></td><td>Ein Ausbruch in Carrington-Stärke raste durch die Erdbahn, nur rund eine Woche, nachdem die Erde dort vorbeigekommen war. Die NASA-Sonde STEREO-A hat ihn gemessen. Hätte er uns getroffen, wären laut Forschern weltweite Schäden an Stromnetzen möglich gewesen.</td></tr>
+            <tr><td><b>10.–11. Mai 2024</b><br><span class="sw-muted">„Gannon-Sturm“</span></td><td>Der erste Sturm der höchsten Stufe G5 seit 2003. Polarlichter in Grün, Rot und Pink waren in ganz Deutschland zu sehen. GPS-gesteuerte Traktoren in den USA wurden ungenau, sonst blieben die Schäden gering.</td></tr>
+            <tr><td><b>10. Okt. 2024</b></td><td>Erneut ein starker Sturm (G4) mit Polarlichtern über ganz Deutschland, kurz nach einem der stärksten Flares des aktuellen Sonnenzyklus.</td></tr>
+            <tr class="now"><td><b>19.–20. Jan. 2026</b></td><td>Der stärkste Sonnensturm seit mehr als 20 Jahren, ein schwerer geomagnetischer Sturm (G4, Kp bis 8–9). In der Nacht waren rote und grüne Polarlichter in ganz Deutschland bis zu den Alpen zu sehen.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="sw-two" style="margin-top:4px">
+        <div><h4 style="margin:0 0 4px">Was ein neuer Carrington-Sturm heute bedeuten würde</h4><p class="sw-muted" style="font-size:14px">Damals gab es nur Telegrafen. Heute wären Stromnetze, Satelliten, GPS, Funk und Flugverkehr betroffen. Schätzungen gehen von Schäden in Billionenhöhe aus. Die Wahrscheinlichkeit für so einen Sturm wird auf einige Prozent pro Jahrzehnt geschätzt. Deshalb beobachten NOAA und ESA die Sonne rund um die Uhr; die Werte oben auf dieser Seite kommen von genau diesen Messungen.</p></div>
+        <div><h4 style="margin:0 0 4px">Warum es seit 2024 so oft Polarlichter gibt</h4><p class="sw-muted" style="font-size:14px">Die Sonne folgt einem Zyklus von etwa elf Jahren. Der aktuelle Zyklus 25 erreichte sein Maximum um 2024/25 und war stärker als erwartet. Auch in den Jahren nach dem Maximum gibt es oft noch kräftige Ausbrüche, deshalb lohnt sich der Blick auf den Kp-Index weiterhin.</p></div>
+      </div>
+      <p class="sw-muted" style="font-size:12.5px">Quellen: <a href="https://de.wikipedia.org/wiki/Carrington-Ereignis" target="_blank" rel="noopener">Wikipedia: Carrington-Ereignis</a>, <a href="https://de.wikipedia.org/wiki/Geomagnetischer_Sturm_im_M%C3%A4rz_1989" target="_blank" rel="noopener">Wikipedia: Sturm im März 1989</a>, <a href="https://www.mpg.de/21927472/polarlichter-in-sueddeutschland" target="_blank" rel="noopener">Max-Planck-Gesellschaft</a>, <a href="https://www.spektrum.de/news/polarlichter-der-staerkste-sonnensturm-seit-2003/2305798" target="_blank" rel="noopener">Spektrum: stärkster Sonnensturm seit 2003</a>, <a href="https://www.swpc.noaa.gov/" target="_blank" rel="noopener">NOAA SWPC</a>.</p>
+    </section>
 
     <p class="src">Quellen: <a href="https://www.swpc.noaa.gov/" target="_blank" rel="noopener">NOAA Space Weather Prediction Center</a> (Sonnenwind von DSCOVR/ACE, Kp-Index, Röntgenfluss von GOES, Wahrscheinlichkeiten) und <a href="https://sdo.gsfc.nasa.gov/" target="_blank" rel="noopener">NASA SDO</a> (Sonnenbilder). Aktualisierung jede Minute.</p>
   </div>
