@@ -169,6 +169,11 @@ button { font: inherit; color: inherit; }
 .vj-grid dd { margin: 0; font: 500 15px/1.4 var(--font-data); font-variant-numeric: tabular-nums; text-align: right; }
 .vj-grid dd small { display: inline-block; margin-left: 8px; font-size: 12px; font-weight: 500; }
 .vj-grid .up { color: var(--warm); } .vj-grid .down { color: var(--accent); } .vj-grid .eq { color: var(--muted); }
+.vj-grid dd { display: flex; align-items: baseline; justify-content: flex-end; flex-wrap: wrap; gap: 2px 12px; }
+.vj-grid dd i { font-style: normal; font: 400 11px var(--font-data); color: var(--muted); }
+.vj-grid dd b { font-weight: 500; }
+.vj-grid .vj-now b { color: var(--warm); }
+.vj-grid dd small { margin-left: 0; min-width: 7.5em; text-align: right; }
 @media (max-width: 620px) { .vj { padding: 14px 18px; } .vj-grid { grid-template-columns: 1fr; } }
 
 /* Hero */
@@ -642,10 +647,10 @@ button { font: inherit; color: inherit; }
   <section class="vj" id="vj" aria-label="Heute vor einem Jahr" hidden>
     <div class="vj-head"><span class="label" id="vjTitle">Heute vor 1 Jahr</span><span class="vj-src" id="vjSrc"></span></div>
     <dl class="vj-grid">
-      <div><dt>Höchstwert</dt><dd><span id="vjHi">–</span><small id="vjHiD"></small></dd></div>
-      <div><dt>Tiefstwert</dt><dd><span id="vjLo">–</span><small id="vjLoD"></small></dd></div>
-      <div><dt>Stärkste Böe</dt><dd><span id="vjGu">–</span><small id="vjGuD"></small></dd></div>
-      <div><dt>Niederschlag</dt><dd><span id="vjRa">–</span><small id="vjRaD"></small></dd></div>
+      <div><dt>Höchstwert</dt><dd><span class="vj-now"><i>heute</i> <b id="vjNHi">–</b></span><span class="vj-was"><i>vor 1 Jahr</i> <b id="vjHi">–</b></span><small id="vjHiD"></small></dd></div>
+      <div><dt>Tiefstwert</dt><dd><span class="vj-now"><i>heute</i> <b id="vjNLo">–</b></span><span class="vj-was"><i>vor 1 Jahr</i> <b id="vjLo">–</b></span><small id="vjLoD"></small></dd></div>
+      <div><dt>Stärkste Böe</dt><dd><span class="vj-now"><i>heute</i> <b id="vjNGu">–</b></span><span class="vj-was"><i>vor 1 Jahr</i> <b id="vjGu">–</b></span><small id="vjGuD"></small></dd></div>
+      <div><dt>Niederschlag</dt><dd><span class="vj-now"><i>heute</i> <b id="vjNRa">–</b></span><span class="vj-was"><i>vor 1 Jahr</i> <b id="vjRa">–</b></span><small id="vjRaD"></small></dd></div>
     </dl>
   </section>
 
@@ -2353,6 +2358,10 @@ function vjRender() {
   $('vjGu').textContent = r.gust != null ? nf(r.gust, 0) + ' km/h' : '–';
   $('vjRa').textContent = r.rain != null ? nf(r.rain, 1) + ' mm' : '–';
   var t = VJ.today || {};
+  $('vjNHi').textContent = t.hi != null ? nf(t.hi, 1) + ' °C' : '–';
+  $('vjNLo').textContent = t.lo != null ? nf(t.lo, 1) + ' °C' : '–';
+  $('vjNGu').textContent = t.gust != null ? nf(t.gust, 0) + ' km/h' : '–';
+  $('vjNRa').textContent = t.rain != null ? nf(t.rain, 1) + ' mm' : '–';
   /* Unterschied: Wert damals im Vergleich zu heute */
   vjDiff($('vjHiD'), t.hi, r.hi, 1, '°', TW);
   vjDiff($('vjLoD'), t.lo, r.lo, 1, '°', TW);
