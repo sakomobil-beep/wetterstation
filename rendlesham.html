@@ -1,0 +1,814 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rendlesham Forest 1980 – UAP Observatory</title>
+<meta name="description" content="UAP Observatory: Der Rendlesham-Forest-Zwischenfall 1980 – Lagekarte, Chronik beider Nächte, Halt-Tonband, Halt-Memo, alle Zeugen, Strahlung, Leuchtturm-Test und Skeptiker.">
+<meta name="theme-color" content="#0B0F24">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+:root {
+  --bg: #070A1A; --bg2: #0D1330; --card: #11183A; --line: #24305E;
+  --ink: #E8ECFF; --muted: #9AA6D4; --cyan: #4FE3F0; --violet: #A77BFF; --green: #6CF2A4; --amber: #FFC66B; --red: #FF6B7A;
+  --font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; color: var(--ink); font: 16px/1.6 var(--font);
+  background: radial-gradient(1200px 600px at 80% -10%, rgba(167,123,255,.18), transparent 60%),
+              radial-gradient(900px 500px at 0% 20%, rgba(79,227,240,.10), transparent 60%), var(--bg);
+  padding: 0 max(16px, env(safe-area-inset-right)) 56px max(16px, env(safe-area-inset-left)); }
+a { color: var(--cyan); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--violet); outline-offset: 2px; border-radius: 4px; }
+.wrap { max-width: 1100px; margin: 0 auto; display: grid; gap: 20px; }
+
+/* Kopfleiste mit eigener Navigation */
+.bar { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 20px;
+  padding: 12px 0; background: linear-gradient(180deg, rgba(7,10,26,.96), rgba(7,10,26,.85)); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); font-weight: 650; letter-spacing: .06em; font-size: 13px; text-transform: uppercase; }
+.brand .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 12px var(--cyan); }
+.subnav { display: flex; flex-wrap: wrap; gap: 4px 18px; }
+.subnav a, .subnav span { font-size: 14px; text-decoration: none; color: var(--muted); padding: 6px 0; border-bottom: 2px solid transparent; }
+.subnav a:hover { color: var(--ink); }
+.subnav a[aria-current="page"] { color: var(--cyan); border-bottom-color: var(--cyan); }
+.subnav span.soon { opacity: .55; cursor: default; }
+.subnav span.soon small { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; margin-left: 4px; color: var(--violet); }
+.subnav a.back { color: var(--amber); }
+
+/* Titelbild */
+.title { position: relative; border-radius: 20px; overflow: hidden; border: 1px solid var(--line); margin-top: 16px; }
+.title img { display: block; width: 100%; height: auto; }
+
+/* Aufmacher */
+.hero { border-radius: 20px; padding: clamp(22px, 4vw, 40px); background: linear-gradient(160deg, #161E4C, #0A0E25 70%); border: 1px solid var(--line); display: grid; gap: 18px; position: relative; overflow: hidden; }
+.hero::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: linear-gradient(90deg, var(--cyan), var(--violet), var(--green)); }
+.kicker { font-size: 12.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--violet); font-weight: 600; }
+.hero h1 { margin: 4px 0 0; font-size: clamp(2rem, 6vw, 3.4rem); line-height: 1.04; letter-spacing: -.02em; }
+.hero p.lead { margin: 0; max-width: 66ch; color: #C9D1F5; font-size: clamp(16px, 2vw, 18px); }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.stat { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: 14px; padding: 14px 16px; display: grid; gap: 4px; align-content: start; }
+.stat .v { font-size: clamp(1.5rem, 3.4vw, 2.1rem); font-weight: 700; color: var(--cyan); line-height: 1.05; font-variant-numeric: tabular-nums; }
+.stat .k { font-size: 13.5px; color: #C9D1F5; line-height: 1.4; }
+@media (max-width: 820px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.toc { display: flex; flex-wrap: wrap; gap: 8px; }
+.toc a { text-decoration: none; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-size: 14px; }
+.toc a:hover { border-color: var(--cyan); color: var(--cyan); }
+
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: clamp(20px, 3.4vw, 32px); display: grid; gap: 16px; min-width: 0; scroll-margin-top: 80px; }
+.card h2 { margin: 0; font-size: clamp(1.4rem, 3vw, 1.85rem); line-height: 1.2; }
+.card h3 { margin: 6px 0 0; font-size: 1.08rem; }
+.card p { margin: 0; max-width: 72ch; }
+.card ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 74ch; }
+.label { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.src { font-size: 13px; color: var(--muted); }
+.src a { color: inherit; }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 18px 28px; align-items: start; }
+
+/* Karte */
+.mapwrap { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 860px) { .mapwrap { grid-template-columns: minmax(0, 1fr); } }
+.map { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: #0A1030; }
+.map svg { display: block; width: 100%; height: auto; }
+.hs { cursor: pointer; }
+.hs circle.ring { fill: none; stroke-width: 2; animation: pulse 2.4s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes pulse { 0% { transform: scale(.6); opacity: 1; } 100% { transform: scale(2.2); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .hs circle.ring { animation: none; } }
+.hs:hover circle.core, .hs.active circle.core { stroke: #fff; stroke-width: 3; }
+.spot { border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 8px; background: var(--bg2); min-height: 220px; align-content: start; }
+.spot .tag { justify-self: start; font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; border-radius: 999px; padding: 2px 10px; font-weight: 600; }
+.spot h3 { margin: 0; }
+.spot p { font-size: 14.5px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.spotlist { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 10px; }
+.spotlist button { text-align: left; font: inherit; color: var(--ink); background: var(--bg2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; cursor: pointer; display: grid; gap: 2px; }
+.spotlist button:hover, .spotlist button[aria-pressed="true"] { border-color: var(--cyan); }
+.spotlist button b { font-size: 14.5px; }
+.spotlist button span { font-size: 12.5px; color: var(--muted); }
+
+/* Zeitleiste */
+.timeline { list-style: none; margin: 0; padding: 0; display: grid; max-width: none !important; }
+.timeline li { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 16px; padding: 12px 0; border-top: 1px solid var(--line); }
+.timeline li:first-child { border-top: 0; }
+.timeline time { font-weight: 700; color: var(--cyan); font-variant-numeric: tabular-nums; }
+.timeline li.hl time { color: var(--amber); }
+@media (max-width: 520px) { .timeline li { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+
+/* Besitzer-Grafik */
+.owners svg { width: 100%; height: auto; display: block; }
+
+/* Kacheln */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 12px; }
+.tile { border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 6px; align-content: start; background: var(--bg2); }
+.tile .ico { font-size: 22px; }
+.tile b { font-size: 16px; }
+.tile p { font-size: 14.5px; color: #C9D1F5; }
+
+/* Tabelle */
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; }
+table { border-collapse: collapse; width: 100%; min-width: 680px; font-size: 14.5px; }
+th, td { text-align: left; padding: 11px 14px; border-top: 1px solid var(--line); vertical-align: top; }
+thead th { border-top: 0; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--bg2); }
+
+.callout { border-radius: 14px; background: rgba(167,123,255,.12); border: 1px solid rgba(167,123,255,.35); padding: 16px 18px; display: grid; gap: 6px; }
+.callout p { font-size: 14.5px; }
+.quote { margin: 0; border-left: 3px solid var(--violet); padding: 2px 0 2px 14px; color: #C9D1F5; max-width: 70ch; }
+
+.links { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 10px 28px; }
+.links h3 { margin: 0 0 6px; font-size: 1rem; }
+.links ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.links li { font-size: 14.5px; line-height: 1.4; }
+.links li span { display: block; font-size: 12.5px; color: var(--muted); }
+.foot { font-size: 13px; color: var(--muted); text-align: center; margin: 8px 0 0; }
+.hotline { justify-self: start; display: inline-flex; align-items: center; gap: 14px; text-decoration: none; color: var(--ink); background: rgba(108,242,164,.1); border: 1px solid rgba(108,242,164,.5); border-radius: 999px; padding: 10px 22px 10px 14px; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.hotline small { display: block; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--green); font-weight: 600; }
+.hotline:hover { background: rgba(108,242,164,.2); }
+.pulse { width: 14px; height: 14px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 0 rgba(108,242,164,.7); animation: hl 1.8s infinite; }
+@keyframes hl { 70% { box-shadow: 0 0 0 14px rgba(108,242,164,0); } 100% { box-shadow: 0 0 0 0 rgba(108,242,164,0); } }
+/* Quiz */
+.quiz { border: 1px solid var(--line); border-radius: 14px; background: var(--bg2); padding: 20px; display: grid; gap: 14px; min-height: 200px; }
+.quiz .q { font-size: 1.15rem; font-weight: 650; }
+.quiz .step { font-size: 12px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+.quiz .opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px; }
+.quiz button, .actions button, .btn { font: inherit; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; cursor: pointer; text-align: left; text-decoration: none; }
+.quiz button:hover, .actions button:hover, .btn:hover { border-color: var(--cyan); color: var(--cyan); }
+.quiz .res { display: grid; gap: 8px; animation: pop .4s ease; }
+.quiz .res .big { font-size: 1.6rem; font-weight: 750; color: var(--cyan); }
+.quiz .res .prob { font-size: 13px; color: var(--green); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+@keyframes pop { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.quiz .restart { justify-self: start; }
+/* Jahre */
+.years { margin-bottom: 40px; display: flex; align-items: flex-end; gap: clamp(16px, 5vw, 48px); height: 240px; padding: 10px 6px 0; border-bottom: 2px solid var(--line); max-width: 560px; }
+.yr { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: stretch; gap: 6px; }
+.yr > span { text-align: center; color: var(--muted); font-weight: 600; margin-bottom: -30px; }
+.col { height: 0; background: linear-gradient(180deg, var(--cyan), rgba(79,227,240,.25)); border-radius: 10px 10px 0 0; display: flex; justify-content: center; transition: height 1.4s cubic-bezier(.2,.8,.2,1); position: relative; }
+.col.hot { background: linear-gradient(180deg, var(--violet), rgba(167,123,255,.3)); }
+.col b { position: absolute; top: -26px; font-variant-numeric: tabular-nums; }
+.seen .col { height: var(--h); }
+#zahlen h3 { margin-top: 26px; }
+.hbars { display: grid; gap: 10px; max-width: 640px; }
+.hb { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 12px; align-items: center; font-size: 14.5px; }
+.hb i { display: block; width: 0; font-style: normal; font-weight: 700; padding: 6px 10px; border-radius: 8px; background: linear-gradient(90deg, rgba(79,227,240,.2), rgba(79,227,240,.7)); transition: width 1.2s ease .2s; white-space: nowrap; }
+.seen .hb i { width: var(--w); }
+@media (max-width: 520px) { .hb { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+/* IFO-Karten mit Animation */
+.ifos { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 12px; }
+.ifo { border: 1px solid var(--line); border-radius: 14px; background: var(--bg2); padding: 0 0 14px; display: grid; gap: 6px; overflow: hidden; }
+.ifo b, .ifo p { padding: 0 14px; }
+.ifo p { font-size: 14px; color: #C9D1F5; margin: 0; }
+.anim { position: relative; height: 110px; background: radial-gradient(circle at 80% 20%, #1D2760, #070A1A 70%); overflow: hidden; }
+.anim::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(1px 1px at 20% 30%, #fff, transparent), radial-gradient(1px 1px at 70% 60%, #fff, transparent), radial-gradient(1px 1px at 40% 80%, #cfd6ff, transparent), radial-gradient(1px 1px at 85% 25%, #fff, transparent), radial-gradient(1px 1px at 10% 70%, #fff, transparent); opacity: .7; }
+.anim i { position: absolute; display: block; }
+.starlink i { width: 4px; height: 4px; border-radius: 50%; background: #fff; box-shadow: 0 0 6px #fff; left: -10%; top: 70%; animation: sl 7s linear infinite; }
+.starlink i:nth-child(2) { animation-delay: .35s } .starlink i:nth-child(3) { animation-delay: .7s } .starlink i:nth-child(4) { animation-delay: 1.05s } .starlink i:nth-child(5) { animation-delay: 1.4s } .starlink i:nth-child(6) { animation-delay: 1.75s } .starlink i:nth-child(7) { animation-delay: 2.1s } .starlink i:nth-child(8) { animation-delay: 2.45s }
+@keyframes sl { from { left: -5%; top: 75%; } to { left: 105%; top: 15%; } }
+.planet i { width: 10px; height: 10px; border-radius: 50%; left: 45%; top: 55%; background: #FFF6D8; box-shadow: 0 0 14px 4px #FFE9A8; animation: tw 1.4s ease-in-out infinite alternate; }
+@keyframes tw { 0% { box-shadow: 0 0 10px 3px #FFE9A8; } 33% { box-shadow: 0 0 16px 5px #A9D8FF; } 66% { box-shadow: 0 0 12px 4px #FFB0B9; } 100% { box-shadow: 0 0 18px 6px #FFE9A8; } }
+.lantern i { width: 8px; height: 8px; border-radius: 50%; background: #FFA640; box-shadow: 0 0 10px 3px #FF8A1E; animation: ln 8s ease-in infinite; bottom: -10px; }
+.lantern i:nth-child(1) { left: 30%; } .lantern i:nth-child(2) { left: 50%; animation-delay: 2.6s; } .lantern i:nth-child(3) { left: 66%; animation-delay: 5.2s; }
+@keyframes ln { 0% { bottom: -10px; opacity: 1; transform: translateX(0); } 80% { opacity: 1; } 100% { bottom: 110px; opacity: 0; transform: translateX(30px); } }
+.meteor i { width: 90px; height: 2px; background: linear-gradient(90deg, transparent, #B8FFD0, #fff); border-radius: 2px; transform: rotate(25deg); left: -30%; top: 0; animation: mt 3.2s ease-in infinite; opacity: 0; }
+@keyframes mt { 0% { left: -30%; top: -10%; opacity: 0; } 8% { opacity: 1; } 30% { left: 90%; top: 80%; opacity: 0; } 100% { opacity: 0; left: 90%; top: 80%; } }
+.drone i { width: 6px; height: 6px; border-radius: 50%; background: #FF4E5E; box-shadow: 14px 0 0 #6CF2A4; animation: dr 6s ease-in-out infinite, bl 1s steps(2) infinite; }
+@keyframes dr { 0% { left: 20%; top: 60%; } 25% { left: 45%; top: 30%; } 45% { left: 45%; top: 30%; } 70% { left: 70%; top: 55%; } 100% { left: 20%; top: 60%; } }
+@keyframes bl { 50% { opacity: .2; } }
+.plane i { width: 12px; height: 12px; border-radius: 50%; background: #fff; box-shadow: 0 0 22px 8px rgba(255,255,255,.8); left: 50%; top: 50%; animation: pl 5s ease-in-out infinite; }
+@keyframes pl { 0% { transform: scale(.3); opacity: .4; } 80% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(.3) translateX(80px); opacity: 0; } }
+.balloon i { width: 18px; height: 22px; border-radius: 50% 50% 45% 45%; background: radial-gradient(circle at 35% 30%, #fff, #CFE8FF 40%, #7FA9D8); left: 30%; top: 60%; animation: bn 9s ease-in-out infinite; }
+@keyframes bn { 0% { left: 25%; top: 70%; } 50% { left: 55%; top: 20%; } 100% { left: 25%; top: 70%; } }
+.laser i { width: 26px; height: 14px; border-radius: 50%; background: rgba(160,255,200,.7); filter: blur(3px); left: 40%; top: 40%; animation: lz 3s linear infinite; }
+.laser i:nth-child(2) { animation-delay: -1.5s; background: rgba(170,190,255,.7); }
+@keyframes lz { 0% { transform: rotate(0) translateX(40px) rotate(0); } 100% { transform: rotate(360deg) translateX(40px) rotate(-360deg); } }
+.rocket i { width: 40px; height: 40px; border: 3px solid rgba(160,220,255,.8); border-radius: 50%; border-top-color: transparent; left: 42%; top: 30%; animation: rk 2.6s linear infinite; box-shadow: 0 0 12px rgba(160,220,255,.6); }
+@keyframes rk { 0% { transform: rotate(0) scale(.4); opacity: 0; } 20% { opacity: 1; } 100% { transform: rotate(720deg) scale(1.6); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .anim i { animation: none !important; } .col, .hb i { transition: none; } }
+/* Ablauf */
+.flow { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr)); gap: 12px; max-width: none !important; counter-reset: s; }
+.flow li { border: 1px solid var(--line); border-radius: 14px; background: var(--bg2); padding: 14px; display: grid; gap: 8px; align-content: start; position: relative; }
+.flow .n { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: rgba(79,227,240,.15); color: var(--cyan); font-weight: 750; border: 1px solid rgba(79,227,240,.5); }
+.flow p { font-size: 14px; color: #C9D1F5; margin: 4px 0 0; }
+/* Fälle */
+.cases { display: grid; gap: 8px; }
+.cases details { border: 1px solid var(--line); border-radius: 12px; background: var(--bg2); padding: 0 16px; }
+.cases details[open] { border-color: rgba(167,123,255,.6); }
+.cases summary { cursor: pointer; padding: 14px 0; font-weight: 650; list-style: none; display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; }
+.cases summary::-webkit-details-marker { display: none; }
+.cases summary::after { content: "+"; margin-left: auto; color: var(--violet); font-size: 20px; }
+.cases details[open] summary::after { content: "–"; }
+.cases .cy { color: var(--amber); font-size: 13px; font-weight: 700; min-width: 120px; font-variant-numeric: tabular-nums; }
+.cases p { padding: 0 0 14px; font-size: 15px; color: #C9D1F5; }
+/* Formular */
+.report { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px; }
+.report label { display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
+.report .wide { grid-column: 1 / -1; }
+.report .chk { display: flex; align-items: center; gap: 8px; color: var(--ink); font-size: 14px; }
+.report input, .report select, .report textarea { font: inherit; font-size: 15px; color: var(--ink); background: var(--bg2); border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; color-scheme: dark; }
+.report input:focus, .report select:focus, .report textarea:focus { outline: 2px solid var(--cyan); border-color: transparent; }
+.out { margin: 0; white-space: pre-wrap; font: 14px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: #050817; border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; color: #BFF6FF; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn.alt { border-color: rgba(108,242,164,.6); color: var(--green); }
+.clock { display: grid; gap: 0; border-left: 2px solid var(--line); margin-left: 8px; }
+.tick { position: relative; padding: 8px 0 12px 22px; display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 12px; }
+.tick::before { content: ""; position: absolute; left: -7px; top: 13px; width: 12px; height: 12px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+.tick.hl::before { background: var(--amber); box-shadow: 0 0 10px var(--amber); }
+.tick time { font-weight: 700; color: var(--cyan); font-variant-numeric: tabular-nums; }
+.tick.hl time { color: var(--amber); }
+.tick p { margin: 0; }
+@media (max-width: 560px) { .tick { grid-template-columns: minmax(0, 1fr); gap: 0; } }
+.craft { margin: 0; display: grid; gap: 8px; }
+.craft svg, .path svg { width: 100%; height: auto; display: block; border: 1px solid var(--line); border-radius: 14px; }
+.path { overflow-x: auto; } .path svg { min-width: 760px; background: #0A1030; }
+.craft figcaption { font-size: 13.5px; color: var(--muted); }
+/* Player */
+.player { border: 1px solid var(--line); border-radius: 16px; background: linear-gradient(160deg, #0B1130, #070A1A); padding: 18px; display: grid; gap: 14px; }
+.tape { position: relative; height: 120px; max-width: 380px; border-radius: 12px; background: linear-gradient(180deg, #2B2F3E, #1A1D28); border: 2px solid #3B4156; display: flex; justify-content: space-between; align-items: center; padding: 0 46px; }
+.reel { width: 64px; height: 64px; border-radius: 50%; background: radial-gradient(circle, #111 18%, #6B5A3A 20%, #3A2F1E 62%, #1A1D28 64%); border: 2px solid #4A5068; position: relative; }
+.reel i { position: absolute; inset: 22px; border-radius: 50%; border: 3px dashed #9AA6D4; }
+.playing .reel i { animation: spin 2s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.tapelabel { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); font: 600 10px/1 ui-monospace, Menlo, monospace; color: #F3E6C8; letter-spacing: .08em; white-space: nowrap; }
+.pctl { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+.big { font: inherit; font-weight: 700; color: #04121A; background: var(--cyan); border: 0; border-radius: 999px; padding: 11px 20px; cursor: pointer; }
+.big:hover { filter: brightness(1.1); }
+.snd { display: flex; gap: 8px; align-items: center; font-size: 14px; color: var(--muted); }
+.geiger { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
+.needle { width: 140px; height: 10px; border-radius: 5px; background: linear-gradient(90deg, #6CF2A4, #FFC66B 60%, #FF6B7A); position: relative; }
+.needle i { position: absolute; top: -5px; left: 0; width: 3px; height: 20px; background: #fff; border-radius: 2px; transition: left .4s ease; box-shadow: 0 0 6px #fff; }
+.geiger b { color: var(--ink); min-width: 58px; font-variant-numeric: tabular-nums; }
+.log { list-style: none; margin: 0; padding: 12px 14px; max-height: 380px; overflow-y: auto; background: #03050F; border-radius: 12px; border: 1px solid var(--line); font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; display: grid; gap: 6px; max-width: none !important; min-height: 120px; }
+.log li { animation: pop .35s ease; }
+.log .t { color: var(--amber); margin-right: 8px; }
+.log .who { color: var(--cyan); margin-right: 6px; font-weight: 700; }
+.log .note { color: #6F7AA8; font-style: italic; }
+@keyframes pop { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.video { max-width: 720px; }
+.vframe { position: relative; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; background: #0B1130; border: 1px solid var(--line); }
+.vframe iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.vplay { position: absolute; inset: 0; width: 100%; border: 0; cursor: pointer; color: #fff; display: grid; place-content: center; justify-items: center; gap: 10px; padding: 16px; text-align: center; font: 600 15px/1.35 var(--font); background: radial-gradient(circle at 70% 30%, rgba(167,123,255,.35), transparent 55%), linear-gradient(160deg, #1A2350, #070A1A); }
+.vplay .pb { width: 64px; height: 64px; border-radius: 50%; background: rgba(255,255,255,.95); display: grid; place-items: center; }
+.vplay .pb svg { width: 26px; height: 26px; margin-left: 4px; fill: #0B1130; }
+.vplay small { color: var(--muted); font-size: 12px; font-weight: 400; max-width: 40ch; }
+/* Memo */
+.protocol { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+@media (max-width: 800px) { .protocol { grid-template-columns: minmax(0, 1fr); } }
+.paper { background: #F4F1E8; color: #1E1E1E; border-radius: 4px; padding: 22px; font: 14.5px/1.5 'Courier New', Courier, monospace; box-shadow: 0 12px 30px rgba(0,0,0,.45); transform: rotate(-.6deg); display: grid; gap: 8px; }
+.paper .ph { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid #999; padding-bottom: 6px; }
+.paper .pt { font-weight: 700; text-transform: uppercase; }
+.paper p { margin: 0; }
+.paper .sig { margin-top: 8px; font-weight: 700; }
+.paper .pn { font-size: 11px; color: #666; font-style: italic; }
+ul.facts { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; max-width: none; }
+ul.facts li { border-left: 3px solid var(--violet); padding: 2px 0 2px 12px; font-size: 15px; }
+/* Zeugen */
+.ranks { display: grid; gap: 14px; }
+.rank { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px; border-left: 4px solid var(--line); padding-left: 14px; position: relative; padding-top: 22px; }
+.rank .rl { position: absolute; top: 0; left: 14px; font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; }
+.r1 { border-color: var(--amber); } .r1 .rl { color: var(--amber); }
+.r2 { border-color: var(--violet); } .r2 .rl { color: var(--violet); }
+.r3 { border-color: var(--cyan); } .r3 .rl { color: var(--cyan); }
+.r4 { border-color: var(--green); } .r4 .rl { color: var(--green); }
+.w { border: 1px solid var(--line); border-radius: 12px; background: var(--bg2); padding: 12px 14px; display: grid; gap: 3px; align-content: start; }
+.w.hl { border-color: rgba(79,227,240,.55); box-shadow: 0 0 0 1px rgba(79,227,240,.15) inset; }
+.w b { font-size: 15px; } .w span { font-size: 12.5px; color: var(--muted); } .w p { font-size: 13.5px; color: #C9D1F5; margin: 4px 0 0; }
+.sketch { display: grid; gap: 12px; align-content: start; }
+.sketch svg, .rad svg { width: 100%; height: auto; display: block; border: 1px solid var(--line); border-radius: 14px; }
+/* Leuchtturm */
+.lhsim { display: grid; gap: 12px; }
+.lhsim svg { width: 100%; height: auto; display: block; border-radius: 14px; border: 1px solid var(--line); }
+.lhctl { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.lhctl #lhHit { font: inherit; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 10px 20px; cursor: pointer; }
+.lhctl span { font-size: 14px; color: var(--muted); }
+.binary { font: 12px/1.4 ui-monospace, Menlo, monospace; color: rgba(108,242,164,.55); word-break: break-all; max-height: 70px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+.pro h3 { color: var(--green); } .con h3 { color: var(--amber); }
+.lhc { animation: lhb 5s infinite; }
+@keyframes lhb { 0%, 6% { fill: #FFFFFF; } 10%, 100% { fill: #6B6440; } }
+@media (prefers-reduced-motion: reduce) { .lhc, .playing .reel i { animation: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="bar">
+    <a class="brand" href="uap.html"><span class="dot" aria-hidden="true"></span>UAP Observatory</a>
+    <nav class="subnav" aria-label="Themen des UAP Observatory">
+      <a href="uap.html">Skinwalker Ranch</a>
+      <a href="rodenstein.html">Odenwald &amp; Rodensteiner</a>
+      <a href="cenap.html">CENAP-Meldestelle</a>
+      <a href="rendlesham.html" aria-current="page">Rendlesham Forest</a>
+      <a class="back" href="index.html">← Wetterstation</a>
+    </nav>
+  </header>
+
+  <figure class="title" style="margin:16px 0 0">
+    <img src="uap-titel.jpg" width="1024" height="434" alt="Nachthimmel mit Milchstraße über einem Schlosshof, darüber schwebt ein leuchtendes geometrisches Objekt – Titelbild des UAP Observatory">
+  </figure>
+
+    <section class="hero" aria-labelledby="heroTitle">
+    <div>
+      <div class="kicker">Thema 4 · Suffolk, England · Dezember 1980</div>
+      <h1 id="heroTitle">Rendlesham Forest: „Britain’s Roswell“</h1>
+    </div>
+    <p class="lead">Weihnachten 1980, zwischen den NATO-Flugplätzen RAF Woodbridge und RAF Bentwaters. Erst sieht eine US-Patrouille Lichter in den Wald „stürzen“, zwei Nächte später zieht der stellvertretende Basiskommandant mit Geigerzähler, Nachtsichtgerät und Diktiergerät los und spricht live auf Band, was er sieht. Das Ergebnis: ein offizielles Memo an das britische Verteidigungsministerium, ein 18-minütiges Tonband und bis heute einer der berühmtesten UFO-Fälle der Welt.</p>
+    <div class="stats">
+      <div class="stat"><span class="v">2</span><span class="k">Nächte mit Sichtungen: 26. und 28. Dezember 1980</span></div>
+      <div class="stat"><span class="v">~18 min</span><span class="k">Tonbandaufnahme von Lt. Col. Charles Halt</span></div>
+      <div class="stat"><span class="v">0,1 mR</span><span class="k">höchster Strahlungswert im Memo, gemessen in den Abdrücken</span></div>
+      <div class="stat"><span class="v">5 s</span><span class="k">Blinktakt des Leuchtturms Orford Ness, der Kern der Skeptiker-Erklärung</span></div>
+    </div>
+  </section>
+
+  <nav class="toc" aria-label="Inhalt dieser Seite">
+    <a href="#karte">Lagekarte</a>
+    <a href="#nacht1">Nacht 1</a>
+    <a href="#nacht2">Nacht 2: Halt</a>
+    <a href="#tonband">Das Tonband (live)</a>
+    <a href="#memo">Das Halt-Memo</a>
+    <a href="#zeugen">Zeugen</a>
+    <a href="#spuren">Spuren &amp; Strahlung</a>
+    <a href="#leuchtturm">Leuchtturm-Test</a>
+    <a href="#spaeter">Was später dazukam</a>
+    <a href="#bilanz">Bilanz</a>
+    <a href="#quellen">Quellen</a>
+  </nav>
+
+  <section class="card" id="karte">
+    <div class="label">Lagekarte</div>
+    <h2>Der Schauplatz</h2>
+    <p>Zwei Flugplätze, ein Kiefernwald dazwischen und dahinter die Küste. Vom Osttor der RAF Woodbridge geht es etwa eine Meile durch den Wald, dann über einen Acker an einem Bauernhaus vorbei. In genau dieser Blickrichtung, gut fünf Meilen entfernt, steht der Leuchtturm von Orford Ness. Klick auf die Punkte.</p>
+    <div class="mapwrap">
+      <div class="map">
+        <svg viewBox="0 0 820 560" role="img" aria-labelledby="rmT">
+          <title id="rmT">Schematische Karte: RAF Bentwaters, RAF Woodbridge, Rendlesham Forest, Landestelle, Bauernhaus, Orford Ness Leuchtturm und Funkmasten</title>
+          <defs>
+            <pattern id="g3" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#18224F"/></pattern>
+            <pattern id="trees" width="16" height="16" patternUnits="userSpaceOnUse"><circle cx="5" cy="5" r="2.4" fill="#1C4A3A"/><circle cx="13" cy="12" r="2" fill="#1A4235"/></pattern>
+          </defs>
+          <rect width="820" height="560" fill="#0A1030"/><rect width="820" height="560" fill="url(#g3)"/>
+          <!-- Meer -->
+          <path d="M700 0 C690 120 720 220 700 330 C690 420 720 500 705 560 L820 560 L820 0Z" fill="#0E2A4E"/>
+          <text x="760" y="40" fill="#5F8BC4" font-size="13" text-anchor="middle">Nordsee</text>
+          <!-- Orford Ness Nehrung -->
+          <path d="M690 60 C676 180 700 280 682 400 C676 450 690 500 684 540" fill="none" stroke="#C8B98A" stroke-width="6" opacity=".6"/>
+          <!-- Wald -->
+          <path d="M80 120 C200 90 360 100 470 140 C520 160 540 260 520 360 C500 440 380 470 260 450 C160 430 90 360 70 260 C60 200 60 150 80 120Z" fill="url(#trees)" opacity=".95"/>
+          <text x="300" y="440" fill="#5FB08C" font-size="15" font-weight="700" text-anchor="middle" letter-spacing="2">RENDLESHAM FOREST</text>
+          <!-- Bentwaters -->
+          <rect x="140" y="20" width="300" height="60" rx="10" fill="#1A2350" stroke="#7E8CC0"/><rect x="160" y="46" width="260" height="8" fill="#556199"/>
+          <text x="290" y="38" fill="#C8D2FF" font-size="13" text-anchor="middle" font-weight="700">RAF Bentwaters</text>
+          <!-- Woodbridge -->
+          <rect x="60" y="220" width="300" height="70" rx="10" fill="#1A2350" stroke="#7E8CC0"/><rect x="70" y="250" width="280" height="10" fill="#556199"/>
+          <text x="200" y="240" fill="#C8D2FF" font-size="13" text-anchor="middle" font-weight="700">RAF Woodbridge</text>
+          <!-- Weg und Blickachse -->
+          <path d="M360 255 L430 262 L520 268" stroke="#9AA6D4" stroke-width="3" stroke-dasharray="3 6"/>
+          <line x1="360" y1="255" x2="700" y2="282" stroke="#FFC66B" stroke-width="2" stroke-dasharray="10 8" opacity=".8"/>
+          <text x="590" y="262" fill="#FFC66B" font-size="12">Sichtlinie nach Osten</text>
+          <!-- Acker -->
+          <rect x="530" y="240" width="110" height="70" rx="6" fill="#2A2F4A"/><text x="585" y="300" fill="#7E8CC0" font-size="11" text-anchor="middle">Acker</text>
+          <!-- Funkmasten -->
+          <g stroke="#FF6B7A" stroke-width="2"><line x1="672" y1="150" x2="672" y2="168"/><line x1="680" y1="146" x2="680" y2="168"/><line x1="688" y1="150" x2="688" y2="168"/><line x1="664" y1="154" x2="664" y2="168"/><line x1="696" y1="154" x2="696" y2="168"/></g>
+          <g fill="#FF6B7A"><circle cx="672" cy="150" r="2.5"/><circle cx="680" cy="146" r="2.5"/><circle cx="688" cy="150" r="2.5"/><circle cx="664" cy="154" r="2.5"/><circle cx="696" cy="154" r="2.5"/></g>
+          <!-- Leuchtturm-Strahl -->
+          <g id="beam"><path d="M700 282 L560 240 L560 324 Z" fill="#FFF3B0" opacity=".18"/></g>
+          <!-- Hotspots -->
+          <g font-size="12.5" fill="#E8ECFF">
+            <g class="hs" data-id="gate" tabindex="0" role="button" aria-label="East Gate"><circle class="ring" cx="360" cy="255" r="11" stroke="#4FE3F0"/><circle class="core" cx="360" cy="255" r="8" fill="#4FE3F0"/><text x="352" y="318" text-anchor="middle">East Gate</text></g>
+            <g class="hs" data-id="site" tabindex="0" role="button" aria-label="Landestelle"><circle class="ring" cx="455" cy="290" r="12" stroke="#A77BFF"/><circle class="core" cx="455" cy="290" r="9" fill="#A77BFF"/><text x="455" y="330" text-anchor="middle">„Landestelle“</text></g>
+            <g class="hs" data-id="farm" tabindex="0" role="button" aria-label="Bauernhaus"><circle class="ring" cx="545" cy="230" r="11" stroke="#FFC66B"/><circle class="core" cx="545" cy="230" r="8" fill="#FFC66B"/><text x="545" y="214" text-anchor="middle">Bauernhaus</text></g>
+            <g class="hs" data-id="lh" tabindex="0" role="button" aria-label="Leuchtturm Orford Ness"><circle class="ring" cx="700" cy="282" r="12" stroke="#FFF3B0"/><circle class="core lhc" cx="700" cy="282" r="9" fill="#FFF3B0"/><text x="740" y="310" text-anchor="middle">Leuchtturm</text><text x="740" y="324" text-anchor="middle">Orford Ness</text></g>
+            <g class="hs" data-id="masts" tabindex="0" role="button" aria-label="Funkmasten Orford Ness"><circle class="ring" cx="680" cy="180" r="10" stroke="#FF6B7A"/><circle class="core" cx="680" cy="180" r="7" fill="#FF6B7A"/><text x="630" y="132" text-anchor="middle">5 Funkmasten</text></g>
+            <g class="hs" data-id="ship" tabindex="0" role="button" aria-label="Feuerschiff Shipwash"><circle class="ring" cx="790" cy="420" r="10" stroke="#4FE3F0"/><circle class="core" cx="790" cy="420" r="7" fill="#4FE3F0"/><text x="790" y="448" text-anchor="middle">Feuerschiff</text><text x="790" y="462" text-anchor="middle">Shipwash</text></g>
+            <g class="hs" data-id="sky" tabindex="0" role="button" aria-label="Objekte am Himmel"><circle class="ring" cx="560" cy="80" r="11" stroke="#A77BFF"/><circle class="core" cx="560" cy="80" r="8" fill="#A77BFF"/><text x="560" y="62" text-anchor="middle">„Sterne“ im N</text></g>
+          </g>
+          <g transform="translate(40 520)"><path d="M0 -22L8 6H-8Z" fill="#E8ECFF"/><text y="24" fill="#E8ECFF" font-size="13" text-anchor="middle">N</text></g>
+          <text x="690" y="548" fill="#7E8CC0" font-size="11" text-anchor="end">schematisch, Entfernungen nicht maßstabsgetreu</text>
+        </svg>
+      </div>
+      <div class="spot" id="spot" aria-live="polite"></div>
+    </div>
+    <div class="spotlist" id="spotlist"></div>
+  </section>
+
+  <section class="card" id="nacht1">
+    <div class="label">Freitag, 26. Dezember 1980</div>
+    <h2>Nacht 1: Die Patrouille am Osttor</h2>
+    <div class="clock">
+      <div class="tick"><time>ca. 03:00</time><p>Wachposten am Osttor der RAF Woodbridge sehen Lichter, die scheinbar in den Rendlesham Forest herabsinken. Erster Gedanke: ein abgestürztes Flugzeug.</p></div>
+      <div class="tick"><time>03:10</time><p>Staff Sergeant <b>Jim Penniston</b>, Airman First Class <b>John Burroughs</b> und Airman <b>Edward Cabansag</b> werden losgeschickt. Lt. Fred Buran und Master Sgt. J. D. Chandler halten Funkkontakt.</p></div>
+      <div class="tick"><time>ca. 03:00</time><p>Zur gleichen Zeit zieht ein heller Feuerball über Südengland, ein Meteor, den auch andere Menschen beobachten.</p></div>
+      <div class="tick"><time>im Wald</time><p>Die drei folgen einem blinkenden, farbigen Licht durch den Wald, über einen Acker an einem Bauernhaus vorbei. Das Licht ist immer weiter entfernt, als es scheint.</p></div>
+      <div class="tick"><time>04:11</time><p>Airman Armold vom Law-Enforcement-Desk ruft die Suffolk Police an.</p></div>
+      <div class="tick"><time>ca. 04:30</time><p>Ende der Verfolgung. In ihren schriftlichen Aussagen beschreiben die Männer, dass sich ein Teil der Lichter als der Leuchtturm herausstellte.</p></div>
+      <div class="tick"><time>Polizei</time><p>Die Beamten finden im Luftraum kein Flugzeug. Die einzigen Lichter, die sie sehen, sind die des Leuchtturms von Orford Ness.</p></div>
+      <div class="tick hl"><time>Morgen</time><p>In einer Lichtung entdecken die Airmen drei Vertiefungen im Boden und Kratzspuren an Bäumen: die „Landestelle“.</p></div>
+      <div class="tick"><time>19:00</time><p>Die Polizei besichtigt die Stelle und ist unbeeindruckt: Die Abdrücke könnten von Tieren stammen.</p></div>
+    </div>
+    <figure class="craft">
+      <svg viewBox="0 0 560 300" role="img" aria-labelledby="crT">
+        <title id="crT">Rekonstruktions-Skizze nach dem Halt-Memo: metallisch wirkendes, dreieckiges Objekt mit pulsierendem rotem Licht oben und blauen Lichtern unten, auf Beinen</title>
+        <rect width="560" height="300" fill="#070B1F"/>
+        <g fill="#0F2A22"><path d="M0 300 L20 180 L40 300Z"/><path d="M30 300 L60 150 L90 300Z"/><path d="M470 300 L500 160 L530 300Z"/><path d="M510 300 L540 190 L560 300Z"/></g>
+        <ellipse cx="280" cy="250" rx="180" ry="20" fill="#4FA9FF" opacity=".15"/>
+        <polygon points="280,70 400,200 160,200" fill="url(#metal)" stroke="#C8D2FF" stroke-width="2"/>
+        <defs><linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8E9AB8"/><stop offset=".5" stop-color="#3C4766"/><stop offset="1" stop-color="#1E2540"/></linearGradient></defs>
+        <circle cx="280" cy="64" r="10" fill="#FF3B4E"><animate attributeName="opacity" values="1;.25;1" dur="1.2s" repeatCount="indefinite"/></circle>
+        <circle cx="280" cy="64" r="24" fill="#FF3B4E" opacity=".25"><animate attributeName="r" values="14;30;14" dur="1.2s" repeatCount="indefinite"/></circle>
+        <g fill="#4FA9FF"><circle cx="200" cy="200" r="6"><animate attributeName="opacity" values=".4;1;.4" dur="2s" repeatCount="indefinite"/></circle><circle cx="250" cy="200" r="6"><animate attributeName="opacity" values="1;.4;1" dur="2s" repeatCount="indefinite"/></circle><circle cx="310" cy="200" r="6"><animate attributeName="opacity" values=".4;1;.4" dur="2s" repeatCount="indefinite"/></circle><circle cx="360" cy="200" r="6"><animate attributeName="opacity" values="1;.4;1" dur="2s" repeatCount="indefinite"/></circle></g>
+        <g stroke="#9AA6D4" stroke-width="3"><line x1="200" y1="200" x2="186" y2="250"/><line x1="360" y1="200" x2="374" y2="250"/><line x1="280" y1="200" x2="280" y2="254"/></g>
+        <text x="420" y="70" fill="#FFB0B9" font-size="12">pulsierendes rotes Licht</text>
+        <text x="410" y="215" fill="#8CC8FF" font-size="12">blaue Lichter unten</text>
+        <text x="396" y="270" fill="#9AA6D4" font-size="12">„schwebend oder auf Beinen“</text>
+        <text x="20" y="28" fill="#C8D2FF" font-size="13" font-weight="700">Skizze nach der Beschreibung im Halt-Memo</text>
+        <text x="20" y="46" fill="#7E8CC0" font-size="11">laut Memo: ca. 2–3 m breit, ca. 2 m hoch, metallisch, dreieckig</text>
+      </svg>
+      <figcaption>Wichtig: Diese Beschreibung steht erst im Memo vom Januar 1981. In ihren eigenen Aussagen von 1980/81 beschrieben die drei Airmen vor allem farbige Lichter in der Ferne.</figcaption>
+    </figure>
+  </section>
+
+  <section class="card" id="nacht2">
+    <div class="label">Samstag/Sonntag, 27./28. Dezember 1980</div>
+    <h2>Nacht 2: Lt. Col. Halt geht selbst hinaus</h2>
+    <p>Am Abend des 27. Dezember platzt eine Meldung in eine Feier: „They’re back“, die Lichter sind wieder da. Stellvertretender Basiskommandant <b>Lieutenant Colonel Charles I. Halt</b> stellt ein Team zusammen, eigentlich um die Sache aufzuklären. Dabei: Sgt. Monroe Nevels mit Geigerzähler und Nachtsichtgerät, Lt. Bruce Englund, Master Sgt. Bob Ball, Sgt. Adrian Bustinza am Funk. Halt nimmt ein Mikrokassetten-Diktiergerät mit.</p>
+    <div class="path">
+      <svg viewBox="0 0 1000 220" role="img" aria-labelledby="ptT">
+        <title id="ptT">Ablauf von Halts Expedition: Landestelle 01:25, Bauernhof 01:48, Feld 02:44, Himmelsobjekte 03:05 bis 04:00</title>
+        <line x1="40" y1="110" x2="960" y2="110" stroke="#3A4680" stroke-width="3"/>
+        <g font-size="13" text-anchor="middle">
+          <g><circle cx="80" cy="110" r="12" fill="#A77BFF"/><text x="80" y="80" fill="#E8ECFF" font-weight="700">01:25</text><text x="80" y="146" fill="#9AA6D4">Landestelle</text><text x="80" y="162" fill="#9AA6D4">Geigerzähler</text></g>
+          <g><circle cx="250" cy="110" r="12" fill="#FFC66B"/><text x="250" y="80" fill="#E8ECFF" font-weight="700">01:48</text><text x="250" y="146" fill="#9AA6D4">Tiere im Hof</text><text x="250" y="162" fill="#9AA6D4">unruhig, rotes Licht</text></g>
+          <g><circle cx="420" cy="110" r="12" fill="#FF6B7A"/><text x="420" y="80" fill="#E8ECFF" font-weight="700">~02:00</text><text x="420" y="146" fill="#9AA6D4">„Auge“ blinzelt,</text><text x="420" y="162" fill="#9AA6D4">zerfällt in 5 Lichter</text></g>
+          <g><circle cx="580" cy="110" r="12" fill="#FF6B7A"/><text x="580" y="80" fill="#E8ECFF" font-weight="700">02:44</text><text x="580" y="146" fill="#9AA6D4">zweites Feld,</text><text x="580" y="162" fill="#9AA6D4">rotes Licht bei 110°</text></g>
+          <g><circle cx="740" cy="110" r="12" fill="#4FE3F0"/><text x="740" y="80" fill="#E8ECFF" font-weight="700">03:05–03:15</text><text x="740" y="146" fill="#9AA6D4">Objekte am Himmel,</text><text x="740" y="162" fill="#9AA6D4">„Strahl“ zum Boden</text></g>
+          <g><circle cx="900" cy="110" r="12" fill="#4FE3F0"/><text x="900" y="80" fill="#E8ECFF" font-weight="700">04:00</text><text x="900" y="146" fill="#9AA6D4">Objekt noch</text><text x="900" y="162" fill="#9AA6D4">über der Basis</text></g>
+        </g>
+      </svg>
+    </div>
+    <ul>
+      <li>An der Landestelle misst Nevels Strahlung, an den Bäumen werden „Kerben“ gezeigt, das Nachtsichtgerät soll in der Mitte eine Aufhellung zeigen.</li>
+      <li>Auf dem Bauernhof sind die Tiere extrem unruhig. Durch die Bäume sieht das Team ein rotes, pulsierendes Licht.</li>
+      <li>Laut Memo zerfällt das „sonnenähnliche“ Licht in fünf weiße Objekte und verschwindet.</li>
+      <li>Danach stehen drei sternartige Objekte am Himmel, zwei im Norden, eines im Süden, mit roten, grünen und blauen Lichtern. Das Objekt im Süden soll stundenlang sichtbar gewesen sein und Lichtstrahlen zum Boden geschickt haben.</li>
+      <li>Um 03:25 Uhr fragt die Bentwaters-Kommandozentrale beim Radar der RAF Watton nach. Ergebnis der späteren Prüfung: keine auffälligen Radarspuren.</li>
+    </ul>
+  </section>
+
+  <section class="card" id="tonband">
+    <div class="label">Live-Ton</div>
+    <h2>Das Halt-Tonband</h2>
+    <p>Etwa 18 Minuten, aufgenommen über mehrere Stunden, mit vielen Unterbrechungen. 1984 gab Colonel Sam Morgan, ein späterer Kommandeur, eine Kopie heraus. Halt sagt, das Band sei ohne sein Wissen weitergegeben worden.</p>
+    <div class="player">
+      <div class="tape" aria-hidden="true">
+        <div class="reel l"><i></i></div><div class="reel r"><i></i></div>
+        <div class="tapelabel">HALT · 27/28 DEC 1980 · RAF WOODBRIDGE</div>
+      </div>
+      <div class="pctl">
+        <button type="button" id="playLog" class="big">▶ Funk-Log abspielen</button>
+        <label class="snd"><input type="checkbox" id="sndOn" checked> mit Geräuschen (Bandrauschen, Geigerzähler)</label>
+        <div class="geiger"><span>Geigerzähler</span><div class="needle"><i id="needle"></i></div><b id="cpm">–</b></div>
+      </div>
+      <ol class="log" id="log" aria-live="polite"></ol>
+      <p class="src">Das Funk-Log ist eine sinngemäße, gekürzte deutsche Nachbildung nach dem veröffentlichten Transkript, kein Originalton. Die Geräusche werden im Browser erzeugt.</p>
+    </div>
+    <h3>Der Originalton</h3>
+    <div class="video">
+      <div class="vframe" id="vf"><button type="button" class="vplay" id="vplay"><span class="pb"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>Original-Aufnahme „The Halt Tape“ bei YouTube laden<small>Erst beim Klick wird YouTube geladen, dabei werden Daten an Google übertragen.</small></button></div>
+    </div>
+    <p class="src">Transkripte: <a href="http://www.ianridpath.com/ufo/halttape.html" target="_blank" rel="noopener">Ian Ridpath</a>, <a href="https://www.ufology.patrickgross.org/htm/rendlestape.htm" target="_blank" rel="noopener">Patrick Gross</a>. Falls das Video nicht mehr verfügbar ist: <a href="https://www.youtube.com/results?search_query=Halt+tape+Rendlesham" target="_blank" rel="noopener">YouTube-Suche „Halt tape“</a>.</p>
+  </section>
+
+  <section class="card" id="memo">
+    <div class="label">Dokument</div>
+    <h2>Das Halt-Memo vom 13. Januar 1981</h2>
+    <div class="protocol">
+      <div class="paper memo">
+        <div class="ph">Department of the Air Force · HQ 81st Combat Support Group</div>
+        <div class="pt">Subject: Unexplained Lights</div>
+        <p><b>To:</b> RAF/CC · <b>Datum:</b> 13. Januar 1981</p>
+        <p><b>1.</b> Am frühen Morgen des 27.12.80, gegen 03:00 Uhr, sehen zwei USAF-Sicherheitspolizisten ungewöhnliche Lichter vor dem Hintertor. Drei Patrouillen gehen zu Fuß in den Wald und berichten von einem metallisch wirkenden, dreieckigen Objekt mit pulsierendem rotem Licht oben und blauen Lichtern unten, schwebend oder auf Beinen. Es weicht durch die Bäume aus. Eine Stunde später wird es kurz nahe dem Tor gesehen.</p>
+        <p><b>2.</b> Am nächsten Tag: drei Vertiefungen von etwa 7 Zoll (18 cm). In der Nacht zum 29.12. Strahlungsmessung: Beta/Gamma bis 0,1 Milliröntgen in den Vertiefungen.</p>
+        <p><b>3.</b> Später in der Nacht: ein rotes, sonnenähnliches Licht zwischen den Bäumen, zerfällt in fünf weiße Objekte. Danach drei sternartige Objekte am Himmel. Zahlreiche Personen, darunter der Unterzeichner, sind Zeugen.</p>
+        <p class="sig">CHARLES I. HALT, Lt Col, USAF<br>Deputy Base Commander</p>
+        <p class="pn">Sinngemäße deutsche Zusammenfassung, kein Originalwortlaut</p>
+      </div>
+      <ul class="facts">
+        <li><b>Datumsfehler:</b> Halt nennt den 27. und 29. Dezember. Tatsächlich waren es die Morgen des 26. und des 28. Dezember.</li>
+        <li><b>Spät gemeldet:</b> Der britische Verbindungsoffizier Sqn Ldr Don Moreland war über Weihnachten im Urlaub. Halt meldete sich erst am 12. Januar bei ihm, Moreland riet zu einem schriftlichen Bericht.</li>
+        <li><b>Im Ministerium:</b> Das UFO-Referat DS8 erhielt das Memo frühestens am 14. Januar. Radar wurde geprüft, mit den falschen Daten. Zeugen wurden nie befragt.</li>
+        <li><b>Öffentlich:</b> 1983 per FOIA-Anfrage in den USA freigegeben. Am 2. Oktober 1983 macht die „News of the World“ den Fall mit einer Titelseite berühmt.</li>
+        <li><b>Akten:</b> Die MoD-Akte wurde 2001 freigegeben, die Akten DEFE 24/2030/1 und 24/2032/1 liegen seit 2011 in den National Archives.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="card" id="zeugen">
+    <div class="label">Die Beteiligten</div>
+    <h2>Soldaten, Offiziere und Zivilisten</h2>
+    <p>Genau das macht den Fall so besonders: Hier berichten keine Einzelpersonen, sondern Angehörige einer der wichtigsten US-Basen in Europa, bis hinauf zum stellvertretenden Kommandeur.</p>
+    <div class="ranks">
+      <div class="rank r1"><span class="rl">Kommando</span>
+        <div class="w"><b>Col. Gordon Williams</b><span>Kommandeur 81st Tactical Fighter Wing</span><p>Laut späteren Aussagen von Warren und Bustinza bei einer „zweiten Landung“ dabei gewesen. Er selbst bestritt eine Beteiligung.</p></div>
+        <div class="w"><b>Col. Ted Conrad</b><span>Basiskommandant, leitete die USAF-Untersuchung</span><p>Hörte den Funk mit, ordnete keine Luftunterstützung an, weil keine Bedrohung erkennbar war. Sagt, Penniston sei dem Objekt nicht nahe gekommen.</p></div>
+        <div class="w hl"><b>Lt. Col. Charles I. Halt</b><span>Stellvertretender Basiskommandant</span><p>Leitete Nacht 2, sprach das Tonband, schrieb das Memo. Ging 1991 als Colonel in Pension. Erklärte 2010 in einer eidesstattlichen Versicherung, er halte die Objekte für außerirdisch.</p></div>
+      </div>
+      <div class="rank r2"><span class="rl">Offiziere &amp; Unteroffiziere</span>
+        <div class="w"><b>Lt. Fred Buran</b><span>Flight Commander, Nacht 1 am Funk</span></div>
+        <div class="w"><b>MSgt. J. D. Chandler</b><span>Nacht 1 am Funk, Aussage vom 2.1.1981</span></div>
+        <div class="w"><b>Lt. Bruce Englund</b><span>Nacht 2, Zeitangaben auf dem Band</span></div>
+        <div class="w"><b>MSgt. Bob Ball</b><span>Nacht 2, auf dem Band zu hören</span></div>
+        <div class="w"><b>SSgt. Monroe Nevels</b><span>Geigerzähler und Nachtsichtgerät</span></div>
+        <div class="w"><b>Sgt. Adrian Bustinza</b><span>Nacht 2, Funk. Berichtete Jahrzehnte später von Wesen am Objekt und dass gefilmt wurde.</span></div>
+      </div>
+      <div class="rank r3"><span class="rl">Airmen der Security Police</span>
+        <div class="w hl"><b>SSgt. Jim Penniston</b><span>Nacht 1, Leiter der Patrouille</span><p>Erzählte über die Jahre eine immer detailreichere Geschichte bis zur „Binärcode“-Botschaft.</p></div>
+        <div class="w hl"><b>A1C John Burroughs</b><span>Nacht 1, auch in Nacht 2 im Wald</span><p>Kämpfte später jahrzehntelang um die Anerkennung gesundheitlicher Folgen.</p></div>
+        <div class="w"><b>Amn. Edward Cabansag</b><span>Nacht 1</span><p>Seine Aussage: Am Ende war die einzige Lichtquelle der Leuchtturm.</p></div>
+        <div class="w"><b>A1C Larry Warren</b><span>ging als Erster an die Öffentlichkeit</span><p>Beschrieb eine Landung mit Wesen, sein Buch heißt „Left at East Gate“. Seine Anwesenheit ist umstritten.</p></div>
+      </div>
+      <div class="rank r4"><span class="rl">Briten &amp; Forscher</span>
+        <div class="w"><b>Suffolk Police</b><span>Nacht 1: nur der Leuchtturm zu sehen</span></div>
+        <div class="w"><b>Vince Thurkettle</b><span>Förster: „It’s the lighthouse.“ Abdrücke = Kaninchenbaue, Kerben = Fällmarkierungen</span></div>
+        <div class="w"><b>Ian Ridpath</b><span>Astronom, untersucht den Fall seit 1983</span></div>
+        <div class="w"><b>Nick Pope</b><span>früher im MoD, hält den Fall für ungeklärt</span></div>
+        <div class="w"><b>Dr. David Clarke</b><span>Historiker, erwirkte 2001 die Freigabe der MoD-Akte</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="spuren">
+    <div class="label">Physische Spuren</div>
+    <h2>Die „Landestelle“ und die Strahlung</h2>
+    <div class="two">
+      <div class="sketch">
+        <svg viewBox="0 0 400 300" role="img" aria-labelledby="lsT">
+          <title id="lsT">Skizze der Landestelle: drei Vertiefungen im Dreieck, Bäume mit Kerben, Messpunkte</title>
+          <rect width="400" height="300" fill="#0E1A14"/>
+          <g fill="#173A2C"><circle cx="40" cy="40" r="24"/><circle cx="360" cy="50" r="26"/><circle cx="50" cy="260" r="22"/><circle cx="350" cy="250" r="24"/><circle cx="200" cy="30" r="18"/></g>
+          <g fill="#4A3524" stroke="#C8A27A" stroke-width="2"><circle cx="200" cy="105" r="11"/><circle cx="140" cy="205" r="11"/><circle cx="262" cy="205" r="11"/></g>
+          <polygon points="200,105 140,205 262,205" fill="none" stroke="#A77BFF" stroke-dasharray="5 5"/>
+          <text x="200" y="88" fill="#E8ECFF" font-size="12" text-anchor="middle">Abdruck 1</text><text x="104" y="230" fill="#E8ECFF" font-size="12">Abdruck 2</text><text x="250" y="230" fill="#E8ECFF" font-size="12">Abdruck 3</text>
+          <text x="200" y="176" fill="#C8B9F2" font-size="11" text-anchor="middle">je ca. 18 cm (7 in)</text>
+          <circle cx="200" cy="170" r="4" fill="#4FE3F0"/><text x="214" y="160" fill="#4FE3F0" font-size="10">Zentrum</text>
+          <g stroke="#FFC66B" stroke-width="3"><line x1="36" y1="40" x2="48" y2="40"/><line x1="352" y1="50" x2="366" y2="50"/></g>
+          <text x="60" y="24" fill="#FFC66B" font-size="10">„Kerben“ an Bäumen</text>
+          <text x="200" y="292" fill="#7E8CC0" font-size="10" text-anchor="middle">Skizze nach Beschreibungen, nicht maßstabsgetreu</text>
+        </svg>
+        <p>Laut Halt bilden die drei Abdrücke ein Dreieck, die Kerben an den Bäumen zeigen zur Mitte. Förster Vince Thurkettle sah das anders: alte, mit Kiefernnadeln bedeckte Kaninchenbaue und Axtkerben, mit denen Förster Bäume zum Fällen markieren.</p>
+      </div>
+      <div>
+        <h3>Wie hoch war die Strahlung?</h3>
+        <div class="rad">
+          <svg viewBox="0 0 420 260" role="img" aria-labelledby="raT">
+            <title id="raT">Balkengrafik: normale Hintergrundstrahlung 0,05 bis 0,1 mR/h, Halts Messwert 0,07 mR/h, Memo-Höchstwert 0,1 mR</title>
+            <rect x="60" y="20" width="340" height="200" fill="#0A1030"/>
+            <rect x="60" y="20" width="340" height="100" fill="#6CF2A4" opacity=".08"/>
+            <rect x="60" y="20" width="340" height="100" fill="none" stroke="#6CF2A4" stroke-dasharray="4 4" opacity=".6"/>
+            <text x="230" y="112" fill="#6CF2A4" font-size="11" text-anchor="middle">normaler Bereich 0,05–0,1 mR/h</text>
+            <g fill="#9AA6D4" font-size="11" text-anchor="end"><text x="54" y="24">0,1</text><text x="54" y="124">0,05</text><text x="54" y="224">0</text></g>
+            <line x1="60" y1="220" x2="400" y2="220" stroke="#3A4680"/>
+            <rect class="rb" x="110" y="80" width="80" height="140" fill="#4FE3F0" rx="4"/><text x="150" y="72" fill="#E8ECFF" font-size="12" text-anchor="middle">0,07</text>
+            <rect class="rb" x="270" y="20" width="80" height="200" fill="#A77BFF" rx="4"/><text x="310" y="14" fill="#E8ECFF" font-size="12" text-anchor="middle">0,1</text>
+            <text x="150" y="240" fill="#9AA6D4" font-size="11" text-anchor="middle">Band: „0,7 auf der</text><text x="150" y="254" fill="#9AA6D4" font-size="11" text-anchor="middle">0,5er-Skala“</text>
+            <text x="310" y="240" fill="#9AA6D4" font-size="11" text-anchor="middle">Höchstwert</text><text x="310" y="254" fill="#9AA6D4" font-size="11" text-anchor="middle">im Memo</text>
+          </svg>
+        </div>
+        <p>Halt sprach von etwa dem Zehnfachen des Normalwerts. Umgerechnet sind 0,7 auf der 0,5er-Skala aber nur rund 0,07 mR/h, und das liegt im natürlichen Bereich. Laut der britischen Strahlenschutzbehörde NRPB ist so ein präziser Wert mit diesem Gerät ganz unten in der Skala nicht verlässlich. Ein Defence-Intelligence-Papier bewertete die Werte damals dagegen als auffällig, das wird bis heute diskutiert.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="leuchtturm">
+    <div class="label">Interaktives Experiment</div>
+    <h2>Der Leuchtturm-Test</h2>
+    <p>Der Leuchtturm von Orford Ness blitzte alle 5 Sekunden. Halts Beschreibung des blinkenden Lichts passt auf dem Band zu diesem Takt. Probier es aus: Hier blinkt der Leuchtturm im Originaltakt hinter den Bäumen. Drück „Jetzt!“, sobald du einen Blitz siehst.</p>
+    <div class="lhsim">
+      <svg viewBox="0 0 800 300" role="img" aria-labelledby="lsimT">
+        <title id="lsimT">Simulation: Blick durch Kiefern in Richtung Osten, am Horizont blitzt alle fünf Sekunden ein Licht</title>
+        <defs><radialGradient id="flash" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFF6D0"/><stop offset=".3" stop-color="#FFD27A" stop-opacity=".8"/><stop offset="1" stop-color="#FF9A3C" stop-opacity="0"/></radialGradient></defs>
+        <rect width="800" height="300" fill="#060918"/>
+        <g fill="#fff" opacity=".6"><circle cx="90" cy="40" r="1"/><circle cx="300" cy="70" r="1.2"/><circle cx="520" cy="30" r="1"/><circle cx="700" cy="60" r="1.3"/><circle cx="640" cy="110" r=".9"/></g>
+        <rect y="230" width="800" height="70" fill="#0B1220"/>
+        <circle id="lhf" cx="430" cy="218" r="60" fill="url(#flash)" opacity="0"/>
+        <circle cx="430" cy="218" r="3" fill="#FFE9A8" opacity=".5"/>
+        <g fill="#03060E">
+          <rect x="60" y="0" width="34" height="300"/><rect x="210" y="0" width="26" height="300"/><rect x="330" y="0" width="22" height="300"/><rect x="455" y="0" width="30" height="300"/><rect x="590" y="0" width="38" height="300"/><rect x="720" y="0" width="28" height="300"/>
+          <path d="M0 0 H800 V40 C700 90 600 30 500 70 C400 110 300 40 200 80 C120 110 60 60 0 90Z"/>
+        </g>
+      </svg>
+      <div class="lhctl"><button type="button" id="lhGo" class="big">▶ Simulation starten</button><button type="button" id="lhHit">Jetzt!</button><span id="lhOut">Halt beschrieb ein Licht, das aussah wie ein blinzelndes Auge.</span></div>
+    </div>
+    <div class="callout"><b>Aber</b><p>Halt hat stets betont, er kenne den Leuchtturm genau, und der sei die ganze Zeit zusätzlich zu sehen gewesen. Ein Leuchtturm explodiert nicht, ändert nicht seine Form und schickt keine Strahlen zum Boden, so seine Gegenrede. Skeptiker antworten: Durch ein Nachtsichtgerät, das nicht für helle Lichter gedacht ist, sieht ein ferner Leuchtturm sehr seltsam aus. Die fünf „roten Objekte“ passen zu den fünf rot befeuerten Funkmasten auf Orford Ness.</p></div>
+  </section>
+
+  <section class="card" id="spaeter">
+    <div class="label">Wie die Geschichte wuchs</div>
+    <h2>Was später dazukam</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Jahr</th><th>Wer</th><th>Neue Aussage</th></tr></thead>
+        <tbody>
+          <tr><td>1980/81</td><td>Penniston, Burroughs, Cabansag</td><td>Schriftliche Aussagen: farbige, blinkende Lichter in der Ferne, Verfolgung bis über den Acker, am Ende war ein Licht der Leuchtturm.</td></tr>
+          <tr><td>1981</td><td>Halt</td><td>Memo: dreieckiges Objekt (für Nacht 1, die er selbst nicht erlebte), Abdrücke, Strahlung, Lichter.</td></tr>
+          <tr><td>ab 1983</td><td>Larry Warren</td><td>Landung mit Wesen und Kommandeur Williams, Truppen im Kreis um das Objekt.</td></tr>
+          <tr><td>1991</td><td>Halt</td><td>Erster öffentlicher Auftritt im Fernsehen, bestätigt das Memo. Später auch: ein Lichtstrahl fiel direkt vor seine Füße und auf das Waffenlager der Basis.</td></tr>
+          <tr><td>2003</td><td>Penniston</td><td>Zeigt im Fernsehen ein Notizbuch, angeblich in der Nacht geschrieben. Es nennt allerdings den 27. Dezember, wie das Memo. Er habe das Objekt berührt und fotografiert, der Film sei beschlagnahmt worden.</td></tr>
+          <tr><td>2010</td><td>Halt</td><td>Eidesstattliche Versicherung: Er glaubt an ein außerirdisches Objekt und an eine Vertuschung.</td></tr>
+          <tr><td>2010</td><td>Penniston</td><td>16 Seiten „Binärcode“, beim Berühren der Zeichen auf dem Objekt telepathisch empfangen. Entschlüsselt: Koordinaten und eine Botschaft aus der fernen Zukunft. Kritiker zeigen, dass es sich um gewöhnlichen ASCII-Code handelt.</td></tr>
+          <tr><td>2020er</td><td>Bustinza</td><td>Bestätigt in langen Interviews Warrens Version: Wesen am Objekt, es wurde gefilmt.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="binary" aria-hidden="true" id="binary"></div>
+    <p class="src">Darstellung oben: zufällige Nullen und Einsen als Illustration, nicht Pennistons Code.</p>
+  </section>
+
+  <section class="card" id="bilanz">
+    <div class="label">Fazit</div>
+    <h2>Bilanz: Was spricht wofür?</h2>
+    <div class="two">
+      <div class="pro">
+        <h3>Was den Fall so stark macht</h3>
+        <ul>
+          <li>Viele militärisch geschulte Zeugen, bis zum stellvertretenden Kommandeur</li>
+          <li>Ein offizielles Dokument und ein Tonband, aufgenommen während des Geschehens</li>
+          <li>Messungen mit Geigerzähler und Nachtsichtgerät</li>
+          <li>Halt bleibt seit Jahrzehnten bei seiner Darstellung</li>
+          <li>Das MoD hat den Fall nie wirklich untersucht und keinen einzigen Zeugen befragt</li>
+        </ul>
+      </div>
+      <div class="con">
+        <h3>Was die Skeptiker sagen</h3>
+        <ul>
+          <li>Nacht 1 begann zeitgleich mit einem hellen Meteor über Südengland</li>
+          <li>Die Polizei sah nur den Leuchtturm, die Airmen selbst landeten am Ende beim Leuchtturm</li>
+          <li>Blinktakt auf dem Band passt zu 5 Sekunden, die fünf Lichter zu fünf Funkmasten</li>
+          <li>Strahlung im natürlichen Bereich, Abdrücke als Kaninchenbaue erklärbar</li>
+          <li>Die spektakulären Details tauchen erst Jahre bis Jahrzehnte später auf</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout"><b>Unser Urteil</b><p>Ein echtes Rätsel ist Rendlesham vor allem als Lehrstück darüber, wie Wahrnehmung, Nacht, Technik und Erinnerung zusammenwirken. Dass erfahrene Soldaten etwas Außergewöhnliches erlebt haben, bezweifelt kaum jemand. Ob es außergewöhnlich war, weil es fremd war, oder weil es nachts im Wald so aussah, darüber wird wohl ewig gestritten.</p></div>
+  </section>
+
+  <section class="card" id="vorort">
+    <div class="label">Heute</div>
+    <h2>Selbst hinfahren</h2>
+    <p>Die Forstverwaltung hat einen ausgeschilderten <b>UFO Trail</b> durch den Rendlesham Forest angelegt, rund 5 km lang, mit einer Metallskulptur des „Objekts“ an der vermuteten Stelle. Die Basen wurden in den 1990ern aufgegeben, Woodbridge ist heute eine Kaserne der britischen Armee. Im ehemaligen Kontrollturm von Bentwaters gibt es ein Museum.</p>
+  </section>
+
+  <section class="card" id="quellen">
+    <div class="label">Weiterlesen</div>
+    <h2>Links, Bücher und Quellen</h2>
+    <div class="links">
+      <div><h3>Primärquellen</h3><ul>
+        <li><a href="https://www.theblackvault.com/documentarchive/the-halt-memo-the-rendlesham-forest-incident/" target="_blank" rel="noopener">The Black Vault: Das Halt-Memo (Scan)</a></li>
+        <li><a href="http://www.ianridpath.com/ufo/halttape.html" target="_blank" rel="noopener">Ian Ridpath: Transkript des Tonbands</a></li>
+        <li><a href="https://www.ufology.patrickgross.org/htm/rendlestape.htm" target="_blank" rel="noopener">Patrick Gross: Transkript mit Zeitangaben</a></li>
+        <li><a href="https://www.hjkc.de/_blog/2599-ufo-forschung---ufo-absturz-bei-rendlesham-forest---teil-2/" target="_blank" rel="noopener">CENAP-Blog: Die Zeugenaussagen von 1980</a><span>mit Scans der Original-Statements</span></li>
+      </ul></div>
+      <div><h3>Analysen</h3><ul>
+        <li><a href="https://drdavidclarke.co.uk/rendlesham-forest-ufos/" target="_blank" rel="noopener">Dr. David Clarke: Rendlesham Forest UFOs</a><span>Chronologie, MoD-Akten</span></li>
+        <li><a href="https://skeptoid.com/episodes/4135" target="_blank" rel="noopener">Skeptoid: The Rendlesham Forest UFO</a></li>
+        <li><a href="https://www.skeptic.org.uk/2023/01/from-the-archive-the-truth-about-rendlesham/" target="_blank" rel="noopener">The Skeptic: The Truth about Rendlesham</a></li>
+        <li><a href="https://en.wikipedia.org/wiki/Rendlesham_Forest_incident" target="_blank" rel="noopener">Wikipedia: Rendlesham Forest incident</a></li>
+        <li><a href="https://kevinboone.me/rendelsham-binary.html" target="_blank" rel="noopener">Kevin Boone: Der Binärcode unter der Lupe</a></li>
+      </ul></div>
+      <div><h3>Bücher</h3><ul>
+        <li>Nick Pope, John Burroughs, Jim Penniston: <i>Encounter in Rendlesham Forest</i><span>2014, Sicht der Zeugen</span></li>
+        <li>Georgina Bruni: <i>You Can’t Tell the People</i><span>2000</span></li>
+        <li>Larry Warren, Peter Robbins: <i>Left at East Gate</i><span>1997</span></li>
+        <li>Charles Halt, John Hanson: <i>The Halt Perspective</i><span>2016</span></li>
+      </ul></div>
+    </div>
+  </section>
+
+  <p class="foot">Unidentified Anomalous Phenomena Observatory · ein Projekt der <a href="index.html">Wetterstation Bad König</a> · Stand 31. Oktober 2026 · Alle Angaben ohne Gewähr · <a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a></p>
+</div>
+<script>
+(function () {
+  var C = { tech: ['#4FE3F0', 'Basis & Technik'], light: ['#A77BFF', 'Sichtung'], beast: ['#FF6B7A', 'mögliche Erklärung'], house: ['#FFC66B', 'Ort der Verfolgung'] };
+  var S = {
+    gate: { t: 'East Gate, RAF Woodbridge', c: 'tech', p: 'Das kleine Hintertor im Osten der Basis. Hier sahen die Wachen am 26. Dezember gegen 3 Uhr die Lichter, von hier liefen Penniston, Burroughs und Cabansag in den Wald. Der Titel von Larry Warrens Buch spielt darauf an: „Left at East Gate“.' },
+    site: { t: 'Die „Landestelle“', c: 'light', p: 'Eine Lichtung, etwa eine Meile östlich des Tors. Am Morgen fanden die Airmen drei Vertiefungen im Dreieck und Kerben an den Bäumen. In Nacht 2 begann Halt hier mit Geigerzähler und Nachtsichtgerät. Heute steht in der Nähe eine Skulptur am UFO Trail.' },
+    farm: { t: 'Das Bauernhaus (Capel Green)', c: 'house', p: 'Am Waldrand, dahinter offener Acker. In Nacht 1 kamen die Airmen hier vorbei, in Nacht 2 waren laut Tonband die Tiere des Hofs extrem unruhig. Vom Hof aus ist der Leuchtturm knapp über der Hügellinie zu sehen.' },
+    lh: { t: 'Leuchtturm Orford Ness', c: 'beast', p: 'Gut fünf Meilen östlich an der Küste, sehr hell, ein Blitz alle 5 Sekunden. Genau in der Blickrichtung der Männer. Die Polizei sah in Nacht 1 nur ihn, der Förster Vince Thurkettle sagte sofort: „It’s the lighthouse“. Der Turm wurde 2020 abgerissen, weil das Meer ihn bedrohte.' },
+    masts: { t: 'Funkmasten auf Orford Ness', c: 'beast', p: 'Etwa zwei Meilen die Küste hinauf standen fünf hohe Funkmasten mit roten Warnlichtern an der Spitze. Skeptiker sehen darin eine Erklärung für Halts fünf Lichter.' },
+    ship: { t: 'Feuerschiff Shipwash', c: 'beast', p: 'Ein Feuerschiff vor der Küste, ebenfalls ein blinkendes Licht genau im Osten. Ian Ridpath nennt es zusammen mit dem Leuchtturm als Quelle der Lichter.' },
+    sky: { t: 'Die „sternartigen Objekte“', c: 'light', p: 'In Nacht 2 sah Halts Team zwei Objekte im Norden und eines im Süden, mit roten, grünen und blauen Lichtern. Das südliche soll Strahlen zum Boden geschickt haben. Skeptiker deuten sie als helle Sterne wie Sirius, die tief am Horizont bunt funkeln, gesehen durch ein Nachtsichtgerät.' }
+  };
+  var spot = document.getElementById('spot'), list = document.getElementById('spotlist');
+  var groups = document.querySelectorAll('.hs');
+  function show(id) {
+    var s = S[id]; if (!s) return; var c = C[s.c];
+    spot.innerHTML = '<span class="tag" style="background:' + c[0] + '22;color:' + c[0] + ';border:1px solid ' + c[0] + '66">' + c[1] + '</span><h3>' + s.t + '</h3><p>' + s.p + '</p>';
+    groups.forEach(function (g) { g.classList.toggle('active', g.getAttribute('data-id') === id); });
+    list.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.id === id ? 'true' : 'false'); });
+  }
+  Object.keys(S).forEach(function (id) {
+    var b = document.createElement('button'); b.type = 'button'; b.dataset.id = id;
+    b.innerHTML = '<b>' + S[id].t + '</b><span>' + C[S[id].c][1] + '</span>';
+    b.addEventListener('click', function () { show(id); }); list.appendChild(b);
+  });
+  groups.forEach(function (g) {
+    var id = g.getAttribute('data-id');
+    g.addEventListener('click', function () { show(id); });
+    g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(id); } });
+  });
+  show('lh');
+})();
+</script>
+
+
+<script>
+(function () {
+  var L = [
+    ['01:25', 'Englund', 'Zeit: etwa 01:25 Uhr.'],
+    ['', 'Halt', 'Wir nähern uns der Stelle auf 25, 30 Fuß. Was zeigt der Zähler?', 2],
+    ['', 'Nevels', 'Nur ein paar leichte Klicks.', 2],
+    ['', 'Halt', 'Wir sind jetzt im Zentrum der drei Abdrücke.', 4],
+    ['', 'Nevels', 'Das ist der beste Ausschlag der Nadel bisher.', 7],
+    ['', 'Halt', '… sieben Einheiten, auf der 0,5er-Skala.', 7],
+    ['', 'Halt', 'An den Bäumen sind Kerben, alle zur Mitte hin. Könnten alt sein, da ist Harz.', 4],
+    ['', '', '[Bandunterbrechung]', 3],
+    ['01:48', 'Halt', 'Die Tiere auf dem Hof sind sehr unruhig und machen einen Riesenlärm.', 3],
+    ['', 'Englund', 'Da! Ein Licht, rot, zwischen den Bäumen.', 4],
+    ['', 'Halt', 'Ich sehe es auch. Es bewegt sich, kommt in unsere Richtung.', 5],
+    ['', 'Halt', 'Es sieht aus wie ein Auge, das dir zuzwinkert.', 5],
+    ['', 'Halt', 'Es scheint Teile abzuwerfen … es zerfällt.', 5],
+    ['', '', '[Bandunterbrechung]', 3],
+    ['02:44', 'Halt', 'Wir sind am zweiten Feld. Das Licht steht wieder da, etwa 110 Grad, rot, blinkt ab und zu.', 5],
+    ['03:05', 'Halt', 'Blitze wie ein Stroboskop. Zwei Objekte im Norden, halbmondförmig, mit farbigen Lichtern.', 3],
+    ['03:15', 'Halt', 'Jetzt ein Objekt im Süden. Es scheint ein Strahl zum Boden zu kommen.', 3],
+    ['', 'Ball', 'Schau dir die Farben an …', 3],
+    ['03:30', 'Halt', 'Das Objekt im Süden sinkt tiefer. Wir gehen zurück zur Basis.', 2],
+    ['04:00', 'Halt', 'Ein Objekt steht immer noch über der Basis, 5 bis 10 Grad über dem Horizont, sendet weiter Strahlen.', 2],
+    ['', '', '[Ende der Aufnahme]', 1]
+  ];
+  var log = document.getElementById('log'), btn = document.getElementById('playLog'), tape = document.querySelector('.tape'),
+      needle = document.getElementById('needle'), cpm = document.getElementById('cpm'), snd = document.getElementById('sndOn');
+  var ctx, hiss, hissGain, geigerTimer, rate = 1, running = false, timer;
+  function noiseBuf() { var b = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate), d = b.getChannelData(0); for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; return b; }
+  function startAudio() {
+    if (!snd.checked) return;
+    try { ctx = ctx || new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { return; }
+    ctx.resume && ctx.resume();
+    hiss = ctx.createBufferSource(); hiss.buffer = noiseBuf(); hiss.loop = true;
+    var f = ctx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 3000; f.Q.value = .5;
+    hissGain = ctx.createGain(); hissGain.gain.value = .025;
+    hiss.connect(f); f.connect(hissGain); hissGain.connect(ctx.destination); hiss.start();
+    (function click() {
+      if (!running) return;
+      var s = ctx.createBufferSource(); s.buffer = noiseBuf(); var g = ctx.createGain(); var t = ctx.currentTime;
+      g.gain.setValueAtTime(.35, t); g.gain.exponentialRampToValueAtTime(.001, t + .012);
+      s.connect(g); g.connect(ctx.destination); s.start(t); s.stop(t + .02);
+      geigerTimer = setTimeout(click, -Math.log(1 - Math.random()) * 1000 / rate);
+    })();
+  }
+  function stopAudio() { clearTimeout(geigerTimer); try { hiss && hiss.stop(); } catch (e) {} }
+  function setRate(r) { rate = r; needle.style.left = Math.min(97, r / 8 * 100) + '%'; cpm.textContent = '~' + r + '/s'; }
+  function stop() { running = false; clearTimeout(timer); stopAudio(); tape.classList.remove('playing'); btn.textContent = '▶ Funk-Log erneut abspielen'; }
+  btn.onclick = function () {
+    if (running) { stop(); return; }
+    log.innerHTML = ''; running = true; tape.classList.add('playing'); btn.textContent = '■ Stopp'; setRate(1); startAudio();
+    var i = 0;
+    (function next() {
+      if (!running) return;
+      if (i >= L.length) { stop(); return; }
+      var l = L[i++], li = document.createElement('li');
+      li.innerHTML = (l[0] ? '<span class="t">' + l[0] + '</span>' : '') + (l[1] ? '<span class="who">' + l[1] + ':</span>' + l[2] : '<span class="note">' + l[2] + '</span>');
+      log.appendChild(li); log.scrollTop = log.scrollHeight;
+      if (l[3]) setRate(l[3]);
+      timer = setTimeout(next, 1400 + l[2].length * 38);
+    })();
+  };
+  // YouTube erst nach Klick
+  document.getElementById('vplay').onclick = function () {
+    document.getElementById('vf').innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/7KChGKhJ4Ro?autoplay=1" title="The Halt Tape" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
+  };
+  // Leuchtturm-Simulation
+  var lhf = document.getElementById('lhf'), go = document.getElementById('lhGo'), hit = document.getElementById('lhHit'), out = document.getElementById('lhOut');
+  var lhTimer, lastFlash = 0, hits = 0, tries = 0, on = false;
+  function flash() {
+    lastFlash = performance.now();
+    lhf.animate([{ opacity: 0 }, { opacity: 1, offset: .15 }, { opacity: 0 }], { duration: 900, easing: 'ease-out' });
+  }
+  go.onclick = function () {
+    if (on) { on = false; clearInterval(lhTimer); go.textContent = '▶ Simulation starten'; return; }
+    on = true; hits = tries = 0; go.textContent = '■ Stopp'; out.textContent = 'Ein Blitz alle 5 Sekunden. Achte auf den Horizont …';
+    flash(); lhTimer = setInterval(flash, 5000);
+  };
+  hit.onclick = function () {
+    if (!on) { out.textContent = 'Erst die Simulation starten.'; return; }
+    tries++; var dt = performance.now() - lastFlash;
+    if (dt < 1200) { hits++; out.textContent = 'Treffer! ' + hits + ' von ' + tries + '. So regelmäßig blinkt auch das Licht auf Halts Band.'; }
+    else out.textContent = 'Daneben (' + (dt / 1000).toFixed(1) + ' s nach dem letzten Blitz). Treffer: ' + hits + ' von ' + tries + '.';
+  };
+  // Binär-Deko
+  var b = ''; for (var k = 0; k < 600; k++) b += (Math.random() < .5 ? '0' : '1') + (k % 8 === 7 ? ' ' : '');
+  document.getElementById('binary').textContent = b;
+})();
+</script>
+</body>
+</html>
