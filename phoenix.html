@@ -1,0 +1,751 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Die Phoenix Lights 1997 – UAP Observatory</title>
+<meta name="description" content="UAP Observatory: Die Phoenix Lights vom 13. März 1997 – Route, zwei Ereignisse, Teleskop-Test, Fackel-Simulation, Gouverneur Symington, Zeugen und Erklärungen.">
+<meta name="theme-color" content="#0B0F24">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+:root {
+  --bg: #070A1A; --bg2: #0D1330; --card: #11183A; --line: #24305E;
+  --ink: #E8ECFF; --muted: #9AA6D4; --cyan: #4FE3F0; --violet: #A77BFF; --green: #6CF2A4; --amber: #FFC66B; --red: #FF6B7A;
+  --font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; color: var(--ink); font: 16px/1.6 var(--font);
+  background: radial-gradient(1200px 600px at 80% -10%, rgba(167,123,255,.18), transparent 60%),
+              radial-gradient(900px 500px at 0% 20%, rgba(79,227,240,.10), transparent 60%), var(--bg);
+  padding: 0 max(16px, env(safe-area-inset-right)) 56px max(16px, env(safe-area-inset-left)); }
+a { color: var(--cyan); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--violet); outline-offset: 2px; border-radius: 4px; }
+.wrap { max-width: 1100px; margin: 0 auto; display: grid; gap: 20px; }
+
+/* Kopfleiste mit eigener Navigation */
+.bar { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 20px;
+  padding: 12px 0; background: linear-gradient(180deg, rgba(7,10,26,.96), rgba(7,10,26,.85)); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); font-weight: 650; letter-spacing: .06em; font-size: 13px; text-transform: uppercase; }
+.brand .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 12px var(--cyan); }
+.subnav { display: flex; flex-wrap: wrap; gap: 4px 18px; }
+.subnav a, .subnav span { font-size: 14px; text-decoration: none; color: var(--muted); padding: 6px 0; border-bottom: 2px solid transparent; }
+.subnav a:hover { color: var(--ink); }
+.subnav a[aria-current="page"] { color: var(--cyan); border-bottom-color: var(--cyan); }
+.subnav span.soon { opacity: .55; cursor: default; }
+.subnav span.soon small { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; margin-left: 4px; color: var(--violet); }
+.subnav a.back { color: var(--amber); }
+
+/* Titelbild */
+.title { position: relative; border-radius: 20px; overflow: hidden; border: 1px solid var(--line); margin-top: 16px; }
+.title img { display: block; width: 100%; height: auto; }
+
+/* Aufmacher */
+.hero { border-radius: 20px; padding: clamp(22px, 4vw, 40px); background: linear-gradient(160deg, #161E4C, #0A0E25 70%); border: 1px solid var(--line); display: grid; gap: 18px; position: relative; overflow: hidden; }
+.hero::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: linear-gradient(90deg, var(--cyan), var(--violet), var(--green)); }
+.kicker { font-size: 12.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--violet); font-weight: 600; }
+.hero h1 { margin: 4px 0 0; font-size: clamp(2rem, 6vw, 3.4rem); line-height: 1.04; letter-spacing: -.02em; }
+.hero p.lead { margin: 0; max-width: 66ch; color: #C9D1F5; font-size: clamp(16px, 2vw, 18px); }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.stat { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: 14px; padding: 14px 16px; display: grid; gap: 4px; align-content: start; }
+.stat .v { font-size: clamp(1.5rem, 3.4vw, 2.1rem); font-weight: 700; color: var(--cyan); line-height: 1.05; font-variant-numeric: tabular-nums; }
+.stat .k { font-size: 13.5px; color: #C9D1F5; line-height: 1.4; }
+@media (max-width: 820px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.toc { display: flex; flex-wrap: wrap; gap: 8px; }
+.toc a { text-decoration: none; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-size: 14px; }
+.toc a:hover { border-color: var(--cyan); color: var(--cyan); }
+
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: clamp(20px, 3.4vw, 32px); display: grid; gap: 16px; min-width: 0; scroll-margin-top: 80px; }
+.card h2 { margin: 0; font-size: clamp(1.4rem, 3vw, 1.85rem); line-height: 1.2; }
+.card h3 { margin: 6px 0 0; font-size: 1.08rem; }
+.card p { margin: 0; max-width: 72ch; }
+.card ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 74ch; }
+.label { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.src { font-size: 13px; color: var(--muted); }
+.src a { color: inherit; }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 18px 28px; align-items: start; }
+
+/* Karte */
+.mapwrap { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 860px) { .mapwrap { grid-template-columns: minmax(0, 1fr); } }
+.map { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: #0A1030; }
+.map svg { display: block; width: 100%; height: auto; }
+.hs { cursor: pointer; }
+.hs circle.ring { fill: none; stroke-width: 2; animation: pulse 2.4s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes pulse { 0% { transform: scale(.6); opacity: 1; } 100% { transform: scale(2.2); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .hs circle.ring { animation: none; } }
+.hs:hover circle.core, .hs.active circle.core { stroke: #fff; stroke-width: 3; }
+.spot { border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 8px; background: var(--bg2); min-height: 220px; align-content: start; }
+.spot .tag { justify-self: start; font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; border-radius: 999px; padding: 2px 10px; font-weight: 600; }
+.spot h3 { margin: 0; }
+.spot p { font-size: 14.5px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.spotlist { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 10px; }
+.spotlist button { text-align: left; font: inherit; color: var(--ink); background: var(--bg2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; cursor: pointer; display: grid; gap: 2px; }
+.spotlist button:hover, .spotlist button[aria-pressed="true"] { border-color: var(--cyan); }
+.spotlist button b { font-size: 14.5px; }
+.spotlist button span { font-size: 12.5px; color: var(--muted); }
+
+/* Zeitleiste */
+.timeline { list-style: none; margin: 0; padding: 0; display: grid; max-width: none !important; }
+.timeline li { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 16px; padding: 12px 0; border-top: 1px solid var(--line); }
+.timeline li:first-child { border-top: 0; }
+.timeline time { font-weight: 700; color: var(--cyan); font-variant-numeric: tabular-nums; }
+.timeline li.hl time { color: var(--amber); }
+@media (max-width: 520px) { .timeline li { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+
+/* Besitzer-Grafik */
+.owners svg { width: 100%; height: auto; display: block; }
+
+/* Kacheln */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 12px; }
+.tile { border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 6px; align-content: start; background: var(--bg2); }
+.tile .ico { font-size: 22px; }
+.tile b { font-size: 16px; }
+.tile p { font-size: 14.5px; color: #C9D1F5; }
+
+/* Tabelle */
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; }
+table { border-collapse: collapse; width: 100%; min-width: 680px; font-size: 14.5px; }
+th, td { text-align: left; padding: 11px 14px; border-top: 1px solid var(--line); vertical-align: top; }
+thead th { border-top: 0; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--bg2); }
+
+.callout { border-radius: 14px; background: rgba(167,123,255,.12); border: 1px solid rgba(167,123,255,.35); padding: 16px 18px; display: grid; gap: 6px; }
+.callout p { font-size: 14.5px; }
+.quote { margin: 0; border-left: 3px solid var(--violet); padding: 2px 0 2px 14px; color: #C9D1F5; max-width: 70ch; }
+
+.links { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 10px 28px; }
+.links h3 { margin: 0 0 6px; font-size: 1rem; }
+.links ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.links li { font-size: 14.5px; line-height: 1.4; }
+.links li span { display: block; font-size: 12.5px; color: var(--muted); }
+.foot { font-size: 13px; color: var(--muted); text-align: center; margin: 8px 0 0; }
+.hotline { justify-self: start; display: inline-flex; align-items: center; gap: 14px; text-decoration: none; color: var(--ink); background: rgba(108,242,164,.1); border: 1px solid rgba(108,242,164,.5); border-radius: 999px; padding: 10px 22px 10px 14px; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.hotline small { display: block; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--green); font-weight: 600; }
+.hotline:hover { background: rgba(108,242,164,.2); }
+.pulse { width: 14px; height: 14px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 0 rgba(108,242,164,.7); animation: hl 1.8s infinite; }
+@keyframes hl { 70% { box-shadow: 0 0 0 14px rgba(108,242,164,0); } 100% { box-shadow: 0 0 0 0 rgba(108,242,164,0); } }
+/* Quiz */
+.quiz { border: 1px solid var(--line); border-radius: 14px; background: var(--bg2); padding: 20px; display: grid; gap: 14px; min-height: 200px; }
+.quiz .q { font-size: 1.15rem; font-weight: 650; }
+.quiz .step { font-size: 12px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+.quiz .opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px; }
+.quiz button, .actions button, .btn { font: inherit; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; cursor: pointer; text-align: left; text-decoration: none; }
+.quiz button:hover, .actions button:hover, .btn:hover { border-color: var(--cyan); color: var(--cyan); }
+.quiz .res { display: grid; gap: 8px; animation: pop .4s ease; }
+.quiz .res .big { font-size: 1.6rem; font-weight: 750; color: var(--cyan); }
+.quiz .res .prob { font-size: 13px; color: var(--green); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+@keyframes pop { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.quiz .restart { justify-self: start; }
+/* Jahre */
+.years { margin-bottom: 40px; display: flex; align-items: flex-end; gap: clamp(16px, 5vw, 48px); height: 240px; padding: 10px 6px 0; border-bottom: 2px solid var(--line); max-width: 560px; }
+.yr { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: stretch; gap: 6px; }
+.yr > span { text-align: center; color: var(--muted); font-weight: 600; margin-bottom: -30px; }
+.col { height: 0; background: linear-gradient(180deg, var(--cyan), rgba(79,227,240,.25)); border-radius: 10px 10px 0 0; display: flex; justify-content: center; transition: height 1.4s cubic-bezier(.2,.8,.2,1); position: relative; }
+.col.hot { background: linear-gradient(180deg, var(--violet), rgba(167,123,255,.3)); }
+.col b { position: absolute; top: -26px; font-variant-numeric: tabular-nums; }
+.seen .col { height: var(--h); }
+#zahlen h3 { margin-top: 26px; }
+.hbars { display: grid; gap: 10px; max-width: 640px; }
+.hb { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 12px; align-items: center; font-size: 14.5px; }
+.hb i { display: block; width: 0; font-style: normal; font-weight: 700; padding: 6px 10px; border-radius: 8px; background: linear-gradient(90deg, rgba(79,227,240,.2), rgba(79,227,240,.7)); transition: width 1.2s ease .2s; white-space: nowrap; }
+.seen .hb i { width: var(--w); }
+@media (max-width: 520px) { .hb { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+/* IFO-Karten mit Animation */
+.ifos { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 12px; }
+.ifo { border: 1px solid var(--line); border-radius: 14px; background: var(--bg2); padding: 0 0 14px; display: grid; gap: 6px; overflow: hidden; }
+.ifo b, .ifo p { padding: 0 14px; }
+.ifo p { font-size: 14px; color: #C9D1F5; margin: 0; }
+.anim { position: relative; height: 110px; background: radial-gradient(circle at 80% 20%, #1D2760, #070A1A 70%); overflow: hidden; }
+.anim::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(1px 1px at 20% 30%, #fff, transparent), radial-gradient(1px 1px at 70% 60%, #fff, transparent), radial-gradient(1px 1px at 40% 80%, #cfd6ff, transparent), radial-gradient(1px 1px at 85% 25%, #fff, transparent), radial-gradient(1px 1px at 10% 70%, #fff, transparent); opacity: .7; }
+.anim i { position: absolute; display: block; }
+.starlink i { width: 4px; height: 4px; border-radius: 50%; background: #fff; box-shadow: 0 0 6px #fff; left: -10%; top: 70%; animation: sl 7s linear infinite; }
+.starlink i:nth-child(2) { animation-delay: .35s } .starlink i:nth-child(3) { animation-delay: .7s } .starlink i:nth-child(4) { animation-delay: 1.05s } .starlink i:nth-child(5) { animation-delay: 1.4s } .starlink i:nth-child(6) { animation-delay: 1.75s } .starlink i:nth-child(7) { animation-delay: 2.1s } .starlink i:nth-child(8) { animation-delay: 2.45s }
+@keyframes sl { from { left: -5%; top: 75%; } to { left: 105%; top: 15%; } }
+.planet i { width: 10px; height: 10px; border-radius: 50%; left: 45%; top: 55%; background: #FFF6D8; box-shadow: 0 0 14px 4px #FFE9A8; animation: tw 1.4s ease-in-out infinite alternate; }
+@keyframes tw { 0% { box-shadow: 0 0 10px 3px #FFE9A8; } 33% { box-shadow: 0 0 16px 5px #A9D8FF; } 66% { box-shadow: 0 0 12px 4px #FFB0B9; } 100% { box-shadow: 0 0 18px 6px #FFE9A8; } }
+.lantern i { width: 8px; height: 8px; border-radius: 50%; background: #FFA640; box-shadow: 0 0 10px 3px #FF8A1E; animation: ln 8s ease-in infinite; bottom: -10px; }
+.lantern i:nth-child(1) { left: 30%; } .lantern i:nth-child(2) { left: 50%; animation-delay: 2.6s; } .lantern i:nth-child(3) { left: 66%; animation-delay: 5.2s; }
+@keyframes ln { 0% { bottom: -10px; opacity: 1; transform: translateX(0); } 80% { opacity: 1; } 100% { bottom: 110px; opacity: 0; transform: translateX(30px); } }
+.meteor i { width: 90px; height: 2px; background: linear-gradient(90deg, transparent, #B8FFD0, #fff); border-radius: 2px; transform: rotate(25deg); left: -30%; top: 0; animation: mt 3.2s ease-in infinite; opacity: 0; }
+@keyframes mt { 0% { left: -30%; top: -10%; opacity: 0; } 8% { opacity: 1; } 30% { left: 90%; top: 80%; opacity: 0; } 100% { opacity: 0; left: 90%; top: 80%; } }
+.drone i { width: 6px; height: 6px; border-radius: 50%; background: #FF4E5E; box-shadow: 14px 0 0 #6CF2A4; animation: dr 6s ease-in-out infinite, bl 1s steps(2) infinite; }
+@keyframes dr { 0% { left: 20%; top: 60%; } 25% { left: 45%; top: 30%; } 45% { left: 45%; top: 30%; } 70% { left: 70%; top: 55%; } 100% { left: 20%; top: 60%; } }
+@keyframes bl { 50% { opacity: .2; } }
+.plane i { width: 12px; height: 12px; border-radius: 50%; background: #fff; box-shadow: 0 0 22px 8px rgba(255,255,255,.8); left: 50%; top: 50%; animation: pl 5s ease-in-out infinite; }
+@keyframes pl { 0% { transform: scale(.3); opacity: .4; } 80% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(.3) translateX(80px); opacity: 0; } }
+.balloon i { width: 18px; height: 22px; border-radius: 50% 50% 45% 45%; background: radial-gradient(circle at 35% 30%, #fff, #CFE8FF 40%, #7FA9D8); left: 30%; top: 60%; animation: bn 9s ease-in-out infinite; }
+@keyframes bn { 0% { left: 25%; top: 70%; } 50% { left: 55%; top: 20%; } 100% { left: 25%; top: 70%; } }
+.laser i { width: 26px; height: 14px; border-radius: 50%; background: rgba(160,255,200,.7); filter: blur(3px); left: 40%; top: 40%; animation: lz 3s linear infinite; }
+.laser i:nth-child(2) { animation-delay: -1.5s; background: rgba(170,190,255,.7); }
+@keyframes lz { 0% { transform: rotate(0) translateX(40px) rotate(0); } 100% { transform: rotate(360deg) translateX(40px) rotate(-360deg); } }
+.rocket i { width: 40px; height: 40px; border: 3px solid rgba(160,220,255,.8); border-radius: 50%; border-top-color: transparent; left: 42%; top: 30%; animation: rk 2.6s linear infinite; box-shadow: 0 0 12px rgba(160,220,255,.6); }
+@keyframes rk { 0% { transform: rotate(0) scale(.4); opacity: 0; } 20% { opacity: 1; } 100% { transform: rotate(720deg) scale(1.6); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .anim i { animation: none !important; } .col, .hb i { transition: none; } }
+/* Ablauf */
+.flow { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr)); gap: 12px; max-width: none !important; counter-reset: s; }
+.flow li { border: 1px solid var(--line); border-radius: 14px; background: var(--bg2); padding: 14px; display: grid; gap: 8px; align-content: start; position: relative; }
+.flow .n { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: rgba(79,227,240,.15); color: var(--cyan); font-weight: 750; border: 1px solid rgba(79,227,240,.5); }
+.flow p { font-size: 14px; color: #C9D1F5; margin: 4px 0 0; }
+/* Fälle */
+.cases { display: grid; gap: 8px; }
+.cases details { border: 1px solid var(--line); border-radius: 12px; background: var(--bg2); padding: 0 16px; }
+.cases details[open] { border-color: rgba(167,123,255,.6); }
+.cases summary { cursor: pointer; padding: 14px 0; font-weight: 650; list-style: none; display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; }
+.cases summary::-webkit-details-marker { display: none; }
+.cases summary::after { content: "+"; margin-left: auto; color: var(--violet); font-size: 20px; }
+.cases details[open] summary::after { content: "–"; }
+.cases .cy { color: var(--amber); font-size: 13px; font-weight: 700; min-width: 120px; font-variant-numeric: tabular-nums; }
+.cases p { padding: 0 0 14px; font-size: 15px; color: #C9D1F5; }
+/* Formular */
+.report { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px; }
+.report label { display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
+.report .wide { grid-column: 1 / -1; }
+.report .chk { display: flex; align-items: center; gap: 8px; color: var(--ink); font-size: 14px; }
+.report input, .report select, .report textarea { font: inherit; font-size: 15px; color: var(--ink); background: var(--bg2); border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; color-scheme: dark; }
+.report input:focus, .report select:focus, .report textarea:focus { outline: 2px solid var(--cyan); border-color: transparent; }
+.out { margin: 0; white-space: pre-wrap; font: 14px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: #050817; border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; color: #BFF6FF; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn.alt { border-color: rgba(108,242,164,.6); color: var(--green); }
+.clock { display: grid; gap: 0; border-left: 2px solid var(--line); margin-left: 8px; }
+.tick { position: relative; padding: 8px 0 12px 22px; display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 12px; }
+.tick::before { content: ""; position: absolute; left: -7px; top: 13px; width: 12px; height: 12px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+.tick.hl::before { background: var(--amber); box-shadow: 0 0 10px var(--amber); }
+.tick time { font-weight: 700; color: var(--cyan); font-variant-numeric: tabular-nums; }
+.tick.hl time { color: var(--amber); }
+.tick p { margin: 0; }
+@media (max-width: 560px) { .tick { grid-template-columns: minmax(0, 1fr); gap: 0; } }
+.craft { margin: 0; display: grid; gap: 8px; }
+.craft svg, .path svg { width: 100%; height: auto; display: block; border: 1px solid var(--line); border-radius: 14px; }
+.path { overflow-x: auto; } .path svg { min-width: 760px; background: #0A1030; }
+.craft figcaption { font-size: 13.5px; color: var(--muted); }
+/* Player */
+.player { border: 1px solid var(--line); border-radius: 16px; background: linear-gradient(160deg, #0B1130, #070A1A); padding: 18px; display: grid; gap: 14px; }
+.tape { position: relative; height: 120px; max-width: 380px; border-radius: 12px; background: linear-gradient(180deg, #2B2F3E, #1A1D28); border: 2px solid #3B4156; display: flex; justify-content: space-between; align-items: center; padding: 0 46px; }
+.reel { width: 64px; height: 64px; border-radius: 50%; background: radial-gradient(circle, #111 18%, #6B5A3A 20%, #3A2F1E 62%, #1A1D28 64%); border: 2px solid #4A5068; position: relative; }
+.reel i { position: absolute; inset: 22px; border-radius: 50%; border: 3px dashed #9AA6D4; }
+.playing .reel i { animation: spin 2s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.tapelabel { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); font: 600 10px/1 ui-monospace, Menlo, monospace; color: #F3E6C8; letter-spacing: .08em; white-space: nowrap; }
+.pctl { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+.big { font: inherit; font-weight: 700; color: #04121A; background: var(--cyan); border: 0; border-radius: 999px; padding: 11px 20px; cursor: pointer; }
+.big:hover { filter: brightness(1.1); }
+.snd { display: flex; gap: 8px; align-items: center; font-size: 14px; color: var(--muted); }
+.geiger { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
+.needle { width: 140px; height: 10px; border-radius: 5px; background: linear-gradient(90deg, #6CF2A4, #FFC66B 60%, #FF6B7A); position: relative; }
+.needle i { position: absolute; top: -5px; left: 0; width: 3px; height: 20px; background: #fff; border-radius: 2px; transition: left .4s ease; box-shadow: 0 0 6px #fff; }
+.geiger b { color: var(--ink); min-width: 58px; font-variant-numeric: tabular-nums; }
+.log { list-style: none; margin: 0; padding: 12px 14px; max-height: 380px; overflow-y: auto; background: #03050F; border-radius: 12px; border: 1px solid var(--line); font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; display: grid; gap: 6px; max-width: none !important; min-height: 120px; }
+.log li { animation: pop .35s ease; }
+.log .t { color: var(--amber); margin-right: 8px; }
+.log .who { color: var(--cyan); margin-right: 6px; font-weight: 700; }
+.log .note { color: #6F7AA8; font-style: italic; }
+@keyframes pop { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.video { max-width: 720px; }
+.vframe { position: relative; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; background: #0B1130; border: 1px solid var(--line); }
+.vframe iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.vplay { position: absolute; inset: 0; width: 100%; border: 0; cursor: pointer; color: #fff; display: grid; place-content: center; justify-items: center; gap: 10px; padding: 16px; text-align: center; font: 600 15px/1.35 var(--font); background: radial-gradient(circle at 70% 30%, rgba(167,123,255,.35), transparent 55%), linear-gradient(160deg, #1A2350, #070A1A); }
+.vplay .pb { width: 64px; height: 64px; border-radius: 50%; background: rgba(255,255,255,.95); display: grid; place-items: center; }
+.vplay .pb svg { width: 26px; height: 26px; margin-left: 4px; fill: #0B1130; }
+.vplay small { color: var(--muted); font-size: 12px; font-weight: 400; max-width: 40ch; }
+/* Memo */
+.protocol { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+@media (max-width: 800px) { .protocol { grid-template-columns: minmax(0, 1fr); } }
+.paper { background: #F4F1E8; color: #1E1E1E; border-radius: 4px; padding: 22px; font: 14.5px/1.5 'Courier New', Courier, monospace; box-shadow: 0 12px 30px rgba(0,0,0,.45); transform: rotate(-.6deg); display: grid; gap: 8px; }
+.paper .ph { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid #999; padding-bottom: 6px; }
+.paper .pt { font-weight: 700; text-transform: uppercase; }
+.paper p { margin: 0; }
+.paper .sig { margin-top: 8px; font-weight: 700; }
+.paper .pn { font-size: 11px; color: #666; font-style: italic; }
+ul.facts { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; max-width: none; }
+ul.facts li { border-left: 3px solid var(--violet); padding: 2px 0 2px 12px; font-size: 15px; }
+/* Zeugen */
+.ranks { display: grid; gap: 14px; }
+.rank { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px; border-left: 4px solid var(--line); padding-left: 14px; position: relative; padding-top: 22px; }
+.rank .rl { position: absolute; top: 0; left: 14px; font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; }
+.r1 { border-color: var(--amber); } .r1 .rl { color: var(--amber); }
+.r2 { border-color: var(--violet); } .r2 .rl { color: var(--violet); }
+.r3 { border-color: var(--cyan); } .r3 .rl { color: var(--cyan); }
+.r4 { border-color: var(--green); } .r4 .rl { color: var(--green); }
+.w { border: 1px solid var(--line); border-radius: 12px; background: var(--bg2); padding: 12px 14px; display: grid; gap: 3px; align-content: start; }
+.w.hl { border-color: rgba(79,227,240,.55); box-shadow: 0 0 0 1px rgba(79,227,240,.15) inset; }
+.w b { font-size: 15px; } .w span { font-size: 12.5px; color: var(--muted); } .w p { font-size: 13.5px; color: #C9D1F5; margin: 4px 0 0; }
+.sketch { display: grid; gap: 12px; align-content: start; }
+.sketch svg, .rad svg { width: 100%; height: auto; display: block; border: 1px solid var(--line); border-radius: 14px; }
+/* Leuchtturm */
+.lhsim { display: grid; gap: 12px; }
+.lhsim svg { width: 100%; height: auto; display: block; border-radius: 14px; border: 1px solid var(--line); }
+.lhctl { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.lhctl #lhHit { font: inherit; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 10px 20px; cursor: pointer; }
+.lhctl span { font-size: 14px; color: var(--muted); }
+.binary { font: 12px/1.4 ui-monospace, Menlo, monospace; color: rgba(108,242,164,.55); word-break: break-all; max-height: 70px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+.pro h3 { color: var(--green); } .con h3 { color: var(--amber); }
+.lhc { animation: lhb 5s infinite; }
+@keyframes lhb { 0%, 6% { fill: #FFFFFF; } 10%, 100% { fill: #6B6440; } }
+@media (prefers-reduced-motion: reduce) { .lhc, .playing .reel i { animation: none; } }
+
+.cmp .ev { border: 1px solid var(--line); border-radius: 14px; background: var(--bg2); padding: 16px; display: grid; gap: 10px; align-content: start; }
+.ev svg { width: 100%; height: auto; border-radius: 10px; display: block; }
+.evt { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; }
+.ev1 .evt { color: var(--cyan); } .ev2 .evt { color: var(--amber); }
+.ev h3 { margin: 0; }
+.ev ul { font-size: 14.5px; }
+.flare-card { display: grid; gap: 8px; } .flare-card svg { width: 100%; max-width: 340px; height: auto; border-radius: 12px; border: 1px solid var(--line); }
+.scope svg { width: 100%; height: auto; display: block; border-radius: 14px; border: 1px solid var(--line); }
+.scope { display: grid; gap: 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="bar">
+    <a class="brand" href="uap.html"><span class="dot" aria-hidden="true"></span>UAP Observatory</a>
+    <nav class="subnav" aria-label="Themen des UAP Observatory">
+      <a href="uap.html">Skinwalker Ranch</a>
+      <a href="rodenstein.html">Odenwald &amp; Rodensteiner</a>
+      <a href="cenap.html">CENAP-Meldestelle</a>
+      <a href="rendlesham.html">Rendlesham Forest</a>
+      <a href="phoenix.html" aria-current="page">Phoenix Lights</a>
+      <a class="back" href="index.html">← Wetterstation</a>
+    </nav>
+  </header>
+
+  <figure class="title" style="margin:16px 0 0">
+    <img src="uap-titel.jpg" width="1024" height="434" alt="Nachthimmel mit Milchstraße über einem Schlosshof, darüber schwebt ein leuchtendes geometrisches Objekt – Titelbild des UAP Observatory">
+  </figure>
+
+      <section class="hero" aria-labelledby="heroTitle">
+    <div>
+      <div class="kicker">Thema 5 · Arizona, USA · 13. März 1997</div>
+      <h1 id="heroTitle">Die Phoenix Lights</h1>
+    </div>
+    <p class="lead">Ein Donnerstagabend in Arizona. Über eine Strecke von rund 480 km, von Nevada bis Tucson, sehen tausende Menschen Lichter am Himmel: erst ein riesiges, lautloses „V“, das die Sterne verdeckt, zwei Stunden später eine Kette glühender Kugeln über Phoenix. Bis zu jeder zehnte Einwohner Arizonas will etwas gesehen haben, darunter der Gouverneur. Die größte Massensichtung der US-Geschichte.</p>
+    <div class="stats">
+      <div class="stat"><span class="v">2</span><span class="k">getrennte Ereignisse: gegen 20 Uhr und gegen 22 Uhr</span></div>
+      <div class="stat"><span class="v">~480 km</span><span class="k">Strecke der Sichtungen, von Nevada bis Tucson</span></div>
+      <div class="stat"><span class="v">bis 10 %</span><span class="k">der Einwohner Arizonas sahen laut einer Umfrage 1997 die Lichter</span></div>
+      <div class="stat"><span class="v">3 Std.</span><span class="k">zwischen 19:30 und 22:30 Uhr Ortszeit</span></div>
+    </div>
+  </section>
+
+  <nav class="toc" aria-label="Inhalt dieser Seite">
+    <a href="#karte">Route</a>
+    <a href="#zwei">Zwei Ereignisse</a>
+    <a href="#v">Das „V“ um 20 Uhr</a>
+    <a href="#teleskop">Teleskop-Test</a>
+    <a href="#lichter">Die Lichter um 22 Uhr</a>
+    <a href="#fackel">Fackel-Simulation</a>
+    <a href="#gouverneur">Der Gouverneur</a>
+    <a href="#zeugen">Zeugen</a>
+    <a href="#chronik">Chronik</a>
+    <a href="#bilanz">Bilanz</a>
+    <a href="#quellen">Quellen</a>
+  </nav>
+
+  <section class="card" id="karte">
+    <div class="label">Karte</div>
+    <h2>Die Route über Arizona</h2>
+    <p>Das „V“ zog von Nordwesten nach Südosten. Die Lichter auf der Karte fliegen die Strecke in Zeitraffer ab. Klick auf die Orte für die Berichte.</p>
+    <div class="mapwrap">
+      <div class="map">
+        <svg viewBox="0 0 760 640" role="img" aria-labelledby="pmT">
+          <title id="pmT">Karte von Nevada und Arizona mit der Route des V-förmigen Lichts von Henderson über Paulden, Prescott und Phoenix nach Tucson sowie dem Goldwater-Schießplatz</title>
+          <defs>
+            <pattern id="g4" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#18224F"/></pattern>
+            <path id="route" d="M110 70 C200 140 270 200 320 250 C350 280 370 300 390 330 C420 380 455 430 510 520"/>
+          </defs>
+          <rect width="760" height="640" fill="#0A1030"/><rect width="760" height="640" fill="url(#g4)"/>
+          <!-- Arizona Umriss (vereinfacht) -->
+          <path d="M150 40 L640 40 L640 620 L420 620 L150 520 L170 430 L130 330 L150 230 L120 140 Z" fill="#1A1630" stroke="#5A4A7A" stroke-width="2"/>
+          <text x="560" y="80" fill="#8E7AB8" font-size="22" font-weight="700" letter-spacing="4">ARIZONA</text>
+          <text x="40" y="40" fill="#6F7AA8" font-size="13" letter-spacing="3">NEVADA</text>
+          <text x="560" y="610" fill="#6F7AA8" font-size="12" letter-spacing="3">MEXIKO ↓</text>
+          <!-- Goldwater Range -->
+          <rect x="190" y="430" width="200" height="130" rx="10" fill="#FF6B7A" opacity=".1" stroke="#FF6B7A" stroke-dasharray="6 5"/>
+          <text x="290" y="548" fill="#FF8A97" font-size="12" text-anchor="middle">Barry M. Goldwater Range</text>
+          <!-- Sierra Estrella -->
+          <path d="M300 390 L318 372 L330 384 L344 366 L360 388" fill="none" stroke="#C8A27A" stroke-width="3"/>
+          <text x="290" y="406" fill="#C8A27A" font-size="11">Sierra Estrella</text>
+          <!-- Route -->
+          <use href="#route" fill="none" stroke="#4FE3F0" stroke-width="10" opacity=".12"/>
+          <use href="#route" fill="none" stroke="#4FE3F0" stroke-width="2.5" stroke-dasharray="8 7"/>
+          <!-- fliegendes V -->
+          <g id="vfly">
+            <g fill="#FFE9A8"><circle cx="0" cy="0" r="4"/><circle cx="-9" cy="-9" r="3.5"/><circle cx="9" cy="-9" r="3.5"/><circle cx="-18" cy="-18" r="3"/><circle cx="18" cy="-18" r="3"/></g>
+            <animateMotion dur="14s" repeatCount="indefinite" rotate="auto-reverse"><mpath href="#route"/></animateMotion>
+          </g>
+          <!-- Orte -->
+          <g font-size="13" fill="#E8ECFF">
+            <g class="hs" data-id="henderson" tabindex="0" role="button" aria-label="Henderson Nevada"><circle class="ring" cx="110" cy="70" r="11" stroke="#A77BFF"/><circle class="core" cx="110" cy="70" r="8" fill="#A77BFF"/><text x="126" y="66">Henderson (NV) · 19:55</text></g>
+            <g class="hs" data-id="paulden" tabindex="0" role="button" aria-label="Paulden"><circle class="ring" cx="300" cy="232" r="11" stroke="#A77BFF"/><circle class="core" cx="300" cy="232" r="8" fill="#A77BFF"/><text x="316" y="226">Paulden · 20:15</text></g>
+            <g class="hs" data-id="prescott" tabindex="0" role="button" aria-label="Prescott Valley"><circle class="ring" cx="330" cy="262" r="11" stroke="#A77BFF"/><circle class="core" cx="330" cy="262" r="8" fill="#A77BFF"/><text x="346" y="270">Prescott Valley · 20:17</text></g>
+            <g class="hs" data-id="phoenix" tabindex="0" role="button" aria-label="Phoenix"><circle class="ring" cx="395" cy="340" r="13" stroke="#FFC66B"/><circle class="core" cx="395" cy="340" r="10" fill="#FFC66B"/><text x="414" y="344" font-weight="700">Phoenix · 20:30 + 22:00</text></g>
+            <g class="hs" data-id="tucson" tabindex="0" role="button" aria-label="Tucson Davis-Monthan"><circle class="ring" cx="510" cy="520" r="11" stroke="#4FE3F0"/><circle class="core" cx="510" cy="520" r="8" fill="#4FE3F0"/><text x="526" y="516">Tucson · Davis-Monthan</text><text x="526" y="532" fill="#9AA6D4" font-size="11">Landung ca. 20:45</text></g>
+            <g class="hs" data-id="range" tabindex="0" role="button" aria-label="Goldwater Range"><circle class="ring" cx="290" cy="490" r="11" stroke="#FF6B7A"/><circle class="core" cx="290" cy="490" r="8" fill="#FF6B7A"/></g>
+          </g>
+          <g transform="translate(700 590)"><path d="M0 -22L8 6H-8Z" fill="#E8ECFF"/><text y="24" fill="#E8ECFF" font-size="13" text-anchor="middle">N</text></g>
+          <text x="20" y="630" fill="#7E8CC0" font-size="11">vereinfachte Karte, Lage ungefähr</text>
+        </svg>
+      </div>
+      <div class="spot" id="spot" aria-live="polite"></div>
+    </div>
+    <div class="spotlist" id="spotlist"></div>
+  </section>
+
+  <section class="card" id="zwei">
+    <div class="label">Der wichtigste Punkt</div>
+    <h2>Zwei Ereignisse, nicht eines</h2>
+    <p>Die meiste Verwirrung entsteht, weil beide Sichtungen zu „den Phoenix Lights“ verschmolzen sind. Fast alle bekannten Fotos und Videos zeigen das zweite Ereignis um 22 Uhr.</p>
+    <div class="two cmp">
+      <div class="ev ev1">
+        <span class="evt">Ereignis 1 · ca. 19:55–20:45 Uhr</span>
+        <h3>Das wandernde „V“</h3>
+        <svg viewBox="0 0 300 120" aria-hidden="true"><rect width="300" height="120" fill="#070B1F"/><g fill="#FFE9A8"><circle cx="150" cy="80" r="5"/><circle cx="120" cy="60" r="4.5"/><circle cx="180" cy="60" r="4.5"/><circle cx="90" cy="40" r="4"/><circle cx="210" cy="40" r="4"/></g><path d="M90 40 L150 80 L210 40" fill="none" stroke="#2A3168" stroke-width="18" opacity=".6"/></svg>
+        <ul>
+          <li>Fünf bis sieben Lichter in V- oder Winkelform</li>
+          <li>zieht langsam und lautlos von NW nach SO</li>
+          <li>Zeugen: Es verdeckte die Sterne, also ein festes Objekt</li>
+          <li>gesehen von Nevada bis Tucson</li>
+          <li><b>Erklärung der Skeptiker:</b> A-10-Kampfjets in Formation auf dem Weg nach Davis-Monthan</li>
+        </ul>
+      </div>
+      <div class="ev ev2">
+        <span class="evt">Ereignis 2 · ca. 22:00 Uhr</span>
+        <h3>Die Lichterkette über Phoenix</h3>
+        <svg viewBox="0 0 300 120" aria-hidden="true"><rect width="300" height="120" fill="#070B1F"/><path d="M0 120 L40 92 L70 104 L110 84 L150 100 L190 86 L230 102 L270 90 L300 104 V120Z" fill="#14182E"/><g fill="#FFB36B"><circle cx="70" cy="50" r="5"/><circle cx="110" cy="46" r="5"/><circle cx="150" cy="44" r="5"/><circle cx="190" cy="48" r="5"/><circle cx="230" cy="52" r="5"/></g></svg>
+        <ul>
+          <li>eine Reihe von Lichtkugeln im Südwesten</li>
+          <li>stehen scheinbar still, leuchten mehrere Minuten</li>
+          <li>verlöschen nacheinander, einige „tauchen ab“</li>
+          <li>hundertfach gefilmt und fotografiert</li>
+          <li><b>Offizielle Erklärung:</b> Leuchtfackeln von A-10-Jets über dem Goldwater-Schießplatz, die hinter der Sierra Estrella absanken</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="v">
+    <div class="label">Ereignis 1</div>
+    <h2>Das „V“ um 20 Uhr</h2>
+    <div class="clock">
+      <div class="tick"><time>19:55</time><p>Henderson, Nevada: Ein Mann meldet ein großes, V-förmiges Objekt, das nach Südosten zieht.</p></div>
+      <div class="tick"><time>20:15</time><p>Paulden, Arizona: Ein ehemaliger Polizist sieht eine Gruppe rötlich-oranger Lichter, verfolgt sie mit dem Fernglas, bis sie am südlichen Horizont verschwinden.</p></div>
+      <div class="tick hl"><time>ca. 20:17</time><p>Prescott Valley: Anrufer berichten, das Objekt sei fest gewesen, weil es beim Überflug große Teile des Sternenhimmels verdeckte. Tim Ley sieht es mit Frau, Sohn und Enkel zuerst in rund 100 km Entfernung, dann nähert es sich.</p></div>
+      <div class="tick"><time>ca. 20:30</time><p>Phoenix: Die Meldungen explodieren. Schauspieler Kurt Russell, Hobbypilot, meldet die Lichter der Flugsicherung.</p></div>
+      <div class="tick"><time>ca. 20:30</time><p>Amateurastronom Mitch Stanley richtet sein Teleskop auf das „V“ und sieht: einzelne Flugzeuge.</p></div>
+      <div class="tick"><time>ca. 20:45</time><p>Laut den Skeptikern landet die Formation auf der Davis-Monthan Air Force Base in Tucson.</p></div>
+    </div>
+    <div class="callout"><b>Was Tim Ley beschreibt</b><p>Ein gigantisches Objekt wie ein Zimmermannswinkel, fünf Lichter darin, eines vorne und je zwei an den Seiten. Man habe nicht das Objekt selbst gesehen, nur seinen Umriss, weil es die Sterne auslöschte. Es sei so tief und langsam über sie hinweggezogen, dass es unwirklich schien.</p></div>
+    <figure class="craft">
+      <svg viewBox="0 0 600 300" role="img" aria-labelledby="bmT">
+        <title id="bmT">Skizze nach Zeugenbeschreibung: dunkler, winkelförmiger Körper mit fünf Lichtern, der die Sterne verdeckt</title>
+        <rect width="600" height="300" fill="#05081A"/>
+        <g id="stars1" fill="#fff"></g>
+        <path d="M120 70 L300 220 L480 70 L440 60 L300 175 L160 60 Z" fill="#0D1130" stroke="#2A3168" stroke-width="2"/>
+        <g fill="#FFE9A8"><circle cx="300" cy="205" r="7"/><circle cx="240" cy="155" r="6"/><circle cx="360" cy="155" r="6"/><circle cx="170" cy="96" r="6"/><circle cx="430" cy="96" r="6"/></g>
+        <g fill="#FFE9A8" opacity=".25"><circle cx="300" cy="205" r="16"/><circle cx="240" cy="155" r="14"/><circle cx="360" cy="155" r="14"/><circle cx="170" cy="96" r="14"/><circle cx="430" cy="96" r="14"/></g>
+        <text x="20" y="28" fill="#C8D2FF" font-size="13" font-weight="700">Skizze nach Zeugenaussagen</text>
+        <text x="20" y="46" fill="#7E8CC0" font-size="11">dunkler Umriss, der die Sterne verdeckt, fünf Lichter</text>
+      </svg>
+    </figure>
+  </section>
+
+  <section class="card" id="teleskop">
+    <div class="label">Interaktiv</div>
+    <h2>Teleskop-Test: Was sah Mitch Stanley?</h2>
+    <p>Der 21-jährige Amateurastronom Mitch Stanley beobachtete das „V“ mit einem großen Dobson-Teleskop. Mit bloßem Auge: fünf Lichter in Formation. Im Teleskop: einzelne Flugzeuge, jedes mit eigenen Lichtern. Schalt selbst um.</p>
+    <div class="scope" id="scope">
+      <svg viewBox="0 0 800 340" role="img" aria-labelledby="scT">
+        <title id="scT">Simulation: fünf Lichter in V-Formation ziehen über den Nachthimmel, im Teleskop-Modus werden Flugzeug-Silhouetten sichtbar</title>
+        <defs><clipPath id="lens"><circle cx="400" cy="170" r="150"/></clipPath>
+          <symbol id="jet" viewBox="-30 -20 60 40"><path d="M-26 0 L-6 -3 L-2 -18 L4 -18 L4 -3 L22 -2 L26 0 L22 2 L4 3 L4 18 L-2 18 L-6 3 Z" fill="#7F8BAE"/><rect x="-24" y="-8" width="4" height="16" fill="#7F8BAE"/></symbol></defs>
+        <rect width="800" height="340" fill="#04071A"/>
+        <g id="scStars" fill="#fff" opacity=".7"></g>
+        <g id="form"></g>
+        <g id="lensRing" opacity="0"><circle cx="400" cy="170" r="150" fill="none" stroke="#9AA6D4" stroke-width="3"/><line x1="400" y1="20" x2="400" y2="320" stroke="#9AA6D4" opacity=".3"/><line x1="250" y1="170" x2="550" y2="170" stroke="#9AA6D4" opacity=".3"/></g>
+      </svg>
+      <div class="lhctl"><button type="button" class="big" id="scBtn">🔭 Teleskop einschalten</button><span id="scOut">Bloßes Auge: fünf Lichter, ein „Objekt“?</span></div>
+    </div>
+  </section>
+
+  <section class="card" id="lichter">
+    <div class="label">Ereignis 2</div>
+    <h2>Die Lichterkette um 22 Uhr</h2>
+    <p>Gegen 22 Uhr erscheint im Südwesten eine Reihe heller, orange-gelber Kugeln. Sie scheinen zu schweben, leuchten minutenlang und verschwinden dann eine nach der anderen. Diese Bilder gingen um die Welt. Auch die Ärztin Dr. Lynne Kitei filmte von ihrem Haus aus.</p>
+    <div class="two">
+      <ul>
+        <li><b>Juli 1997:</b> Capt. Drew Sullins von der Maryland Air National Guard erklärt, acht A-10 seiner Einheit seien an dem Abend über dem Barry M. Goldwater Range, rund 60 Meilen südwestlich von Phoenix, geflogen und hätten Leuchtfackeln abgeworfen.</li>
+        <li>Laut der Pressestelle der Arizona National Guard wurden die Fackeln um 22 Uhr in ungewöhnlicher Höhe von 15.000 Fuß abgeworfen.</li>
+        <li>Die Einheit war im Rahmen von „Operation Snowbird“ in Arizona, einem Wintertraining auf der Davis-Monthan Air Force Base. In Maryland gibt es keine Wüsten-Schießplätze.</li>
+        <li><b>2007:</b> Lt. Col. Ed Jones bestätigt, er habe eine der vier A-10 geflogen, die die Fackeln abwarfen.</li>
+        <li>Ein Fernsehsender filmte später einen ähnlichen Fackelabwurf, der den Bildern vom 13. März verblüffend ähnelte.</li>
+      </ul>
+      <div class="flare-card">
+        <h3>Die LUU-2B/B-Leuchtfackel</h3>
+        <svg viewBox="0 0 300 260" role="img" aria-labelledby="flT"><title id="flT">Schema einer Fallschirm-Leuchtfackel</title>
+          <rect width="300" height="260" fill="#070B1F"/>
+          <path d="M100 60 C110 20 190 20 200 60 Z" fill="#9AA6D4" opacity=".55"/>
+          <g stroke="#9AA6D4" stroke-width="1"><line x1="100" y1="60" x2="150" y2="130"/><line x1="200" y1="60" x2="150" y2="130"/><line x1="150" y1="40" x2="150" y2="130"/></g>
+          <rect x="143" y="130" width="14" height="40" rx="3" fill="#C8D2FF"/>
+          <circle cx="150" cy="176" r="10" fill="#FFF6D0"/><circle cx="150" cy="176" r="40" fill="#FFD27A" opacity=".18"/>
+          <text x="210" y="40" fill="#9AA6D4" font-size="11">Fallschirm</text>
+          <text x="170" y="150" fill="#9AA6D4" font-size="11">Magnesium-Kerze</text>
+          <text x="20" y="230" fill="#E8ECFF" font-size="12">sinkt langsam, brennt ca. 5 Minuten,</text>
+          <text x="20" y="248" fill="#E8ECFF" font-size="12">extrem hell, weiß bis gelblich</text>
+        </svg>
+        <p class="src">LUU-2 von ATK Thiokol: 1.000 Fuß über Grund beleuchtet sie ein Gebiet von etwa einem halben Kilometer.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="fackel">
+    <div class="label">Interaktive Simulation</div>
+    <h2>Fackeln hinter der Sierra Estrella</h2>
+    <p>Blick von Phoenix nach Südwesten. Die Fackeln hängen über dem Schießplatz, sinken langsam und verschwinden hinter dem Bergkamm, nicht weil sie „ausgehen“, sondern weil der Berg sie verdeckt. Starte die Simulation und schalte den Bergkamm aus, um zu sehen, was dahinter passiert.</p>
+    <div class="lhsim">
+      <svg viewBox="0 0 800 320" role="img" aria-labelledby="fsT">
+        <title id="fsT">Simulation: eine Reihe leuchtender Fackeln sinkt hinter die Silhouette der Sierra Estrella, im Vordergrund die Lichter von Phoenix</title>
+        <defs><radialGradient id="fg" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFF6D0"/><stop offset=".35" stop-color="#FFC66B" stop-opacity=".7"/><stop offset="1" stop-color="#FF8A3C" stop-opacity="0"/></radialGradient></defs>
+        <rect width="800" height="320" fill="#060818"/>
+        <g id="flares"></g>
+        <path id="ridge" d="M0 230 L60 205 L110 218 L170 178 L220 196 L280 160 L330 186 L380 168 L440 192 L500 158 L560 184 L620 170 L680 196 L740 182 L800 200 V320 H0Z" fill="#0D1024"/>
+        <rect y="282" width="800" height="38" fill="#0A0D1E"/>
+        <g id="city"></g>
+        <text x="790" y="312" fill="#7E8CC0" font-size="11" text-anchor="end">Phoenix, Blick nach Südwesten</text>
+      </svg>
+      <div class="lhctl"><button type="button" class="big" id="fsGo">▶ Fackeln abwerfen</button><label class="snd"><input type="checkbox" id="ridgeOn" checked> Bergkamm anzeigen</label><span id="fsOut"></span></div>
+    </div>
+  </section>
+
+  <section class="card" id="gouverneur">
+    <div class="label">Politik</div>
+    <h2>Der Gouverneur und das Alien-Kostüm</h2>
+    <div class="two">
+      <div>
+        <h3>19. Juni 1997</h3>
+        <p>Gouverneur <b>Fife Symington</b>, selbst ehemaliger Air-Force-Captain, kündigt eine Pressekonferenz an: Die Polizei habe den Schuldigen gefasst. Herein kommt, in Handschellen, eine Gestalt mit riesigem Kopf und Kulleraugen. Es ist sein Stabschef Jay Heiler. Symingtons Kommentar: Das zeige doch nur, dass die Journalisten das alles viel zu ernst nähmen.</p>
+        <p>Zur selben Zeit stand Symington wegen Betrugs vor einem Bundesgericht. Er wurde 1997 verurteilt und trat zurück.</p>
+      </div>
+      <div>
+        <h3>März 2007</h3>
+        <p>Zehn Jahre später die Kehrtwende. Symington erzählt, er habe die Lichter an jenem Abend selbst gesehen, im Bereich des Squaw Peak: ein enormes, geometrisches Objekt mit sehr hellen Lichtern an der Vorderkante. Es habe sich „jenseitig“ angefühlt. Er habe es damals nur seiner Frau erzählt und mit dem Kostüm die Lage beruhigen wollen.</p>
+        <p class="src">Kritiker merken an: Unter den vielen Menschen im Park, wo er gestanden haben will, bemerkte 1997 niemand den Gouverneur.</p>
+      </div>
+    </div>
+    <div class="callout"><b>Frances Emma Barwood</b><p>Die Stadträtin von Phoenix war die einzige Politikerin, die eine offizielle Untersuchung verlangte. Sie sammelte Hunderte Berichte, wurde in Karikaturen mit Alufolienhut verspottet, und nannte die Fackel-Erklärung „viel zu bequem“.</p></div>
+  </section>
+
+  <section class="card" id="zeugen">
+    <div class="label">Die Beteiligten</div>
+    <h2>Zeugen, Piloten, Ermittler</h2>
+    <div class="ranks">
+      <div class="rank r1"><span class="rl">Augenzeugen des „V“</span>
+        <div class="w hl"><b>Tim Ley</b><span>Prescott Valley / Phoenix</span><p>Sah das Objekt mit Familie aus 100 km Entfernung kommen und tief über sich hinwegziehen.</p></div>
+        <div class="w hl"><b>Fife Symington</b><span>Gouverneur von Arizona</span><p>Verspottete die Sache 1997, gab 2007 an, es selbst gesehen zu haben.</p></div>
+        <div class="w"><b>Kurt Russell</b><span>Schauspieler und Hobbypilot</span><p>Meldete die Lichter im Flug der Flugsicherung.</p></div>
+        <div class="w"><b>Ex-Polizist aus Paulden</b><span>Name nicht bekannt</span><p>Erste Meldung in Arizona um 20:15 Uhr.</p></div>
+      </div>
+      <div class="rank r3"><span class="rl">Beobachter mit Instrumenten</span>
+        <div class="w hl"><b>Mitch Stanley</b><span>Amateurastronom, 21 Jahre</span><p>Sah im Teleskop einzelne Flugzeuge. Niemand fragte nach.</p></div>
+        <div class="w"><b>Rich Contry</b><span>mit Fernglas</span><p>Identifizierte die Lichter ebenfalls als Flugzeuge.</p></div>
+        <div class="w"><b>Dr. Lynne Kitei</b><span>Ärztin, Phoenix</span><p>Filmte die Lichter, hält sie bis heute für ungeklärt. Buch und Film „The Phoenix Lights“.</p></div>
+      </div>
+      <div class="rank r2"><span class="rl">Militär</span>
+        <div class="w"><b>Capt. Drew Sullins</b><span>Sprecher Maryland ANG</span><p>Juli 1997: acht A-10 über dem Goldwater Range, Fackeln abgeworfen.</p></div>
+        <div class="w"><b>Lt. Col. Ed Jones</b><span>104th Fighter Squadron</span><p>2007: flog selbst eine der A-10, die die Fackeln abwarfen.</p></div>
+        <div class="w"><b>Capt. Eileen Bienz</b><span>Arizona National Guard</span><p>Ermittelte: Abwurf um 22 Uhr, 15.000 Fuß.</p></div>
+      </div>
+      <div class="rank r4"><span class="rl">Politik &amp; Forschung</span>
+        <div class="w"><b>Frances Emma Barwood</b><span>Stadträtin Phoenix</span><p>Forderte eine Untersuchung, wurde verspottet.</p></div>
+        <div class="w"><b>Robert Sheaffer</b><span>Skeptiker</span><p>Identifizierte die 22-Uhr-Lichter als Leuchtfackeln.</p></div>
+        <div class="w"><b>James McGaha</b><span>Astronom, Ex-Air-Force-Pilot</span><p>Führte beide Sichtungen auf A-10 zurück.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="chronik">
+    <div class="label">Danach</div>
+    <h2>Chronik</h2>
+    <ol class="timeline">
+      <li><time>13.3.1997</time><span>Die Sichtungen. Am selben Abend steht übrigens der Komet Hale-Bopp am Himmel, damals einer der hellsten seit Jahrzehnten.</span></li>
+      <li><time>Juni 1997</time><span>Die Geschichte wird landesweit bekannt. Symingtons Alien-Pressekonferenz am 19. Juni.</span></li>
+      <li><time>Juli 1997</time><span>Die Maryland Air National Guard erklärt die 22-Uhr-Lichter mit Fackeln.</span></li>
+      <li><time>März 2007</time><span>Symington sagt, er habe ein UFO gesehen. Ed Jones bestätigt die Fackeln. Im selben Jahr sorgen erneut Lichter über Phoenix für Aufregung, diesmal Militärfackeln von der Luke Air Force Base.</span></li>
+      <li><time>April 2008</time><span>Wieder Lichter über Phoenix. Ein Anwohner sagt, sein Nachbar habe Fackeln an Heliumballons steigen lassen.</span></li>
+      <li><time>2017</time><span>Ed Jones bekräftigt gegenüber der Arizona Republic die Fackel-Erklärung.</span></li>
+      <li><time>2021</time><span>Die Doku-Serie „UFO“ widmet den Phoenix Lights die erste Folge, mit Symington und Barwood.</span></li>
+    </ol>
+  </section>
+
+  <section class="card" id="video">
+    <div class="label">Videos</div>
+    <h2>Die Aufnahmen</h2>
+    <p>Hunderte Fotos und Stunden an Video existieren, fast alle vom 22-Uhr-Ereignis, aufgenommen mit Blick auf die Sierra Estrella.</p>
+    <div class="links"><div><ul>
+      <li><a href="https://www.youtube.com/results?search_query=Phoenix+Lights+March+13+1997+original+footage" target="_blank" rel="noopener">Originalaufnahmen vom 13. März 1997</a><span>YouTube-Suche</span></li>
+      <li><a href="https://www.youtube.com/results?search_query=Symington+alien+press+conference+1997" target="_blank" rel="noopener">Symingtons Alien-Pressekonferenz 1997</a><span>YouTube-Suche</span></li>
+      <li><a href="https://www.youtube.com/results?search_query=Phoenix+Lights+Tim+Ley+interview" target="_blank" rel="noopener">Interview mit Tim Ley</a><span>YouTube-Suche</span></li>
+      <li><a href="https://www.youtube.com/results?search_query=Phoenix+Lights+Doku+deutsch" target="_blank" rel="noopener">Dokus auf Deutsch</a><span>YouTube-Suche</span></li>
+    </ul></div></div>
+  </section>
+
+  <section class="card" id="bilanz">
+    <div class="label">Fazit</div>
+    <h2>Bilanz: Was spricht wofür?</h2>
+    <div class="two">
+      <div class="pro">
+        <h3>Was den Fall so stark macht</h3>
+        <ul>
+          <li>Tausende Zeugen über hunderte Kilometer, darunter ein Gouverneur und ein Pilot</li>
+          <li>Viele beschreiben ein lautloses, riesiges Objekt, das Sterne verdeckt</li>
+          <li>Das Militär äußerte sich erst Monate später, zunächst gab es keine Erklärung</li>
+          <li>Das Verteidigungsministerium meldete vor Gericht, es gebe keine passenden Unterlagen</li>
+        </ul>
+      </div>
+      <div class="con">
+        <h3>Was die Skeptiker sagen</h3>
+        <ul>
+          <li>Teleskop und Fernglas zeigten beim „V“ einzelne Flugzeuge</li>
+          <li>Die Formation landete passend in Tucson</li>
+          <li>Für 22 Uhr gibt es eine bestätigte Einheit, einen Piloten und Zeiten</li>
+          <li>Fackeln sinken hinter die Sierra Estrella, das erklärt das „Verschwinden“</li>
+          <li>Ohne Bezugspunkt schätzt man nachts Größe und Entfernung kaum richtig ein</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout"><b>Unser Urteil</b><p>Für die Lichter um 22 Uhr ist die Fackel-Erklärung sehr gut belegt. Beim „V“ um 20 Uhr ist die Formation von Militärjets die wahrscheinlichste Erklärung, die Erlebnisse vieler Zeugen eines riesigen, festen Objekts bleiben aber eindrucksvoll. Genau dieser Rest hält den Fall bis heute am Leben.</p></div>
+  </section>
+
+  <section class="card" id="quellen">
+    <div class="label">Weiterlesen</div>
+    <h2>Links, Bücher und Quellen</h2>
+    <div class="links">
+      <div><h3>Überblick</h3><ul>
+        <li><a href="https://en.wikipedia.org/wiki/Phoenix_Lights" target="_blank" rel="noopener">Wikipedia: Phoenix Lights</a></li>
+        <li><a href="https://www.phoenixnewtimes.com/arts-culture/the-phoenix-lights-ufo-sightings-in-1997-an-oral-history-25th-anniversary-13176244" target="_blank" rel="noopener">Phoenix New Times: Eine Oral History</a></li>
+        <li><a href="https://www.ufology.patrickgross.org/htm/phoenix.htm" target="_blank" rel="noopener">Patrick Gross: Fallakte Phoenix Lights</a><span>Sicht der UFO-Forscher</span></li>
+      </ul></div>
+      <div><h3>Erklärungen</h3><ul>
+        <li><a href="https://skeptoid.com/episodes/41" target="_blank" rel="noopener">Skeptoid: Die Fackeln im Detail</a></li>
+        <li><a href="https://www.phoenixnewtimes.com/news/the-phoenix-lights-are-no-mystery-6661825" target="_blank" rel="noopener">Phoenix New Times: The Phoenix Lights are no mystery</a></li>
+        <li><a href="https://www.deseret.com/1997/7/26/19325702/flares-not-ufos-caused-light-show-military-says" target="_blank" rel="noopener">Deseret News, Juli 1997: Flares, not UFOs</a></li>
+        <li><a href="https://hjkc.de/_blog/3078-ufo-forschung---the-phoenix-lights-legenden" target="_blank" rel="noopener">CENAP-Blog: Die Phoenix-Lights-Legenden</a></li>
+      </ul></div>
+      <div><h3>Der Gouverneur</h3><ul>
+        <li><a href="https://www.deseret.com/2007/3/25/20009206/former-governor-says-he-saw-ufo/" target="_blank" rel="noopener">Deseret News 2007: Former governor says he saw UFO</a></li>
+        <li><a href="https://abcnews.go.com/GMA/story?id=2994569" target="_blank" rel="noopener">ABC News: Close Encounter</a></li>
+        <li><a href="https://tucson.com/news/article_9b90333a-4280-5288-9f4b-f1034df5d833.html" target="_blank" rel="noopener">Arizona Daily Star</a></li>
+        <li>Lynne D. Kitei: <i>The Phoenix Lights</i><span>Buch 2000, Film 2005</span></li>
+      </ul></div>
+    </div>
+  </section>
+
+  <p class="foot">Unidentified Anomalous Phenomena Observatory · ein Projekt der <a href="index.html">Wetterstation Bad König</a> · Stand 31. Oktober 2026 · Alle Angaben ohne Gewähr · <a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a></p>
+</div>
+<script>
+(function () {
+  var C = { tech: ['#4FE3F0', 'Militär'], light: ['#A77BFF', 'Sichtung „V“'], beast: ['#FF6B7A', 'Fackeln'], house: ['#FFC66B', 'beide Ereignisse'] };
+  var S = {
+    henderson: { t: 'Henderson, Nevada · 19:55', c: 'light', p: 'Die erste Meldung des Abends: Ein Mann sieht ein großes, V-förmiges Objekt, das nach Südosten zieht, Richtung Arizona.' },
+    paulden: { t: 'Paulden · 20:15', c: 'light', p: 'Ein ehemaliger Polizist verlässt sein Haus, sieht eine Gruppe von sechs oder sieben rötlich-orangen Lichtern und verfolgt sie mit dem Fernglas, bis sie am südlichen Horizont verschwinden.' },
+    prescott: { t: 'Prescott Valley · ca. 20:17', c: 'light', p: 'Hier entstehen die eindringlichsten Berichte: Das Objekt sei fest gewesen, weil es den Sternenhimmel verdeckte. Tim Ley und seine Familie sehen es zuerst in etwa 100 km Entfernung. Fast alle Bilder des „V“ stammen aus Prescott und Dewey.' },
+    phoenix: { t: 'Phoenix', c: 'house', p: 'Gegen 20:30 Uhr zieht das „V“ über die Stadt, die Meldungen explodieren. Gegen 22 Uhr dann die zweite, ganz andere Erscheinung: die Lichterkette im Südwesten über der Sierra Estrella, hundertfach gefilmt. Gouverneur Symington will das „V“ am Squaw Peak gesehen haben.' },
+    tucson: { t: 'Tucson · Davis-Monthan AFB', c: 'tech', p: 'Heimatbasis der „Operation Snowbird“, des Wintertrainings der Air National Guard. Laut den Skeptikern Robert Sheaffer und James McGaha landete die A-10-Formation hier gegen 20:45 Uhr.' },
+    range: { t: 'Barry M. Goldwater Range', c: 'beast', p: 'Riesiger Schießplatz der Luftwaffe im Südwesten Arizonas, über 10.000 km². Hier warfen um 22 Uhr A-10 der Maryland Air National Guard Leuchtfackeln ab, laut Arizona National Guard aus 15.000 Fuß Höhe. Von Phoenix aus liegt er hinter der Sierra Estrella.' }
+  };
+  var spot = document.getElementById('spot'), list = document.getElementById('spotlist');
+  var groups = document.querySelectorAll('.hs');
+  function show(id) {
+    var s = S[id]; if (!s) return; var c = C[s.c];
+    spot.innerHTML = '<span class="tag" style="background:' + c[0] + '22;color:' + c[0] + ';border:1px solid ' + c[0] + '66">' + c[1] + '</span><h3>' + s.t + '</h3><p>' + s.p + '</p>';
+    groups.forEach(function (g) { g.classList.toggle('active', g.getAttribute('data-id') === id); });
+    list.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.id === id ? 'true' : 'false'); });
+  }
+  Object.keys(S).forEach(function (id) {
+    var b = document.createElement('button'); b.type = 'button'; b.dataset.id = id;
+    b.innerHTML = '<b>' + S[id].t + '</b><span>' + C[S[id].c][1] + '</span>';
+    b.addEventListener('click', function () { show(id); }); list.appendChild(b);
+  });
+  groups.forEach(function (g) {
+    var id = g.getAttribute('data-id');
+    g.addEventListener('click', function () { show(id); });
+    g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(id); } });
+  });
+  show('prescott');
+})();
+</script>
+
+
+<script>
+(function () {
+  var NS = 'http://www.w3.org/2000/svg';
+  function stars(g, n, w, h, max) { for (var i = 0; i < n; i++) { var c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', Math.random() * w); c.setAttribute('cy', Math.random() * h); c.setAttribute('r', Math.random() * (max || 1.2) + .3); g.appendChild(c); } }
+  stars(document.getElementById('stars1'), 160, 600, 300);
+  stars(document.getElementById('scStars'), 140, 800, 340);
+  // Teleskop
+  var form = document.getElementById('form'), ring = document.getElementById('lensRing'), btn = document.getElementById('scBtn'), out = document.getElementById('scOut');
+  var pos = [[0, 0], [-40, -26], [40, -26], [-80, -52], [80, -52]], scope = false, x = -120;
+  var items = pos.map(function (p) {
+    var g = document.createElementNS(NS, 'g');
+    var jet = document.createElementNS(NS, 'use'); jet.setAttribute('href', '#jet'); jet.setAttribute('x', -18); jet.setAttribute('y', -12); jet.setAttribute('width', 36); jet.setAttribute('height', 24); jet.setAttribute('opacity', 0);
+    var l1 = document.createElementNS(NS, 'circle'); l1.setAttribute('r', 3.2); l1.setAttribute('fill', '#FFF3C4');
+    var red = document.createElementNS(NS, 'circle'); red.setAttribute('r', 1.6); red.setAttribute('fill', '#FF4E5E'); red.setAttribute('cx', -10); red.setAttribute('opacity', 0);
+    var grn = document.createElementNS(NS, 'circle'); grn.setAttribute('r', 1.6); grn.setAttribute('fill', '#6CF2A4'); grn.setAttribute('cx', 10); grn.setAttribute('opacity', 0);
+    g.appendChild(jet); g.appendChild(l1); g.appendChild(red); g.appendChild(grn); form.appendChild(g);
+    return { g: g, p: p, jet: jet, l1: l1, red: red, grn: grn };
+  });
+  function frame() {
+    x += .9; if (x > 920) x = -120;
+    var k = scope ? 2.4 : 1, cx = scope ? 400 : x, cy = scope ? 200 : 210 - x * .08;
+    items.forEach(function (it, i) {
+      var px = cx + it.p[0] * k * (scope ? 1 : 1), py = cy + it.p[1] * k;
+      it.g.setAttribute('transform', 'translate(' + px + ' ' + py + ') rotate(-90) scale(' + (scope ? 1.6 : 1) + ')');
+      it.jet.setAttribute('opacity', scope ? .95 : 0);
+      var blink = Math.floor(Date.now() / 450 + i) % 2;
+      it.red.setAttribute('opacity', scope ? blink : 0); it.grn.setAttribute('opacity', scope ? 1 - blink : 0);
+    });
+    ring.setAttribute('opacity', scope ? 1 : 0);
+    requestAnimationFrame(frame);
+  }
+  if (!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) requestAnimationFrame(frame); else { x = 400; frame = function () {}; }
+  btn.onclick = function () {
+    scope = !scope;
+    btn.textContent = scope ? '👁 Bloßes Auge' : '🔭 Teleskop einschalten';
+    out.textContent = scope ? 'Teleskop: fünf einzelne Flugzeuge, jedes mit eigenen Lichtern. So beschrieb es Mitch Stanley.' : 'Bloßes Auge: fünf Lichter, ein „Objekt“?';
+  };
+  // Fackeln
+  var fl = document.getElementById('flares'), ridge = document.getElementById('ridge'), city = document.getElementById('city'), fsOut = document.getElementById('fsOut');
+  for (var i = 0; i < 90; i++) { var r = document.createElementNS(NS, 'rect'); r.setAttribute('x', Math.random() * 800); r.setAttribute('y', 286 + Math.random() * 30); r.setAttribute('width', 2); r.setAttribute('height', 2); r.setAttribute('fill', ['#FFC66B', '#FFE9A8', '#FF9A5A', '#C8D2FF'][i % 4]); city.appendChild(r); }
+  var running = false, raf, F = [];
+  document.getElementById('ridgeOn').onchange = function () { ridge.setAttribute('opacity', this.checked ? 1 : .25); };
+  document.getElementById('fsGo').onclick = function () {
+    fl.innerHTML = ''; F = [];
+    var xs = [250, 300, 350, 400, 450, 500, 550];
+    xs.forEach(function (x, i) {
+      var g = document.createElementNS(NS, 'g');
+      var glow = document.createElementNS(NS, 'circle'); glow.setAttribute('r', 22); glow.setAttribute('fill', 'url(#fg)');
+      var core = document.createElementNS(NS, 'circle'); core.setAttribute('r', 4); core.setAttribute('fill', '#FFF6D0');
+      g.appendChild(glow); g.appendChild(core); fl.appendChild(g);
+      F.push({ g: g, x: x, y: 60 + (i % 3) * 6, t0: performance.now() + i * 900, v: .055 + Math.random() * .02, life: 26000 + Math.random() * 6000 });
+    });
+    fsOut.textContent = 'Die Fackeln brennen und sinken langsam …';
+    if (!running) { running = true; loop(); }
+  };
+  function loop(now) {
+    now = now || performance.now(); var alive = 0;
+    F.forEach(function (f) {
+      var dt = now - f.t0; if (dt < 0) { f.g.setAttribute('opacity', 0); alive++; return; }
+      var y = f.y + dt * f.v * .01 * 10, op = dt > f.life ? 0 : Math.min(1, dt / 600) * (0.75 + Math.random() * .25);
+      f.g.setAttribute('transform', 'translate(' + (f.x + Math.sin(dt / 2000) * 3 + dt * .0008) + ' ' + y + ')');
+      f.g.setAttribute('opacity', op); if (op > 0 && y < 300) alive++;
+    });
+    if (alive) raf = requestAnimationFrame(loop); else { running = false; fsOut.textContent = 'Alle verschwunden. Mit ausgeschaltetem Bergkamm sieht man: Sie sanken einfach dahinter.'; }
+  }
+})();
+</script>
+</body>
+</html>
