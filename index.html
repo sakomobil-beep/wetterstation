@@ -1150,9 +1150,9 @@ button { font: inherit; color: inherit; }
           <p class="sw-muted ew-t" id="ewBzT">Zeigt Bz eine Stunde oder länger deutlich ins Minus (unter −10 nT), wird ein Sturm sehr wahrscheinlich. Die Daten kommen vom Messpunkt L1, die Wirkung erreicht die Erde etwa 30 bis 60 Minuten später.</p>
         </div>
         <div class="ew-box">
-          <h4>Hp30-Index, letzte 24 Stunden</h4>
+          <h4>Kurzzeit-Kp, letzte 6 Stunden</h4>
           <div id="ewHp" class="ew-plot"></div>
-          <p class="sw-muted ew-t" id="ewHpT">Wie der Kp-Index, aber alle 30 Minuten statt alle 3 Stunden. So sieht man einen beginnenden Sturm deutlich früher. Werte ab 5 bedeuten Sturm.</p>
+          <p class="sw-muted ew-t" id="ewHpT">Geschätzter Kp-Index von NOAA, jede Minute neu berechnet. So sieht man einen beginnenden Sturm früher als beim offiziellen Kp alle 3 Stunden. Werte ab 5 bedeuten Sturm.</p>
         </div>
         <div class="ew-box">
           <h4>Polarlichtoval über Bad König</h4>
@@ -1161,7 +1161,7 @@ button { font: inherit; color: inherit; }
         </div>
       </div>
       <p class="sw-muted" style="font-size:13.5px">Eine Karte der Polarlicht-Wahrscheinlichkeit für Deutschland, Magnetometer-Kurven und Sichtbarkeitskarten gibt es bei <a href="https://aurora.mtwetter.de/" target="_blank" rel="noopener">aurora.mtwetter.de</a>.</p>
-      <p class="sw-muted" style="font-size:12.5px">Quellen: <a href="https://www.swpc.noaa.gov/products/aurora-30-minute-forecast" target="_blank" rel="noopener">NOAA SWPC</a> (Bz und OVATION-Modell), <a href="https://kp.gfz.de/" target="_blank" rel="noopener">GFZ Potsdam</a> (Hp30-Index, CC BY 4.0). Aktualisierung alle 5 Minuten.</p>
+      <p class="sw-muted" style="font-size:12.5px">Quellen: <a href="https://www.swpc.noaa.gov/products/aurora-30-minute-forecast" target="_blank" rel="noopener">NOAA SWPC</a> (Bz, geschätzter Kp-Index und OVATION-Modell). Aktualisierung alle 5 Minuten.</p>
     </section>
 
     <section class="chart" aria-label="NOAA Lage und Grafiken">
@@ -4797,7 +4797,7 @@ setInterval(renderSaison, 600000);
 })();
 </script>
 <script>
-/* Frühwarnung Sonnensturm: Bz-Verlauf (NOAA RTSW), Hp30 (GFZ), OVATION (NOAA) */
+/* Frühwarnung Sonnensturm: Bz-Verlauf (NOAA RTSW), geschätzter Kp (NOAA), OVATION (NOAA) */
 (function () {
   var $ = function (id) { return document.getElementById(id); };
   if (!$('ewBz')) return;
@@ -4818,7 +4818,7 @@ setInterval(renderSaison, 600000);
     if (opt.band != null) g += '<rect x="' + L + '" y="' + y(opt.band[1]).toFixed(1) + '" width="' + (W - L - R) + '" height="' + Math.max(0, y(opt.band[0]) - y(opt.band[1])).toFixed(1) + '" fill="' + opt.bandC + '"/>';
     for (var k = 0; k <= 4; k++) { var tk = t0 + (t1 - t0) * k / 4; g += '<text x="' + x(tk).toFixed(1) + '" y="' + (H - 5) + '" text-anchor="middle">' + hm(new Date(tk)) + '</text>'; }
     if (opt.bars) {
-      var bw = Math.max(2, (W - L - R) / pts.length - 1);
+      var bw = opt.step ? Math.max(2, (W - L - R) * opt.step / (t1 - t0) - 1.5) : Math.max(2, (W - L - R) / pts.length - 1);
       pts.forEach(function (p) { g += '<rect x="' + (x(p.t) - bw / 2).toFixed(1) + '" y="' + y(p.v).toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + (y(lo) - y(p.v)).toFixed(1) + '" rx="1" fill="' + opt.color(p.v) + '"/>'; });
     } else {
       var d = pts.map(function (p, i) { return (i ? 'L' : 'M') + x(p.t).toFixed(1) + ' ' + y(p.v).toFixed(1); }).join('');
@@ -4848,15 +4848,25 @@ setInterval(renderSaison, 600000);
   }
 
   function loadHp() {
-    var e = new Date(), s = new Date(e - 24 * 3600e3), iso = function (d) { return d.toISOString().slice(0, 19) + 'Z'; };
-    return getJ('https://kp.gfz.de/app/json/?start=' + iso(s) + '&end=' + iso(e) + '&index=Hp30').then(function (j) {
-      var ts = j.datetime || [], vs = j.Hp30 || [], pts = [];
-      ts.forEach(function (t, i) { var v = parseFloat(vs[i]); if (isFinite(v)) pts.push({ t: new Date(t).getTime() + 15 * 60000, v: v }); });
-      plot($('ewHp'), pts, { t0: s.getTime(), t1: e.getTime(), lo: 0, hi: 6, grid: [0, 3, 5, 7, 9], bars: true, label: 'Hp30-Index der letzten 24 Stunden',
+    // Geschätzter Kp von NOAA, minütlich berechnet, hier zu 30-Minuten-Höchstwerten zusammengefasst
+    var e = Date.now(), s0 = e - 6 * 3600e3;
+    return getJ('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json').then(function (j) {
+      var by = {};
+      (Array.isArray(j) ? j : []).forEach(function (o) {
+        var t = tt(o.time_tag).getTime(), v = parseFloat(o.estimated_kp != null ? o.estimated_kp : o.kp_index);
+        if (!isFinite(v) || t < s0) return;
+        var k = Math.floor(t / 900e3);
+        if (by[k] == null || v > by[k]) by[k] = v;
+      });
+      var pts = Object.keys(by).sort().map(function (k) { return { t: +k * 900e3 + 450e3, v: by[k] }; });
+      if (!pts.length) throw 0;
+      plot($('ewHp'), pts, { t0: s0, t1: e, lo: 0, hi: 6, grid: [0, 3, 5, 7, 9], bars: true, step: 900e3, label: 'Geschätzter Kp-Index der letzten 6 Stunden in 15-Minuten-Schritten',
         color: function (v) { return v >= 7 ? '#C93030' : v >= 5 ? '#E57A1F' : v >= 4 ? '#E0B020' : '#3FA36B'; } });
-      if (pts.length) { var l = pts[pts.length - 1].v; $('ewHpT').textContent = 'Zuletzt Hp30 ' + de(l, 2) + '. Wie der Kp-Index, aber alle 30 Minuten statt alle 3 Stunden, so sieht man einen beginnenden Sturm früher. Werte ab 5 bedeuten Sturm.'; }
+      var first = pts[0].t - 450e3;
+      $('ewHpT').textContent = 'Zuletzt Kp ' + de(pts[pts.length - 1].v, 2) + ' (geschätzt). Anders als der offizielle Kp-Index, der nur alle 3 Stunden kommt, wird dieser Wert jede Minute neu berechnet, so sieht man einen beginnenden Sturm früher. Werte ab 5 bedeuten Sturm.' +
+        (first > s0 + 2 * 3600e3 ? ' NOAA stellt diese Werte nur für die letzten Stunden bereit.' : '');
       return true;
-    }).catch(function () { $('ewHp').innerHTML = '<p class="sw-muted ew-t">Der Hp30-Index konnte gerade nicht geladen werden.</p>'; return false; });
+    }).catch(function () { $('ewHp').innerHTML = '<p class="sw-muted ew-t">Der Kurzzeit-Kp konnte gerade nicht geladen werden.</p>'; return false; });
   }
 
   function loadOv() {
