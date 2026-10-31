@@ -148,6 +148,11 @@ ul.facts li { border-left: 3px solid var(--cyan); padding: 2px 0 2px 12px; font-
 .brow .b { width: var(--w); background: linear-gradient(90deg, rgba(79,227,240,.25), rgba(79,227,240,.75)); border-radius: 8px; padding: 8px 12px; }
 .brow .b.hot { background: linear-gradient(90deg, rgba(167,123,255,.3), rgba(167,123,255,.9)); }
 .brow i { font-style: normal; font-size: 14px; font-weight: 600; }
+/* kompakte Themenleiste */
+.subnav { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; scrollbar-width: thin; gap: 4px 16px; }
+.subnav a, .subnav span { white-space: nowrap; flex: 0 0 auto; font-size: 13.5px; }
+.bar { flex-wrap: nowrap; min-width: 0; } .brand { flex: 0 0 auto; } .subnav { min-width: 0; flex: 1 1 auto; justify-content: flex-end; } .wrap > * { min-width: 0; }
+@media (max-width: 700px) { .bar { flex-wrap: wrap; } .subnav { width: 100%; } }
 </style>
 </head>
 <body>
@@ -162,6 +167,7 @@ ul.facts li { border-left: 3px solid var(--cyan); padding: 2px 0 2px 12px; font-
       <a href="phoenix.html">Phoenix Lights</a>
       <a href="belgien.html">Belgische Welle</a>
       <a href="hill.html">Betty &amp; Barney Hill</a>
+      <a href="walton.html">Travis Walton</a>
       <a class="back" href="index.html">← Wetterstation</a>
     </nav>
   </header>

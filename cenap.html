@@ -212,6 +212,11 @@ thead th { border-top: 0; font-size: 12px; letter-spacing: .06em; text-transform
 .out { margin: 0; white-space: pre-wrap; font: 14px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: #050817; border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; color: #BFF6FF; }
 .actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .btn.alt { border-color: rgba(108,242,164,.6); color: var(--green); }
+/* kompakte Themenleiste */
+.subnav { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; scrollbar-width: thin; gap: 4px 16px; }
+.subnav a, .subnav span { white-space: nowrap; flex: 0 0 auto; font-size: 13.5px; }
+.bar { flex-wrap: nowrap; min-width: 0; } .brand { flex: 0 0 auto; } .subnav { min-width: 0; flex: 1 1 auto; justify-content: flex-end; } .wrap > * { min-width: 0; }
+@media (max-width: 700px) { .bar { flex-wrap: wrap; } .subnav { width: 100%; } }
 </style>
 </head>
 <body>
@@ -226,6 +231,7 @@ thead th { border-top: 0; font-size: 12px; letter-spacing: .06em; text-transform
       <a href="phoenix.html">Phoenix Lights</a>
       <a href="belgien.html">Belgische Welle</a>
       <a href="hill.html">Betty &amp; Barney Hill</a>
+      <a href="walton.html">Travis Walton</a>
       <a class="back" href="index.html">← Wetterstation</a>
     </nav>
   </header>

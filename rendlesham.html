@@ -288,6 +288,11 @@ ul.facts li { border-left: 3px solid var(--violet); padding: 2px 0 2px 12px; fon
 .lhc { animation: lhb 5s infinite; }
 @keyframes lhb { 0%, 6% { fill: #FFFFFF; } 10%, 100% { fill: #6B6440; } }
 @media (prefers-reduced-motion: reduce) { .lhc, .playing .reel i { animation: none; } }
+/* kompakte Themenleiste */
+.subnav { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; scrollbar-width: thin; gap: 4px 16px; }
+.subnav a, .subnav span { white-space: nowrap; flex: 0 0 auto; font-size: 13.5px; }
+.bar { flex-wrap: nowrap; min-width: 0; } .brand { flex: 0 0 auto; } .subnav { min-width: 0; flex: 1 1 auto; justify-content: flex-end; } .wrap > * { min-width: 0; }
+@media (max-width: 700px) { .bar { flex-wrap: wrap; } .subnav { width: 100%; } }
 </style>
 </head>
 <body>
@@ -302,6 +307,7 @@ ul.facts li { border-left: 3px solid var(--violet); padding: 2px 0 2px 12px; fon
       <a href="phoenix.html">Phoenix Lights</a>
       <a href="belgien.html">Belgische Welle</a>
       <a href="hill.html">Betty &amp; Barney Hill</a>
+      <a href="walton.html">Travis Walton</a>
       <a class="back" href="index.html">← Wetterstation</a>
     </nav>
   </header>
