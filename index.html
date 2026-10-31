@@ -458,6 +458,10 @@ button { font: inherit; color: inherit; }
 .frostband.glatt .ic { color: #9A5B00; }
 .frostband.boden { background: #E4F3E8; color: #1F5534; }
 .frostband.boden .ic { color: #2F7A4B; }
+.frostband.aurora { background: linear-gradient(110deg, #0E2238 0%, #183B4F 55%, #1E5546 100%); color: #FFFFFF; }
+.frostband.aurora.strong { background: linear-gradient(110deg, #1A1036 0%, #3A1B5E 45%, #12614A 100%); }
+.frostband.aurora .ic { background: rgba(255,255,255,.14); color: #8FF0C4; }
+.frostband.aurora a { color: #BDF5DB; }
 .fday.frost { border-color: #9CC3E6; background: #E3EFF9; }
 .fday .fx { display: inline-flex; align-items: center; gap: 3px; font: 600 11px/1.3 var(--font-data); color: #1E6FB0; white-space: nowrap; }
 .fday .fx svg { width: 12px; height: 12px; }
@@ -728,6 +732,7 @@ button { font: inherit; color: inherit; }
   <p id="staleNote" class="stalenote" hidden aria-live="polite"></p>
 
   <section id="frostBand" class="frostband" hidden aria-live="polite"></section>
+  <section id="auroraBand" class="frostband aurora" hidden aria-live="polite"></section>
 
   <section class="records" aria-label="Jahresrekorde der Station">
     <div class="rec hot">
@@ -5017,6 +5022,57 @@ setInterval(renderSaison, 600000);
   var started = false;
   function maybe() { if (!started && location.hash === '#solar') { started = true; run(); showImg('ovation'); setInterval(run, 300000); } }
   window.addEventListener('hashchange', maybe); maybe();
+})();
+</script>
+<script>
+/* Polarlicht-Warnung auf der Startseite: nur bei starkem Sturm (Kp ab 7), der in Bad König sichtbar sein kann */
+(function () {
+  var band = document.getElementById('auroraBand'); if (!band) return;
+  var B = 'https://services.swpc.noaa.gov';
+  function getJ(u) { return fetch(u, { cache: 'no-store' }).then(function (r) { if (!r.ok) throw r.status; return r.json(); }); }
+  function rows(j) { if (!Array.isArray(j) || !j.length) return []; if (!Array.isArray(j[0])) return j; var h = j[0]; return j.slice(1).map(function (r) { var o = {}; h.forEach(function (k, i) { o[k] = r[i]; }); return o; }); }
+  function tt(s) { return new Date(String(s).replace(' ', 'T').replace(/(\d)$/, '$1Z')); }
+  function kpOf(o) { var v = parseFloat(o.Kp != null ? o.Kp : (o.kp != null ? o.kp : o.kp_index)); return isFinite(v) ? v : null; }
+  function de(n) { return n.toFixed(1).replace('.', ','); }
+  function dark(d) { var h = d.getHours(); return h >= 18 || h < 6; }
+  var ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 18c3-7 6-10 9-10s6 3 9 10"/><path d="M6 15c2-4 4-6 6-6s4 2 6 6" opacity=".7"/><path d="M12 3v2M5 5l1.3 1.3M19 5l-1.3 1.3"/></svg>';
+  function cloudHint() {
+    try {
+      if (typeof FC === 'undefined' || !FC.loaded || !FC.hours.length) return '';
+      var now = Date.now(), hs = FC.hours.filter(function (h) { return h.t >= now && h.t <= now + 12 * 3600e3 && dark(h.t) && h.cloud != null; });
+      if (!hs.length) return '';
+      var c = Math.round(hs.reduce(function (a, h) { return a + h.cloud; }, 0) / hs.length);
+      return c <= 30 ? ' Gute Nachricht: Heute Nacht soll es weitgehend klar sein (Bewölkung um ' + c + ' %).' : c <= 70 ? ' Heute Nacht ist es teils bewölkt (um ' + c + ' %), Lücken nutzen.' : ' Leider ist heute Nacht viel Bewölkung vorhergesagt (um ' + c + ' %).';
+    } catch (e) { return ''; }
+  }
+  function show(st) {
+    if (!st) { band.hidden = true; return; }
+    band.className = 'frostband aurora' + (st.kind === 'jetzt' ? ' strong' : '');
+    var title = st.kind === 'jetzt' ? 'Polarlicht-Alarm: Jetzt starker geomagnetischer Sturm (Kp ' + de(st.kp) + ')' : 'Polarlicht möglich: Starker Sonnensturm erwartet (bis Kp ' + de(st.kp) + ')';
+    var txt = st.kind === 'jetzt'
+      ? (dark(new Date()) ? 'Bei klarem Himmel kann das Polarlicht auch in Bad König zu sehen sein. Am besten einen dunklen Ort mit freiem Blick nach Norden suchen, mit dem Handy im Nachtmodus fotografieren, die Kamera sieht mehr als das Auge.' : 'Sobald es dunkel ist, kann das Polarlicht bei klarem Himmel auch in Bad König zu sehen sein, falls der Sturm anhält. Blick nach Norden, am besten mit Handy im Nachtmodus.')
+      : 'NOAA erwartet ' + st.when + ' einen Sturm, der stark genug ist, dass Polarlichter bis zu uns sichtbar sein können. Ob es klappt, entscheidet sich oft erst kurzfristig.';
+    band.innerHTML = '<span class="ic">' + ICON + '</span><div><b>' + title + '</b><p>' + txt + cloudHint() + '</p><p class="rule">Hinweis erscheint ab Kp 7 (Sturmstufe G3). Alle Werte und die Frühwarnung im Tab <a href="#solar">Solarwetter</a>.</p></div>';
+    band.hidden = false;
+  }
+  function check() {
+    var q = (location.search.match(/[?&]polar=(\w+)/) || [])[1];
+    if (q === 'jetzt') return show({ kind: 'jetzt', kp: 7.67 });
+    if (q === 'erwartet') return show({ kind: 'erwartet', kp: 7.33, when: 'heute Nacht' });
+    Promise.all([getJ(B + '/products/noaa-planetary-k-index.json').catch(function () { return null; }), getJ(B + '/products/noaa-planetary-k-index-forecast.json').catch(function () { return null; })]).then(function (r) {
+      var obs = rows(r[0]).map(function (o) { return { t: tt(o.time_tag), kp: kpOf(o) }; }).filter(function (o) { return o.kp != null; });
+      var now = Date.now(), cur = obs.length && now - obs[obs.length - 1].t < 6 * 3600e3 ? obs[obs.length - 1].kp : null;
+      if (cur != null && cur >= 7) return show({ kind: 'jetzt', kp: cur });
+      var fc = rows(r[1]).filter(function (o) { return o.observed === 'predicted'; }).map(function (o) { return { t: tt(o.time_tag), kp: kpOf(o) }; })
+        .filter(function (o) { return o.kp != null && o.t.getTime() > now - 3 * 3600e3 && o.t.getTime() < now + 36 * 3600e3; });
+      var mx = null; fc.forEach(function (o) { if (o.kp >= 7 && (!mx || o.kp > mx.kp)) mx = o; });
+      if (!mx) return show(null);
+      var d = mx.t, today = new Date(); var tom = new Date(today); tom.setDate(tom.getDate() + 1);
+      var when = d.toDateString() === today.toDateString() ? (dark(d) ? 'heute Nacht' : 'heute') : d.toDateString() === tom.toDateString() ? (d.getHours() < 6 ? 'in der kommenden Nacht' : 'morgen') : 'in den nächsten Tagen';
+      show({ kind: 'erwartet', kp: mx.kp, when: when });
+    });
+  }
+  check(); setInterval(check, 600000);
 })();
 </script>
 </body>
