@@ -196,6 +196,18 @@ dl.gloss dd { margin: 0; font-size: 15px; }
 .steps b { display: block; font-size: 16px; }
 .steps p { font-size: 14.5px; margin: 2px 0 0; }
 .callout.warm { background: #FDF0E8; color: #6B2E17; }
+
+/* Navigation in zwei Reihen: Bereiche oben, Themenseiten darunter, beide zentriert */
+@media (min-width: 761px) {
+  .top { align-items: center; }
+  .tabnav { display: flex; flex-direction: column; align-items: center; gap: 0; flex-wrap: nowrap; overflow: visible; }
+  .navrow { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 14px; }
+  .navrow.topics { gap: 2px 22px; border-top: 1px solid var(--line); margin-top: 2px; padding-top: 1px; }
+  .navrow.topics a { font-size: 13.5px; color: var(--muted); }
+  .navrow.topics a:hover, .navrow.topics a[aria-current="page"] { color: var(--accent); }
+}
+@media (min-width: 761px) and (max-width: 1060px) { .navrow { gap: 2px 10px; } .navrow a { font-size: 13px; } }
+@media (max-width: 760px) { .navrow { display: contents; } }
 </style>
 </head>
 <body>
@@ -206,17 +218,23 @@ dl.gloss dd { margin: 0; font-size: 15px; }
       <h1><a href="index.html">Wetterstation Bad König</a></h1>
     </div>
     <nav class="tabnav" aria-label="Bereiche">
-      <a href="index.html#aktuell">Aktuell</a>
-      <a href="index.html#grafiken">Grafiken</a>
-      <a href="index.html#woche">Wochengrafiken</a>
-      <a href="index.html#vorhersage">Vorhersage</a>
-      <a href="index.html#statistik">Statistik</a>
-      <a href="index.html#historie">Historie</a>
-      <a href="index.html#klima">Klima</a>
-      <a href="index.html#station">Station</a>
-      <a href="elnino.html">El Niño</a>
-      <a href="polarwirbel.html" aria-current="page">Polarwirbel</a>
-      <a href="vulkane.html">Vulkane</a>
+      <div class="navrow">
+        <a href="index.html#aktuell">Aktuell</a>
+        <a href="index.html#grafiken">Grafiken</a>
+        <a href="index.html#woche">Wochengrafiken</a>
+        <a href="index.html#vorhersage">Vorhersage</a>
+        <a href="index.html#statistik">Statistik</a>
+        <a href="index.html#historie">Historie</a>
+        <a href="index.html#klima">Klima</a>
+        <a href="index.html#station">Station</a>
+        <a href="index.html#solar">Solarwetter</a>
+      </div>
+      <div class="navrow topics" aria-label="Themenseiten">
+        <a href="elnino.html">El Niño</a>
+        <a href="polarwirbel.html" aria-current="page">Polarwirbel</a>
+        <a href="vulkane.html">Vulkane</a>
+        <a href="sommer2026.html">Sommer 2026</a>
+      </div>
     </nav>
   </header>
 

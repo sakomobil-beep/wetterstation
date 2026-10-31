@@ -641,6 +641,18 @@ button { font: inherit; color: inherit; }
 .sw-hist td { vertical-align: top; line-height: 1.45; }
 .sw-hist tr.now td { background: #FFF6E0; }
 @media (max-width: 560px) { .sw-hist thead { display: none; } .sw-hist tr, .sw-hist td { display: block; width: auto !important; } .sw-hist td:first-child { border-bottom: 0; padding-bottom: 2px; } }
+
+/* Navigation in zwei Reihen: Bereiche oben, Themenseiten darunter, beide zentriert */
+@media (min-width: 761px) {
+  .top { align-items: center; }
+  .tabnav { display: flex; flex-direction: column; align-items: center; gap: 0; flex-wrap: nowrap; overflow: visible; }
+  .navrow { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 14px; }
+  .navrow.topics { gap: 2px 22px; border-top: 1px solid var(--line); margin-top: 2px; padding-top: 1px; }
+  .navrow.topics a { font-size: 13.5px; color: var(--muted); }
+  .navrow.topics a:hover, .navrow.topics a[aria-current="page"] { color: var(--accent); }
+}
+@media (min-width: 761px) and (max-width: 1060px) { .navrow { gap: 2px 10px; } .navrow a { font-size: 13px; } }
+@media (max-width: 760px) { .navrow { display: contents; } }
 </style>
 
 </head>
@@ -654,18 +666,23 @@ button { font: inherit; color: inherit; }
       <h1 id="stationName">Wetterstation Bad König</h1>
     </div>
     <nav class="tabnav" aria-label="Bereiche">
-      <a id="nav-aktuell" href="#aktuell" data-tab="aktuell" aria-current="page">Aktuell</a>
-      <a id="nav-grafiken" href="#grafiken" data-tab="grafiken">Grafiken</a>
-      <a id="nav-woche" href="#woche" data-tab="woche">Wochengrafiken</a>
-      <a id="nav-vorhersage" href="#vorhersage" data-tab="vorhersage">Vorhersage</a>
-      <a id="nav-statistik" href="#statistik" data-tab="statistik">Statistik</a>
-      <a id="nav-historie" href="#historie" data-tab="historie">Historie</a>
-      <a id="nav-klima" href="#klima" data-tab="klima">Klima</a>
-      <a id="nav-station" href="#station" data-tab="station">Station</a>
-      <a id="nav-solar" href="#solar" data-tab="solar">Solarwetter</a>
-      <a id="nav-elnino" href="elnino.html">El Niño</a>
-      <a id="nav-polarwirbel" href="polarwirbel.html">Polarwirbel</a>
-      <a id="nav-vulkane" href="vulkane.html">Vulkane</a>
+      <div class="navrow">
+        <a id="nav-aktuell" href="#aktuell" data-tab="aktuell" aria-current="page">Aktuell</a>
+        <a id="nav-grafiken" href="#grafiken" data-tab="grafiken">Grafiken</a>
+        <a id="nav-woche" href="#woche" data-tab="woche">Wochengrafiken</a>
+        <a id="nav-vorhersage" href="#vorhersage" data-tab="vorhersage">Vorhersage</a>
+        <a id="nav-statistik" href="#statistik" data-tab="statistik">Statistik</a>
+        <a id="nav-historie" href="#historie" data-tab="historie">Historie</a>
+        <a id="nav-klima" href="#klima" data-tab="klima">Klima</a>
+        <a id="nav-station" href="#station" data-tab="station">Station</a>
+        <a id="nav-solar" href="#solar" data-tab="solar">Solarwetter</a>
+      </div>
+      <div class="navrow topics" aria-label="Themenseiten">
+        <a id="nav-elnino" href="elnino.html">El Niño</a>
+        <a id="nav-polarwirbel" href="polarwirbel.html">Polarwirbel</a>
+        <a id="nav-vulkane" href="vulkane.html">Vulkane</a>
+        <a id="nav-sommer2026" href="sommer2026.html">Sommer 2026</a>
+      </div>
     </nav>
   </header>
   <figure class="photo">
