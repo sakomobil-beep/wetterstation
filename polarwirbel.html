@@ -61,6 +61,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--sea-warm); outl
 .tabnav a { padding: 8px 2px; font: 500 16px/1.2 var(--font-body); color: var(--ink); text-decoration: none; border-bottom: 2px solid transparent; }
 .tabnav a:hover { color: var(--accent); }
 .tabnav a[aria-current="page"] { color: var(--accent); border-bottom-color: var(--accent); }
+@media (min-width: 761px) and (max-width: 1240px) { .tabnav { gap: 6px 8px; } .tabnav a { font-size: 12.5px; } }
 @media (max-width: 560px) {
   .top { gap: 6px; }
   .top > div { flex: 1 1 100%; }
@@ -215,6 +216,7 @@ dl.gloss dd { margin: 0; font-size: 15px; }
       <a href="index.html#station">Station</a>
       <a href="elnino.html">El Niño</a>
       <a href="polarwirbel.html" aria-current="page">Polarwirbel</a>
+      <a href="vulkane.html">Vulkane</a>
     </nav>
   </header>
 
