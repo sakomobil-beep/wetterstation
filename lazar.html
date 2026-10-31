@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bob Lazar · UAP Observatory</title>
+<meta name="description" content="Bob Lazar und S-4: seine Geschichte, das Sport Model, Element 115, Faktencheck und die neuen Interviews 2026.">
+<meta name="theme-color" content="#0B0F24">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+:root {
+  --bg: #070A1A; --bg2: #0D1330; --card: #11183A; --line: #24305E;
+  --ink: #E8ECFF; --muted: #9AA6D4; --cyan: #4FE3F0; --violet: #A77BFF; --green: #6CF2A4; --amber: #FFC66B; --red: #FF6B7A;
+  --font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; color: var(--ink); font: 16px/1.6 var(--font);
+  background: radial-gradient(1200px 600px at 80% -10%, rgba(167,123,255,.18), transparent 60%),
+              radial-gradient(900px 500px at 0% 20%, rgba(79,227,240,.10), transparent 60%), var(--bg);
+  padding: 0 max(16px, env(safe-area-inset-right)) 56px max(16px, env(safe-area-inset-left)); }
+a { color: var(--cyan); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--violet); outline-offset: 2px; border-radius: 4px; }
+.wrap { max-width: 1100px; margin: 0 auto; display: grid; gap: 20px; }
+
+/* Kopfleiste mit eigener Navigation */
+.bar { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 20px;
+  padding: 12px 0; background: linear-gradient(180deg, rgba(7,10,26,.96), rgba(7,10,26,.85)); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); font-weight: 650; letter-spacing: .06em; font-size: 13px; text-transform: uppercase; }
+.brand .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 12px var(--cyan); }
+.subnav { display: flex; flex-wrap: wrap; gap: 4px 18px; }
+.subnav a, .subnav span { font-size: 14px; text-decoration: none; color: var(--muted); padding: 6px 0; border-bottom: 2px solid transparent; }
+.subnav a:hover { color: var(--ink); }
+.subnav a[aria-current="page"] { color: var(--cyan); border-bottom-color: var(--cyan); }
+.subnav span.soon { opacity: .55; cursor: default; }
+.subnav span.soon small { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; margin-left: 4px; color: var(--violet); }
+.subnav a.back { color: var(--amber); }
+
+/* Titelbild */
+.title { position: relative; border-radius: 20px; overflow: hidden; border: 1px solid var(--line); margin-top: 16px; }
+.title img { display: block; width: 100%; height: auto; }
+
+/* Aufmacher */
+.hero { border-radius: 20px; padding: clamp(22px, 4vw, 40px); background: linear-gradient(160deg, #161E4C, #0A0E25 70%); border: 1px solid var(--line); display: grid; gap: 18px; position: relative; overflow: hidden; }
+.hero::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: linear-gradient(90deg, var(--cyan), var(--violet), var(--green)); }
+.kicker { font-size: 12.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--violet); font-weight: 600; }
+.hero h1 { margin: 4px 0 0; font-size: clamp(2rem, 6vw, 3.4rem); line-height: 1.04; letter-spacing: -.02em; }
+.hero p.lead { margin: 0; max-width: 66ch; color: #C9D1F5; font-size: clamp(16px, 2vw, 18px); }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.stat { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: 14px; padding: 14px 16px; display: grid; gap: 4px; align-content: start; }
+.stat .v { font-size: clamp(1.5rem, 3.4vw, 2.1rem); font-weight: 700; color: var(--cyan); line-height: 1.05; font-variant-numeric: tabular-nums; }
+.stat .k { font-size: 13.5px; color: #C9D1F5; line-height: 1.4; }
+@media (max-width: 820px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.toc { display: flex; flex-wrap: wrap; gap: 8px; }
+.toc a { text-decoration: none; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-size: 14px; }
+.toc a:hover { border-color: var(--cyan); color: var(--cyan); }
+
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: clamp(20px, 3.4vw, 32px); display: grid; gap: 16px; min-width: 0; scroll-margin-top: 80px; }
+.card h2 { margin: 0; font-size: clamp(1.4rem, 3vw, 1.85rem); line-height: 1.2; }
+.card h3 { margin: 6px 0 0; font-size: 1.08rem; }
+.card p { margin: 0; max-width: 72ch; }
+.card ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 74ch; }
+.label { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.src { font-size: 13px; color: var(--muted); }
+.src a { color: inherit; }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 18px 28px; align-items: start; }
+
+/* Karte */
+.mapwrap { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 860px) { .mapwrap { grid-template-columns: minmax(0, 1fr); } }
+.map { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: #0A1030; }
+.map svg { display: block; width: 100%; height: auto; }
+.hs { cursor: pointer; }
+.hs circle.ring { fill: none; stroke-width: 2; animation: pulse 2.4s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes pulse { 0% { transform: scale(.6); opacity: 1; } 100% { transform: scale(2.2); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .hs circle.ring { animation: none; } }
+.hs:hover circle.core, .hs.active circle.core { stroke: #fff; stroke-width: 3; }
+.spot { border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 8px; background: var(--bg2); min-height: 220px; align-content: start; }
+.spot .tag { justify-self: start; font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; border-radius: 999px; padding: 2px 10px; font-weight: 600; }
+.spot h3 { margin: 0; }
+.spot p { font-size: 14.5px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.spotlist { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 10px; }
+.spotlist button { text-align: left; font: inherit; color: var(--ink); background: var(--bg2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; cursor: pointer; display: grid; gap: 2px; }
+.spotlist button:hover, .spotlist button[aria-pressed="true"] { border-color: var(--cyan); }
+.spotlist button b { font-size: 14.5px; }
+.spotlist button span { font-size: 12.5px; color: var(--muted); }
+
+/* Zeitleiste */
+.timeline { list-style: none; margin: 0; padding: 0; display: grid; max-width: none !important; }
+.timeline li { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 16px; padding: 12px 0; border-top: 1px solid var(--line); }
+.timeline li:first-child { border-top: 0; }
+.timeline time { font-weight: 700; color: var(--cyan); font-variant-numeric: tabular-nums; }
+.timeline li.hl time { color: var(--amber); }
+@media (max-width: 520px) { .timeline li { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+
+/* Besitzer-Grafik */
+.owners svg { width: 100%; height: auto; display: block; }
+
+/* Kacheln */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 12px; }
+.tile { border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 6px; align-content: start; background: var(--bg2); }
+.tile .ico { font-size: 22px; }
+.tile b { font-size: 16px; }
+.tile p { font-size: 14.5px; color: #C9D1F5; }
+
+/* Tabelle */
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; }
+table { border-collapse: collapse; width: 100%; min-width: 680px; font-size: 14.5px; }
+th, td { text-align: left; padding: 11px 14px; border-top: 1px solid var(--line); vertical-align: top; }
+thead th { border-top: 0; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--bg2); }
+
+.callout { border-radius: 14px; background: rgba(167,123,255,.12); border: 1px solid rgba(167,123,255,.35); padding: 16px 18px; display: grid; gap: 6px; }
+.callout p { font-size: 14.5px; }
+.quote { margin: 0; border-left: 3px solid var(--violet); padding: 2px 0 2px 14px; color: #C9D1F5; max-width: 70ch; }
+
+.links { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 10px 28px; }
+.links h3 { margin: 0 0 6px; font-size: 1rem; }
+.links ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.links li { font-size: 14.5px; line-height: 1.4; }
+.links li span { display: block; font-size: 12.5px; color: var(--muted); }
+.foot { font-size: 13px; color: var(--muted); text-align: center; margin: 8px 0 0; }
+.hotline { justify-self: start; display: inline-flex; align-items: center; gap: 14px; text-decoration: none; color: var(--ink); background: rgba(108,242,164,.1); border: 1px solid rgba(108,242,164,.5); border-radius: 999px; padding: 10px 22px 10px 14px; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.hotline small { display: block; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--green); font-weight: 600; }
+.hotline:hover { background: rgba(108,242,164,.2); }
+.pulse { width: 14px; height: 14px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 0 rgba(108,242,164,.7); animation: hl 1.8s infinite; }
+@keyframes hl { 70% { box-shadow: 0 0 0 14px rgba(108,242,164,0); } 100% { box-shadow: 0 0 0 0 rgba(108,242,164,0); } }
+/* Quiz */
+.quiz { border: 1px solid var(--line); border-radius: 14px; background: var(--bg2); padding: 20px; display: grid; gap: 14px; min-height: 200px; }
+.quiz .q { font-size: 1.15rem; font-weight: 650; }
+.quiz .step { font-size: 12px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+.quiz .opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px; }
+.quiz button, .actions button, .btn { font: inherit; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; cursor: pointer; text-align: left; text-decoration: none; }
+.quiz button:hover, .actions button:hover, .btn:hover { border-color: var(--cyan); color: var(--cyan); }
+.quiz .res { display: grid; gap: 8px; animation: pop .4s ease; }
+.quiz .res .big { font-size: 1.6rem; font-weight: 750; color: var(--cyan); }
+.quiz .res .prob { font-size: 13px; color: var(--green); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+@keyframes pop { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.quiz .restart { justify-self: start; }
+/* Jahre */
+.years { margin-bottom: 40px; display: flex; align-items: flex-end; gap: clamp(16px, 5vw, 48px); height: 240px; padding: 10px 6px 0; border-bottom: 2px solid var(--line); max-width: 560px; }
+.yr { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: stretch; gap: 6px; }
+.yr > span { text-align: center; color: var(--muted); font-weight: 600; margin-bottom: -30px; }
+.col { height: 0; background: linear-gradient(180deg, var(--cyan), rgba(79,227,240,.25)); border-radius: 10px 10px 0 0; display: flex; justify-content: center; transition: height 1.4s cubic-bezier(.2,.8,.2,1); position: relative; }
+.col.hot { background: linear-gradient(180deg, var(--violet), rgba(167,123,255,.3)); }
+.col b { position: absolute; top: -26px; font-variant-numeric: tabular-nums; }
+.seen .col { height: var(--h); }
+#zahlen h3 { margin-top: 26px; }
+.hbars { display: grid; gap: 10px; max-width: 640px; }
+.hb { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 12px; align-items: center; font-size: 14.5px; }
+.hb i { display: block; width: 0; font-style: normal; font-weight: 700; padding: 6px 10px; border-radius: 8px; background: linear-gradient(90deg, rgba(79,227,240,.2), rgba(79,227,240,.7)); transition: width 1.2s ease .2s; white-space: nowrap; }
+.seen .hb i { width: var(--w); }
+@media (max-width: 520px) { .hb { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+/* IFO-Karten mit Animation */
+.ifos { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 12px; }
+.ifo { border: 1px solid var(--line); border-radius: 14px; background: var(--bg2); padding: 0 0 14px; display: grid; gap: 6px; overflow: hidden; }
+.ifo b, .ifo p { padding: 0 14px; }
+.ifo p { font-size: 14px; color: #C9D1F5; margin: 0; }
+.anim { position: relative; height: 110px; background: radial-gradient(circle at 80% 20%, #1D2760, #070A1A 70%); overflow: hidden; }
+.anim::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(1px 1px at 20% 30%, #fff, transparent), radial-gradient(1px 1px at 70% 60%, #fff, transparent), radial-gradient(1px 1px at 40% 80%, #cfd6ff, transparent), radial-gradient(1px 1px at 85% 25%, #fff, transparent), radial-gradient(1px 1px at 10% 70%, #fff, transparent); opacity: .7; }
+.anim i { position: absolute; display: block; }
+.starlink i { width: 4px; height: 4px; border-radius: 50%; background: #fff; box-shadow: 0 0 6px #fff; left: -10%; top: 70%; animation: sl 7s linear infinite; }
+.starlink i:nth-child(2) { animation-delay: .35s } .starlink i:nth-child(3) { animation-delay: .7s } .starlink i:nth-child(4) { animation-delay: 1.05s } .starlink i:nth-child(5) { animation-delay: 1.4s } .starlink i:nth-child(6) { animation-delay: 1.75s } .starlink i:nth-child(7) { animation-delay: 2.1s } .starlink i:nth-child(8) { animation-delay: 2.45s }
+@keyframes sl { from { left: -5%; top: 75%; } to { left: 105%; top: 15%; } }
+.planet i { width: 10px; height: 10px; border-radius: 50%; left: 45%; top: 55%; background: #FFF6D8; box-shadow: 0 0 14px 4px #FFE9A8; animation: tw 1.4s ease-in-out infinite alternate; }
+@keyframes tw { 0% { box-shadow: 0 0 10px 3px #FFE9A8; } 33% { box-shadow: 0 0 16px 5px #A9D8FF; } 66% { box-shadow: 0 0 12px 4px #FFB0B9; } 100% { box-shadow: 0 0 18px 6px #FFE9A8; } }
+.lantern i { width: 8px; height: 8px; border-radius: 50%; background: #FFA640; box-shadow: 0 0 10px 3px #FF8A1E; animation: ln 8s ease-in infinite; bottom: -10px; }
+.lantern i:nth-child(1) { left: 30%; } .lantern i:nth-child(2) { left: 50%; animation-delay: 2.6s; } .lantern i:nth-child(3) { left: 66%; animation-delay: 5.2s; }
+@keyframes ln { 0% { bottom: -10px; opacity: 1; transform: translateX(0); } 80% { opacity: 1; } 100% { bottom: 110px; opacity: 0; transform: translateX(30px); } }
+.meteor i { width: 90px; height: 2px; background: linear-gradient(90deg, transparent, #B8FFD0, #fff); border-radius: 2px; transform: rotate(25deg); left: -30%; top: 0; animation: mt 3.2s ease-in infinite; opacity: 0; }
+@keyframes mt { 0% { left: -30%; top: -10%; opacity: 0; } 8% { opacity: 1; } 30% { left: 90%; top: 80%; opacity: 0; } 100% { opacity: 0; left: 90%; top: 80%; } }
+.drone i { width: 6px; height: 6px; border-radius: 50%; background: #FF4E5E; box-shadow: 14px 0 0 #6CF2A4; animation: dr 6s ease-in-out infinite, bl 1s steps(2) infinite; }
+@keyframes dr { 0% { left: 20%; top: 60%; } 25% { left: 45%; top: 30%; } 45% { left: 45%; top: 30%; } 70% { left: 70%; top: 55%; } 100% { left: 20%; top: 60%; } }
+@keyframes bl { 50% { opacity: .2; } }
+.plane i { width: 12px; height: 12px; border-radius: 50%; background: #fff; box-shadow: 0 0 22px 8px rgba(255,255,255,.8); left: 50%; top: 50%; animation: pl 5s ease-in-out infinite; }
+@keyframes pl { 0% { transform: scale(.3); opacity: .4; } 80% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(.3) translateX(80px); opacity: 0; } }
+.balloon i { width: 18px; height: 22px; border-radius: 50% 50% 45% 45%; background: radial-gradient(circle at 35% 30%, #fff, #CFE8FF 40%, #7FA9D8); left: 30%; top: 60%; animation: bn 9s ease-in-out infinite; }
+@keyframes bn { 0% { left: 25%; top: 70%; } 50% { left: 55%; top: 20%; } 100% { left: 25%; top: 70%; } }
+.laser i { width: 26px; height: 14px; border-radius: 50%; background: rgba(160,255,200,.7); filter: blur(3px); left: 40%; top: 40%; animation: lz 3s linear infinite; }
+.laser i:nth-child(2) { animation-delay: -1.5s; background: rgba(170,190,255,.7); }
+@keyframes lz { 0% { transform: rotate(0) translateX(40px) rotate(0); } 100% { transform: rotate(360deg) translateX(40px) rotate(-360deg); } }
+.rocket i { width: 40px; height: 40px; border: 3px solid rgba(160,220,255,.8); border-radius: 50%; border-top-color: transparent; left: 42%; top: 30%; animation: rk 2.6s linear infinite; box-shadow: 0 0 12px rgba(160,220,255,.6); }
+@keyframes rk { 0% { transform: rotate(0) scale(.4); opacity: 0; } 20% { opacity: 1; } 100% { transform: rotate(720deg) scale(1.6); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .anim i { animation: none !important; } .col, .hb i { transition: none; } }
+/* Ablauf */
+.flow { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr)); gap: 12px; max-width: none !important; counter-reset: s; }
+.flow li { border: 1px solid var(--line); border-radius: 14px; background: var(--bg2); padding: 14px; display: grid; gap: 8px; align-content: start; position: relative; }
+.flow .n { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: rgba(79,227,240,.15); color: var(--cyan); font-weight: 750; border: 1px solid rgba(79,227,240,.5); }
+.flow p { font-size: 14px; color: #C9D1F5; margin: 4px 0 0; }
+/* Fälle */
+.cases { display: grid; gap: 8px; }
+.cases details { border: 1px solid var(--line); border-radius: 12px; background: var(--bg2); padding: 0 16px; }
+.cases details[open] { border-color: rgba(167,123,255,.6); }
+.cases summary { cursor: pointer; padding: 14px 0; font-weight: 650; list-style: none; display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; }
+.cases summary::-webkit-details-marker { display: none; }
+.cases summary::after { content: "+"; margin-left: auto; color: var(--violet); font-size: 20px; }
+.cases details[open] summary::after { content: "–"; }
+.cases .cy { color: var(--amber); font-size: 13px; font-weight: 700; min-width: 120px; font-variant-numeric: tabular-nums; }
+.cases p { padding: 0 0 14px; font-size: 15px; color: #C9D1F5; }
+/* Formular */
+.report { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px; }
+.report label { display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
+.report .wide { grid-column: 1 / -1; }
+.report .chk { display: flex; align-items: center; gap: 8px; color: var(--ink); font-size: 14px; }
+.report input, .report select, .report textarea { font: inherit; font-size: 15px; color: var(--ink); background: var(--bg2); border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; color-scheme: dark; }
+.report input:focus, .report select:focus, .report textarea:focus { outline: 2px solid var(--cyan); border-color: transparent; }
+.out { margin: 0; white-space: pre-wrap; font: 14px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: #050817; border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; color: #BFF6FF; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn.alt { border-color: rgba(108,242,164,.6); color: var(--green); }
+.clock { display: grid; gap: 0; border-left: 2px solid var(--line); margin-left: 8px; }
+.tick { position: relative; padding: 8px 0 12px 22px; display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 12px; }
+.tick::before { content: ""; position: absolute; left: -7px; top: 13px; width: 12px; height: 12px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+.tick.hl::before { background: var(--amber); box-shadow: 0 0 10px var(--amber); }
+.tick time { font-weight: 700; color: var(--cyan); font-variant-numeric: tabular-nums; }
+.tick.hl time { color: var(--amber); }
+.tick p { margin: 0; }
+@media (max-width: 560px) { .tick { grid-template-columns: minmax(0, 1fr); gap: 0; } }
+.craft { margin: 0; display: grid; gap: 8px; }
+.craft svg, .path svg { width: 100%; height: auto; display: block; border: 1px solid var(--line); border-radius: 14px; }
+.path { overflow-x: auto; } .path svg { min-width: 760px; background: #0A1030; }
+.craft figcaption { font-size: 13.5px; color: var(--muted); }
+/* Player */
+.player { border: 1px solid var(--line); border-radius: 16px; background: linear-gradient(160deg, #0B1130, #070A1A); padding: 18px; display: grid; gap: 14px; }
+.tape { position: relative; height: 120px; max-width: 380px; border-radius: 12px; background: linear-gradient(180deg, #2B2F3E, #1A1D28); border: 2px solid #3B4156; display: flex; justify-content: space-between; align-items: center; padding: 0 46px; }
+.reel { width: 64px; height: 64px; border-radius: 50%; background: radial-gradient(circle, #111 18%, #6B5A3A 20%, #3A2F1E 62%, #1A1D28 64%); border: 2px solid #4A5068; position: relative; }
+.reel i { position: absolute; inset: 22px; border-radius: 50%; border: 3px dashed #9AA6D4; }
+.playing .reel i { animation: spin 2s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.tapelabel { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); font: 600 10px/1 ui-monospace, Menlo, monospace; color: #F3E6C8; letter-spacing: .08em; white-space: nowrap; }
+.pctl { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+.big { font: inherit; font-weight: 700; color: #04121A; background: var(--cyan); border: 0; border-radius: 999px; padding: 11px 20px; cursor: pointer; }
+.big:hover { filter: brightness(1.1); }
+.snd { display: flex; gap: 8px; align-items: center; font-size: 14px; color: var(--muted); }
+.geiger { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
+.needle { width: 140px; height: 10px; border-radius: 5px; background: linear-gradient(90deg, #6CF2A4, #FFC66B 60%, #FF6B7A); position: relative; }
+.needle i { position: absolute; top: -5px; left: 0; width: 3px; height: 20px; background: #fff; border-radius: 2px; transition: left .4s ease; box-shadow: 0 0 6px #fff; }
+.geiger b { color: var(--ink); min-width: 58px; font-variant-numeric: tabular-nums; }
+.log { list-style: none; margin: 0; padding: 12px 14px; max-height: 380px; overflow-y: auto; background: #03050F; border-radius: 12px; border: 1px solid var(--line); font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; display: grid; gap: 6px; max-width: none !important; min-height: 120px; }
+.log li { animation: pop .35s ease; }
+.log .t { color: var(--amber); margin-right: 8px; }
+.log .who { color: var(--cyan); margin-right: 6px; font-weight: 700; }
+.log .note { color: #6F7AA8; font-style: italic; }
+@keyframes pop { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.video { max-width: 720px; }
+.vframe { position: relative; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; background: #0B1130; border: 1px solid var(--line); }
+.vframe iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.vplay { position: absolute; inset: 0; width: 100%; border: 0; cursor: pointer; color: #fff; display: grid; place-content: center; justify-items: center; gap: 10px; padding: 16px; text-align: center; font: 600 15px/1.35 var(--font); background: radial-gradient(circle at 70% 30%, rgba(167,123,255,.35), transparent 55%), linear-gradient(160deg, #1A2350, #070A1A); }
+.vplay .pb { width: 64px; height: 64px; border-radius: 50%; background: rgba(255,255,255,.95); display: grid; place-items: center; }
+.vplay .pb svg { width: 26px; height: 26px; margin-left: 4px; fill: #0B1130; }
+.vplay small { color: var(--muted); font-size: 12px; font-weight: 400; max-width: 40ch; }
+/* Memo */
+.protocol { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+@media (max-width: 800px) { .protocol { grid-template-columns: minmax(0, 1fr); } }
+.paper { background: #F4F1E8; color: #1E1E1E; border-radius: 4px; padding: 22px; font: 14.5px/1.5 'Courier New', Courier, monospace; box-shadow: 0 12px 30px rgba(0,0,0,.45); transform: rotate(-.6deg); display: grid; gap: 8px; }
+.paper .ph { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid #999; padding-bottom: 6px; }
+.paper .pt { font-weight: 700; text-transform: uppercase; }
+.paper p { margin: 0; }
+.paper .sig { margin-top: 8px; font-weight: 700; }
+.paper .pn { font-size: 11px; color: #666; font-style: italic; }
+ul.facts { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; max-width: none; }
+ul.facts li { border-left: 3px solid var(--violet); padding: 2px 0 2px 12px; font-size: 15px; }
+/* Zeugen */
+.ranks { display: grid; gap: 14px; }
+.rank { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px; border-left: 4px solid var(--line); padding-left: 14px; position: relative; padding-top: 22px; }
+.rank .rl { position: absolute; top: 0; left: 14px; font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; }
+.r1 { border-color: var(--amber); } .r1 .rl { color: var(--amber); }
+.r2 { border-color: var(--violet); } .r2 .rl { color: var(--violet); }
+.r3 { border-color: var(--cyan); } .r3 .rl { color: var(--cyan); }
+.r4 { border-color: var(--green); } .r4 .rl { color: var(--green); }
+.w { border: 1px solid var(--line); border-radius: 12px; background: var(--bg2); padding: 12px 14px; display: grid; gap: 3px; align-content: start; }
+.w.hl { border-color: rgba(79,227,240,.55); box-shadow: 0 0 0 1px rgba(79,227,240,.15) inset; }
+.w b { font-size: 15px; } .w span { font-size: 12.5px; color: var(--muted); } .w p { font-size: 13.5px; color: #C9D1F5; margin: 4px 0 0; }
+.sketch { display: grid; gap: 12px; align-content: start; }
+.sketch svg, .rad svg { width: 100%; height: auto; display: block; border: 1px solid var(--line); border-radius: 14px; }
+/* Leuchtturm */
+.lhsim { display: grid; gap: 12px; }
+.lhsim svg { width: 100%; height: auto; display: block; border-radius: 14px; border: 1px solid var(--line); }
+.lhctl { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.lhctl #lhHit { font: inherit; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 10px 20px; cursor: pointer; }
+.lhctl span { font-size: 14px; color: var(--muted); }
+.binary { font: 12px/1.4 ui-monospace, Menlo, monospace; color: rgba(108,242,164,.55); word-break: break-all; max-height: 70px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+.pro h3 { color: var(--green); } .con h3 { color: var(--amber); }
+.lhc { animation: lhb 5s infinite; }
+@keyframes lhb { 0%, 6% { fill: #FFFFFF; } 10%, 100% { fill: #6B6440; } }
+@media (prefers-reduced-motion: reduce) { .lhc, .playing .reel i { animation: none; } }
+
+.cmp .ev { border: 1px solid var(--line); border-radius: 14px; background: var(--bg2); padding: 16px; display: grid; gap: 10px; align-content: start; }
+.ev svg { width: 100%; height: auto; border-radius: 10px; display: block; }
+.evt { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; }
+.ev1 .evt { color: var(--cyan); } .ev2 .evt { color: var(--amber); }
+.ev h3 { margin: 0; }
+.ev ul { font-size: 14.5px; }
+.flare-card { display: grid; gap: 8px; } .flare-card svg { width: 100%; max-width: 340px; height: auto; border-radius: 12px; border: 1px solid var(--line); }
+.scope svg { width: 100%; height: auto; display: block; border-radius: 14px; border: 1px solid var(--line); }
+.scope { display: grid; gap: 12px; }
+
+.nums { display: grid; gap: 10px; max-width: 720px; margin-top: 8px; }
+.num { display: grid; grid-template-columns: minmax(0, 1fr) 90px; grid-template-rows: auto auto; gap: 2px 12px; align-items: center; }
+.num .nb { grid-column: 1; grid-row: 1; height: 14px; border-radius: 7px; width: var(--w); background: linear-gradient(90deg, rgba(79,227,240,.3), var(--cyan)); }
+.num .nb.hot { background: linear-gradient(90deg, rgba(167,123,255,.3), var(--violet)); }
+.num b { grid-column: 2; grid-row: 1; font-variant-numeric: tabular-nums; }
+.num span:last-child { grid-column: 1 / -1; font-size: 13px; color: var(--muted); }
+.radarbox { display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: 20px; align-items: center; }
+@media (max-width: 760px) { .radarbox { grid-template-columns: minmax(0, 1fr); } }
+.radarbox .scope { width: 100%; height: auto; display: block; }
+.hud { border: 1px solid #2E6B4A; border-radius: 14px; background: #03110A; padding: 16px; display: grid; gap: 8px; font-family: ui-monospace, Menlo, Consolas, monospace; color: #6CF2A4; }
+.hrow { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px dashed #1F5A3C; padding-bottom: 4px; }
+.hrow span { color: #3FA673; font-size: 13px; } .hrow b { font-size: 16px; }
+.hnote { font-size: 13px; color: #A8F5C8; margin: 4px 0; min-height: 3.2em; }
+#sweep { transform-origin: 210px 210px; animation: sw 3s linear infinite; }
+@keyframes sw { to { transform: rotate(360deg); } }
+.fake svg { width: 100%; height: auto; display: block; border-radius: 14px; border: 1px solid var(--line); }
+.fake { display: grid; gap: 12px; }
+
+.nightbar { display: grid; gap: 10px; }
+.nb-track { position: relative; height: 56px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); }
+.seg { position: absolute; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; font-size: 11.5px; text-align: center; padding: 0 4px; color: #E8ECFF; border-right: 1px solid rgba(0,0,0,.4); }
+.s1 { background: #1E3A5A; } .s2 { background: #3A2F6B; } .s3 { background: #6B3A4A; } .s4 { background: repeating-linear-gradient(45deg, #7A1F2E, #7A1F2E 8px, #5A1622 8px, #5A1622 16px); } .s5 { background: #1E4A3A; }
+.cursor { position: absolute; top: -2px; bottom: -2px; width: 3px; background: #FFC66B; box-shadow: 0 0 10px #FFC66B; left: 0; }
+.nightbar input { width: 100%; accent-color: #FFC66B; }
+.nb-out { display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; } .nb-out b { font-size: 1.6rem; color: var(--amber); font-variant-numeric: tabular-nums; } .nb-out span { color: #C9D1F5; }
+.starbox { display: grid; gap: 10px; } .starbox svg { width: 100%; height: auto; border-radius: 14px; border: 1px solid var(--line); display: block; }
+.sec { font: inherit; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 10px 18px; cursor: pointer; }
+.ol-tl svg { width: 100%; height: auto; display: block; border-radius: 14px; border: 1px solid var(--line); background: #0A1030; }
+#hills .two .w { padding: 16px; } .tick { grid-template-columns: 130px minmax(0, 1fr); }
+
+.scene svg { width: 100%; height: auto; display: block; border-radius: 14px; border: 1px solid var(--line); }
+.scene { display: grid; gap: 12px; }
+.days { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 10px; }
+.day { border: 1px solid var(--line); border-radius: 12px; background: var(--bg2); padding: 12px 14px; display: grid; gap: 4px; }
+.day.hl { border-color: rgba(255,198,107,.6); } .day b { color: var(--cyan); } .day.hl b { color: var(--amber); } .day p { font-size: 14px; color: #C9D1F5; margin: 0; }
+.countdown { display: flex; gap: 14px; align-items: baseline; justify-content: center; border: 1px dashed rgba(255,107,122,.5); border-radius: 12px; padding: 12px; font-family: ui-monospace, Menlo, monospace; }
+.countdown span { color: var(--red); letter-spacing: .3em; font-weight: 700; } .countdown b { font-size: 1.8rem; color: #FFB0B9; }
+.poly { display: grid; grid-template-columns: minmax(0, 280px) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 760px) { .poly { grid-template-columns: minmax(0, 1fr); } }
+.ptests { display: grid; gap: 8px; }
+.ptests button { text-align: left; font: inherit; color: var(--ink); background: var(--bg2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; cursor: pointer; display: grid; gap: 2px; }
+.ptests button[aria-pressed="true"], .ptests button:hover { border-color: var(--cyan); }
+.ptests b { font-size: 14px; } .ptests span { font-size: 12.5px; color: var(--muted); }
+.pchart svg { width: 100%; height: auto; display: block; border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.4); }
+.pdesc { font-size: 14.5px; margin-top: 10px !important; }
+.cal svg { width: 100%; min-width: 720px; height: auto; display: block; border-radius: 14px; border: 1px solid var(--line); background: #0A1030; }
+.cal { overflow-x: auto; }
+/* Themenleiste: Marke oben, Themen darunter in zentrierten Reihen */
+.bar { flex-direction: column; align-items: stretch; gap: 8px; padding: 10px 0; }
+.toprow { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.toprow .back { color: var(--amber); font-size: 13.5px; text-decoration: none; }
+.subnav { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 18px; min-width: 0; }
+.subnav a, .subnav span { white-space: nowrap; font-size: 13.5px; padding: 4px 0; }
+.wrap > * { min-width: 0; }
+.bar > * { min-width: 0; max-width: 100%; }
+@media (max-width: 560px) { .subnav { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; scrollbar-width: none; } }
+
+.paperbox { background:#E9E1CC; color:#1E1B16; border-radius:10px; padding:18px; box-shadow:0 8px 30px #0008; }
+.news { font-family: Georgia, "Times New Roman", serif; text-align:center; transition: opacity .3s; }
+.news.fade { opacity:0; }
+.nmast { font-size:clamp(20px,4vw,34px); font-weight:700; letter-spacing:.06em; border-bottom:3px double #1E1B16; padding-bottom:6px; }
+.ndate { font-size:12px; text-transform:uppercase; letter-spacing:.1em; padding:5px 0; border-bottom:1px solid #1E1B16; margin-bottom:12px; }
+.nhead { font-size:clamp(22px,4.4vw,38px); font-weight:900; line-height:1.1; margin:6px 0; }
+.nsub { font-style:italic; font-size:16px; margin-bottom:10px; }
+.ntext { text-align:left; columns:2 220px; column-gap:22px; font-size:14.5px; line-height:1.5; color:#2A251D; margin:0; }
+.paperbox + .lhctl, .lhctl { margin-top:12px; }
+.mogulsvg svg, .pview svg, .altchart svg, .signbox svg { width:100%; height:auto; display:block; border-radius:10px; border:1px solid var(--line); }
+.mogulsvg { max-width:300px; margin:0 auto; }
+.grow { display:grid; gap:10px; margin-top:14px; }
+.gr { display:grid; grid-template-columns:90px 1fr; gap:4px 14px; align-items:center; }
+.gr > span { font-weight:700; color:var(--amber); font-variant-numeric:tabular-nums; }
+.gr > div { height:14px; background:var(--bg2); border-radius:7px; overflow:hidden; }
+.gr i { display:block; height:100%; width:0; background:linear-gradient(90deg,var(--violet),var(--cyan)); border-radius:7px; transition: width 1.4s ease; }
+.grow.on .gr i { width:var(--w); }
+.gr i.cut { background:repeating-linear-gradient(45deg,var(--red) 0 8px,#5a1a25 8px 16px); }
+.gr p { grid-column:2; margin:0; font-size:14px; color:var(--muted); }
+@media (max-width:560px){ .gr { grid-template-columns:62px 1fr; } }
+.planes { display:grid; grid-template-columns: 220px 1fr; gap:16px; margin-top:12px; }
+.pbtns { display:grid; gap:8px; align-content:start; }
+.pbtns button, .pbtns button { text-align:left; background:var(--bg2); border:1px solid var(--line); color:var(--ink); padding:10px 12px; border-radius:10px; cursor:pointer; font:inherit; }
+.pbtns button b { display:block; } .pbtns button span { font-size:12.5px; color:var(--muted); }
+.pbtns button[aria-pressed="true"] { border-color:var(--cyan); box-shadow:0 0 0 1px var(--cyan) inset; }
+.pinfo { margin-top:12px; } .pinfo h3 { margin:0 0 6px; color:var(--cyan); }
+.pinfo dl { display:grid; grid-template-columns:auto 1fr; gap:4px 14px; font-size:14px; margin:8px 0; } .pinfo dt { color:var(--muted); } .pinfo dd { margin:0; }
+@media (max-width:720px){ .planes { grid-template-columns:1fr; } .pbtns { grid-template-columns:repeat(2,1fr); } }
+#plane { transition: opacity .4s; }
+.altchart { margin-top:12px; }
+@keyframes glint { 0%,100% { opacity:.6 } 50% { opacity:1 } } #u2 { animation: glint 2.4s infinite; }
+.signbox { display:grid; grid-template-columns: minmax(0,380px) 1fr; gap:18px; align-items:start; margin-top:12px; }
+@media (max-width:760px){ .signbox { grid-template-columns:1fr; } }
+.stormbars { display:grid; gap:12px; align-content:start; }
+.sb span { display:block; font-size:13.5px; color:var(--muted); margin-bottom:4px; }
+.sb div { display:flex; align-items:center; gap:8px; }
+.sb i { display:block; height:26px; width:var(--w); min-width:4px; background:linear-gradient(90deg,var(--red),var(--amber)); border-radius:6px; color:#1a0f0a; font-style:normal; font-weight:700; font-size:13px; line-height:26px; padding-left:8px; box-sizing:border-box; white-space:nowrap; }
+
+.scene svg, .flirbox svg, .radarbox svg { width:100%; height:auto; display:block; border-radius:10px; border:1px solid var(--line); }
+p.cap { min-height:2.8em; margin:10px 0 0; color:var(--amber); }
+.vbtns { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
+.vbtns button { background:var(--bg2); border:1px solid var(--line); color:var(--ink); padding:8px 14px; border-radius:999px; cursor:pointer; font:inherit; }
+.vbtns button[aria-pressed="true"] { border-color:var(--cyan); color:var(--cyan); }
+.flirbox { display:grid; grid-template-columns: minmax(0,1.5fr) 1fr; gap:16px; align-items:start; }
+@media (max-width:760px){ .flirbox { grid-template-columns:1fr; } }
+.vinfo h3 { margin:0 0 6px; color:var(--cyan); } .vinfo p { margin:0 0 8px; font-size:14.5px; }
+.vids { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; margin:12px 0; }
+.yt { display:flex; flex-direction:column; justify-content:flex-end; min-height:130px; padding:14px; border-radius:12px; border:1px solid var(--line); background:radial-gradient(circle at 50% 40%, #3a3a3a, #111 70%); color:#eee; text-decoration:none; position:relative; }
+.yt .play { position:absolute; top:34%; left:50%; transform:translate(-50%,-50%); width:52px; height:36px; border-radius:10px; background:#E3262E; display:grid; place-items:center; font-size:16px; }
+.yt:hover { border-color:var(--cyan); } .yt span:last-child { font-size:12.5px; color:#aaa; }
+.radio { background:var(--bg2); border:1px solid var(--line); border-radius:12px; padding:14px 16px; font-family:ui-monospace,monospace; font-size:13.5px; }
+.radio h3 { font-family:inherit; margin-top:0; color:var(--green); font-size:14px; }
+.radarbox { display:grid; grid-template-columns:minmax(0,340px) 1fr; gap:20px; align-items:center; margin-top:12px; }
+@media (max-width:700px){ .radarbox { grid-template-columns:1fr; } }
+.fallbar { position:relative; height:220px; width:70px; background:linear-gradient(#0B1A3A,#16305A 85%,#1D4E7A); border-radius:8px; border:1px solid var(--line); margin:10px 0; }
+.fallbar i { position:absolute; left:50%; bottom:85%; width:16px; height:8px; margin-left:-8px; border-radius:4px; background:#fff; box-shadow:0 0 10px #fff; transition: bottom .8s cubic-bezier(.6,0,.9,.4); }
+.fallbar span { position:absolute; left:80px; top:6px; white-space:nowrap; color:var(--green); font-family:ui-monospace,monospace; }
+
+.discbox { display:grid; grid-template-columns:minmax(0,1.4fr) 1fr; gap:16px; align-items:start; margin-top:12px; }
+.discbox svg, .wedbox svg { width:100%; height:auto; display:block; border-radius:10px; border:1px solid var(--line); }
+@media (max-width:760px){ .discbox { grid-template-columns:1fr; } }
+.part { cursor:pointer; } .part:hover, .part:focus { filter:drop-shadow(0 0 6px #fff); outline:none; }
+#disc, .part { transition: transform 1.2s ease; }
+.e115 { display:grid; gap:10px; justify-items:start; }
+.elem { width:120px; height:120px; border:2px solid var(--violet); border-radius:10px; display:grid; grid-template-rows:auto 1fr auto; padding:8px; background:var(--bg2); }
+.elem .z { font-size:13px; color:var(--muted); } .elem .sym { font-size:44px; font-weight:700; color:var(--violet); text-align:center; line-height:1.2; } .elem .nm { font-size:12px; text-align:center; }
+.atoms { display:grid; grid-template-columns:repeat(10,16px); gap:6px; }
+.atoms i { width:16px; height:16px; border-radius:50%; background:var(--violet); box-shadow:0 0 6px var(--violet); transition: all .4s; }
+.atoms i.gone { background:#333; box-shadow:none; transform:scale(.5); }
+.claims { display:grid; gap:8px; margin-top:12px; }
+.claim { border:1px solid var(--line); border-radius:10px; background:var(--bg2); }
+.claim button { width:100%; text-align:left; background:none; border:0; color:var(--ink); font:inherit; padding:12px 14px; cursor:pointer; display:flex; justify-content:space-between; gap:12px; }
+.claim .verd { font-size:12px; font-weight:700; padding:2px 8px; border-radius:999px; white-space:nowrap; align-self:center; }
+.claim .ans { display:none; padding:0 14px 12px; font-size:14.5px; color:var(--muted); }
+.claim.open .ans { display:block; } .claim.open { border-color:var(--cyan); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="bar">
+    <div class="toprow"><a class="brand" href="uap.html"><span class="dot" aria-hidden="true"></span>UAP Observatory</a><a class="back" href="index.html">← Wetterstation</a></div>
+    <nav class="subnav" aria-label="Themen des UAP Observatory">
+      <a href="uap.html">Skinwalker Ranch</a>
+      <a href="rodenstein.html">Odenwald &amp; Rodensteiner</a>
+      <a href="cenap.html">CENAP-Meldestelle</a>
+      <a href="rendlesham.html">Rendlesham Forest</a>
+      <a href="phoenix.html">Phoenix Lights</a>
+      <a href="belgien.html">Belgische Welle</a>
+      <a href="hill.html">Betty &amp; Barney Hill</a>
+      <a href="walton.html">Travis Walton</a>
+      <a href="roswell.html">Roswell</a>
+      <a href="area51.html">Area 51</a>
+      <a href="tictac.html">Tic-Tac-Videos</a>
+      <a href="lazar.html" aria-current="page">Bob Lazar</a>
+    </nav>
+  </header>
+
+  <figure class="title" style="margin:16px 0 0">
+    <img src="uap-titel.jpg" width="1024" height="434" alt="Nachthimmel mit Milchstraße über einem Schlosshof, darüber schwebt ein leuchtendes geometrisches Objekt – Titelbild des UAP Observatory">
+  </figure>
+
+  <section class="hero" aria-labelledby="heroTitle">
+    <div>
+      <div class="kicker">Thema 12 · Las Vegas &amp; S-4 · 1989 bis heute</div>
+      <h1 id="heroTitle">Bob Lazar: Der Mann, der Area 51 berühmt machte</h1>
+    </div>
+    <p class="lead">Im Mai 1989 sitzt ein Mann mit verdecktem Gesicht im Lokalfernsehen von Las Vegas und behauptet, er habe in einer geheimen Anlage an fliegenden Untertassen gearbeitet. Seit über 35 Jahren erzählt Bob Lazar dieselbe Geschichte, fast ohne sie zu ändern. 2026 ist er so präsent wie lange nicht: neue Dokumentation, sein Buch als Neuausgabe und eine ganze Reihe neuer Interviews.</p>
+    <div class="stats">
+      <div class="stat"><span class="v">1959</span><span class="k">geboren in Coral Gables, Florida</span></div>
+      <div class="stat"><span class="v">9</span><span class="k">außerirdische Fluggeräte will er in S-4 gesehen haben</span></div>
+      <div class="stat"><span class="v">115</span><span class="k">das Element, das die Scheiben antreiben soll</span></div>
+      <div class="stat"><span class="v">3.4.2026</span><span class="k">Start der Doku „S4: The Bob Lazar Story“</span></div>
+    </div>
+  </section>
+
+  <nav class="toc" aria-label="Inhalt dieser Seite">
+    <a href="#s4">Die Anlage S-4</a>
+    <a href="#scheibe">Das „Sport Model“</a>
+    <a href="#e115">Element 115</a>
+    <a href="#leben">Lebenslauf</a>
+    <a href="#mittwoch">Die Mittwochsflüge</a>
+    <a href="#check">Faktencheck</a>
+    <a href="#neu">Neue Interviews 2026</a>
+    <a href="#bilanz">Bilanz</a>
+    <a href="#quellen">Quellen</a>
+  </nav>
+
+  <section class="card" id="s4">
+    <div class="label">Skizze</div>
+    <h2>S-4 am Papoose Lake, so wie Lazar es beschreibt</h2>
+    <p>Etwa 15 Meilen südlich von Area 51 sollen Hangars direkt in einen Berghang gebaut sein, die Tore getarnt wie Felswand. Alles hier beruht allein auf Lazars Schilderung. Klick auf die Bereiche.</p>
+    <div class="mapwrap">
+      <div class="map">
+        <svg viewBox="0 0 720 460" role="img" aria-labelledby="s4T">
+          <title id="s4T">Skizze nach Lazars Beschreibung: ein Berghang am Papoose Lake mit neun Hangartoren, davor ein Salzsee, ein Bus aus Area 51, Sicherheitsbereich und Labore</title>
+          <defs><linearGradient id="nsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#070B22"/><stop offset="1" stop-color="#1A1A3A"/></linearGradient></defs>
+          <rect width="720" height="460" fill="url(#nsky)"/>
+          <path d="M0 260 L80 170 L170 120 L260 90 L380 110 L480 80 L600 140 L720 120 V330 H0Z" fill="#2A2238"/>
+          <path d="M0 330 H720 V460 H0Z" fill="#3A3428"/>
+          <ellipse cx="360" cy="400" rx="300" ry="40" fill="#C8B98A" opacity=".35"/>
+          <text x="560" y="440" fill="#E8D9A8" font-size="11">Papoose Lake</text>
+          <g id="doors"></g>
+          <path d="M-20 360 Q200 340 330 332" fill="none" stroke="#9AA6D4" stroke-dasharray="6 6"/>
+          <g id="bus"><rect x="-14" y="-8" width="28" height="12" rx="2" fill="#E8ECFF"/><animateMotion dur="9s" repeatCount="indefinite" path="M-20 360 Q200 340 330 332"/></g>
+          <g font-size="13" fill="#E8ECFF">
+            <g class="hs" data-id="doors" tabindex="0" role="button" aria-label="Hangartore"><circle class="ring" cx="360" cy="250" r="13" stroke="#FFC66B"/><circle class="core" cx="360" cy="250" r="10" fill="#FFC66B"/><text x="300" y="214">9 Hangartore</text></g>
+            <g class="hs" data-id="sport" tabindex="0" role="button" aria-label="Hangar mit dem Sport Model"><circle class="ring" cx="470" cy="300" r="11" stroke="#4FE3F0"/><circle class="core" cx="470" cy="300" r="8" fill="#4FE3F0"/><text x="490" y="304">„Sport Model“</text></g>
+            <g class="hs" data-id="bus" tabindex="0" role="button" aria-label="Bus aus Area 51"><circle class="ring" cx="120" cy="352" r="11" stroke="#9AA6D4"/><circle class="core" cx="120" cy="352" r="8" fill="#9AA6D4"/><text x="60" y="386">Bus mit verdunkelten Fenstern</text></g>
+            <g class="hs" data-id="security" tabindex="0" role="button" aria-label="Sicherheitsbereich"><circle class="ring" cx="230" cy="300" r="11" stroke="#FF6B7A"/><circle class="core" cx="230" cy="300" r="8" fill="#FF6B7A"/><text x="130" y="290">Sicherheit</text></g>
+            <g class="hs" data-id="briefing" tabindex="0" role="button" aria-label="Lesesaal mit Briefings"><circle class="ring" cx="600" cy="250" r="11" stroke="#A77BFF"/><circle class="core" cx="600" cy="250" r="8" fill="#A77BFF"/><text x="560" y="230">Briefings</text></g>
+          </g>
+          <text x="710" y="20" fill="#7E8CC0" font-size="11" text-anchor="end">Skizze nach Lazars Angaben, nicht belegt</text>
+        </svg>
+      </div>
+      <div class="spot" id="spot" aria-live="polite"></div>
+    </div>
+    <div class="spotlist" id="spotlist"></div>
+  </section>
+
+  <section class="card" id="scheibe">
+    <div class="label">Interaktiv</div>
+    <h2>Das „Sport Model“: die Scheibe, an der er gearbeitet haben will</h2>
+    <p>Lazar nennt die Scheibe „Sport Model“, weil sie ihn an ein schnittiges Auto erinnerte. Klick auf die Bauteile.</p>
+    <div class="discbox">
+      <svg viewBox="0 0 560 320" role="img" aria-labelledby="dsT"><title id="dsT">Querschnitt-Skizze der Scheibe mit drei Ebenen, dem Reaktor in der Mitte und drei Gravitationsverstärkern unten</title>
+        <rect width="560" height="320" fill="#070B1F"/>
+        <g id="disc">
+          <path d="M60 170 Q280 110 500 170 Q280 230 60 170Z" fill="#7E8AA8" stroke="#C8D2FF"/>
+          <path d="M200 140 Q280 70 360 140" fill="#5E6888" stroke="#C8D2FF"/>
+          <line x1="80" y1="170" x2="480" y2="170" stroke="#C8D2FF" stroke-opacity=".4"/>
+        </g>
+        <g class="part" data-p="reactor" tabindex="0" role="button" aria-label="Reaktor"><circle cx="280" cy="160" r="18" fill="#FF6B7A"><animate attributeName="r" values="16;20;16" dur="1.6s" repeatCount="indefinite"/></circle><text x="280" y="98" fill="#FF8A97" font-size="12" text-anchor="middle">Reaktor</text></g>
+        <g class="part" data-p="amps" tabindex="0" role="button" aria-label="Gravitationsverstärker"><g fill="#4FE3F0"><rect x="150" y="186" width="24" height="26" rx="4"/><rect x="268" y="196" width="24" height="26" rx="4"/><rect x="386" y="186" width="24" height="26" rx="4"/></g><text x="280" y="250" fill="#4FE3F0" font-size="12" text-anchor="middle">3 Gravitationsverstärker</text></g>
+        <g class="part" data-p="hull" tabindex="0" role="button" aria-label="Hülle"><circle cx="460" cy="160" r="8" fill="#FFC66B"/><text x="470" y="140" fill="#FFC66B" font-size="12">Hülle</text></g>
+        <g class="part" data-p="seats" tabindex="0" role="button" aria-label="Innenraum"><circle cx="220" cy="150" r="7" fill="#A77BFF"/><text x="130" y="128" fill="#C8A8FF" font-size="12">Innenraum</text></g>
+        <g id="field" opacity="0"><ellipse cx="280" cy="250" rx="180" ry="28" fill="none" stroke="#4FE3F0" stroke-dasharray="4 6"/><ellipse cx="280" cy="270" rx="240" ry="36" fill="none" stroke="#4FE3F0" stroke-opacity=".5" stroke-dasharray="4 6"/></g>
+        <text x="550" y="312" fill="#7E8CC0" font-size="10" text-anchor="end">Skizze nach Lazars Beschreibung</text>
+      </svg>
+      <div>
+        <div class="vinfo" id="pinfo2"></div>
+        <button type="button" class="big" id="hover">▶ Schwebeflug zeigen</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="e115">
+    <div class="label">Physik</div>
+    <h2>Element 115: Lazars „Treibstoff“ und die Wirklichkeit</h2>
+    <div class="two">
+      <div>
+        <p>1989 behauptete Lazar, die Scheiben würden mit einem stabilen Element 115 angetrieben, das es auf der Erde nicht gebe. Damals war Element 115 noch gar nicht erzeugt. Ab 2003 gelang das Forschern in Dubna (Russland) und am Lawrence Livermore Lab. 2016 bekam es den Namen <b>Moscovium</b>.</p>
+        <p>Anhänger sehen darin eine Bestätigung. Kritiker halten dagegen: Alle bekannten Isotope zerfallen in Bruchteilen einer Sekunde. Lazar sagt, das liege daran, dass bisher nur die falschen Isotope hergestellt wurden. In der Kernphysik wird tatsächlich eine „Insel der Stabilität“ für sehr schwere Elemente vermutet, nachgewiesen ist sie nicht.</p>
+      </div>
+      <div class="e115">
+        <div class="elem"><span class="z">115</span><span class="sym">Mc</span><span class="nm">Moscovium</span></div>
+        <div class="atoms" id="atoms"></div>
+        <button type="button" class="sec" id="decay">Zerfall starten</button>
+        <p class="src" id="decayTxt">Simulation: 40 Atome, Zerfall in etwa 0,6 Sekunden Halbwertszeit, stark verlangsamt dargestellt.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="leben">
+    <div class="label">Chronik</div>
+    <h2>Lebenslauf</h2>
+    <ol class="timeline">
+      <li><time>1959</time><span>Geboren in Florida, wächst als Adoptivkind in Westbury, New York, auf. Highschool-Abschluss 1976.</span></li>
+      <li><time>Ende 1970er</time><span>Besuch des Pierce Junior College in Los Angeles. Laut eigenen Angaben danach Abschlüsse an MIT und Caltech, die beide keine Unterlagen haben.</span></li>
+      <li><time>27.6.1982</time><span>Die Lokalzeitung Los Alamos Monitor berichtet über seinen Jet-Antrieb für ein Auto und nennt ihn Physiker an der Meson-Anlage. Der Reporter gibt später zu, das nicht geprüft zu haben. Im Telefonbuch des Labors von 1982 steht „Lazar Robert“.</span></li>
+      <li><time>1986</time><span>Privatinsolvenz in Las Vegas. Er nennt sich darin selbstständiger Fotoentwickler.</span></li>
+      <li class="hl"><time>Ende 1988</time><span>Beginn der Arbeit in S-4, laut Lazar nur einige Tage über mehrere Monate verteilt.</span></li>
+      <li class="hl"><time>Mai 1989</time><span>Interview bei KLAS-TV mit George Knapp, als „Dennis“ mit verdecktem Gesicht.</span></li>
+      <li><time>Nov. 1989</time><span>Zweites Interview unter eigenem Namen.</span></li>
+      <li><time>1990</time><span>Verurteilung wegen Beihilfe zu einem Bordellbetrieb, Bewährungsstrafe.</span></li>
+      <li><time>1990er</time><span>Gründet die Firma United Nuclear, die Chemikalien und Laborbedarf verkauft. Organisiert das Sprengstoff-Festival „Desert Blast“.</span></li>
+      <li><time>2006/07</time><span>United Nuclear bekennt sich schuldig, eingeschränkte Chemikalien über Staatsgrenzen verschickt zu haben, Geldstrafe 7.500 Dollar.</span></li>
+      <li><time>2017</time><span>FBI-Durchsuchung bei United Nuclear im Rahmen einer Mordermittlung in Michigan, wegen eines möglichen Thallium-Kaufs. Lazar selbst ist kein Verdächtiger.</span></li>
+      <li class="hl"><time>2018/19</time><span>Doku „Bob Lazar: Area 51 &amp; Flying Saucers“ von Jeremy Corbell, später auf Netflix. Buch „Dreamland“.</span></li>
+      <li class="hl"><time>21.6.2019</time><span>Auftritt bei Joe Rogan (Folge #1315). Wenige Wochen später entsteht „Storm Area 51“.</span></li>
+      <li class="hl"><time>2026</time><span>Neue Doku, Buch-Neuausgabe, Interview-Marathon. Mehr dazu unten.</span></li>
+    </ol>
+  </section>
+
+  <section class="card" id="mittwoch">
+    <div class="label">Frühjahr 1989</div>
+    <h2>Die Mittwochsflüge</h2>
+    <div class="two">
+      <div>
+        <p>Lazar erzählt, er habe gewusst, dass die Scheiben mittwochabends getestet wurden. Ab März 1989 fährt er deshalb mit Freunden in die Wüste an den Rand des Sperrgebiets, darunter sein Freund Gene Huff und der UFO-Verschwörungsautor John Lear.</p>
+        <p>Die Gruppe sieht und filmt helle Lichter am Himmel. Bei einer der Fahrten werden sie von Wachleuten angehalten. Lazar sagt, deshalb habe er seinen Job verloren und sei bedroht worden. Das sei auch der Grund, warum er mit der Geschichte an die Öffentlichkeit gegangen sei, als eine Art Lebensversicherung.</p>
+        <p class="src">Was auf den Aufnahmen zu sehen ist, lässt sich nicht bestimmen. Es gibt keine Möglichkeit, das Licht von Leuchtfackeln oder Flugzeugen zu unterscheiden.</p>
+      </div>
+      <div class="wedbox">
+        <svg viewBox="0 0 360 240" role="img" aria-labelledby="wdT"><title id="wdT">Nachthimmel über der Wüste mit einem hellen Licht, das auf und ab springt</title>
+          <rect width="360" height="240" fill="#05081A"/>
+          <g fill="#fff" id="stars"></g>
+          <path d="M0 190 L60 170 L120 182 L200 160 L280 176 L360 166 V240 H0Z" fill="#14101C"/>
+          <circle id="wlight" cx="180" cy="120" r="6" fill="#FFF3C4"><animate attributeName="opacity" values="1;.4;1" dur="1.2s" repeatCount="indefinite"/></circle>
+          <g transform="translate(250 205)"><rect x="-30" y="-12" width="60" height="18" rx="4" fill="#1E2236"/><circle cx="-18" cy="6" r="5" fill="#000"/><circle cx="18" cy="6" r="5" fill="#000"/></g>
+          <text x="10" y="20" fill="#FF6B7A" font-family="ui-monospace,monospace" font-size="12" id="rec">● REC</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="check">
+    <div class="label">Interaktiv</div>
+    <h2>Faktencheck: Behauptung und Befund</h2>
+    <p>Klick auf eine Behauptung.</p>
+    <div class="claims" id="claims"></div>
+  </section>
+
+  <section class="card" id="neu">
+    <div class="label">Aktuell</div>
+    <h2>2026: Bob Lazar ist zurück</h2>
+    <p>Nach Jahren der Zurückhaltung ist Lazar 2026 so oft in den Medien wie seit 2019 nicht mehr. Inhaltlich erzählt er im Kern dieselbe Geschichte, mit einigen neuen Details.</p>
+    <div class="tiles">
+      <div class="tile"><span class="ico">🎬</span><b>„S4: The Bob Lazar Story“</b><p>Neue Doku des Kanadiers Luigi Vendittelli, Start am 3. April 2026. Lazar erzählt selbst, dazu George Knapp und Gene Huff. Mit einer Virtual-Reality-Nachbildung der Anlage und der Scheibe von Project Gravitaur.</p></div>
+      <div class="tile"><span class="ico">🛸</span><b>Nachgebautes „Sport Model“</b><p>Für die Doku wurde ein Modell der Scheibe in Originalgröße nach Lazars Angaben gebaut. Bei einem Live-Event in Austin, Texas, war Lazar zur Premiere da.</p></div>
+      <div class="tile"><span class="ico">📖</span><b>„Dreamland“ als Neuausgabe</b><p>Seine Autobiografie von 2019 erschien am 24. März 2026 als Taschenbuch, 288 Seiten.</p></div>
+      <div class="tile"><span class="ico">📰</span><b>Interviewserie bei Forbes</b><p>In mehreren Teilen spricht Lazar über die neue Doku, die Angst, die ihn damals bei der Arbeit begleitet habe, über Element 115 und darüber, wodurch er sich bis heute bedroht fühlt.</p></div>
+      <div class="tile"><span class="ico">🎙️</span><b>Podcasts</b><p>Unter anderem bei Jesse Michels, wo er erzählt, er habe einen Wissenschaftler ersetzt, der bei einem Test ums Leben kam, und bei Chris Ramsay. Dort fielen manchen Zuschauern neue Details auf, etwa zum Essen in S-4.</p></div>
+      <div class="tile"><span class="ico">⚖️</span><b>Gegenstimmen</b><p>Im August 2026 streitet der Podcaster Martin Willis heftig mit Regisseur Vendittelli darüber, ob Lazar Whistleblower oder Geschichtenerzähler ist.</p></div>
+    </div>
+    <div class="vids">
+      <a class="yt" href="https://www.youtube.com/results?search_query=S4+The+Bob+Lazar+Story+trailer" target="_blank" rel="noopener"><span class="play">▶</span><b>S4: The Bob Lazar Story</b><span>Trailer · 2026</span></a>
+      <a class="yt" href="https://www.youtube.com/results?search_query=Bob+Lazar+Jesse+Michels" target="_blank" rel="noopener"><span class="play">▶</span><b>Interview Jesse Michels</b><span>2026</span></a>
+      <a class="yt" href="https://www.youtube.com/results?search_query=Bob+Lazar+Chris+Ramsay+Area+52" target="_blank" rel="noopener"><span class="play">▶</span><b>Interview Chris Ramsay</b><span>Area 52 Podcast · 2026</span></a>
+      <a class="yt" href="https://www.youtube.com/results?search_query=Joe+Rogan+Experience+1315+Bob+Lazar" target="_blank" rel="noopener"><span class="play">▶</span><b>Joe Rogan #1315</b><span>21.6.2019</span></a>
+      <a class="yt" href="https://www.youtube.com/results?search_query=Bob+Lazar+Dennis+KLAS+1989" target="_blank" rel="noopener"><span class="play">▶</span><b>„Dennis“-Interview</b><span>KLAS-TV · Mai 1989</span></a>
+    </div>
+    <p class="src">Die Felder öffnen eine YouTube-Suche in einem neuen Tab.</p>
+  </section>
+
+  <section class="card" id="bilanz">
+    <div class="label">Fazit</div>
+    <h2>Bilanz</h2>
+    <div class="two">
+      <div class="pro"><h3>Was für ihn spricht</h3><ul>
+        <li>Seine Geschichte ist seit 1989 erstaunlich gleich geblieben</li>
+        <li>Er stand 1982 im Telefonbuch von Los Alamos</li>
+        <li>Element 115 wurde später tatsächlich erzeugt</li>
+        <li>Er hat sich jahrzehntelang kaum öffentlich gezeigt</li>
+      </ul></div>
+      <div class="con"><h3>Was gegen ihn spricht</h3><ul>
+        <li>Für die Abschlüsse an MIT und Caltech gibt es keinerlei Nachweis</li>
+        <li>Für S-4 und die Scheiben gibt es keinen Beleg außer seinen Worten</li>
+        <li>Das „stabile“ Element 115 ist nie aufgetaucht</li>
+        <li>Seine frühe Nähe zu John Lear, der Alien-Verschwörungen verbreitete</li>
+      </ul></div>
+    </div>
+    <div class="callout"><b>Unser Urteil</b><p>Bob Lazar ist kein offensichtlicher Lügner, und er ist kein bewiesener Zeuge. Seine Geschichte ist in sich stimmig, aber bis heute durch nichts Unabhängiges gedeckt. Ohne ihn gäbe es den Mythos Area 51 so nicht.</p></div>
+  </section>
+
+  <section class="card" id="quellen">
+    <div class="label">Weiterlesen</div>
+    <h2>Links und Quellen</h2>
+    <div class="links">
+      <div><h3>Überblick</h3><ul>
+        <li><a href="https://en.wikipedia.org/wiki/Bob_Lazar" target="_blank" rel="noopener">Wikipedia: Bob Lazar</a></li>
+        <li><a href="https://digital-release.8newsnow.com/?p=2600" target="_blank" rel="noopener">KLAS: 30 Jahre „Dennis“-Interview</a></li>
+        <li><a href="https://www.vice.com/en/article/ufo-technician-bob-lazar-speaks/" target="_blank" rel="noopener">Vice: Lazar und die Corbell-Doku</a></li>
+      </ul></div>
+      <div><h3>2026</h3><ul>
+        <li><a href="https://www.simonandschuster.com/books/Dreamland/Bob-Lazar/9798218678043" target="_blank" rel="noopener">„Dreamland“, Taschenbuch 2026</a></li>
+        <li><a href="https://theviewersguide.com/anotherporkyprimecut/s4-the-bob-lazar-story-2026" target="_blank" rel="noopener">S4: The Bob Lazar Story</a></li>
+        <li><a href="https://www.spreaker.com/episode/772-bob-lazar-whistleblower-or-storyteller-two-perspectives-luigi-vendittelli--73469600" target="_blank" rel="noopener">Martin Willis mit Luigi Vendittelli (Aug. 2026)</a></li>
+      </ul></div>
+      <div><h3>Interviews</h3><ul>
+        <li><a href="https://singjupost.com/transcript-bob-lazar-jeremy-corbell-on-joe-rogan-podcast-1315/" target="_blank" rel="noopener">Abschrift Joe Rogan #1315</a></li>
+        <li>Stanton Friedman zu den Bildungsangaben, zitiert bei Wikipedia</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <p class="foot">Unidentified Anomalous Phenomena Observatory · ein Projekt der <a href="index.html">Wetterstation Bad König</a> · Stand 1. November 2026 · Alle Angaben ohne Gewähr · <a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a></p>
+</div>
+<script>
+(function () {
+  var C = { tech: ['#FFC66B', 'Hangars'], light: ['#4FE3F0', 'Scheibe'], beast: ['#FF6B7A', 'Sicherheit'], house: ['#9AA6D4', 'Anreise'], gray: ['#A77BFF', 'Unterlagen'] };
+  var S = {
+    doors: { t: 'Neun Hangartore', c: 'tech', p: 'Laut Lazar in den Berghang gebaut, mit schrägen Toren, die mit einer Sandtextur getarnt sind. Hinter jedem Tor eine Scheibe, insgesamt neun verschiedene Modelle.' },
+    sport: { t: 'Hangar des „Sport Model“', c: 'light', p: 'Hier sei die Scheibe gestanden, an der er gearbeitet habe. Er habe sie einmal kurz schweben sehen, wenige Meter über dem Boden, völlig lautlos.' },
+    bus: { t: 'Der Bus aus Area 51', c: 'house', p: 'Mitarbeiter seien mit einem Janet-Flug nach Groom Lake gebracht worden und von dort mit einem Bus mit verdunkelten Scheiben nach S-4, damit niemand den Weg kennt.' },
+    security: { t: 'Sicherheitsbereich', c: 'beast', p: 'Lazar beschreibt extreme Kontrollen: Ausweise, bewaffnete Wachen, ständige Begleitung. Er sei einmal mit einer Waffe bedroht worden, als er durch ein Fenster in einen anderen Hangar sah.' },
+    briefing: { t: 'Briefings', c: 'gray', p: 'Am ersten Tag habe er in einem Raum Dutzende Unterlagen lesen müssen, über die Scheiben und ihre Herkunft, angeblich ein Sternsystem bei Zeta Reticuli.' }
+  };
+  var spot = document.getElementById('spot'), list = document.getElementById('spotlist');
+  var groups = document.querySelectorAll('.hs');
+  function show(id) {
+    var s = S[id]; if (!s) return; var c = C[s.c];
+    spot.innerHTML = '<span class="tag" style="background:' + c[0] + '22;color:' + c[0] + ';border:1px solid ' + c[0] + '66">' + c[1] + '</span><h3>' + s.t + '</h3><p>' + s.p + '</p>';
+    groups.forEach(function (g) { g.classList.toggle('active', g.getAttribute('data-id') === id); });
+    list.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.id === id ? 'true' : 'false'); });
+  }
+  Object.keys(S).forEach(function (id) {
+    var b = document.createElement('button'); b.type = 'button'; b.dataset.id = id;
+    b.innerHTML = '<b>' + S[id].t + '</b><span>' + C[S[id].c][1] + '</span>';
+    b.addEventListener('click', function () { show(id); }); list.appendChild(b);
+  });
+  groups.forEach(function (g) {
+    var id = g.getAttribute('data-id');
+    g.addEventListener('click', function () { show(id); });
+    g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(id); } });
+  });
+  show('doors');
+  var dg = document.getElementById('doors'), NS = 'http://www.w3.org/2000/svg';
+  for (var k = 0; k < 9; k++) { var r = document.createElementNS(NS, 'path'); var x = 160 + k * 46; r.setAttribute('d', 'M' + x + ' 330 L' + (x + 8) + ' 290 L' + (x + 36) + ' 290 L' + (x + 40) + ' 330Z'); r.setAttribute('fill', k === 7 ? '#3A5A6A' : '#3A3048'); r.setAttribute('stroke', '#5A4A6A'); dg.appendChild(r); }
+  // Scheibe
+  var PT = {
+    reactor: ['Reaktor', 'In der Mitte des unteren Decks, etwa so groß wie ein Basketball. Element 115 werde mit Protonen beschossen. Das erzeuge Antimaterie-Reaktionen und ein Gravitationsfeld, das nach außen geleitet werde.'],
+    amps: ['Gravitationsverstärker', 'Drei Einheiten unten in der Scheibe verstärken laut Lazar das Feld und richten es aus. Für den Flug werde der Raum vor der Scheibe „gekrümmt“, sie falle sozusagen auf ihr Ziel zu.'],
+    hull: ['Hülle', 'Etwa 12 m Durchmesser, eine fugenlose Hülle wie aus einem Guss, ohne Nieten oder Schweißnähte.'],
+    seats: ['Innenraum', 'Sehr kleine Sitze und Türen, zu niedrig für erwachsene Menschen. Lazar schließt daraus auf kleine Wesen.']
+  };
+  var pi2 = document.getElementById('pinfo2');
+  function part(id) { pi2.innerHTML = '<h3>' + PT[id][0] + '</h3><p>' + PT[id][1] + '</p><p class="src">So beschreibt es Lazar, unabhängig belegt ist nichts davon.</p>'; }
+  document.querySelectorAll('.part').forEach(function (g) { g.addEventListener('click', function () { part(g.dataset.p); }); g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); part(g.dataset.p); } }); });
+  part('reactor');
+  var up = false, field = document.getElementById('field');
+  document.getElementById('hover').onclick = function () { up = !up; var tr = up ? 'translateY(-40px)' : ''; document.querySelectorAll('#disc, .part').forEach(function (e) { e.style.transform = tr; }); field.setAttribute('opacity', up ? 1 : 0); this.textContent = up ? '▼ Landen' : '▶ Schwebeflug zeigen'; };
+  // Element 115
+  var at = document.getElementById('atoms'), dt = document.getElementById('decayTxt'), tim;
+  function fill() { at.innerHTML = ''; for (var i = 0; i < 40; i++) at.appendChild(document.createElement('i')); }
+  fill();
+  document.getElementById('decay').onclick = function () {
+    clearInterval(tim); fill(); var left = 40, step = 0;
+    tim = setInterval(function () { step++; var alive = Array.prototype.filter.call(at.children, function (i) { return !i.classList.contains('gone'); }); alive.forEach(function (i) { if (Math.random() < .5) i.classList.add('gone'); }); left = at.querySelectorAll('i:not(.gone)').length; dt.textContent = 'Nach ' + (step * 0.6).toFixed(1).replace('.', ',') + ' s: noch ' + left + ' von 40 Atomen. Von „stabil“ keine Spur.'; if (!left) clearInterval(tim); }, 900);
+  };
+  // Sterne
+  var st = document.getElementById('stars'); for (var s = 0; s < 50; s++) { var c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', Math.random() * 360); c.setAttribute('cy', Math.random() * 160); c.setAttribute('r', Math.random() * 1.2 + .2); st.appendChild(c); }
+  var wl = document.getElementById('wlight'), t0 = performance.now();
+  (function wloop(n) { var t = (n - t0) / 1000, ph = t % 6; var x = 180 + Math.sin(t * .7) * 60, y = 110 + (ph > 4 && ph < 4.4 ? -40 : 0) + Math.sin(t * 2.3) * 8; wl.setAttribute('cx', x); wl.setAttribute('cy', y); requestAnimationFrame(wloop); })(t0);
+  // Faktencheck
+  var CL = [
+    ['Abschluss am MIT in Physik', 'nicht belegt', '#FF6B7A', 'Das MIT hat keinerlei Unterlagen. Zur gleichen Zeit war er am Pierce Junior College in Los Angeles eingeschrieben, über 4.000 km entfernt.'],
+    ['Abschluss am Caltech in Elektronik', 'nicht belegt', '#FF6B7A', 'Auch das Caltech hat keine Unterlagen. Ein Professor, den Lazar als Caltech-Dozenten nannte, unterrichtete tatsächlich am Pierce College.'],
+    ['Arbeit in Los Alamos', 'teilweise', '#FFC66B', 'Er stand 1982 im Telefonbuch des Labors, und eine Zeitung nannte ihn Physiker. Laut späteren Recherchen arbeitete er aber eher als Techniker für eine Fremdfirma. Das Labor hat keine Personalakte.'],
+    ['Angestellt über EG&G für die Navy', 'nicht belegt', '#FF6B7A', 'Die Firma EG&G hat keine Unterlagen über ihn. Lazar legte einen Lohnzettel vor, der eine Verbindung andeutet, aber nichts über S-4 sagt.'],
+    ['Element 115 existiert', 'teilweise', '#FFC66B', 'Seit 2003 ja, aber nur für Bruchteile einer Sekunde. Ein stabiles Isotop wie von Lazar beschrieben wurde nie gefunden.'],
+    ['Seine Akten wurden gelöscht', 'nicht prüfbar', '#9AA6D4', 'So erklärt Lazar die fehlenden Nachweise. Beweisen oder widerlegen lässt sich das nicht.'],
+    ['Wachleute hielten ihn 1989 an der Grenze an', 'plausibel', '#6CF2A4', 'Freunde, die dabei waren, bestätigen die Begegnung. Für das, was er gesehen haben will, sagt das aber nichts aus.']
+  ];
+  var cb = document.getElementById('claims');
+  CL.forEach(function (c) { var d = document.createElement('div'); d.className = 'claim'; d.innerHTML = '<button type="button" aria-expanded="false"><span>' + c[0] + '</span><span class="verd" style="background:' + c[2] + '22;color:' + c[2] + ';border:1px solid ' + c[2] + '66">' + c[1] + '</span></button><div class="ans">' + c[3] + '</div>'; d.querySelector('button').onclick = function () { var o = d.classList.toggle('open'); this.setAttribute('aria-expanded', o); }; cb.appendChild(d); });
+
+})();
+</script>
+<script>(function(){var a=document.querySelector('.subnav [aria-current="page"]'),n=document.querySelector('.subnav');if(a&&n&&n.scrollWidth>n.clientWidth){n.scrollLeft=a.offsetLeft-n.clientWidth/2+a.offsetWidth/2;}})();</script>
+</body>
+</html>
