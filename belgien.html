@@ -316,17 +316,21 @@ ul.facts li { border-left: 3px solid var(--violet); padding: 2px 0 2px 12px; fon
 @keyframes sw { to { transform: rotate(360deg); } }
 .fake svg { width: 100%; height: auto; display: block; border-radius: 14px; border: 1px solid var(--line); }
 .fake { display: grid; gap: 12px; }
-/* kompakte Themenleiste */
-.subnav { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; scrollbar-width: thin; gap: 4px 16px; }
-.subnav a, .subnav span { white-space: nowrap; flex: 0 0 auto; font-size: 13.5px; }
-.bar { flex-wrap: nowrap; min-width: 0; } .brand { flex: 0 0 auto; } .subnav { min-width: 0; flex: 1 1 auto; justify-content: flex-end; } .wrap > * { min-width: 0; }
-@media (max-width: 700px) { .bar { flex-wrap: wrap; } .subnav { width: 100%; } }
+/* Themenleiste: Marke oben, Themen darunter in zentrierten Reihen */
+.bar { flex-direction: column; align-items: stretch; gap: 8px; padding: 10px 0; }
+.toprow { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.toprow .back { color: var(--amber); font-size: 13.5px; text-decoration: none; }
+.subnav { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 18px; min-width: 0; }
+.subnav a, .subnav span { white-space: nowrap; font-size: 13.5px; padding: 4px 0; }
+.wrap > * { min-width: 0; }
+.bar > * { min-width: 0; max-width: 100%; }
+@media (max-width: 560px) { .subnav { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; scrollbar-width: none; } }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="bar">
-    <a class="brand" href="uap.html"><span class="dot" aria-hidden="true"></span>UAP Observatory</a>
+    <div class="toprow"><a class="brand" href="uap.html"><span class="dot" aria-hidden="true"></span>UAP Observatory</a><a class="back" href="index.html">← Wetterstation</a></div>
     <nav class="subnav" aria-label="Themen des UAP Observatory">
       <a href="uap.html">Skinwalker Ranch</a>
       <a href="rodenstein.html">Odenwald &amp; Rodensteiner</a>
@@ -336,7 +340,6 @@ ul.facts li { border-left: 3px solid var(--violet); padding: 2px 0 2px 12px; fon
       <a href="belgien.html" aria-current="page">Belgische Welle</a>
       <a href="hill.html">Betty &amp; Barney Hill</a>
       <a href="walton.html">Travis Walton</a>
-      <a class="back" href="index.html">← Wetterstation</a>
     </nav>
   </header>
 
