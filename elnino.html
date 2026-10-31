@@ -189,7 +189,8 @@ dl.gloss dd { margin: 0; font-size: 15px; }
 /* Navigation in zwei Reihen: Bereiche oben, Themenseiten darunter, beide zentriert */
 @media (min-width: 761px) {
   .top { align-items: center; }
-  .tabnav { display: flex; flex-direction: column; align-items: center; gap: 0; flex-wrap: nowrap; overflow: visible; }
+  .tabnav { display: flex; flex-direction: column; align-items: center; gap: 0; flex-wrap: nowrap; overflow: visible; flex: 1 1 100%; width: 100%; margin: 4px 0 0; padding: 0; }
+  .navrow.topics { padding-left: 24px; padding-right: 24px; }
   .navrow { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 14px; }
   .navrow.topics { gap: 2px 22px; border-top: 1px solid var(--line); margin-top: 2px; padding-top: 1px; }
   .navrow.topics a { font-size: 13.5px; color: var(--muted); }
