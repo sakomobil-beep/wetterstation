@@ -704,8 +704,8 @@ button { font: inherit; color: inherit; }
         <a id="nav-woche" href="#woche" data-tab="woche">Wochengrafiken</a>
         <a id="nav-vorhersage" href="#vorhersage" data-tab="vorhersage">Vorhersage</a>
         <a id="nav-statistik" href="#statistik" data-tab="statistik">Statistik</a>
-        <a id="nav-historie" href="#historie" data-tab="historie">Historie</a>
         <a id="nav-klima" href="#klima" data-tab="klima">Klima</a>
+        <a id="nav-historie" href="#historie" data-tab="historie">Historie</a>
         <a id="nav-station" href="#station" data-tab="station">Station</a>
         <a id="nav-solar" href="#solar" data-tab="solar">Solarwetter</a>
       </div>
@@ -4174,7 +4174,7 @@ loadYearRecords(true);
 document.addEventListener('visibilitychange', function () { if (!document.hidden) updateSky(); });
 
 /* ---------- Tabs ---------- */
-var TABS = ['aktuell', 'grafiken', 'woche', 'vorhersage', 'statistik', 'historie', 'klima', 'station', 'solar'];
+var TABS = ['aktuell', 'grafiken', 'woche', 'vorhersage', 'statistik', 'klima', 'historie', 'station', 'solar'];
 var currentTab = 'aktuell';
 HS.started = false;
 
