@@ -637,6 +637,22 @@ button { font: inherit; color: inherit; }
 .vmeta a { font-size: 13px; }
 .vhint { font-size: 13.5px; color: var(--muted); max-width: 75ch; }
 
+
+/* NOAA-Lage */
+.nx-scales { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.nx-sc { border-radius: 14px; padding: 12px 14px; background: var(--surface); display: grid; gap: 2px; }
+.nx-sc b { font: 700 1.5rem/1.1 var(--font-display); }
+.nx-sc span { font-size: 13px; color: var(--muted); }
+.nx-sc small { font-size: 12px; color: var(--muted); }
+.nx-imgs { display: grid; gap: 10px; }
+.nx-fig { margin: 0; display: grid; gap: 6px; justify-items: center; }
+.nx-fig img { width: 100%; max-width: 520px; border-radius: 12px; background: #000; min-height: 200px; object-fit: contain; }
+.nx-fig figcaption { font-size: 13px; text-align: center; max-width: 60ch; }
+.nx-alerts { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; max-height: 300px; overflow-y: auto; }
+.nx-alerts li { font-size: 13.5px; line-height: 1.4; border-left: 3px solid var(--line); padding-left: 10px; }
+.nx-alerts li.w { border-left-color: #E57A1F; }
+.nx-alerts li.a { border-left-color: #C93030; }
+.nx-alerts time { display: block; font-size: 12px; color: var(--muted); }
 /* Frühwarnung */
 .ew-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
 .ew-box { background: var(--surface); border-radius: 14px; padding: 14px; display: grid; gap: 8px; align-content: start; }
@@ -1141,6 +1157,29 @@ button { font: inherit; color: inherit; }
       </div>
       <p class="sw-muted" style="font-size:13.5px">Eine Karte der Polarlicht-Wahrscheinlichkeit für Deutschland, Magnetometer-Kurven und Sichtbarkeitskarten gibt es bei <a href="https://aurora.mtwetter.de/" target="_blank" rel="noopener">aurora.mtwetter.de</a>.</p>
       <p class="sw-muted" style="font-size:12.5px">Quellen: <a href="https://www.swpc.noaa.gov/products/aurora-30-minute-forecast" target="_blank" rel="noopener">NOAA SWPC</a> (Bz und OVATION-Modell), <a href="https://kp.gfz.de/" target="_blank" rel="noopener">GFZ Potsdam</a> (Hp30-Index, CC BY 4.0). Aktualisierung alle 5 Minuten.</p>
+    </section>
+
+    <section class="chart" aria-label="NOAA Lage und Grafiken">
+      <div class="sw-head"><div><div class="label">NOAA Space Weather Prediction Center</div><h2>Lage, Meldungen und Bilder</h2></div><span class="pill demo" id="nxPill">wird geladen</span></div>
+      <div class="nx-scales" id="nxScales"></div>
+      <div class="sw-two">
+        <div class="ew-box"><h4>Röntgenstrahlung (Flares), letzte 24 Stunden</h4><div id="nxXray" class="ew-plot"></div><p class="sw-muted ew-t">Gemessen vom Satelliten GOES. Jeder Sprung ist ein Flare, ab der Linie M wird es kräftig, ab X sehr stark. Die Strahlung kommt nach 8 Minuten an und kann Kurzwellenfunk stören.</p></div>
+        <div class="ew-box"><h4>Protonen ab 10 MeV, letzte 24 Stunden</h4><div id="nxProt" class="ew-plot"></div><p class="sw-muted ew-t">Energiereiche Teilchen nach starken Ausbrüchen. Ab 10 pfu gilt ein Strahlungssturm (S1), wichtig für Satelliten, Astronauten und Polarflüge.</p></div>
+      </div>
+      <div class="nx-imgs">
+        <div class="sunbtns" id="nxBtns">
+          <button data-k="ovation" aria-pressed="true">Polarlichtoval</button>
+          <button data-k="lasco">Koronagraph</button>
+          <button data-k="enlil">Sonnenwind-Modell</button>
+          <button data-k="suvi">Sonne (SUVI)</button>
+        </div>
+        <figure class="nx-fig"><img id="nxImg" alt="Aktuelles Bild von NOAA" loading="lazy"><figcaption class="sw-muted" id="nxCap"></figcaption></figure>
+      </div>
+      <div class="sw-two">
+        <div class="ew-box"><h4>Sonnenzyklus 25: Sonnenflecken</h4><div id="nxCycle" class="ew-plot"></div><p class="sw-muted ew-t" id="nxCycleT">Monatliche Sonnenfleckenzahl seit 2019. Je mehr Flecken, desto häufiger Ausbrüche.</p></div>
+        <div class="ew-box"><h4>Aktuelle Meldungen von NOAA</h4><ul class="nx-alerts" id="nxAlerts"><li class="sw-muted">wird geladen …</li></ul></div>
+      </div>
+      <p class="sw-muted" style="font-size:12.5px">Quellen: <a href="https://www.swpc.noaa.gov/" target="_blank" rel="noopener">NOAA SWPC</a> (Skalen, Meldungen, GOES-Daten, OVATION, WSA-Enlil, SUVI, Sonnenzyklus) und <a href="https://soho.nascom.nasa.gov/" target="_blank" rel="noopener">SOHO (ESA/NASA)</a> (Koronagraph LASCO C3). Daten von NOAA sind gemeinfrei. Aktualisierung alle 5 Minuten.</p>
     </section>
 
     <div class="sw-two">
@@ -4845,5 +4884,141 @@ setInterval(renderSaison, 600000);
   window.addEventListener('hashchange', maybe); maybe();
 })();
 </script>
+<script>
+/* NOAA-Lage: Skalen, GOES-Röntgen und Protonen, Bilder, Sonnenzyklus, Meldungen */
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  if (!$('nxScales')) return;
+  var B = 'https://services.swpc.noaa.gov';
+  function getJ(u) { return fetch(u, { cache: 'no-store' }).then(function (r) { if (!r.ok) throw r.status; return r.json(); }); }
+  function tt(s) { return new Date(String(s).replace(' ', 'T').replace(/(\d)$/, '$1Z')); }
+  function hm(d) { return d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }); }
+  function esc(x) { return String(x).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  // Logarithmische Liniengrafik
+  function logPlot(el, pts, o) {
+    if (!pts.length) { el.innerHTML = '<p class="sw-muted ew-t">Keine Daten verfügbar.</p>'; return; }
+    var W = 320, H = 140, L = 34, R = 6, T = 8, B2 = 20, t1 = Date.now(), t0 = t1 - 24 * 3600e3, lo = o.lo, hi = o.hi;
+    pts.forEach(function (p) { var l = Math.log10(p.v); if (l > hi) hi = Math.ceil(l); });
+    var x = function (t) { return L + (t - t0) / (t1 - t0) * (W - L - R); }, y = function (v) { var l = Math.max(lo, Math.log10(v)); return T + (hi - l) / (hi - lo) * (H - T - B2); };
+    var g = '';
+    o.lines.forEach(function (ln) { var yy = y(ln[0]).toFixed(1); g += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + yy + '" y2="' + yy + '" stroke="' + (ln[2] || '#E1E7EA') + '"/><text x="' + (L - 4) + '" y="' + (+yy + 3) + '" text-anchor="end">' + ln[1] + '</text>'; });
+    for (var k = 0; k <= 4; k++) { var tk = t0 + (t1 - t0) * k / 4; g += '<text x="' + x(tk).toFixed(1) + '" y="' + (H - 5) + '" text-anchor="middle">' + hm(new Date(tk)) + '</text>'; }
+    var d = pts.filter(function (p) { return p.t >= t0 && p.v > 0; }).map(function (p, i) { return (i ? 'L' : 'M') + x(p.t).toFixed(1) + ' ' + y(p.v).toFixed(1); }).join('');
+    g += '<path d="' + d + '" fill="none" stroke="' + o.color + '" stroke-width="1.5" stroke-linejoin="round"/>';
+    el.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + o.label + '">' + g + '</svg>';
+  }
+
+  // NOAA-Skalen R, S, G
+  var SC = {
+    R: ['Funkausfälle', 'durch Flares'], S: ['Strahlungssturm', 'durch Protonen'], G: ['Geomagnetischer Sturm', 'Polarlichter möglich']
+  };
+  var LV = ['keine', 'gering', 'mäßig', 'stark', 'schwer', 'extrem'];
+  function scColor(n) { return n >= 4 ? '#C93030' : n >= 3 ? '#E57A1F' : n >= 1 ? '#E0B020' : '#3FA36B'; }
+  function loadScales() {
+    return getJ(B + '/products/noaa-scales.json').then(function (j) {
+      var now = j['0'] || {}, fc = [j['1'], j['2'], j['3']];
+      $('nxScales').innerHTML = ['R', 'S', 'G'].map(function (k) {
+        var n = parseInt((now[k] || {}).Scale, 10) || 0, txt = k + n;
+        var f = '';
+        if (k === 'G') { var mx = Math.max.apply(null, fc.map(function (d) { return d && d.G ? parseInt(d.G.Scale, 10) || 0 : 0; })); f = 'Prognose 3 Tage: bis G' + mx; }
+        else { var p = fc[0] && fc[0][k]; if (p) f = k === 'R' ? 'Heute: R1–2 ' + (p.MinorProb || '–') + ' %, R3+ ' + (p.MajorProb || '–') + ' %' : 'Heute: S1+ ' + (p.Prob || '–') + ' %'; }
+        return '<div class="nx-sc" style="border-left:4px solid ' + scColor(n) + '"><span>' + SC[k][0] + '</span><b style="color:' + scColor(n) + '">' + txt + ' · ' + LV[Math.min(n, 5)] + '</b><small>' + SC[k][1] + (f ? ' · ' + f : '') + '</small></div>';
+      }).join('');
+      return true;
+    }).catch(function () { $('nxScales').innerHTML = ''; return false; });
+  }
+
+  function loadXray() {
+    return getJ(B + '/json/goes/primary/xrays-1-day.json').then(function (j) {
+      var pts = j.filter(function (o) { return o.energy === '0.1-0.8nm'; }).map(function (o) { return { t: tt(o.time_tag).getTime(), v: +o.flux }; });
+      logPlot($('nxXray'), pts, { lo: -8, hi: -3, color: '#B4561A', label: 'Röntgenfluss der letzten 24 Stunden',
+        lines: [[1e-8, 'A'], [1e-7, 'B'], [1e-6, 'C'], [1e-5, 'M', '#F2C08F'], [1e-4, 'X', '#E7A1A1']] });
+      return true;
+    }).catch(function () { $('nxXray').innerHTML = '<p class="sw-muted ew-t">Nicht verfügbar.</p>'; return false; });
+  }
+  function loadProt() {
+    return getJ(B + '/json/goes/primary/integral-protons-1-day.json').then(function (j) {
+      var pts = j.filter(function (o) { return o.energy === '>=10 MeV'; }).map(function (o) { return { t: tt(o.time_tag).getTime(), v: +o.flux }; });
+      logPlot($('nxProt'), pts, { lo: -1, hi: 2, color: '#6A3FA0', label: 'Protonenfluss der letzten 24 Stunden',
+        lines: [[0.1, '0,1'], [1, '1'], [10, 'S1', '#E7A1A1'], [100, 'S2', '#E7A1A1']] });
+      return true;
+    }).catch(function () { $('nxProt').innerHTML = '<p class="sw-muted ew-t">Nicht verfügbar.</p>'; return false; });
+  }
+
+  // Bilder
+  var IMG = {
+    ovation: { u: B + '/images/animations/ovation/north/latest.jpg', c: 'Vorhersage des Polarlichtovals über der Nordhalbkugel (NOAA OVATION). Je weiter das grüne bis rote Band nach Süden reicht, desto besser die Chancen bei uns.' },
+    lasco: { u: 'https://soho.nascom.nasa.gov/data/realtime/c3/512/latest.jpg', c: 'Koronagraph LASCO C3 der Raumsonde SOHO: Die Sonne ist abgedeckt, so sieht man Auswürfe (CME). Ein Ring rund um die Scheibe („Halo“) bedeutet: Die Wolke kommt auf uns zu.' },
+    enlil: { anim: B + '/products/animations/enlil.json', c: 'Modell WSA-Enlil: wie sich Sonnenwind und Auswürfe im Sonnensystem ausbreiten. Die Erde ist der grüne Punkt rechts der Sonne.' },
+    suvi: { anim: B + '/products/animations/suvi-primary-195.json', u: B + '/images/animations/suvi/primary/195/latest.png', c: 'Die Sonne im extremen Ultraviolett (GOES-SUVI, 19,5 nm). Helle Gebiete sind aktive Regionen, dunkle Flecken koronale Löcher, aus denen schneller Sonnenwind strömt.' }
+  };
+  function showImg(k) {
+    var m = IMG[k], img = $('nxImg');
+    Array.prototype.forEach.call($('nxBtns').children, function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-k') === k ? 'true' : 'false'); });
+    $('nxCap').textContent = m.c;
+    img.onerror = function () { if (m.u && img.src !== m.u) img.src = m.u; else { img.style.visibility = 'hidden'; $('nxCap').textContent = 'Das Bild ist gerade nicht verfügbar. ' + m.c; } };
+    img.onload = function () { img.style.visibility = ''; };
+    if (m.anim) {
+      getJ(m.anim).then(function (a) { var l = a[a.length - 1]; img.src = (l.url.indexOf('http') === 0 ? '' : B) + l.url; })
+        .catch(function () { if (m.u) img.src = m.u + '?t=' + Date.now(); else img.onerror(); });
+    } else img.src = m.u + '?t=' + Math.floor(Date.now() / 300000);
+  }
+  $('nxBtns').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) showImg(b.getAttribute('data-k')); });
+
+  function loadCycle() {
+    return getJ(B + '/json/solar-cycle/observed-solar-cycle-indices.json').then(function (j) {
+      var pts = j.filter(function (o) { return o['time-tag'] >= '2019-12'; }).map(function (o) { return { t: o['time-tag'], v: +o.ssn }; });
+      if (!pts.length) throw 0;
+      var W = 320, H = 140, L = 30, R = 6, T = 8, Bt = 20, mx = Math.max.apply(null, pts.map(function (p) { return p.v; })), top = Math.ceil(mx / 50) * 50;
+      var bw = (W - L - R) / pts.length, g = '';
+      [0, 50, 100, 150, 200, 250].forEach(function (v) { if (v <= top) { var yy = T + (top - v) / top * (H - T - Bt); g += '<line x1="' + L + '" x2="' + (W - R) + '" y1="' + yy.toFixed(1) + '" y2="' + yy.toFixed(1) + '" stroke="#E1E7EA"/><text x="' + (L - 4) + '" y="' + (yy + 3).toFixed(1) + '" text-anchor="end">' + v + '</text>'; } });
+      pts.forEach(function (p, i) { var h = p.v / top * (H - T - Bt); g += '<rect x="' + (L + i * bw).toFixed(1) + '" y="' + (H - Bt - h).toFixed(1) + '" width="' + Math.max(1, bw - 1).toFixed(1) + '" height="' + h.toFixed(1) + '" fill="#E8930C"/>'; if (p.t.slice(5, 7) === '01') g += '<text x="' + (L + i * bw).toFixed(1) + '" y="' + (H - 5) + '" text-anchor="middle">' + p.t.slice(0, 4) + '</text>'; });
+      $('nxCycle').innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Monatliche Sonnenfleckenzahl">' + g + '</svg>';
+      var last = pts[pts.length - 1], peak = pts.reduce(function (a, b) { return b.v > a.v ? b : a; });
+      $('nxCycleT').textContent = 'Monatliche Sonnenfleckenzahl seit 2020. Höchster Monat bisher: ' + Math.round(peak.v) + ' (' + peak.t.slice(5, 7) + '/' + peak.t.slice(0, 4) + '), zuletzt ' + Math.round(last.v) + ' (' + last.t.slice(5, 7) + '/' + last.t.slice(0, 4) + '). Je mehr Flecken, desto häufiger Ausbrüche.';
+      return true;
+    }).catch(function () { $('nxCycle').innerHTML = '<p class="sw-muted ew-t">Nicht verfügbar.</p>'; return false; });
+  }
+
+  // Meldungen: Kopfzeile ins Deutsche übertragen
+  var TR = [
+    [/^EXTENDED WARNING:/, 'Verlängerte Warnung:'], [/^WARNING:/, 'Warnung:'], [/^ALERT:/, 'Meldung:'], [/^WATCH:/, 'Vorwarnung:'], [/^SUMMARY:/, 'Zusammenfassung:'], [/^CANCEL WATCH:/, 'Vorwarnung aufgehoben:'], [/^CANCEL WARNING:/, 'Warnung aufgehoben:'],
+    [/Geomagnetic K-index of (\d+) expected/, 'Geomagnetischer K-Index $1 erwartet'], [/Geomagnetic K-index of (\d+)/, 'Geomagnetischer K-Index $1 erreicht'],
+    [/Geomagnetic Storm Category (G\d) Predicted/, 'Geomagnetischer Sturm $1 vorhergesagt'], [/Geomagnetic Sudden Impulse expected/, 'Plötzlicher Impuls im Erdmagnetfeld erwartet'], [/Geomagnetic Sudden Impulse/, 'Plötzlicher Impuls im Erdmagnetfeld'],
+    [/X-ray Flux exceeded (M5|X1)/, 'Röntgenfluss über $1'], [/X-ray Event exceeded (\w+)/, 'Röntgen-Ausbruch über $1'],
+    [/Electron 2MeV Integral Flux exceeded 1000pfu/, 'Elektronenfluss (2 MeV) über 1000 pfu'], [/Proton Event 10MeV Integral Flux exceeded 10pfu/, 'Protonen-Ereignis: über 10 pfu (10 MeV)'], [/Proton 10MeV Integral Flux above 10pfu/, 'Protonenfluss über 10 pfu (10 MeV)'],
+    [/Type II Radio Emission/, 'Radioausbruch Typ II (Hinweis auf Auswurf)'], [/Type IV Radio Emission/, 'Radioausbruch Typ IV'], [/10cm Radio Burst/, 'Radioausbruch 10 cm']
+  ];
+  function loadAlerts() {
+    return getJ(B + '/products/alerts.json').then(function (j) {
+      var list = j.slice(0, 40).map(function (a) {
+        var lines = String(a.message || '').split(/\r?\n/), head = '';
+        lines.some(function (l) { if (/^(EXTENDED WARNING|WARNING|ALERT|WATCH|SUMMARY|CANCEL \w+):/.test(l.trim())) { head = l.trim(); return true; } return false; });
+        if (!head) return null;
+        var de = head; TR.forEach(function (r) { de = de.replace(r[0], r[1]); });
+        var cls = /^(ALERT|SUMMARY)/.test(head) ? 'a' : /^(WARNING|EXTENDED)/.test(head) ? 'w' : '';
+        var noaa = (String(a.message).match(/NOAA Scale:\s*(\w\d)/) || [])[1];
+        return { t: tt(a.issue_datetime), h: de + (noaa ? ' (' + noaa + ')' : ''), c: cls };
+      }).filter(Boolean).slice(0, 8);
+      $('nxAlerts').innerHTML = list.length ? list.map(function (a) {
+        return '<li class="' + a.c + '"><time>' + a.t.toLocaleString('de-DE', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) + ' Uhr</time>' + esc(a.h) + '</li>';
+      }).join('') : '<li class="sw-muted">Zurzeit keine Meldungen.</li>';
+      return true;
+    }).catch(function () { $('nxAlerts').innerHTML = '<li class="sw-muted">Die Meldungen konnten gerade nicht geladen werden.</li>'; return false; });
+  }
+
+  function run() {
+    Promise.all([loadScales(), loadXray(), loadProt(), loadCycle(), loadAlerts()]).then(function (r) {
+      var ok = r.filter(Boolean).length, p = $('nxPill');
+      p.className = 'pill ' + (ok ? 'live' : 'off'); p.textContent = ok ? 'Live · ' + hm(new Date()) + ' Uhr' : 'nicht verfügbar';
+    });
+  }
+  var started = false;
+  function maybe() { if (!started && location.hash === '#solar') { started = true; run(); showImg('ovation'); setInterval(run, 300000); } }
+  window.addEventListener('hashchange', maybe); maybe();
+})();
+</script>
 </body>
+
 </html>
