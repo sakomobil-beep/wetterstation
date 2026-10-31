@@ -1,0 +1,760 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Der Betty und Barney Hill Fall – UAP Observatory</title>
+<meta name="description" content="UAP Observatory: Der Betty und Barney Hill Fall 1961 – Route 3, verlorene Zeit, Hypnose bei Dr. Simon, Sternenkarte und Zeta Reticuli, Outer Limits, Zeugen und Erklärungen.">
+<meta name="theme-color" content="#0B0F24">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+:root {
+  --bg: #070A1A; --bg2: #0D1330; --card: #11183A; --line: #24305E;
+  --ink: #E8ECFF; --muted: #9AA6D4; --cyan: #4FE3F0; --violet: #A77BFF; --green: #6CF2A4; --amber: #FFC66B; --red: #FF6B7A;
+  --font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; color: var(--ink); font: 16px/1.6 var(--font);
+  background: radial-gradient(1200px 600px at 80% -10%, rgba(167,123,255,.18), transparent 60%),
+              radial-gradient(900px 500px at 0% 20%, rgba(79,227,240,.10), transparent 60%), var(--bg);
+  padding: 0 max(16px, env(safe-area-inset-right)) 56px max(16px, env(safe-area-inset-left)); }
+a { color: var(--cyan); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--violet); outline-offset: 2px; border-radius: 4px; }
+.wrap { max-width: 1100px; margin: 0 auto; display: grid; gap: 20px; }
+
+/* Kopfleiste mit eigener Navigation */
+.bar { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 20px;
+  padding: 12px 0; background: linear-gradient(180deg, rgba(7,10,26,.96), rgba(7,10,26,.85)); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); font-weight: 650; letter-spacing: .06em; font-size: 13px; text-transform: uppercase; }
+.brand .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 12px var(--cyan); }
+.subnav { display: flex; flex-wrap: wrap; gap: 4px 18px; }
+.subnav a, .subnav span { font-size: 14px; text-decoration: none; color: var(--muted); padding: 6px 0; border-bottom: 2px solid transparent; }
+.subnav a:hover { color: var(--ink); }
+.subnav a[aria-current="page"] { color: var(--cyan); border-bottom-color: var(--cyan); }
+.subnav span.soon { opacity: .55; cursor: default; }
+.subnav span.soon small { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; margin-left: 4px; color: var(--violet); }
+.subnav a.back { color: var(--amber); }
+
+/* Titelbild */
+.title { position: relative; border-radius: 20px; overflow: hidden; border: 1px solid var(--line); margin-top: 16px; }
+.title img { display: block; width: 100%; height: auto; }
+
+/* Aufmacher */
+.hero { border-radius: 20px; padding: clamp(22px, 4vw, 40px); background: linear-gradient(160deg, #161E4C, #0A0E25 70%); border: 1px solid var(--line); display: grid; gap: 18px; position: relative; overflow: hidden; }
+.hero::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: linear-gradient(90deg, var(--cyan), var(--violet), var(--green)); }
+.kicker { font-size: 12.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--violet); font-weight: 600; }
+.hero h1 { margin: 4px 0 0; font-size: clamp(2rem, 6vw, 3.4rem); line-height: 1.04; letter-spacing: -.02em; }
+.hero p.lead { margin: 0; max-width: 66ch; color: #C9D1F5; font-size: clamp(16px, 2vw, 18px); }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.stat { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: 14px; padding: 14px 16px; display: grid; gap: 4px; align-content: start; }
+.stat .v { font-size: clamp(1.5rem, 3.4vw, 2.1rem); font-weight: 700; color: var(--cyan); line-height: 1.05; font-variant-numeric: tabular-nums; }
+.stat .k { font-size: 13.5px; color: #C9D1F5; line-height: 1.4; }
+@media (max-width: 820px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.toc { display: flex; flex-wrap: wrap; gap: 8px; }
+.toc a { text-decoration: none; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-size: 14px; }
+.toc a:hover { border-color: var(--cyan); color: var(--cyan); }
+
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: clamp(20px, 3.4vw, 32px); display: grid; gap: 16px; min-width: 0; scroll-margin-top: 80px; }
+.card h2 { margin: 0; font-size: clamp(1.4rem, 3vw, 1.85rem); line-height: 1.2; }
+.card h3 { margin: 6px 0 0; font-size: 1.08rem; }
+.card p { margin: 0; max-width: 72ch; }
+.card ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 74ch; }
+.label { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.src { font-size: 13px; color: var(--muted); }
+.src a { color: inherit; }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 18px 28px; align-items: start; }
+
+/* Karte */
+.mapwrap { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 860px) { .mapwrap { grid-template-columns: minmax(0, 1fr); } }
+.map { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: #0A1030; }
+.map svg { display: block; width: 100%; height: auto; }
+.hs { cursor: pointer; }
+.hs circle.ring { fill: none; stroke-width: 2; animation: pulse 2.4s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes pulse { 0% { transform: scale(.6); opacity: 1; } 100% { transform: scale(2.2); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .hs circle.ring { animation: none; } }
+.hs:hover circle.core, .hs.active circle.core { stroke: #fff; stroke-width: 3; }
+.spot { border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 8px; background: var(--bg2); min-height: 220px; align-content: start; }
+.spot .tag { justify-self: start; font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; border-radius: 999px; padding: 2px 10px; font-weight: 600; }
+.spot h3 { margin: 0; }
+.spot p { font-size: 14.5px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.spotlist { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 10px; }
+.spotlist button { text-align: left; font: inherit; color: var(--ink); background: var(--bg2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; cursor: pointer; display: grid; gap: 2px; }
+.spotlist button:hover, .spotlist button[aria-pressed="true"] { border-color: var(--cyan); }
+.spotlist button b { font-size: 14.5px; }
+.spotlist button span { font-size: 12.5px; color: var(--muted); }
+
+/* Zeitleiste */
+.timeline { list-style: none; margin: 0; padding: 0; display: grid; max-width: none !important; }
+.timeline li { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 16px; padding: 12px 0; border-top: 1px solid var(--line); }
+.timeline li:first-child { border-top: 0; }
+.timeline time { font-weight: 700; color: var(--cyan); font-variant-numeric: tabular-nums; }
+.timeline li.hl time { color: var(--amber); }
+@media (max-width: 520px) { .timeline li { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+
+/* Besitzer-Grafik */
+.owners svg { width: 100%; height: auto; display: block; }
+
+/* Kacheln */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 12px; }
+.tile { border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 6px; align-content: start; background: var(--bg2); }
+.tile .ico { font-size: 22px; }
+.tile b { font-size: 16px; }
+.tile p { font-size: 14.5px; color: #C9D1F5; }
+
+/* Tabelle */
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; }
+table { border-collapse: collapse; width: 100%; min-width: 680px; font-size: 14.5px; }
+th, td { text-align: left; padding: 11px 14px; border-top: 1px solid var(--line); vertical-align: top; }
+thead th { border-top: 0; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--bg2); }
+
+.callout { border-radius: 14px; background: rgba(167,123,255,.12); border: 1px solid rgba(167,123,255,.35); padding: 16px 18px; display: grid; gap: 6px; }
+.callout p { font-size: 14.5px; }
+.quote { margin: 0; border-left: 3px solid var(--violet); padding: 2px 0 2px 14px; color: #C9D1F5; max-width: 70ch; }
+
+.links { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 10px 28px; }
+.links h3 { margin: 0 0 6px; font-size: 1rem; }
+.links ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.links li { font-size: 14.5px; line-height: 1.4; }
+.links li span { display: block; font-size: 12.5px; color: var(--muted); }
+.foot { font-size: 13px; color: var(--muted); text-align: center; margin: 8px 0 0; }
+.hotline { justify-self: start; display: inline-flex; align-items: center; gap: 14px; text-decoration: none; color: var(--ink); background: rgba(108,242,164,.1); border: 1px solid rgba(108,242,164,.5); border-radius: 999px; padding: 10px 22px 10px 14px; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.hotline small { display: block; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--green); font-weight: 600; }
+.hotline:hover { background: rgba(108,242,164,.2); }
+.pulse { width: 14px; height: 14px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 0 rgba(108,242,164,.7); animation: hl 1.8s infinite; }
+@keyframes hl { 70% { box-shadow: 0 0 0 14px rgba(108,242,164,0); } 100% { box-shadow: 0 0 0 0 rgba(108,242,164,0); } }
+/* Quiz */
+.quiz { border: 1px solid var(--line); border-radius: 14px; background: var(--bg2); padding: 20px; display: grid; gap: 14px; min-height: 200px; }
+.quiz .q { font-size: 1.15rem; font-weight: 650; }
+.quiz .step { font-size: 12px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+.quiz .opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px; }
+.quiz button, .actions button, .btn { font: inherit; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; cursor: pointer; text-align: left; text-decoration: none; }
+.quiz button:hover, .actions button:hover, .btn:hover { border-color: var(--cyan); color: var(--cyan); }
+.quiz .res { display: grid; gap: 8px; animation: pop .4s ease; }
+.quiz .res .big { font-size: 1.6rem; font-weight: 750; color: var(--cyan); }
+.quiz .res .prob { font-size: 13px; color: var(--green); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+@keyframes pop { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.quiz .restart { justify-self: start; }
+/* Jahre */
+.years { margin-bottom: 40px; display: flex; align-items: flex-end; gap: clamp(16px, 5vw, 48px); height: 240px; padding: 10px 6px 0; border-bottom: 2px solid var(--line); max-width: 560px; }
+.yr { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: stretch; gap: 6px; }
+.yr > span { text-align: center; color: var(--muted); font-weight: 600; margin-bottom: -30px; }
+.col { height: 0; background: linear-gradient(180deg, var(--cyan), rgba(79,227,240,.25)); border-radius: 10px 10px 0 0; display: flex; justify-content: center; transition: height 1.4s cubic-bezier(.2,.8,.2,1); position: relative; }
+.col.hot { background: linear-gradient(180deg, var(--violet), rgba(167,123,255,.3)); }
+.col b { position: absolute; top: -26px; font-variant-numeric: tabular-nums; }
+.seen .col { height: var(--h); }
+#zahlen h3 { margin-top: 26px; }
+.hbars { display: grid; gap: 10px; max-width: 640px; }
+.hb { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 12px; align-items: center; font-size: 14.5px; }
+.hb i { display: block; width: 0; font-style: normal; font-weight: 700; padding: 6px 10px; border-radius: 8px; background: linear-gradient(90deg, rgba(79,227,240,.2), rgba(79,227,240,.7)); transition: width 1.2s ease .2s; white-space: nowrap; }
+.seen .hb i { width: var(--w); }
+@media (max-width: 520px) { .hb { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+/* IFO-Karten mit Animation */
+.ifos { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 12px; }
+.ifo { border: 1px solid var(--line); border-radius: 14px; background: var(--bg2); padding: 0 0 14px; display: grid; gap: 6px; overflow: hidden; }
+.ifo b, .ifo p { padding: 0 14px; }
+.ifo p { font-size: 14px; color: #C9D1F5; margin: 0; }
+.anim { position: relative; height: 110px; background: radial-gradient(circle at 80% 20%, #1D2760, #070A1A 70%); overflow: hidden; }
+.anim::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(1px 1px at 20% 30%, #fff, transparent), radial-gradient(1px 1px at 70% 60%, #fff, transparent), radial-gradient(1px 1px at 40% 80%, #cfd6ff, transparent), radial-gradient(1px 1px at 85% 25%, #fff, transparent), radial-gradient(1px 1px at 10% 70%, #fff, transparent); opacity: .7; }
+.anim i { position: absolute; display: block; }
+.starlink i { width: 4px; height: 4px; border-radius: 50%; background: #fff; box-shadow: 0 0 6px #fff; left: -10%; top: 70%; animation: sl 7s linear infinite; }
+.starlink i:nth-child(2) { animation-delay: .35s } .starlink i:nth-child(3) { animation-delay: .7s } .starlink i:nth-child(4) { animation-delay: 1.05s } .starlink i:nth-child(5) { animation-delay: 1.4s } .starlink i:nth-child(6) { animation-delay: 1.75s } .starlink i:nth-child(7) { animation-delay: 2.1s } .starlink i:nth-child(8) { animation-delay: 2.45s }
+@keyframes sl { from { left: -5%; top: 75%; } to { left: 105%; top: 15%; } }
+.planet i { width: 10px; height: 10px; border-radius: 50%; left: 45%; top: 55%; background: #FFF6D8; box-shadow: 0 0 14px 4px #FFE9A8; animation: tw 1.4s ease-in-out infinite alternate; }
+@keyframes tw { 0% { box-shadow: 0 0 10px 3px #FFE9A8; } 33% { box-shadow: 0 0 16px 5px #A9D8FF; } 66% { box-shadow: 0 0 12px 4px #FFB0B9; } 100% { box-shadow: 0 0 18px 6px #FFE9A8; } }
+.lantern i { width: 8px; height: 8px; border-radius: 50%; background: #FFA640; box-shadow: 0 0 10px 3px #FF8A1E; animation: ln 8s ease-in infinite; bottom: -10px; }
+.lantern i:nth-child(1) { left: 30%; } .lantern i:nth-child(2) { left: 50%; animation-delay: 2.6s; } .lantern i:nth-child(3) { left: 66%; animation-delay: 5.2s; }
+@keyframes ln { 0% { bottom: -10px; opacity: 1; transform: translateX(0); } 80% { opacity: 1; } 100% { bottom: 110px; opacity: 0; transform: translateX(30px); } }
+.meteor i { width: 90px; height: 2px; background: linear-gradient(90deg, transparent, #B8FFD0, #fff); border-radius: 2px; transform: rotate(25deg); left: -30%; top: 0; animation: mt 3.2s ease-in infinite; opacity: 0; }
+@keyframes mt { 0% { left: -30%; top: -10%; opacity: 0; } 8% { opacity: 1; } 30% { left: 90%; top: 80%; opacity: 0; } 100% { opacity: 0; left: 90%; top: 80%; } }
+.drone i { width: 6px; height: 6px; border-radius: 50%; background: #FF4E5E; box-shadow: 14px 0 0 #6CF2A4; animation: dr 6s ease-in-out infinite, bl 1s steps(2) infinite; }
+@keyframes dr { 0% { left: 20%; top: 60%; } 25% { left: 45%; top: 30%; } 45% { left: 45%; top: 30%; } 70% { left: 70%; top: 55%; } 100% { left: 20%; top: 60%; } }
+@keyframes bl { 50% { opacity: .2; } }
+.plane i { width: 12px; height: 12px; border-radius: 50%; background: #fff; box-shadow: 0 0 22px 8px rgba(255,255,255,.8); left: 50%; top: 50%; animation: pl 5s ease-in-out infinite; }
+@keyframes pl { 0% { transform: scale(.3); opacity: .4; } 80% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(.3) translateX(80px); opacity: 0; } }
+.balloon i { width: 18px; height: 22px; border-radius: 50% 50% 45% 45%; background: radial-gradient(circle at 35% 30%, #fff, #CFE8FF 40%, #7FA9D8); left: 30%; top: 60%; animation: bn 9s ease-in-out infinite; }
+@keyframes bn { 0% { left: 25%; top: 70%; } 50% { left: 55%; top: 20%; } 100% { left: 25%; top: 70%; } }
+.laser i { width: 26px; height: 14px; border-radius: 50%; background: rgba(160,255,200,.7); filter: blur(3px); left: 40%; top: 40%; animation: lz 3s linear infinite; }
+.laser i:nth-child(2) { animation-delay: -1.5s; background: rgba(170,190,255,.7); }
+@keyframes lz { 0% { transform: rotate(0) translateX(40px) rotate(0); } 100% { transform: rotate(360deg) translateX(40px) rotate(-360deg); } }
+.rocket i { width: 40px; height: 40px; border: 3px solid rgba(160,220,255,.8); border-radius: 50%; border-top-color: transparent; left: 42%; top: 30%; animation: rk 2.6s linear infinite; box-shadow: 0 0 12px rgba(160,220,255,.6); }
+@keyframes rk { 0% { transform: rotate(0) scale(.4); opacity: 0; } 20% { opacity: 1; } 100% { transform: rotate(720deg) scale(1.6); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .anim i { animation: none !important; } .col, .hb i { transition: none; } }
+/* Ablauf */
+.flow { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr)); gap: 12px; max-width: none !important; counter-reset: s; }
+.flow li { border: 1px solid var(--line); border-radius: 14px; background: var(--bg2); padding: 14px; display: grid; gap: 8px; align-content: start; position: relative; }
+.flow .n { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: rgba(79,227,240,.15); color: var(--cyan); font-weight: 750; border: 1px solid rgba(79,227,240,.5); }
+.flow p { font-size: 14px; color: #C9D1F5; margin: 4px 0 0; }
+/* Fälle */
+.cases { display: grid; gap: 8px; }
+.cases details { border: 1px solid var(--line); border-radius: 12px; background: var(--bg2); padding: 0 16px; }
+.cases details[open] { border-color: rgba(167,123,255,.6); }
+.cases summary { cursor: pointer; padding: 14px 0; font-weight: 650; list-style: none; display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; }
+.cases summary::-webkit-details-marker { display: none; }
+.cases summary::after { content: "+"; margin-left: auto; color: var(--violet); font-size: 20px; }
+.cases details[open] summary::after { content: "–"; }
+.cases .cy { color: var(--amber); font-size: 13px; font-weight: 700; min-width: 120px; font-variant-numeric: tabular-nums; }
+.cases p { padding: 0 0 14px; font-size: 15px; color: #C9D1F5; }
+/* Formular */
+.report { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px; }
+.report label { display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
+.report .wide { grid-column: 1 / -1; }
+.report .chk { display: flex; align-items: center; gap: 8px; color: var(--ink); font-size: 14px; }
+.report input, .report select, .report textarea { font: inherit; font-size: 15px; color: var(--ink); background: var(--bg2); border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; color-scheme: dark; }
+.report input:focus, .report select:focus, .report textarea:focus { outline: 2px solid var(--cyan); border-color: transparent; }
+.out { margin: 0; white-space: pre-wrap; font: 14px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: #050817; border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; color: #BFF6FF; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn.alt { border-color: rgba(108,242,164,.6); color: var(--green); }
+.clock { display: grid; gap: 0; border-left: 2px solid var(--line); margin-left: 8px; }
+.tick { position: relative; padding: 8px 0 12px 22px; display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 12px; }
+.tick::before { content: ""; position: absolute; left: -7px; top: 13px; width: 12px; height: 12px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+.tick.hl::before { background: var(--amber); box-shadow: 0 0 10px var(--amber); }
+.tick time { font-weight: 700; color: var(--cyan); font-variant-numeric: tabular-nums; }
+.tick.hl time { color: var(--amber); }
+.tick p { margin: 0; }
+@media (max-width: 560px) { .tick { grid-template-columns: minmax(0, 1fr); gap: 0; } }
+.craft { margin: 0; display: grid; gap: 8px; }
+.craft svg, .path svg { width: 100%; height: auto; display: block; border: 1px solid var(--line); border-radius: 14px; }
+.path { overflow-x: auto; } .path svg { min-width: 760px; background: #0A1030; }
+.craft figcaption { font-size: 13.5px; color: var(--muted); }
+/* Player */
+.player { border: 1px solid var(--line); border-radius: 16px; background: linear-gradient(160deg, #0B1130, #070A1A); padding: 18px; display: grid; gap: 14px; }
+.tape { position: relative; height: 120px; max-width: 380px; border-radius: 12px; background: linear-gradient(180deg, #2B2F3E, #1A1D28); border: 2px solid #3B4156; display: flex; justify-content: space-between; align-items: center; padding: 0 46px; }
+.reel { width: 64px; height: 64px; border-radius: 50%; background: radial-gradient(circle, #111 18%, #6B5A3A 20%, #3A2F1E 62%, #1A1D28 64%); border: 2px solid #4A5068; position: relative; }
+.reel i { position: absolute; inset: 22px; border-radius: 50%; border: 3px dashed #9AA6D4; }
+.playing .reel i { animation: spin 2s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.tapelabel { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); font: 600 10px/1 ui-monospace, Menlo, monospace; color: #F3E6C8; letter-spacing: .08em; white-space: nowrap; }
+.pctl { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+.big { font: inherit; font-weight: 700; color: #04121A; background: var(--cyan); border: 0; border-radius: 999px; padding: 11px 20px; cursor: pointer; }
+.big:hover { filter: brightness(1.1); }
+.snd { display: flex; gap: 8px; align-items: center; font-size: 14px; color: var(--muted); }
+.geiger { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
+.needle { width: 140px; height: 10px; border-radius: 5px; background: linear-gradient(90deg, #6CF2A4, #FFC66B 60%, #FF6B7A); position: relative; }
+.needle i { position: absolute; top: -5px; left: 0; width: 3px; height: 20px; background: #fff; border-radius: 2px; transition: left .4s ease; box-shadow: 0 0 6px #fff; }
+.geiger b { color: var(--ink); min-width: 58px; font-variant-numeric: tabular-nums; }
+.log { list-style: none; margin: 0; padding: 12px 14px; max-height: 380px; overflow-y: auto; background: #03050F; border-radius: 12px; border: 1px solid var(--line); font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; display: grid; gap: 6px; max-width: none !important; min-height: 120px; }
+.log li { animation: pop .35s ease; }
+.log .t { color: var(--amber); margin-right: 8px; }
+.log .who { color: var(--cyan); margin-right: 6px; font-weight: 700; }
+.log .note { color: #6F7AA8; font-style: italic; }
+@keyframes pop { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.video { max-width: 720px; }
+.vframe { position: relative; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; background: #0B1130; border: 1px solid var(--line); }
+.vframe iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.vplay { position: absolute; inset: 0; width: 100%; border: 0; cursor: pointer; color: #fff; display: grid; place-content: center; justify-items: center; gap: 10px; padding: 16px; text-align: center; font: 600 15px/1.35 var(--font); background: radial-gradient(circle at 70% 30%, rgba(167,123,255,.35), transparent 55%), linear-gradient(160deg, #1A2350, #070A1A); }
+.vplay .pb { width: 64px; height: 64px; border-radius: 50%; background: rgba(255,255,255,.95); display: grid; place-items: center; }
+.vplay .pb svg { width: 26px; height: 26px; margin-left: 4px; fill: #0B1130; }
+.vplay small { color: var(--muted); font-size: 12px; font-weight: 400; max-width: 40ch; }
+/* Memo */
+.protocol { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+@media (max-width: 800px) { .protocol { grid-template-columns: minmax(0, 1fr); } }
+.paper { background: #F4F1E8; color: #1E1E1E; border-radius: 4px; padding: 22px; font: 14.5px/1.5 'Courier New', Courier, monospace; box-shadow: 0 12px 30px rgba(0,0,0,.45); transform: rotate(-.6deg); display: grid; gap: 8px; }
+.paper .ph { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid #999; padding-bottom: 6px; }
+.paper .pt { font-weight: 700; text-transform: uppercase; }
+.paper p { margin: 0; }
+.paper .sig { margin-top: 8px; font-weight: 700; }
+.paper .pn { font-size: 11px; color: #666; font-style: italic; }
+ul.facts { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; max-width: none; }
+ul.facts li { border-left: 3px solid var(--violet); padding: 2px 0 2px 12px; font-size: 15px; }
+/* Zeugen */
+.ranks { display: grid; gap: 14px; }
+.rank { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px; border-left: 4px solid var(--line); padding-left: 14px; position: relative; padding-top: 22px; }
+.rank .rl { position: absolute; top: 0; left: 14px; font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; }
+.r1 { border-color: var(--amber); } .r1 .rl { color: var(--amber); }
+.r2 { border-color: var(--violet); } .r2 .rl { color: var(--violet); }
+.r3 { border-color: var(--cyan); } .r3 .rl { color: var(--cyan); }
+.r4 { border-color: var(--green); } .r4 .rl { color: var(--green); }
+.w { border: 1px solid var(--line); border-radius: 12px; background: var(--bg2); padding: 12px 14px; display: grid; gap: 3px; align-content: start; }
+.w.hl { border-color: rgba(79,227,240,.55); box-shadow: 0 0 0 1px rgba(79,227,240,.15) inset; }
+.w b { font-size: 15px; } .w span { font-size: 12.5px; color: var(--muted); } .w p { font-size: 13.5px; color: #C9D1F5; margin: 4px 0 0; }
+.sketch { display: grid; gap: 12px; align-content: start; }
+.sketch svg, .rad svg { width: 100%; height: auto; display: block; border: 1px solid var(--line); border-radius: 14px; }
+/* Leuchtturm */
+.lhsim { display: grid; gap: 12px; }
+.lhsim svg { width: 100%; height: auto; display: block; border-radius: 14px; border: 1px solid var(--line); }
+.lhctl { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.lhctl #lhHit { font: inherit; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 10px 20px; cursor: pointer; }
+.lhctl span { font-size: 14px; color: var(--muted); }
+.binary { font: 12px/1.4 ui-monospace, Menlo, monospace; color: rgba(108,242,164,.55); word-break: break-all; max-height: 70px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+.pro h3 { color: var(--green); } .con h3 { color: var(--amber); }
+.lhc { animation: lhb 5s infinite; }
+@keyframes lhb { 0%, 6% { fill: #FFFFFF; } 10%, 100% { fill: #6B6440; } }
+@media (prefers-reduced-motion: reduce) { .lhc, .playing .reel i { animation: none; } }
+
+.cmp .ev { border: 1px solid var(--line); border-radius: 14px; background: var(--bg2); padding: 16px; display: grid; gap: 10px; align-content: start; }
+.ev svg { width: 100%; height: auto; border-radius: 10px; display: block; }
+.evt { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; }
+.ev1 .evt { color: var(--cyan); } .ev2 .evt { color: var(--amber); }
+.ev h3 { margin: 0; }
+.ev ul { font-size: 14.5px; }
+.flare-card { display: grid; gap: 8px; } .flare-card svg { width: 100%; max-width: 340px; height: auto; border-radius: 12px; border: 1px solid var(--line); }
+.scope svg { width: 100%; height: auto; display: block; border-radius: 14px; border: 1px solid var(--line); }
+.scope { display: grid; gap: 12px; }
+
+.nums { display: grid; gap: 10px; max-width: 720px; margin-top: 8px; }
+.num { display: grid; grid-template-columns: minmax(0, 1fr) 90px; grid-template-rows: auto auto; gap: 2px 12px; align-items: center; }
+.num .nb { grid-column: 1; grid-row: 1; height: 14px; border-radius: 7px; width: var(--w); background: linear-gradient(90deg, rgba(79,227,240,.3), var(--cyan)); }
+.num .nb.hot { background: linear-gradient(90deg, rgba(167,123,255,.3), var(--violet)); }
+.num b { grid-column: 2; grid-row: 1; font-variant-numeric: tabular-nums; }
+.num span:last-child { grid-column: 1 / -1; font-size: 13px; color: var(--muted); }
+.radarbox { display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: 20px; align-items: center; }
+@media (max-width: 760px) { .radarbox { grid-template-columns: minmax(0, 1fr); } }
+.radarbox .scope { width: 100%; height: auto; display: block; }
+.hud { border: 1px solid #2E6B4A; border-radius: 14px; background: #03110A; padding: 16px; display: grid; gap: 8px; font-family: ui-monospace, Menlo, Consolas, monospace; color: #6CF2A4; }
+.hrow { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px dashed #1F5A3C; padding-bottom: 4px; }
+.hrow span { color: #3FA673; font-size: 13px; } .hrow b { font-size: 16px; }
+.hnote { font-size: 13px; color: #A8F5C8; margin: 4px 0; min-height: 3.2em; }
+#sweep { transform-origin: 210px 210px; animation: sw 3s linear infinite; }
+@keyframes sw { to { transform: rotate(360deg); } }
+.fake svg { width: 100%; height: auto; display: block; border-radius: 14px; border: 1px solid var(--line); }
+.fake { display: grid; gap: 12px; }
+
+.nightbar { display: grid; gap: 10px; }
+.nb-track { position: relative; height: 56px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); }
+.seg { position: absolute; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; font-size: 11.5px; text-align: center; padding: 0 4px; color: #E8ECFF; border-right: 1px solid rgba(0,0,0,.4); }
+.s1 { background: #1E3A5A; } .s2 { background: #3A2F6B; } .s3 { background: #6B3A4A; } .s4 { background: repeating-linear-gradient(45deg, #7A1F2E, #7A1F2E 8px, #5A1622 8px, #5A1622 16px); } .s5 { background: #1E4A3A; }
+.cursor { position: absolute; top: -2px; bottom: -2px; width: 3px; background: #FFC66B; box-shadow: 0 0 10px #FFC66B; left: 0; }
+.nightbar input { width: 100%; accent-color: #FFC66B; }
+.nb-out { display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; } .nb-out b { font-size: 1.6rem; color: var(--amber); font-variant-numeric: tabular-nums; } .nb-out span { color: #C9D1F5; }
+.starbox { display: grid; gap: 10px; } .starbox svg { width: 100%; height: auto; border-radius: 14px; border: 1px solid var(--line); display: block; }
+.sec { font: inherit; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 10px 18px; cursor: pointer; }
+.ol-tl svg { width: 100%; height: auto; display: block; border-radius: 14px; border: 1px solid var(--line); background: #0A1030; }
+#hills .two .w { padding: 16px; } .tick { grid-template-columns: 130px minmax(0, 1fr); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="bar">
+    <a class="brand" href="uap.html"><span class="dot" aria-hidden="true"></span>UAP Observatory</a>
+    <nav class="subnav" aria-label="Themen des UAP Observatory">
+      <a href="uap.html">Skinwalker Ranch</a>
+      <a href="rodenstein.html">Odenwald &amp; Rodensteiner</a>
+      <a href="cenap.html">CENAP-Meldestelle</a>
+      <a href="rendlesham.html">Rendlesham Forest</a>
+      <a href="phoenix.html">Phoenix Lights</a>
+      <a href="belgien.html">Belgische Welle</a>
+      <a href="hill.html" aria-current="page">Betty &amp; Barney Hill</a>
+      <a class="back" href="index.html">← Wetterstation</a>
+    </nav>
+  </header>
+
+  <figure class="title" style="margin:16px 0 0">
+    <img src="uap-titel.jpg" width="1024" height="434" alt="Nachthimmel mit Milchstraße über einem Schlosshof, darüber schwebt ein leuchtendes geometrisches Objekt – Titelbild des UAP Observatory">
+  </figure>
+
+          <section class="hero" aria-labelledby="heroTitle">
+    <div>
+      <div class="kicker">Thema 7 · New Hampshire, USA · 19./20. September 1961</div>
+      <h1 id="heroTitle">Der Betty und Barney Hill Fall</h1>
+    </div>
+    <p class="lead">Ein Ehepaar fährt nachts durch die White Mountains nach Hause. Ein Licht scheint ihnen zu folgen, kommt näher, wird zu einem Flugobjekt mit Fenstern. Dann fehlen ihnen zwei Stunden. Unter Hypnose erzählen beide Jahre später von Wesen mit großen Augen, medizinischen Untersuchungen und einer Sternenkarte. Es ist die erste weithin bekannte „Entführung durch Außerirdische“ und die Vorlage für fast alle, die danach kamen.</p>
+    <div class="stats">
+      <div class="stat"><span class="v">~2 Std.</span><span class="k">„verlorene Zeit“ auf der Route 3</span></div>
+      <div class="stat"><span class="v">35 Meilen</span><span class="k">weiter südlich kamen sie wieder zu sich</span></div>
+      <div class="stat"><span class="v">1964</span><span class="k">Hypnose-Sitzungen beim Psychiater Dr. Benjamin Simon</span></div>
+      <div class="stat"><span class="v">2011</span><span class="k">stellt New Hampshire eine offizielle Gedenktafel auf</span></div>
+    </div>
+  </section>
+
+  <nav class="toc" aria-label="Inhalt dieser Seite">
+    <a href="#hills">Die Hills</a>
+    <a href="#karte">Die Route</a>
+    <a href="#nacht">Die Nacht</a>
+    <a href="#zeit">Verlorene Zeit</a>
+    <a href="#danach">Danach</a>
+    <a href="#hypnose">Hypnose</a>
+    <a href="#karte2">Die Sternenkarte</a>
+    <a href="#spuren">Spuren</a>
+    <a href="#outer">Outer Limits</a>
+    <a href="#erklaerungen">Erklärungen</a>
+    <a href="#bilanz">Bilanz</a>
+    <a href="#quellen">Quellen</a>
+  </nav>
+
+  <section class="card" id="hills">
+    <div class="label">Wer sie waren</div>
+    <h2>Betty und Barney Hill</h2>
+    <div class="two">
+      <div class="w hl"><b>Barney Hill (1922–1969)</b><span>Postangestellter, Weltkriegsveteran</span><p>Afroamerikaner, engagiert in der Bürgerrechtsbewegung. Ruhig, eher skeptisch. Litt nach der Nacht unter Magengeschwüren und Schlafstörungen. Er starb 1969 mit 46 Jahren.</p></div>
+      <div class="w hl"><b>Betty Hill (1919–2004)</b><span>Sozialarbeiterin, Absolventin der University of New Hampshire</span><p>Weiß, ebenfalls Bürgerrechtlerin. Die treibende Kraft hinter der Aufarbeitung. Erzählte die Geschichte bis zu ihrem Tod und meldete später viele weitere UFO-Sichtungen.</p></div>
+    </div>
+    <p>Ein gemischtes Ehepaar Anfang der 1960er-Jahre, aus Portsmouth an der Küste von New Hampshire. Beide galten als bodenständig und angesehen, was der Geschichte später großes Gewicht gab. Mit dabei in jener Nacht: ihr Dackel Delsey, in einem 1957er Chevrolet Bel Air.</p>
+  </section>
+
+  <section class="card" id="karte">
+    <div class="label">Karte</div>
+    <h2>Die Route 3 durch die White Mountains</h2>
+    <p>Von Kanada kommend nach Süden. Das Auto auf der Karte fährt die Strecke ab, der rote Abschnitt ist die „verlorene Zeit“. Klick auf die Stationen.</p>
+    <div class="mapwrap">
+      <div class="map">
+        <svg viewBox="0 0 640 700" role="img" aria-labelledby="hmT">
+          <title id="hmT">Schematische Karte von New Hampshire mit der Route 3 von Colebrook über Lancaster, Twin Mountain, Cannon Mountain und Indian Head nach Ashland und weiter nach Portsmouth</title>
+          <defs><pattern id="g6" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#18224F"/></pattern>
+            <path id="r1" d="M250 50 L245 150 L250 230 C255 260 262 285 268 310"/>
+            <path id="r2" d="M268 310 C272 340 276 365 280 390"/>
+            <path id="r3" d="M280 390 C300 450 320 500 330 540 L470 610 L560 640"/>
+          </defs>
+          <rect width="640" height="700" fill="#0A1030"/><rect width="640" height="700" fill="url(#g6)"/>
+          <path d="M200 20 L330 20 L360 120 L380 260 L420 420 L520 560 L600 600 L590 680 L180 680 L160 400 L170 200 Z" fill="#161C3E" stroke="#5A6AA8" stroke-width="2"/>
+          <text x="210" y="660" fill="#5A6AA8" font-size="18" font-weight="700" letter-spacing="4">NEW HAMPSHIRE</text>
+          <text x="210" y="16" fill="#6F7AA8" font-size="11">KANADA ↑</text>
+          <!-- Berge -->
+          <g fill="#2A3168"><path d="M290 300 L310 270 L330 300Z"/><path d="M300 330 L325 290 L350 330Z"/><path d="M230 350 L250 320 L270 350Z"/><path d="M320 360 L340 330 L360 360Z"/></g>
+          <text x="345" y="300" fill="#7E8CC0" font-size="11">White Mountains</text>
+          <!-- Meer -->
+          <path d="M600 600 L640 590 L640 700 L590 700 Z" fill="#0E2A4E"/><text x="612" y="650" fill="#5F8BC4" font-size="10" transform="rotate(-80 612 650)">Atlantik</text>
+          <!-- Route -->
+          <use href="#r1" fill="none" stroke="#4FE3F0" stroke-width="4"/>
+          <use href="#r2" fill="none" stroke="#FF6B7A" stroke-width="6" stroke-dasharray="4 4"/>
+          <use href="#r3" fill="none" stroke="#4FE3F0" stroke-width="4"/>
+          <g id="car"><rect x="-8" y="-5" width="16" height="10" rx="3" fill="#FFC66B"/><animateMotion dur="16s" repeatCount="indefinite" rotate="auto"><mpath href="#rall"/></animateMotion></g>
+          <path id="rall" d="M250 50 L245 150 L250 230 C255 260 262 285 268 310 C272 340 276 365 280 390 C300 450 320 500 330 540 L470 610 L560 640" fill="none"/>
+          <text x="292" y="368" fill="#FF8A97" font-size="12" font-weight="700">verlorene Zeit</text>
+          <g font-size="12.5" fill="#E8ECFF">
+            <g class="hs" data-id="colebrook" tabindex="0" role="button" aria-label="Colebrook"><circle class="ring" cx="250" cy="70" r="10" stroke="#4FE3F0"/><circle class="core" cx="250" cy="70" r="7" fill="#4FE3F0"/><text x="266" y="74">Colebrook · 22:05</text></g>
+            <g class="hs" data-id="lancaster" tabindex="0" role="button" aria-label="Lancaster"><circle class="ring" cx="246" cy="180" r="11" stroke="#A77BFF"/><circle class="core" cx="246" cy="180" r="8" fill="#A77BFF"/><text x="262" y="184">Lancaster · ~22:30, erstes Licht</text></g>
+            <g class="hs" data-id="twin" tabindex="0" role="button" aria-label="Twin Mountain"><circle class="ring" cx="252" cy="240" r="10" stroke="#A77BFF"/><circle class="core" cx="252" cy="240" r="7" fill="#A77BFF"/><text x="120" y="244">Twin Mountain</text></g>
+            <g class="hs" data-id="cannon" tabindex="0" role="button" aria-label="Cannon Mountain"><circle class="ring" cx="264" cy="290" r="11" stroke="#FFC66B"/><circle class="core" cx="264" cy="290" r="8" fill="#FFC66B"/><text x="105" y="294">Cannon Mountain</text></g>
+            <g class="hs" data-id="indian" tabindex="0" role="button" aria-label="Indian Head"><circle class="ring" cx="268" cy="312" r="12" stroke="#FF6B7A"/><circle class="core" cx="268" cy="312" r="9" fill="#FF6B7A"/><text x="120" y="320" font-weight="700">Indian Head</text></g>
+            <g class="hs" data-id="ashland" tabindex="0" role="button" aria-label="Ashland"><circle class="ring" cx="282" cy="398" r="11" stroke="#4FE3F0"/><circle class="core" cx="282" cy="398" r="8" fill="#4FE3F0"/><text x="140" y="412">bei Ashland · wach</text></g>
+            <g class="hs" data-id="portsmouth" tabindex="0" role="button" aria-label="Portsmouth"><circle class="ring" cx="560" cy="640" r="12" stroke="#FFC66B"/><circle class="core" cx="560" cy="640" r="9" fill="#FFC66B"/><text x="480" y="626">Portsmouth · ~05:00</text></g>
+            <g class="hs" data-id="pease" tabindex="0" role="button" aria-label="Pease Air Force Base"><circle class="ring" cx="540" cy="610" r="9" stroke="#4FE3F0"/><circle class="core" cx="540" cy="610" r="6" fill="#4FE3F0"/><text x="430" y="596" font-size="11">Pease AFB</text></g>
+          </g>
+          <text x="20" y="690" fill="#7E8CC0" font-size="11">schematisch, nicht maßstabsgetreu</text>
+        </svg>
+      </div>
+      <div class="spot" id="spot" aria-live="polite"></div>
+    </div>
+    <div class="spotlist" id="spotlist"></div>
+  </section>
+
+  <section class="card" id="nacht">
+    <div class="label">19./20. September 1961</div>
+    <h2>Die Nacht auf der Route 3</h2>
+    <div class="clock">
+      <div class="tick"><time>Vorgeschichte</time><p>Die Hills brechen ihren Urlaub in Montreal und an den Niagarafällen früher ab, weil ein Hurrikan an der Küste vorhergesagt ist.</p></div>
+      <div class="tick"><time>22:05</time><p>Nach einem Abendessen in Colebrook (Betty: Schokoladenkuchen, Barney: Hamburger) geht es weiter auf der Route 3 nach Süden.</p></div>
+      <div class="tick hl"><time>ca. 22:30</time><p>Südlich von Lancaster sieht Betty einen hellen Punkt am Himmel. Erst denkt sie an eine Sternschnuppe, aber er bewegt sich nach oben, wird größer und heller.</p></div>
+      <div class="tick"><time>Zwischenstopps</time><p>Rastplatz südlich von Twin Mountain, auch um Delsey Gassi zu führen. Barney schaut durch das Fernglas, hält es für ein Flugzeug oder einen Satelliten. Betty widerspricht.</p></div>
+      <div class="tick"><time>gegen Mitternacht</time><p>Das Licht zieht an Cannon Mountain vorbei, über dem Restaurant und Funkturm auf dem Gipfel, und taucht beim „Old Man of the Mountain“ wieder auf.</p></div>
+      <div class="tick hl"><time>bei Indian Head</time><p>Etwa eine Meile südlich von Indian Head sinkt das Objekt schnell auf das Auto zu. Barney hält mitten auf der Straße an, steigt mit dem Fernglas aus und geht auf ein Feld. Er sieht ein flaches Objekt mit einer Reihe Fenster, dahinter Gestalten in Uniform. Schreiend rennt er zurück: Sie wollen uns fangen!</p></div>
+      <div class="tick"><time>Flucht</time><p>Sie rasen los. Ein seltsames Piepen ist zu hören, das Auto scheint zu vibrieren, eine Art Benommenheit setzt ein.</p></div>
+      <div class="tick hl"><time>Lücke</time><p>Erst ein zweites Piepen bringt sie wieder zu sich. Sie sind rund 35 Meilen weiter südlich, nahe Ashland, und können sich nicht erinnern, wie sie dorthin kamen.</p></div>
+      <div class="tick"><time>ca. 05:00</time><p>Ankunft in Portsmouth, fast im Morgengrauen. Gerechnet hatten sie mit 2 oder 3 Uhr.</p></div>
+    </div>
+    <figure class="craft">
+      <svg viewBox="0 0 600 300" role="img" aria-labelledby="hcT">
+        <title id="hcT">Skizze nach Barneys Beschreibung: flaches, pfannkuchenförmiges Objekt mit einer Reihe von Fenstern, dahinter Gestalten, rote Lichter an den Enden</title>
+        <rect width="600" height="300" fill="#05081A"/>
+        <g id="hstars" fill="#fff" opacity=".7"></g>
+        <path d="M0 300 L60 220 L120 300 Z M500 300 L560 210 L600 270 L600 300Z" fill="#0F2A22"/>
+        <ellipse cx="300" cy="140" rx="200" ry="34" fill="#2A3168" stroke="#9AA6D4" stroke-width="2"/>
+        <ellipse cx="300" cy="126" rx="150" ry="22" fill="#1A2048" stroke="#9AA6D4"/>
+        <g fill="#FFF3C4"><rect x="180" y="118" width="22" height="16" rx="3"/><rect x="214" y="116" width="22" height="16" rx="3"/><rect x="248" y="115" width="22" height="16" rx="3"/><rect x="282" y="115" width="22" height="16" rx="3"/><rect x="316" y="115" width="22" height="16" rx="3"/><rect x="350" y="116" width="22" height="16" rx="3"/><rect x="384" y="118" width="22" height="16" rx="3"/></g>
+        <g fill="#2A3168"><circle cx="225" cy="125" r="4"/><rect x="221" y="128" width="8" height="5"/><circle cx="293" cy="124" r="4"/><rect x="289" y="127" width="8" height="5"/><circle cx="361" cy="125" r="4"/><rect x="357" y="128" width="8" height="5"/></g>
+        <circle cx="100" cy="140" r="7" fill="#FF3B4E"><animate attributeName="opacity" values="1;.2;1" dur="1s" repeatCount="indefinite"/></circle>
+        <circle cx="500" cy="140" r="7" fill="#FF3B4E"><animate attributeName="opacity" values=".2;1;.2" dur="1s" repeatCount="indefinite"/></circle>
+        <text x="20" y="28" fill="#C8D2FF" font-size="13" font-weight="700">Skizze nach Barney Hills Beschreibung</text>
+        <text x="20" y="46" fill="#7E8CC0" font-size="11">flach wie ein Pfannkuchen, Fensterreihe, Gestalten dahinter, rote Lichter an den Enden</text>
+        <text x="20" y="286" fill="#9AA6D4" font-size="11">Barney durch das Fernglas, vom Feld neben der Straße</text>
+      </svg>
+    </figure>
+  </section>
+
+  <section class="card" id="zeit">
+    <div class="label">Interaktiv</div>
+    <h2>Wo blieb die Zeit?</h2>
+    <p>Der Kern des Falls: Die Hills kamen Stunden später an als erwartet. Zieh den Regler, um die Nacht zu durchlaufen.</p>
+    <div class="nightbar">
+      <div class="nb-track">
+        <div class="seg s1" style="left:0%;width:22%"><span>Colebrook → Lancaster</span></div>
+        <div class="seg s2" style="left:22%;width:24%"><span>Licht verfolgen, Stopps</span></div>
+        <div class="seg s3" style="left:46%;width:6%"><span>Indian Head</span></div>
+        <div class="seg s4" style="left:52%;width:28%"><span>„verlorene Zeit“</span></div>
+        <div class="seg s5" style="left:80%;width:20%"><span>Ashland → Portsmouth</span></div>
+        <div class="cursor" id="nbCur"></div>
+      </div>
+      <input type="range" id="nbR" min="0" max="100" value="0" aria-label="Zeitpunkt der Nacht">
+      <div class="nb-out"><b id="nbT">22:05</b><span id="nbD">Abfahrt in Colebrook.</span></div>
+    </div>
+    <div class="callout"><b>Die Gegenrechnung</b><p>Der Autor Peter Brookesmith ist die Strecke Jahre später selbst abgefahren. Er kam auf eine Ankunft gegen 5 Uhr und schätzte allein die Fahrt von Colebrook bis Indian Head auf zwei bis drei Stunden. Mit den vielen Stopps, dem langsamen Fahren und dem Umweg könnten die „fehlenden“ Stunden einfach im Ablauf verschwunden sein.</p></div>
+  </section>
+
+  <section class="card" id="danach">
+    <div class="label">Die Tage danach</div>
+    <h2>Seltsame Spuren und ein Anruf bei der Air Force</h2>
+    <div class="tiles">
+      <div class="tile"><span class="ico">👗</span><b>Bettys Kleid</b><p>Der Reißverschluss war eingerissen, auf dem Stoff ein rosa Pulver. Das Kleid lag Jahrzehnte im Schrank und liegt heute in den Sammlungen der University of New Hampshire.</p></div>
+      <div class="tile"><span class="ico">👞</span><b>Barneys Schuhe</b><p>Die Spitzen der Schuhe waren abgeschabt, als wäre er geschleift worden.</p></div>
+      <div class="tile"><span class="ico">🚗</span><b>Glänzende Flecken</b><p>Auf dem Kofferraum fanden sie runde, glänzende Flecken, an denen ein Kompass ausgeschlagen haben soll.</p></div>
+      <div class="tile"><span class="ico">⌚</span><b>Stehen gebliebene Uhren</b><p>Beide Armbanduhren funktionierten nicht mehr.</p></div>
+      <div class="tile"><span class="ico">📞</span><b>Pease Air Force Base</b><p>Betty rief am nächsten Tag einen befreundeten Major der Pease AFB an. Der Air-Force-Bericht kam zu dem Schluss, dass die Hills wahrscheinlich den Planeten Jupiter gesehen hatten.</p></div>
+      <div class="tile"><span class="ico">🗂️</span><b>Project Blue Book</b><p>Der Fall landete im UFO-Projekt der Air Force, eingestuft als „unzureichende Daten“. Im November 1961 befragten zwei Ermittler der UFO-Gruppe NICAP das Paar zwölf Stunden lang.</p></div>
+      <div class="tile"><span class="ico">🌙</span><b>Bettys Träume</b><p>Etwa zehn Tage danach begann Betty, lebhaft zu träumen: von Wesen, einem Raumschiff, einer Untersuchung. Sie schrieb die Träume auf.</p></div>
+      <div class="tile"><span class="ico">😟</span><b>Barneys Leiden</b><p>Barney bekam Magengeschwüre, Schlaflosigkeit und einen Ring von Warzen in der Leistengegend. Er begann eine Therapie.</p></div>
+    </div>
+  </section>
+
+  <section class="card" id="hypnose">
+    <div class="label">1963–1964</div>
+    <h2>Die Hypnose-Sitzungen bei Dr. Benjamin Simon</h2>
+    <p>Am 14. Dezember 1963 sitzen die Hills zum ersten Mal beim Bostoner Psychiater Dr. Benjamin Simon, einem Experten für Hypnose, der im Zweiten Weltkrieg traumatisierte Soldaten behandelt hatte. Ab dem 4. Januar 1964 hypnotisiert er beide getrennt, über Monate. Was dabei herauskommt, wird zur Blaupause aller späteren Entführungsberichte.</p>
+    <div class="player">
+      <div class="pctl">
+        <button type="button" class="big" id="hyGo">▶ Sitzung abspielen</button>
+        <label class="snd"><input type="checkbox" id="hySnd" checked> mit leisem Metronom</label>
+      </div>
+      <ol class="log" id="hyLog" aria-live="polite"></ol>
+      <p class="src">Sinngemäße, gekürzte deutsche Nachbildung der Inhalte aus den veröffentlichten Sitzungsprotokollen (John G. Fuller, „The Interrupted Journey“), kein Originalton.</p>
+    </div>
+    <div class="two">
+      <div>
+        <h3>Was die Hills unter Hypnose schilderten</h3>
+        <ul>
+          <li>Eine Straßensperre aus Wesen, das Auto wird angehalten</li>
+          <li>Sie werden in ein Raumschiff geführt und getrennt untersucht</li>
+          <li>Betty: Eine lange Nadel wird ihr in den Bauchnabel gestochen, ein „Schwangerschaftstest“</li>
+          <li>Barney: Ein Gerät an der Leiste, ihm sei kalt gewesen</li>
+          <li>Die Wesen: klein, grau, große Augen, die um den Kopf zu reichen scheinen</li>
+          <li>Der „Anführer“ zeigt Betty eine Sternenkarte</li>
+          <li>Sie wollen Betty ein Buch mitgeben, nehmen es ihr aber wieder ab</li>
+        </ul>
+      </div>
+      <div class="callout"><b>Was Dr. Simon selbst glaubte</b><p>Der Psychiater hielt die Entführung nicht für ein reales Erlebnis. Seine Einschätzung: Barneys Erinnerungen seien Fantasien, beeinflusst von Bettys Träumen, die sie ihm vorher oft erzählt hatte. Hypnose fördere zutage, was jemand für wahr halte, nicht unbedingt, was wirklich geschah.</p></div>
+    </div>
+  </section>
+
+  <section class="card" id="karte2">
+    <div class="label">Interaktiv</div>
+    <h2>Die Sternenkarte und Zeta Reticuli</h2>
+    <div class="two">
+      <div>
+        <p>Im Traum zeigte der Anführer Betty eine Karte mit Punkten und Linien: Handelsrouten, gelegentliche Reisen, Expeditionen. 1964 zeichnete sie die Karte nach. Die Lehrerin und Hobbyastronomin <b>Marjorie Fish</b> baute ab 1968 dreidimensionale Modelle der Sterne in Sonnennähe und fand eine Übereinstimmung: Der Blick gehe vom Doppelstern <b>Zeta Reticuli</b> aus, rund 39 Lichtjahre entfernt. So wurden die „Grauen“ zu „Zetas“.</p>
+        <p><b>Carl Sagan und Steven Soter</b> hielten dagegen: Wer genug Sterne zur Auswahl hat, den Blickwinkel frei wählt und die Linien selbst zieht, findet fast immer ein passendes Muster. Mit genaueren Sterndaten der 1990er-Jahre passte Fishs Lösung nicht mehr, und Fish selbst sagte 2008, sie halte die Übereinstimmung inzwischen für unwahrscheinlich.</p>
+      </div>
+      <div class="starbox">
+        <svg viewBox="0 0 400 320" role="img" aria-labelledby="smT" id="starsvg">
+          <title id="smT">Interaktive Sternenkarte: zufällige Sterne, auf Klick werden Linien gezogen, die ein Muster wie auf Betty Hills Karte ergeben</title>
+          <rect width="400" height="320" fill="#04071A"/>
+          <g id="smLines" stroke="#4FE3F0" stroke-width="1.6" fill="none"></g>
+          <g id="smStars"></g>
+        </svg>
+        <div class="lhctl"><button type="button" class="big" id="smGo">✨ Muster finden</button><button type="button" id="smNew" class="sec">Neue Zufallssterne</button></div>
+        <p class="src" id="smOut">Der Sagan-Test: Das sind komplett zufällige Sterne. Lass den Computer daraus eine „Karte“ machen.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="outer">
+    <div class="label">Fernsehen und Erinnerung</div>
+    <h2>Die Spur zu „The Outer Limits“</h2>
+    <p>Der Forscher Martin Kottmeyer bemerkte 1990 einen auffälligen Zeitabstand: Barney beschrieb die Wesen mit den um den Kopf reichenden Augen erstmals in der Hypnose am 22. Februar 1964. Zwölf Tage zuvor lief im US-Fernsehen die Folge „The Bellero Shield“ der Science-Fiction-Serie „The Outer Limits“, mit einem Außerirdischen mit genau solchen Augen.</p>
+    <div class="ol-tl">
+      <svg viewBox="0 0 900 140" role="img" aria-labelledby="olT">
+        <title id="olT">Zeitstrahl: 10. Februar 1964 Ausstrahlung The Bellero Shield, 22. Februar 1964 Barneys Hypnose-Sitzung mit Beschreibung der Augen, zwölf Tage Abstand</title>
+        <line x1="40" y1="70" x2="860" y2="70" stroke="#3A4680" stroke-width="3"/>
+        <circle cx="200" cy="70" r="12" fill="#A77BFF"/><text x="200" y="40" fill="#E8ECFF" font-size="14" text-anchor="middle" font-weight="700">10.2.1964</text><text x="200" y="104" fill="#C8B9F2" font-size="13" text-anchor="middle">TV: „The Bellero Shield“</text>
+        <circle cx="700" cy="70" r="12" fill="#FFC66B"/><text x="700" y="40" fill="#E8ECFF" font-size="14" text-anchor="middle" font-weight="700">22.2.1964</text><text x="700" y="104" fill="#FFD9A0" font-size="13" text-anchor="middle">Barney beschreibt die Augen</text>
+        <path d="M212 70 L688 70" stroke="#FF6B7A" stroke-width="6" opacity=".6"/>
+        <text x="450" y="60" fill="#FF8A97" font-size="15" text-anchor="middle" font-weight="700">12 Tage</text>
+      </svg>
+    </div>
+    <p>Der Autor Jason Colavito ging noch weiter: Er sah Parallelen zu drei aufeinanderfolgenden „Outer Limits“-Folgen aus jenen Wochen. Ob Barney die Sendungen sah, ist nicht belegt. Betty sagte, sie seien viel zu beschäftigt für Science-Fiction gewesen.</p>
+  </section>
+
+  <section class="card" id="chronik">
+    <div class="label">Chronik</div>
+    <h2>Vom Geheimnis zum Weltbestseller</h2>
+    <ol class="timeline">
+      <li><time>19./20.9.1961</time><span>Die Nacht auf der Route 3.</span></li>
+      <li><time>21.9.1961</time><span>Anruf bei der Pease Air Force Base, Bericht an Project Blue Book.</span></li>
+      <li><time>Okt. 1961</time><span>Betty beginnt, ihre Träume aufzuschreiben.</span></li>
+      <li><time>25.11.1961</time><span>Zwölfstündiges Interview mit NICAP-Ermittlern.</span></li>
+      <li><time>14.12.1963</time><span>Erster Termin bei Dr. Benjamin Simon in Boston.</span></li>
+      <li class="hl"><time>Jan.–Juni 1964</time><span>Hypnose-Sitzungen. Am 22.2. beschreibt Barney die Wesen.</span></li>
+      <li><time>Okt. 1965</time><span>Die Zeitung „Boston Traveler“ macht die Geschichte gegen den Willen der Hills öffentlich.</span></li>
+      <li class="hl"><time>1966</time><span>John G. Fullers Buch „The Interrupted Journey“ wird ein Bestseller.</span></li>
+      <li><time>1969</time><span>Barney Hill stirbt mit 46 Jahren.</span></li>
+      <li><time>1974</time><span>Marjorie Fish veröffentlicht ihre Zeta-Reticuli-Deutung.</span></li>
+      <li><time>1975</time><span>Der Fernsehfilm „The UFO Incident“ mit James Earl Jones und Estelle Parsons macht den Fall landesweit bekannt.</span></li>
+      <li><time>2004</time><span>Betty Hill stirbt.</span></li>
+      <li><time>2009</time><span>Die University of New Hampshire zeigt eine Ausstellung zu den Hills. Bettys Kleid und weitere Stücke gehören zu den Sondersammlungen der Universität.</span></li>
+      <li class="hl"><time>Juli 2011</time><span>Zum 50. Jahrestag stellt New Hampshire an der Route 3 bei Lincoln, am Indian Head Resort, eine offizielle Gedenktafel auf, Marker Nr. 224.</span></li>
+    </ol>
+  </section>
+
+  <section class="card" id="erklaerungen">
+    <div class="label">Kritischer Blick</div>
+    <h2>Mögliche Erklärungen</h2>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Element</th><th>Mögliche Erklärung</th><th>Stand</th></tr></thead>
+      <tbody>
+        <tr><td>Das helle Licht</td><td>Die Air Force tippte auf Jupiter. James MacDonald fiel auf: Gerade südlich von Lancaster sieht man zum ersten Mal den Gipfel von Cannon Mountain mit seinem Leuchtfeuer am Funkturm, dessen Lage sich durch die kurvige Straße ständig scheinbar verschiebt.</td><td>plausibel</td></tr>
+        <tr><td>Radar der Air Force</td><td>Die zwei Radarmeldungen in Blue Book passen zeitlich nicht: eine um 2:14 Uhr bei Pease (82 Meilen entfernt), eine nachmittags um 17:22 Uhr bei North Concord. Beide wurden als Wetterballons eingestuft.</td><td>belegt</td></tr>
+        <tr><td>Verlorene Zeit</td><td>Viele Stopps, langsame Fahrt, Umweg, dazu Müdigkeit und Angst.</td><td>plausibel</td></tr>
+        <tr><td>Entführung</td><td>Erst unter Hypnose erinnert, nach zwei Jahren und nach Bettys Träumen. Sogar der Psychiater hielt sie für eine Fantasie.</td><td>so sah es der Therapeut</td></tr>
+        <tr><td>Die Wesen</td><td>Mögliche Einflüsse aus dem Fernsehen der Wochen davor.</td><td>umstritten</td></tr>
+        <tr><td>Sternenkarte</td><td>Mustererkennung im Zufall, mit neuen Daten nicht mehr haltbar.</td><td>widerlegt</td></tr>
+      </tbody>
+    </table></div>
+    <p class="src">Eine weitere Deutung, die Historiker ins Spiel bringen: Für ein gemischtes Paar im Amerika der frühen 1960er-Jahre war eine nächtliche Kontrolle durch Unbekannte auf einer einsamen Straße eine reale Angst.</p>
+  </section>
+
+  <section class="card" id="bilanz">
+    <div class="label">Fazit</div>
+    <h2>Bilanz: Was spricht wofür?</h2>
+    <div class="two">
+      <div class="pro"><h3>Was den Fall so stark macht</h3><ul>
+        <li>Ein angesehenes Paar, das nicht an die Öffentlichkeit wollte</li>
+        <li>Beide schilderten unter Hypnose getrennt eine ähnliche Geschichte</li>
+        <li>Meldung an die Air Force schon am Tag danach</li>
+        <li>Starke, dauerhafte Angst und körperliche Beschwerden</li>
+        <li>Betty blieb bis zu ihrem Tod bei ihrer Darstellung</li>
+      </ul></div>
+      <div class="con"><h3>Was die Skeptiker sagen</h3><ul>
+        <li>Die Entführung wurde erst zwei Jahre später unter Hypnose „erinnert“</li>
+        <li>Barney kannte Bettys Träume genau</li>
+        <li>Der eigene Psychiater glaubte nicht an ein reales Erlebnis</li>
+        <li>Das Licht passt zu Jupiter oder einem Leuchtfeuer</li>
+        <li>Die Sternenkarte hält neueren Daten nicht stand</li>
+      </ul></div>
+    </div>
+    <div class="callout"><b>Unser Urteil</b><p>Dass die Hills in jener Nacht etwas Beängstigendes erlebt haben, das sie nicht mehr losließ, ist glaubwürdig. Die Entführungsgeschichte entstand aber Schritt für Schritt aus Träumen und Hypnose, und genau diese Methode gilt heute als unzuverlässig. Ihr Einfluss ist trotzdem kaum zu überschätzen: Die grauen Wesen mit den großen Augen, die verlorene Zeit, die Untersuchung an Bord, all das stammt von hier.</p></div>
+  </section>
+
+  <section class="card" id="quellen">
+    <div class="label">Weiterlesen</div>
+    <h2>Links, Bücher und Quellen</h2>
+    <div class="links">
+      <div><h3>Überblick</h3><ul>
+        <li><a href="https://en.wikipedia.org/wiki/Barney_and_Betty_Hill_incident" target="_blank" rel="noopener">Wikipedia: Barney and Betty Hill incident</a></li>
+        <li><a href="https://www.mentalfloss.com/article/649683/betty-and-barney-hill-alien-abduction" target="_blank" rel="noopener">Mental Floss: Die Entführung der Hills</a></li>
+        <li><a href="https://www.bpl.org/blogs/post/the-abduction-of-betty-and-barney-hill/" target="_blank" rel="noopener">Boston Public Library: The Abduction of Betty and Barney Hill</a></li>
+        <li><a href="https://lithub.com/the-moment-the-myth-of-alien-abduction-was-born/" target="_blank" rel="noopener">Lit Hub: The Moment the Myth of Alien Abduction Was Born</a></li>
+        <li><a href="https://www.HMdb.org/m.asp?m=74571" target="_blank" rel="noopener">Gedenktafel in Lincoln (HMdb)</a></li>
+      </ul></div>
+      <div><h3>Analysen</h3><ul>
+        <li><a href="https://skeptoid.com/episodes/124" target="_blank" rel="noopener">Skeptoid: Betty and Barney Hill</a></li>
+        <li><a href="https://armaghplanet.com/betty-hills-ufo-star-map-the-truth.html" target="_blank" rel="noopener">Armagh Planetarium: Die Wahrheit über die Sternenkarte</a></li>
+        <li><a href="https://jasoncolavito.com/alien-abduction-at-the-outer-limits.html" target="_blank" rel="noopener">Jason Colavito: Alien Abduction at the Outer Limits</a></li>
+        <li><a href="https://www.hjkc.de/_blog/2864-ufo-forschung---die-bettybarney-hill-entfuehrungs-story---teil-1/" target="_blank" rel="noopener">CENAP-Blog: Die Hill-Entführungs-Story (Serie)</a></li>
+        <li><a href="https://nielsenhayden.com/makinglight/archives/009378.html" target="_blank" rel="noopener">Making Light: Die Route, nachgefahren</a></li>
+      </ul></div>
+      <div><h3>Bücher &amp; Filme</h3><ul>
+        <li>John G. Fuller: <i>The Interrupted Journey</i><span>1966, der Klassiker</span></li>
+        <li>Stanton Friedman, Kathleen Marden: <i>Captured! The Betty and Barney Hill UFO Experience</i><span>2007, Kathleen Marden ist Bettys Nichte</span></li>
+        <li><i>The UFO Incident</i><span>Fernsehfilm 1975</span></li>
+        <li><a href="https://www.youtube.com/results?search_query=Betty+and+Barney+Hill+hypnosis+tape" target="_blank" rel="noopener">Hypnose-Aufnahmen und Dokus</a><span>YouTube-Suche</span></li>
+      </ul></div>
+    </div>
+  </section>
+
+  <p class="foot">Unidentified Anomalous Phenomena Observatory · ein Projekt der <a href="index.html">Wetterstation Bad König</a> · Stand 1. November 2026 · Alle Angaben ohne Gewähr · <a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a></p>
+</div>
+<script>
+(function () {
+  var C = { tech: ['#4FE3F0', 'Route'], light: ['#A77BFF', 'Das Licht'], beast: ['#FF6B7A', 'Begegnung'], house: ['#FFC66B', 'Wichtiger Ort'] };
+  var S = {
+    colebrook: { t: 'Colebrook · 22:05', c: 'tech', p: 'Letzter Halt vor der Nacht: ein Restaurant. Betty isst Schokoladenkuchen, Barney einen Hamburger. Um 22:05 Uhr geht es weiter auf der Route 3 Richtung White Mountains.' },
+    lancaster: { t: 'Lancaster · ca. 22:30', c: 'light', p: 'Südlich von Lancaster sieht Betty den hellen Punkt. Hier taucht hinter einem Hügelkamm zum ersten Mal der Gipfel von Cannon Mountain auf, mit seinem Leuchtfeuer. Für Skeptiker die naheliegende Quelle.' },
+    twin: { t: 'Rastplatz bei Twin Mountain', c: 'light', p: 'Erster Stopp: Delsey Gassi führen, Barney schaut durchs Fernglas. Er hält das Licht für ein Flugzeug auf dem Weg nach Kanada, Betty glaubt ihm nicht.' },
+    cannon: { t: 'Cannon Mountain', c: 'house', p: 'Gegen Mitternacht zieht das Licht scheinbar über das Restaurant und den Funkturm auf dem Gipfel und taucht beim „Old Man of the Mountain“ wieder auf, einer berühmten Felsformation, die 2003 abbrach.' },
+    indian: { t: 'Indian Head', c: 'beast', p: 'Etwa eine Meile südlich davon sinkt das Objekt auf das Auto zu. Barney geht mit dem Fernglas auf ein Feld, sieht Fenster und Gestalten, rennt zurück. Danach: Piepen, Benommenheit, Lücke. Heute steht hier am Indian Head Resort die Gedenktafel von 2011.' },
+    ashland: { t: 'Bei Ashland', c: 'tech', p: 'Ein zweites Piepen, und die Hills sind wieder klar. Rund 35 Meilen weiter südlich, ohne Erinnerung an die Strecke dazwischen.' },
+    portsmouth: { t: 'Portsmouth', c: 'house', p: 'Zuhause an der Küste. Ankunft fast im Morgengrauen, gegen 5 Uhr statt um 2 oder 3 Uhr. Am nächsten Morgen entdecken sie die Flecken am Auto, die Schäden an Kleid und Schuhen.' },
+    pease: { t: 'Pease Air Force Base', c: 'tech', p: 'Hier rief Betty einen befreundeten Major an. Die Air Force hielt das Licht für Jupiter. Eine Radarmeldung von Pease um 2:14 Uhr wird oft als Beleg genannt, passt aber zeitlich nicht und wurde als Wetterballon eingestuft.' }
+  };
+  var spot = document.getElementById('spot'), list = document.getElementById('spotlist');
+  var groups = document.querySelectorAll('.hs');
+  function show(id) {
+    var s = S[id]; if (!s) return; var c = C[s.c];
+    spot.innerHTML = '<span class="tag" style="background:' + c[0] + '22;color:' + c[0] + ';border:1px solid ' + c[0] + '66">' + c[1] + '</span><h3>' + s.t + '</h3><p>' + s.p + '</p>';
+    groups.forEach(function (g) { g.classList.toggle('active', g.getAttribute('data-id') === id); });
+    list.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.id === id ? 'true' : 'false'); });
+  }
+  Object.keys(S).forEach(function (id) {
+    var b = document.createElement('button'); b.type = 'button'; b.dataset.id = id;
+    b.innerHTML = '<b>' + S[id].t + '</b><span>' + C[S[id].c][1] + '</span>';
+    b.addEventListener('click', function () { show(id); }); list.appendChild(b);
+  });
+  groups.forEach(function (g) {
+    var id = g.getAttribute('data-id');
+    g.addEventListener('click', function () { show(id); });
+    g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(id); } });
+  });
+  show('indian');
+})();
+</script>
+
+
+<script>
+(function () {
+  var NS = 'http://www.w3.org/2000/svg';
+  var hs = document.getElementById('hstars'); for (var i = 0; i < 120; i++) { var c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', Math.random() * 600); c.setAttribute('cy', Math.random() * 220); c.setAttribute('r', Math.random() + .3); hs.appendChild(c); }
+  // Zeitleiste der Nacht
+  var P = [[0, '22:05', 'Abfahrt in Colebrook.'], [12, '22:30', 'Südlich von Lancaster: Betty sieht das helle Licht.'], [22, '22:45', 'Erster Stopp bei Twin Mountain, Fernglas, Hund Gassi führen.'], [36, '23:30', 'Weitere Stopps, langsames Fahren, das Licht scheint zu folgen.'], [44, '~00:00', 'Cannon Mountain: das Licht zieht über den Gipfel.'], [49, '~00:20', 'Indian Head: Barney sieht Fenster und Gestalten, Flucht, Piepen.'], [53, '?', 'Lücke: woran sich die Hills nicht erinnern. Unter Hypnose: Untersuchung an Bord.'], [66, '?', 'Noch immer Lücke. Laut Skeptikern: einfach gefahren, müde, verwirrt.'], [80, '~02:30', 'Zweites Piepen bei Ashland, 35 Meilen weiter südlich.'], [92, '~04:00', 'Weiter nach Portsmouth, schon dämmert der Morgen.'], [100, '~05:00', 'Ankunft zuhause. Erwartet hatten sie 2 bis 3 Uhr.']];
+  var nbR = document.getElementById('nbR'), cur = document.getElementById('nbCur');
+  function nb() { var v = +nbR.value, p = P[0]; P.forEach(function (q) { if (v >= q[0]) p = q; }); cur.style.left = v + '%'; document.getElementById('nbT').textContent = p[1]; document.getElementById('nbD').textContent = p[2]; }
+  nbR.oninput = nb; nb();
+  // Hypnose-Log
+  var L = [
+    ['Dr. Simon', 'Sie sind ganz entspannt. Wir gehen zurück in die Nacht des 19. September 1961.'],
+    ['Barney', 'Wir fahren auf der Route 3. Das Licht ist immer noch da, es kommt näher.'],
+    ['Barney', 'Ich stehe auf dem Feld, mit dem Fernglas. Da sind Fenster. Da sind Gesichter.'],
+    ['Barney', 'Einer schaut mich an. Seine Augen … sie gehen so weit um den Kopf herum.'],
+    ['', '[Barney wird sehr unruhig, Dr. Simon beruhigt ihn]'],
+    ['Barney', 'Ich muss weg. Ich muss zurück zum Auto. Sie wollen uns fangen.'],
+    ['Dr. Simon', 'Was passiert dann?'],
+    ['Barney', 'Auf der Straße stehen Männer. Sie kommen auf das Auto zu.'],
+    ['', '[Getrennte Sitzung mit Betty]'],
+    ['Betty', 'Sie bringen uns in einen Raum. Sie sind kleiner als wir. Sie wollen Haut, Haare, Fingernägel.'],
+    ['Betty', 'Er nimmt eine lange Nadel … in den Bauchnabel. Es tut weh. Er sagt, es sei ein Test.'],
+    ['Betty', 'Ich frage den Anführer, woher sie kommen. Er zeigt mir eine Karte. Punkte und Linien.'],
+    ['Dr. Simon', 'Sie werden sich an das, was Sie mir erzählt haben, nicht erinnern, bis ich es Ihnen sage.'],
+    ['', '[Ende der Nachbildung]']
+  ];
+  var log = document.getElementById('hyLog'), go = document.getElementById('hyGo'), snd = document.getElementById('hySnd'), on = false, tm, mt, ctx;
+  function tick() { if (!snd.checked) return; try { ctx = ctx || new (window.AudioContext || window.webkitAudioContext)(); var o = ctx.createOscillator(), g = ctx.createGain(), t = ctx.currentTime; o.frequency.value = 880; g.gain.setValueAtTime(.06, t); g.gain.exponentialRampToValueAtTime(.001, t + .08); o.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + .1); } catch (e) {} }
+  function stop() { on = false; clearTimeout(tm); clearInterval(mt); go.textContent = '▶ Sitzung erneut abspielen'; }
+  go.onclick = function () {
+    if (on) { stop(); return; }
+    on = true; log.innerHTML = ''; go.textContent = '■ Stopp'; var i = 0; mt = setInterval(tick, 1000);
+    (function nx() { if (!on) return; if (i >= L.length) { stop(); return; } var l = L[i++], li = document.createElement('li');
+      li.innerHTML = l[0] ? '<span class="who">' + l[0] + ':</span>' + l[1] : '<span class="note">' + l[1] + '</span>';
+      log.appendChild(li); log.scrollTop = log.scrollHeight; tm = setTimeout(nx, 1600 + l[1].length * 40); })();
+  };
+  // Sagan-Test
+  var sg = document.getElementById('smStars'), ln = document.getElementById('smLines'), out = document.getElementById('smOut'), pts = [];
+  function newStars() {
+    sg.innerHTML = ''; ln.innerHTML = ''; pts = [];
+    for (var i = 0; i < 60; i++) { var p = [20 + Math.random() * 360, 20 + Math.random() * 280, Math.random()]; pts.push(p);
+      var c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', p[0]); c.setAttribute('cy', p[1]); c.setAttribute('r', 1 + p[2] * 2.4); c.setAttribute('fill', '#E8ECFF'); sg.appendChild(c); }
+    out.textContent = 'Der Sagan-Test: Das sind komplett zufällige Sterne. Lass den Computer daraus eine „Karte“ machen.';
+  }
+  function pattern() {
+    ln.innerHTML = '';
+    var big = pts.slice().sort(function (a, b) { return b[2] - a[2]; }).slice(0, 12);
+    var home = [big[0], big[1]];
+    home.forEach(function (h) { var c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', h[0]); c.setAttribute('cy', h[1]); c.setAttribute('r', 9); c.setAttribute('stroke', '#FFC66B'); ln.appendChild(c); });
+    var used = [home[0]];
+    big.slice(2).forEach(function (p, i) {
+      var near = used.reduce(function (a, b) { return Math.hypot(b[0] - p[0], b[1] - p[1]) < Math.hypot(a[0] - p[0], a[1] - p[1]) ? b : a; });
+      var l = document.createElementNS(NS, 'line'); l.setAttribute('x1', near[0]); l.setAttribute('y1', near[1]); l.setAttribute('x2', p[0]); l.setAttribute('y2', p[1]);
+      if (i % 3 === 2) l.setAttribute('stroke-dasharray', '4 4'); if (i % 4 === 1) l.setAttribute('stroke-width', 3);
+      l.style.opacity = 0; l.style.transition = 'opacity .4s ' + (i * .15) + 's'; ln.appendChild(l); requestAnimationFrame(function () { l.style.opacity = 1; }); used.push(p);
+    });
+    out.textContent = 'Fertig: „Heimatsterne“ (gelb), „Handelsrouten“ (dick), „Expeditionen“ (gestrichelt), alles aus reinem Zufall. Genau das war Carl Sagans Einwand.';
+  }
+  document.getElementById('smGo').onclick = pattern; document.getElementById('smNew').onclick = newStars; newStars();
+})();
+</script>
+</body>
+</html>
