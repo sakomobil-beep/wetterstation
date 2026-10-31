@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Unidentified Anomalous Phenomena Observatory – Skinwalker Ranch</title>
+<meta name="description" content="UAP Observatory: Berichte, Karte und Hotspots zur Skinwalker Ranch in Utah – Geschichte, Zeugenberichte, Forschung und Skepsis.">
+<meta name="theme-color" content="#0B0F24">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+:root {
+  --bg: #070A1A; --bg2: #0D1330; --card: #11183A; --line: #24305E;
+  --ink: #E8ECFF; --muted: #9AA6D4; --cyan: #4FE3F0; --violet: #A77BFF; --green: #6CF2A4; --amber: #FFC66B; --red: #FF6B7A;
+  --font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; color: var(--ink); font: 16px/1.6 var(--font);
+  background: radial-gradient(1200px 600px at 80% -10%, rgba(167,123,255,.18), transparent 60%),
+              radial-gradient(900px 500px at 0% 20%, rgba(79,227,240,.10), transparent 60%), var(--bg);
+  padding: 0 max(16px, env(safe-area-inset-right)) 56px max(16px, env(safe-area-inset-left)); }
+a { color: var(--cyan); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--violet); outline-offset: 2px; border-radius: 4px; }
+.wrap { max-width: 1100px; margin: 0 auto; display: grid; gap: 20px; }
+
+/* Kopfleiste mit eigener Navigation */
+.bar { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 20px;
+  padding: 12px 0; background: linear-gradient(180deg, rgba(7,10,26,.96), rgba(7,10,26,.85)); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); font-weight: 650; letter-spacing: .06em; font-size: 13px; text-transform: uppercase; }
+.brand .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 12px var(--cyan); }
+.subnav { display: flex; flex-wrap: wrap; gap: 4px 18px; }
+.subnav a, .subnav span { font-size: 14px; text-decoration: none; color: var(--muted); padding: 6px 0; border-bottom: 2px solid transparent; }
+.subnav a:hover { color: var(--ink); }
+.subnav a[aria-current="page"] { color: var(--cyan); border-bottom-color: var(--cyan); }
+.subnav span.soon { opacity: .55; cursor: default; }
+.subnav span.soon small { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; margin-left: 4px; color: var(--violet); }
+.subnav a.back { color: var(--amber); }
+
+/* Titelbild */
+.title { position: relative; border-radius: 20px; overflow: hidden; border: 1px solid var(--line); margin-top: 16px; }
+.title img { display: block; width: 100%; height: auto; }
+
+/* Aufmacher */
+.hero { border-radius: 20px; padding: clamp(22px, 4vw, 40px); background: linear-gradient(160deg, #161E4C, #0A0E25 70%); border: 1px solid var(--line); display: grid; gap: 18px; position: relative; overflow: hidden; }
+.hero::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: linear-gradient(90deg, var(--cyan), var(--violet), var(--green)); }
+.kicker { font-size: 12.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--violet); font-weight: 600; }
+.hero h1 { margin: 4px 0 0; font-size: clamp(2rem, 6vw, 3.4rem); line-height: 1.04; letter-spacing: -.02em; }
+.hero p.lead { margin: 0; max-width: 66ch; color: #C9D1F5; font-size: clamp(16px, 2vw, 18px); }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.stat { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: 14px; padding: 14px 16px; display: grid; gap: 4px; align-content: start; }
+.stat .v { font-size: clamp(1.5rem, 3.4vw, 2.1rem); font-weight: 700; color: var(--cyan); line-height: 1.05; font-variant-numeric: tabular-nums; }
+.stat .k { font-size: 13.5px; color: #C9D1F5; line-height: 1.4; }
+@media (max-width: 820px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.toc { display: flex; flex-wrap: wrap; gap: 8px; }
+.toc a { text-decoration: none; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-size: 14px; }
+.toc a:hover { border-color: var(--cyan); color: var(--cyan); }
+
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: clamp(20px, 3.4vw, 32px); display: grid; gap: 16px; min-width: 0; scroll-margin-top: 80px; }
+.card h2 { margin: 0; font-size: clamp(1.4rem, 3vw, 1.85rem); line-height: 1.2; }
+.card h3 { margin: 6px 0 0; font-size: 1.08rem; }
+.card p { margin: 0; max-width: 72ch; }
+.card ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 74ch; }
+.label { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.src { font-size: 13px; color: var(--muted); }
+.src a { color: inherit; }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 18px 28px; align-items: start; }
+
+/* Karte */
+.mapwrap { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 860px) { .mapwrap { grid-template-columns: minmax(0, 1fr); } }
+.map { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: #0A1030; }
+.map svg { display: block; width: 100%; height: auto; }
+.hs { cursor: pointer; }
+.hs circle.ring { fill: none; stroke-width: 2; animation: pulse 2.4s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes pulse { 0% { transform: scale(.6); opacity: 1; } 100% { transform: scale(2.2); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .hs circle.ring { animation: none; } }
+.hs:hover circle.core, .hs.active circle.core { stroke: #fff; stroke-width: 3; }
+.spot { border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 8px; background: var(--bg2); min-height: 220px; align-content: start; }
+.spot .tag { justify-self: start; font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; border-radius: 999px; padding: 2px 10px; font-weight: 600; }
+.spot h3 { margin: 0; }
+.spot p { font-size: 14.5px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.spotlist { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 10px; }
+.spotlist button { text-align: left; font: inherit; color: var(--ink); background: var(--bg2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; cursor: pointer; display: grid; gap: 2px; }
+.spotlist button:hover, .spotlist button[aria-pressed="true"] { border-color: var(--cyan); }
+.spotlist button b { font-size: 14.5px; }
+.spotlist button span { font-size: 12.5px; color: var(--muted); }
+
+/* Zeitleiste */
+.timeline { list-style: none; margin: 0; padding: 0; display: grid; max-width: none !important; }
+.timeline li { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 16px; padding: 12px 0; border-top: 1px solid var(--line); }
+.timeline li:first-child { border-top: 0; }
+.timeline time { font-weight: 700; color: var(--cyan); font-variant-numeric: tabular-nums; }
+.timeline li.hl time { color: var(--amber); }
+@media (max-width: 520px) { .timeline li { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+
+/* Besitzer-Grafik */
+.owners svg { width: 100%; height: auto; display: block; }
+
+/* Kacheln */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 12px; }
+.tile { border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 6px; align-content: start; background: var(--bg2); }
+.tile .ico { font-size: 22px; }
+.tile b { font-size: 16px; }
+.tile p { font-size: 14.5px; color: #C9D1F5; }
+
+/* Tabelle */
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; }
+table { border-collapse: collapse; width: 100%; min-width: 680px; font-size: 14.5px; }
+th, td { text-align: left; padding: 11px 14px; border-top: 1px solid var(--line); vertical-align: top; }
+thead th { border-top: 0; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--bg2); }
+
+.callout { border-radius: 14px; background: rgba(167,123,255,.12); border: 1px solid rgba(167,123,255,.35); padding: 16px 18px; display: grid; gap: 6px; }
+.callout p { font-size: 14.5px; }
+.quote { margin: 0; border-left: 3px solid var(--violet); padding: 2px 0 2px 14px; color: #C9D1F5; max-width: 70ch; }
+
+.links { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 10px 28px; }
+.links h3 { margin: 0 0 6px; font-size: 1rem; }
+.links ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.links li { font-size: 14.5px; line-height: 1.4; }
+.links li span { display: block; font-size: 12.5px; color: var(--muted); }
+.foot { font-size: 13px; color: var(--muted); text-align: center; margin: 8px 0 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="bar">
+    <a class="brand" href="uap.html"><span class="dot" aria-hidden="true"></span>UAP Observatory</a>
+    <nav class="subnav" aria-label="Themen des UAP Observatory">
+      <a href="uap.html" aria-current="page">Skinwalker Ranch</a>
+      <span class="soon">Odenwald &amp; Rodensteiner<small>bald</small></span>
+      <span class="soon">CENAP-Meldestelle<small>bald</small></span>
+      <a class="back" href="index.html">← Wetterstation</a>
+    </nav>
+  </header>
+
+  <figure class="title" style="margin:16px 0 0">
+    <img src="uap-titel.jpg" width="1024" height="434" alt="Nachthimmel mit Milchstraße über einem Schlosshof, darüber schwebt ein leuchtendes geometrisches Objekt – Titelbild des UAP Observatory">
+  </figure>
+
+  <section class="hero" aria-labelledby="heroTitle">
+    <div>
+      <div class="kicker">Thema 1 · USA, Utah</div>
+      <h1 id="heroTitle">Skinwalker Ranch</h1>
+    </div>
+    <p class="lead">Eine Rinderfarm im Uinta-Becken im Nordosten Utahs gilt als der bekannteste „Hotspot“ für unerklärliche Phänomene der Welt: Lichtkugeln, verstümmelte Rinder, Kreaturen, die Schüsse überstehen, gestörte Messgeräte. Seit fast 30 Jahren wird dort geforscht, mit Geld eines Milliardärs, des Pentagons und heute vor laufender Fernsehkamera. Ein Beweis für etwas Übernatürliches ist bis heute nicht öffentlich vorgelegt worden.</p>
+    <div class="stats">
+      <div class="stat"><span class="v">~207 ha</span><span class="k">Fläche (512 Acres), südöstlich von Ballard, Uintah County</span></div>
+      <div class="stat"><span class="v">1994</span><span class="k">Familie Sherman kauft die Ranch, nach 18 Monaten gibt sie auf</span></div>
+      <div class="stat"><span class="v">200.000 $</span><span class="k">zahlte Robert Bigelow im Oktober 1996 für die Ranch</span></div>
+      <div class="stat"><span class="v">7</span><span class="k">Staffeln „The Secret of Skinwalker Ranch“ (History), zuletzt 2026</span></div>
+    </div>
+  </section>
+
+  <nav class="toc" aria-label="Inhalt dieser Seite">
+    <a href="#karte">Karte &amp; Hotspots</a>
+    <a href="#chronik">Chronik</a>
+    <a href="#berichte">Berichte</a>
+    <a href="#forschung">Forschung</a>
+    <a href="#legende">Name &amp; Legende</a>
+    <a href="#skepsis">Erklärungen &amp; Skepsis</a>
+    <a href="#medien">Bücher, TV &amp; Videos</a>
+    <a href="#quellen">Quellen</a>
+  </nav>
+
+  <section class="card" id="karte">
+    <div class="label">Plan der Ranch</div>
+    <h2>Karte und Hotspots</h2>
+    <p>Die Ranch liegt in einem flachen Tal am Fuß einer Mesa (Tafelberg), die im Norden als „Skinwalker Ridge“ aufragt. Klick auf einen Punkt, um zu sehen, was dort berichtet wurde.</p>
+    <div class="legend">
+      <span><i style="background:var(--cyan)"></i>Messungen / Technik</span>
+      <span><i style="background:var(--violet)"></i>Lichter &amp; UAP</span>
+      <span><i style="background:var(--red)"></i>Tiere &amp; Kreaturen</span>
+      <span><i style="background:var(--amber)"></i>Gebäude &amp; Spuk</span>
+    </div>
+    <div class="mapwrap">
+      <div class="map">
+        <svg viewBox="0 0 800 560" role="img" aria-labelledby="mapT">
+          <title id="mapT">Schematischer Plan der Skinwalker Ranch mit Hotspots</title>
+          <defs>
+            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#18224F" stroke-width="1"/></pattern>
+            <linearGradient id="mesa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3B2F4F"/><stop offset="1" stop-color="#241D38"/></linearGradient>
+            <radialGradient id="tri" cx=".5" cy=".5" r=".6"><stop offset="0" stop-color="#A77BFF" stop-opacity=".45"/><stop offset="1" stop-color="#A77BFF" stop-opacity="0"/></radialGradient>
+          </defs>
+          <rect width="800" height="560" fill="#0A1030"/>
+          <rect width="800" height="560" fill="url(#grid)"/>
+          <!-- Mesa / Skinwalker Ridge im Norden -->
+          <path d="M0 0H800V120C720 140 640 105 560 128C480 150 420 112 340 132C260 152 180 118 100 140C60 150 20 138 0 146Z" fill="url(#mesa)"/>
+          <path d="M0 146C20 138 60 150 100 140C180 118 260 152 340 132C420 112 480 150 560 128C640 105 720 140 800 120" fill="none" stroke="#7C6AA8" stroke-width="2" stroke-dasharray="6 5"/>
+          <text x="400" y="60" fill="#C8B9F2" font-size="20" font-weight="700" text-anchor="middle" letter-spacing="3">MESA · SKINWALKER RIDGE</text>
+          <!-- Ranchgrenze -->
+          <rect x="70" y="170" width="660" height="330" rx="8" fill="#0F1A3E" stroke="#4FE3F0" stroke-opacity=".5" stroke-width="2" stroke-dasharray="10 6"/>
+          <text x="720" y="490" fill="#4FE3F0" fill-opacity=".8" font-size="12" letter-spacing="2" text-anchor="end">GRENZE RANCH (~512 ACRES)</text>
+          <!-- Felder -->
+          <rect x="95" y="300" width="170" height="170" rx="6" fill="#13284A"/><text x="180" y="455" fill="#7E8CC0" font-size="13" text-anchor="middle">West-Feld</text>
+          <rect x="300" y="330" width="200" height="140" rx="6" fill="#13284A"/>
+          <rect x="530" y="300" width="180" height="170" rx="6" fill="#13284A"/>
+          <!-- Weg -->
+          <path d="M400 560V420H620" fill="none" stroke="#556199" stroke-width="5" stroke-dasharray="2 8" stroke-linecap="round"/>
+          <text x="410" y="545" fill="#7E8CC0" font-size="12">Zufahrt</text>
+          <!-- Dreieck -->
+          <polygon points="250,160 470,160 360,290" fill="url(#tri)" stroke="#A77BFF" stroke-width="2" stroke-dasharray="4 4"/>
+          <text x="360" y="200" fill="#D9C8FF" font-size="15" font-weight="700" text-anchor="middle">„DAS DREIECK“</text>
+          <!-- Westgrenze Ute -->
+          <path d="M70 170V500" stroke="#FFC66B" stroke-width="3"/>
+          <text x="40" y="335" fill="#FFC66B" font-size="12" transform="rotate(-90 40 335)" text-anchor="middle">Uintah-and-Ouray-Reservat der Ute →</text>
+          <!-- Nordpfeil / Maßstab -->
+          <g transform="translate(750 200)"><path d="M0 -22L8 6H-8Z" fill="#E8ECFF"/><text y="24" fill="#E8ECFF" font-size="13" text-anchor="middle">N</text></g>
+          <text x="790" y="548" fill="#7E8CC0" font-size="11" text-anchor="end">schematisch, nicht maßstabsgetreu</text>
+          <!-- Bottle Hollow Hinweis -->
+          <g><path d="M70 520H10" stroke="#4FE3F0" stroke-width="2" marker-end=""/><text x="14" y="512" fill="#9AA6D4" font-size="11">← Bottle Hollow (Stausee)</text></g>
+
+          <!-- Hotspots -->
+          <g class="hs" data-id="mesa" tabindex="0" role="button" aria-label="Mesa"><circle class="ring" cx="560" cy="110" r="12" stroke="#4FE3F0"/><circle class="core" cx="560" cy="110" r="9" fill="#4FE3F0"/></g>
+          <g class="hs" data-id="dreieck" tabindex="0" role="button" aria-label="Das Dreieck"><circle class="ring" cx="360" cy="245" r="12" stroke="#A77BFF"/><circle class="core" cx="360" cy="245" r="9" fill="#A77BFF"/></g>
+          <g class="hs" data-id="h1" tabindex="0" role="button" aria-label="Homestead 1"><circle class="ring" cx="620" cy="400" r="12" stroke="#FFC66B"/><circle class="core" cx="620" cy="400" r="9" fill="#FFC66B"/><text x="620" y="380" fill="#E8ECFF" font-size="13" text-anchor="middle">Homestead 1</text></g>
+          <g class="hs" data-id="h2" tabindex="0" role="button" aria-label="Homestead 2"><circle class="ring" cx="410" cy="360" r="12" stroke="#FFC66B"/><circle class="core" cx="410" cy="360" r="9" fill="#FFC66B"/><text x="410" y="392" fill="#E8ECFF" font-size="13" text-anchor="middle">Homestead 2</text></g>
+          <g class="hs" data-id="h3" tabindex="0" role="button" aria-label="Homestead 3"><circle class="ring" cx="130" cy="240" r="12" stroke="#FFC66B"/><circle class="core" cx="130" cy="240" r="9" fill="#FFC66B"/><text x="130" y="222" fill="#E8ECFF" font-size="13" text-anchor="middle">Homestead 3</text></g>
+          <g class="hs" data-id="westfeld" tabindex="0" role="button" aria-label="West-Feld"><circle class="ring" cx="180" cy="370" r="12" stroke="#A77BFF"/><circle class="core" cx="180" cy="370" r="9" fill="#A77BFF"/></g>
+          <g class="hs" data-id="wolf" tabindex="0" role="button" aria-label="Wolf-Begegnung"><circle class="ring" cx="600" cy="320" r="12" stroke="#FF6B7A"/><circle class="core" cx="600" cy="320" r="9" fill="#FF6B7A"/></g>
+          <g class="hs" data-id="baum" tabindex="0" role="button" aria-label="Kreatur im Baum 1997"><circle class="ring" cx="270" cy="440" r="12" stroke="#FF6B7A"/><circle class="core" cx="270" cy="440" r="9" fill="#FF6B7A"/></g>
+          <g class="hs" data-id="command" tabindex="0" role="button" aria-label="Command Center"><circle class="ring" cx="680" cy="440" r="12" stroke="#4FE3F0"/><circle class="core" cx="680" cy="440" r="9" fill="#4FE3F0"/></g>
+          <g class="hs" data-id="bottle" tabindex="0" role="button" aria-label="Bottle Hollow"><circle class="ring" cx="22" cy="530" r="10" stroke="#A77BFF"/><circle class="core" cx="22" cy="530" r="7" fill="#A77BFF"/></g>
+        </svg>
+      </div>
+      <div class="spot" id="spot" aria-live="polite"></div>
+    </div>
+    <div class="spotlist" id="spotlist"></div>
+    <p class="src">Die Lage der Punkte ist eine schematische Darstellung nach Beschreibungen aus Presse und TV-Serie, keine vermessene Karte. Genaue Koordinaten einzelner Stellen veröffentlicht die Ranch nicht; das Gelände ist Privatgrund und nicht öffentlich zugänglich.</p>
+  </section>
+
+  <section class="card" id="chronik">
+    <div class="label">Zeitleiste</div>
+    <h2>Chronik der Skinwalker Ranch</h2>
+    <div class="owners">
+      <svg viewBox="0 0 900 120" role="img" aria-labelledby="ownT">
+        <title id="ownT">Besitzer der Ranch von 1994 bis heute</title>
+        <rect x="40" y="40" width="820" height="34" rx="6" fill="#0D1330" stroke="#24305E"/>
+        <!-- 1994..2026 = 32 Jahre auf 820 px -->
+        <rect x="40" y="40" width="51" height="34" rx="6" fill="#FFC66B"/>
+        <rect x="91" y="40" width="512" height="34" fill="#A77BFF"/>
+        <rect x="603" y="40" width="257" height="34" rx="6" fill="#4FE3F0"/>
+        <text x="65" y="62" font-size="12" fill="#1A1200" text-anchor="middle" font-weight="700">Sherman</text>
+        <text x="347" y="62" font-size="13" fill="#170A33" text-anchor="middle" font-weight="700">Robert Bigelow (NIDS, später BAASS)</text>
+        <text x="731" y="62" font-size="13" fill="#04252A" text-anchor="middle" font-weight="700">Brandon Fugal (Adamantium)</text>
+        <g fill="#9AA6D4" font-size="12" text-anchor="middle">
+          <text x="40" y="96">1994</text><text x="91" y="96">1996</text><text x="347" y="96">2004–2010: Pentagon-Vertrag</text><text x="603" y="96">2016</text><text x="860" y="96">2026</text>
+        </g>
+        <rect x="372" y="30" width="154" height="6" fill="#6CF2A4"/><text x="449" y="24" fill="#6CF2A4" font-size="11" text-anchor="middle">AAWSAP 2008–2010</text>
+      </svg>
+    </div>
+    <ol class="timeline">
+      <li><time>1776</time><span>Der Franziskaner-Missionar Silvestre Vélez de Escalante notiert auf seiner Expedition Feuerkugeln über dem Lagerfeuer in der Region. Das Uinta-Becken gilt seit Langem als „UFO Alley“.</span></li>
+      <li><time>1994</time><span>Terry und Gwen Sherman kaufen die Ranch, um Rinder zu züchten.</span></li>
+      <li class="hl"><time>Juni 1996</time><span>Die Shermans berichten der Zeitung <i>Deseret News</i> von UFOs, Kornkreisen und verstümmelten Rindern. Die Geschichte geht durch die USA.</span></li>
+      <li><time>Okt. 1996</time><span>Der Las-Vegas-Unternehmer Robert Bigelow kauft die Ranch für 200.000 Dollar. Sein Institut NIDS (National Institute for Discovery Science) überwacht das Gelände rund um die Uhr.</span></li>
+      <li><time>12. März 1997</time><span>NIDS-Biochemiker Colm Kelleher sieht nachts eine große Gestalt mit gelb leuchtenden Augen in einem Baum. Nach Schüssen ist sie verschwunden, zurück bleibt angeblich ein einzelner großer Abdruck mit Krallen.</span></li>
+      <li><time>2002</time><span>Am benachbarten Stausee Bottle Hollow sehen vier junge Männer eine blau-weiße Kugel ins Wasser tauchen und als Lichtstrahl wieder auftauchen, der hinter dem Skinwalker Ridge verschwindet.</span></li>
+      <li><time>2004</time><span>NIDS stellt die Arbeit ein. Echte physische Beweise für die Berichte wurden nicht gefunden.</span></li>
+      <li class="hl"><time>2007–2010</time><span>Ein Beamter des Militärgeheimdienstes DIA besucht die Ranch. Danach finanziert das Pentagon über das Programm AAWSAP Bigelows Firma BAASS, die u. a. die Ranch untersucht. 2011 endet die staatliche Finanzierung.</span></li>
+      <li><time>2016</time><span>Bigelow verkauft an Adamantium Real Estate. Eigentümer ist der Immobilienunternehmer Brandon Fugal aus Utah.</span></li>
+      <li><time>2017</time><span>Die New York Times enthüllt das geheime UFO-Programm des Pentagons, die Ranch rückt weltweit ins Blickfeld.</span></li>
+      <li class="hl"><time>2020</time><span>Start der TV-Serie „The Secret of Skinwalker Ranch“ beim Sender History, mit Astrophysiker Travis Taylor und Plasmaphysiker Erik Bard.</span></li>
+      <li><time>2026</time><span>Im Mai startet die 7. Staffel. Laut Ranch-Team erscheint im Januar ein begutachteter Fachartikel über elektromagnetische und radiometrische Messanomalien (Journal of Scientific Exploration). Fachleute fordern unabhängige Wiederholungen.</span></li>
+    </ol>
+    <p class="src">Quellen: <a href="https://www.history.com/news/skinwalker-ranch-paranormal-ufos-mutilation" target="_blank" rel="noopener">History.com</a>, <a href="https://www.vice.com/en/article/inside-skinwalker-ranch-a-paranormal-hotbed-of-ufo-research" target="_blank" rel="noopener">VICE</a>, <a href="https://newspaceeconomy.ca/2025/12/03/the-enigma-of-skinwalker-ranch-history-phenomena-and-investigation/" target="_blank" rel="noopener">newspaceeconomy.ca</a></p>
+  </section>
+
+  <section class="card" id="berichte">
+    <div class="label">Zeugenberichte</div>
+    <h2>Was auf der Ranch berichtet wurde</h2>
+    <div class="tiles">
+      <div class="tile"><span class="ico">🐄</span><b>Verstümmelte Rinder</b><p>Die Shermans verloren mehrere Tiere. Die Wunden wirkten präzise und fast blutleer, als seien sie chirurgisch gesetzt.</p></div>
+      <div class="tile"><span class="ico">🐺</span><b>Der kugelfeste Wolf</b><p>Terry Sherman schoss aus nächster Nähe mehrmals auf einen Wolf, etwa dreimal so groß wie normal. Das Tier zeigte keine Wirkung.</p></div>
+      <div class="tile"><span class="ico">🔵</span><b>Lichtkugeln und Flugobjekte</b><p>Schwebende Orbs, Objekte über den Feldern, Kornkreise. Oft hätten sie Familienmitgliedern oder Autos zu folgen geschienen.</p></div>
+      <div class="tile"><span class="ico">🗣️</span><b>Stimmen ohne Körper</b><p>Unsichtbare Stimmen und Poltergeist-Effekte. Ein Verwalter hörte später eine Stimme, die ihn aufforderte, zu verschwinden.</p></div>
+      <div class="tile"><span class="ico">🏀</span><b>Nächtliches Klopfen</b><p>2016 hören die Verwalter um 2 Uhr nachts, wie jemand einen Basketball gegen ihr Haus prellt. Draußen ist niemand.</p></div>
+      <div class="tile"><span class="ico">🤢</span><b>Körperliche Beschwerden</b><p>Sommer 2019: Drei Gäste klagen über Hautentzündungen, Übelkeit und starke Müdigkeit, einige landen in der Notaufnahme. Unabhängig bestätigt ist das nicht.</p></div>
+      <div class="tile"><span class="ico">🧠</span><b>Rätselhafte Verletzung</b><p>Superintendent Thomas Winterton kam nach Grabungen mit einer Flüssigkeitsansammlung unter der Kopfhaut ins Krankenhaus. Die Ursache blieb unklar.</p></div>
+      <div class="tile"><span class="ico">📡</span><b>Gestörte Technik</b><p>GPS-Sprünge, verschwindende Laserstrahlen, abdriftende Raketen, Funkstörungen und Strahlungsspitzen, vor allem im „Dreieck“.</p></div>
+    </div>
+    <blockquote class="quote">Der Journalist George Knapp, der die Ranch zur NIDS-Zeit besuchte, verglich das Ganze mit einer bestellten „Pizza Weirdness mit allem drauf“.</blockquote>
+    <p class="src">Quellen: <a href="https://www.history.com/news/skinwalker-ranch-paranormal-ufos-mutilation" target="_blank" rel="noopener">History.com</a>, <a href="https://www.vice.com/en/article/inside-skinwalker-ranch-a-paranormal-hotbed-of-ufo-research" target="_blank" rel="noopener">VICE</a>, <a href="https://www.history.co.uk/shows/curse-of-skinwalker-ranch/articles/the-bizarre-history-of-skinwalker-ranch" target="_blank" rel="noopener">Sky History</a></p>
+  </section>
+
+  <section class="card" id="forschung">
+    <div class="label">Wissenschaft</div>
+    <h2>Drei Phasen der Forschung</h2>
+    <div class="two">
+      <div>
+        <h3>1996–2004: NIDS</h3>
+        <p>Bigelows privates Institut installierte Kameras und Sensoren und ließ Wissenschaftler rund um die Uhr Wache halten. Ergebnis: einige seltsame Erlebnisse der Forscher selbst, aber keine belastbaren physischen Beweise. Daraus entstand das Buch „Hunt for the Skinwalker“ von Colm Kelleher und George Knapp.</p>
+      </div>
+      <div>
+        <h3>2008–2010: Pentagon (AAWSAP)</h3>
+        <p>Auf Betreiben von Senator Harry Reid finanzierte das Verteidigungsministerium über den Geheimdienst DIA ein Programm, das Bigelows Firma BAASS ausführte. Die Ranch war eines der Untersuchungsobjekte. Eine ranch-spezifische Auswertung hat das Pentagon nie veröffentlicht.</p>
+      </div>
+      <div>
+        <h3>Seit 2016: Fugal und das TV-Team</h3>
+        <p>Heute überwachen Dutzende HD-, Infrarot- und Wärmebildkameras das Gelände. Empfänger für Flugzeug-Transponder (ADS-B) schließen Flugzeuge aus, ein Spektrumanalysator sucht Funkausbrüche, die Sensoreinheit „SATAN“ misst Infraschall, Magnetfelder und Erschütterungen. Es gibt auch eine eigene Wetterstation.</p>
+      </div>
+      <div>
+        <h3>Die Regel des Teams</h3>
+        <p>Ein Ereignis gilt erst dann als Anomalie, wenn mehrere unabhängige Sensoren es gleichzeitig erfassen. Kritiker bemängeln, dass Rohdaten kaum öffentlich sind und unabhängige Gruppen die Messungen bisher nicht nachprüfen konnten.</p>
+      </div>
+    </div>
+    <div class="callout">
+      <b>Der Fachartikel von 2026</b>
+      <p>Im Januar 2026 hat das Ranch-Team nach eigenen Angaben einen begutachteten Artikel im <i>Journal of Scientific Exploration</i> veröffentlicht. Er beschreibt elektromagnetische und radiometrische Anomalien aus den Messkampagnen 2022 bis 2025. Die Autoren nennen ihn selbst einen ersten „Existenznachweis“ und räumen ein, dass ohne Vergleichsstandort eine echte Kontrollmessung fehlt. Hinweis: Das Journal ist ein Fachblatt für Grenzwissenschaften und gehört nicht zu den großen Physik-Zeitschriften.</p>
+    </div>
+  </section>
+
+  <section class="card" id="legende">
+    <div class="label">Name</div>
+    <h2>Woher der Name „Skinwalker“ kommt</h2>
+    <p>„Skinwalker“ stammt aus der Überlieferung der Navajo: böse Hexer, die sich in Tiere verwandeln können, ähnlich einem Werwolf. Der Haken: Die Navajo leben rund 640 km weiter südlich. Die Ranch grenzt an das Reservat der Ute, und in deren Religion kommen Skinwalker nicht vor.</p>
+    <p>Laut der Historikerin Sondra Jones waren Navajo und Ute historisch verfeindet. In der Ute-Tradition gelten dagegen Quellen und Gewässer als Orte negativer Kräfte, aus denen böse Geister aufsteigen können. Das passt auffällig zu den Lichtern über dem Stausee Bottle Hollow direkt neben der Ranch.</p>
+  </section>
+
+  <section class="card" id="skepsis">
+    <div class="label">Kritischer Blick</div>
+    <h2>Erklärungen und Skepsis</h2>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Phänomen</th><th>Mögliche natürliche Erklärung</th><th>Stand</th></tr></thead>
+        <tbody>
+          <tr><td>Rinderverstümmelungen</td><td>Aasfresser, Insekten, Verwesung und Austrocknung lassen Wunden „chirurgisch“ und blutleer wirken.</td><td>gut belegt bei anderen Fällen</td></tr>
+          <tr><td>GPS-Sprünge, Laser-Ausfälle</td><td>Mehrwegeempfang (Signale werden an der Mesa reflektiert), atmosphärische Luftschichtungen, die Licht und Funk ablenken.</td><td>plausibel, nicht abschließend geprüft</td></tr>
+          <tr><td>Funkausbrüche</td><td>Anlagen der Öl- und Gasförderung im Uinta-Becken. Plasmaphysiker Erik Bard hält das selbst für möglich.</td><td>unbestätigt</td></tr>
+          <tr><td>Strahlungsspitzen</td><td>Natürliche Radioaktivität im Gestein, Radon, Messgerätefehler.</td><td>offen</td></tr>
+          <tr><td>Lichter am Himmel</td><td>Flugzeuge, Drohnen, Satelliten, Fahrzeuglichter auf dem Ridge, Spiegelungen.</td><td>teilweise ausgeschlossen (ADS-B)</td></tr>
+          <tr><td>Kreaturen, Stimmen</td><td>Wahrnehmungstäuschungen bei Nacht und Erwartungsdruck, Tiere, Streiche.</td><td>nur Zeugenaussagen</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="callout">
+      <b>Fazit</b>
+      <p>Die Ranch hat eine einzigartige Mischung aus jahrzehntelangen Berichten und modernster Messtechnik. Aber: Die meisten Geschichten stammen von wenigen Zeugen, ein Buch und eine Unterhaltungsserie prägen das Bild, und eine TV-Produktion hat naturgemäß ein Interesse an spannenden Momenten. Wirklich überzeugend wäre erst, wenn unabhängige Forscher die Anomalien mit offenen Rohdaten wiederholt messen.</p>
+    </div>
+  </section>
+
+  <section class="card" id="medien">
+    <div class="label">Weiterschauen</div>
+    <h2>Bücher, TV und Videos</h2>
+    <div class="links">
+      <div>
+        <h3>Bücher</h3>
+        <ul>
+          <li>Colm A. Kelleher, George Knapp: <i>Hunt for the Skinwalker</i><span>Der Klassiker zur NIDS-Zeit, 2005 (Neuauflage 2026)</span></li>
+          <li>James T. Lacatski, Colm A. Kelleher, George Knapp: <i>Skinwalkers at the Pentagon</i><span>Zum Pentagon-Programm AAWSAP, 2021</span></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Fernsehen</h3>
+        <ul>
+          <li>„Das Geheimnis der Skinwalker Ranch“<span>History, Staffeln 1–7, u. a. bei Prime Video und Netflix</span></li>
+          <li>„Hunt for the Skinwalker“ (2018)<span>Dokumentarfilm von Jeremy Corbell</span></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Videos auf YouTube</h3>
+        <ul>
+          <li><a href="https://www.youtube.com/results?search_query=Skinwalker+Ranch+Doku+deutsch" target="_blank" rel="noopener">Skinwalker Ranch Dokus auf Deutsch</a><span>YouTube-Suche</span></li>
+          <li><a href="https://www.youtube.com/results?search_query=Secret+of+Skinwalker+Ranch+History+official" target="_blank" rel="noopener">Offizielle Clips von History</a><span>YouTube-Suche</span></li>
+          <li><a href="https://www.youtube.com/results?search_query=Skinwalker+Ranch+skeptic+explained" target="_blank" rel="noopener">Die skeptische Sicht</a><span>YouTube-Suche</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="quellen">
+    <div class="label">Weiterlesen</div>
+    <h2>Links und Quellen</h2>
+    <div class="links">
+      <div><h3>Geschichte</h3><ul>
+        <li><a href="https://www.history.com/news/skinwalker-ranch-paranormal-ufos-mutilation" target="_blank" rel="noopener">History.com: Skinwalker Ranch</a><span>Sherman, NIDS, Ute und Navajo</span></li>
+        <li><a href="https://www.history.co.uk/shows/curse-of-skinwalker-ranch/articles/the-bizarre-history-of-skinwalker-ranch" target="_blank" rel="noopener">Sky History: The bizarre history</a></li>
+        <li><a href="https://newspaceeconomy.ca/2025/12/03/the-enigma-of-skinwalker-ranch-history-phenomena-and-investigation/" target="_blank" rel="noopener">The Enigma of Skinwalker Ranch</a><span>newspaceeconomy.ca, Dez. 2025</span></li>
+      </ul></div>
+      <div><h3>Forschung</h3><ul>
+        <li><a href="https://www.vice.com/en/article/inside-skinwalker-ranch-a-paranormal-hotbed-of-ufo-research" target="_blank" rel="noopener">VICE: Inside Skinwalker Ranch</a><span>Reportage über Technik und Team</span></li>
+        <li><a href="https://www.uah.edu/news/news/uah-scientists-brave-curses-spooky-anomalies-to-unravel-secrets-at-skinwalker-ranch" target="_blank" rel="noopener">University of Alabama in Huntsville</a><span>Forscher der UAH auf der Ranch</span></li>
+      </ul></div>
+      <div><h3>Kritik</h3><ul>
+        <li><a href="https://www.metabunk.org/goto/post?id=272698" target="_blank" rel="noopener">Metabunk: The Origins of AAWSAP</a><span>Skeptische Analyse</span></li>
+      </ul></div>
+    </div>
+  </section>
+
+  <p class="foot">Unidentified Anomalous Phenomena Observatory · ein Projekt der <a href="index.html">Wetterstation Bad König</a> · Stand 31. Oktober 2026 · Alle Angaben ohne Gewähr · <a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a></p>
+</div>
+
+<script>
+(function () {
+  var C = { tech: ['#4FE3F0', 'Messungen / Technik'], light: ['#A77BFF', 'Lichter & UAP'], beast: ['#FF6B7A', 'Tiere & Kreaturen'], house: ['#FFC66B', 'Gebäude & Spuk'] };
+  var S = {
+    mesa: { t: 'Die Mesa (Skinwalker Ridge)', c: 'tech', p: 'Der Tafelberg im Norden ist das Zentrum der heutigen Untersuchungen. Messungen deuteten laut TV-Team auf große metallische Objekte im Gestein, deshalb wird dort seit 2023 gebohrt. Zeugen berichten von Gestalten, die vom Grat herab die Ranch beobachten. Mai 2026: Satellitenbilder zeigen Bauarbeiten oben auf der Mesa.' },
+    dreieck: { t: '„Das Dreieck“', c: 'light', p: 'Ein dreieckiger Bereich zwischen Mesa und den Gehöften, in dem sich die meisten Messanomalien häufen: GPS-Sprünge, verschwindende Laserstrahlen, Raketen, die vom Kurs abkommen, Radar-Echos rund 1,6 km darüber. Hier finden die meisten Experimente der TV-Serie statt, etwa mit 200 Drohnen oder Hubschraubern.' },
+    h1: { t: 'Homestead 1', c: 'house', p: 'Das Wohnhaus der Ranch, früher das Heim der Shermans, heute Sitz der Verwalter. Hier hörten Kandus Linde und Tom Lewis 2016 nachts das Basketball-Prellen. Die Familie Sherman schlief zeitweise aus Angst gemeinsam im Hauptraum.' },
+    h2: { t: 'Homestead 2', c: 'house', p: 'Drei verfallende Häuser, von den 1930ern bis vor 1994 von Rancherfamilien bewohnt. Einer der aktivsten Orte: Wärmebild-Experimente, Strahlungsmessungen und eine „seltsame Formation von Linien“, die eine Multispektralkamera im Boden entdeckte. Hier wurde gegraben, bevor sich Winterton verletzte.' },
+    h3: { t: 'Homestead 3', c: 'house', p: 'Ein einzelnes verfallenes Haus in einem Kreis alter Bäume am westlichen Ende der Ranch, direkt an der Grenze zum Ute-Reservat.' },
+    westfeld: { t: 'Das West-Feld', c: 'light', p: 'Sommer 2019: Sicherheitschef Bryant „Dragon“ Arnold sieht während der Dreharbeiten ein Objekt über dem Feld schweben; die Sensoren seien „verrückt geworden“. Details nennt er nicht.' },
+    wolf: { t: 'Der kugelfeste Wolf', c: 'beast', p: 'Mitte der 1990er schoss Terry Sherman nach eigenen Angaben aus kurzer Distanz mehrfach auf einen riesigen Wolf, der sich zuvor einem Kalb genähert hatte. Das Tier lief einfach davon. Auch verstümmelte Rinder fand die Familie auf den Weiden.' },
+    baum: { t: 'Die Kreatur im Baum (1997)', c: 'beast', p: 'In der Nacht zum 12. März 1997 sah NIDS-Forscher Colm Kelleher eine große Gestalt etwa 6 m hoch in einem Baum, rund 45 m entfernt, mit gelb leuchtenden Augen. Nach Schüssen war sie fort. Am Boden fand er einen einzelnen ovalen Abdruck mit zwei Krallen, rund 15 cm breit.' },
+    command: { t: 'Command Center', c: 'tech', p: 'Die Überwachungszentrale mit vielen Bildschirmen. Hier laufen die Bilder von Dutzenden HD-, Infrarot- und Wärmebildkameras, die Flugzeugdaten (ADS-B), das Funkspektrum, die Sensoreinheit „SATAN“ und die Wetterstation der Ranch zusammen.' },
+    bottle: { t: 'Bottle Hollow (außerhalb)', c: 'light', p: 'Ein Stausee auf Ute-Land neben der Ranch, 1970 geflutet. 1998 sah ein Polizist ein großes Licht hineinstürzen und wieder herausfliegen. 2002 beobachteten vier junge Männer eine blau-weiße Kugel, die als Lichtstrahl wieder auftauchte und hinter dem Skinwalker Ridge verschwand.' }
+  };
+  var spot = document.getElementById('spot'), list = document.getElementById('spotlist');
+  var groups = document.querySelectorAll('.hs');
+  function show(id) {
+    var s = S[id]; if (!s) return; var c = C[s.c];
+    spot.innerHTML = '<span class="tag" style="background:' + c[0] + '22;color:' + c[0] + ';border:1px solid ' + c[0] + '66">' + c[1] + '</span><h3>' + s.t + '</h3><p>' + s.p + '</p>';
+    groups.forEach(function (g) { g.classList.toggle('active', g.getAttribute('data-id') === id); });
+    list.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.id === id ? 'true' : 'false'); });
+  }
+  Object.keys(S).forEach(function (id) {
+    var b = document.createElement('button'); b.type = 'button'; b.dataset.id = id;
+    b.innerHTML = '<b>' + S[id].t + '</b><span>' + C[S[id].c][1] + '</span>';
+    b.addEventListener('click', function () { show(id); }); list.appendChild(b);
+  });
+  groups.forEach(function (g) {
+    var id = g.getAttribute('data-id');
+    g.addEventListener('click', function () { show(id); });
+    g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); show(id); } });
+  });
+  show('dreieck');
+})();
+</script>
+</body>
+</html>
