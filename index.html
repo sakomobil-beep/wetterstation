@@ -3172,13 +3172,21 @@ function grFetch(range) {
   var yd = addDays(todayStr(), -1);
   var yP = GR.yday[yd] ? Promise.resolve(GR.yday[yd]) : wuFetch(wuUrl('/v2/pws/history/all') + '&date=' + yd.replace(/-/g, '')).then(function (j) {
     var a = ((j && j.observations) || []).map(grPoint);
-    GR.yday = {}; GR.yday[yd] = a;
+    /* WU-Historie hinkt oft Stunden hinterher – nur vollständige Tage dauerhaft merken */
+    var last = a.length ? a[a.length - 1].t : 0, dayEnd = new Date(); dayEnd.setHours(0, 0, 0, 0);
+    GR.yday = {}; if (last >= dayEnd.getTime() - 20 * 60e3) GR.yday[yd] = a;
     return a;
   }).catch(function () { return []; });
   var tP = wuFetch(wuUrl('/v2/pws/observations/all/1day')).then(function (j) { return ((j && j.observations) || []).map(grPoint); });
-  return Promise.all([yP, tP]).then(function (r) {
-    var cut = Date.now() - 86400e3;
-    return grClean(r[0].concat(r[1])).filter(function (p) { return p.t >= cut - 300e3; });
+  /* Stundenwerte als Lückenfüller zwischen Ende der Historie und Mitternacht */
+  var hP = wuFetch(wuUrl('/v2/pws/observations/hourly/7day')).then(function (j) { return ((j && j.observations) || []).map(grPoint); }).catch(function () { return []; });
+  return Promise.all([yP, tP, hP]).then(function (r) {
+    var cut = Date.now() - 86400e3, fine = grClean(r[0].concat(r[1]));
+    var fill = r[2].filter(function (h) {
+      h.h = true;
+      return !fine.some(function (p) { return Math.abs(p.t - h.t) < 20 * 60e3; });
+    });
+    return grClean(fine.concat(fill)).filter(function (p) { return p.t >= cut - 300e3; });
   });
 }
 function loadGraphs(force) {
@@ -3256,7 +3264,7 @@ function drawLines(box, cfg) {
     var segs = [], cur = [], prev = null;
     sr.pts.forEach(function (p) {
       if (p.v == null || p.t < t0 - gap) { if (cur.length) segs.push(cur); cur = []; prev = null; return; }
-      if (prev && p.t - prev.t > gap) { segs.push(cur); cur = []; }
+      if (prev && p.t - prev.t > ((p.h || prev.h) ? Math.max(gap, 75 * 60e3) : gap)) { segs.push(cur); cur = []; }
       cur.push(p); prev = p;
     });
     if (cur.length) segs.push(cur);
@@ -3476,7 +3484,7 @@ function drawRose(box, pts) {
 function drawGraphs() {
   var pts = GR.data[GR.range];
   if (!pts || !$('grTemp') || $('panel-grafiken').hidden) return;
-  function ser(key, label, color) { return { label: label, color: color, pts: pts.map(function (p) { return { t: p.t, v: p[key] }; }) }; }
+  function ser(key, label, color) { return { label: label, color: color, pts: pts.map(function (p) { return { t: p.t, v: p[key], h: p.h }; }) }; }
   drawLines($('grTemp'), { series: [ser('temp', 'Temperatur', GR_COL.temp), ser('dew', 'Taupunkt', GR_COL.dew)], unit: '°C', dec: 1, minSpan: 4, aria: 'Temperatur und Taupunkt' });
   drawLines($('grHum'), { series: [ser('hum', 'Luftfeuchte', GR_COL.hum)], unit: '%', dec: 0, minSpan: 10, area: true, aria: 'Relative Luftfeuchte' });
   drawLines($('grPres'), { series: [ser('pres', 'Luftdruck', GR_COL.pres)], unit: 'hPa', dec: 1, minSpan: 4, aria: 'Luftdruck' });
