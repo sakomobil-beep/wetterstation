@@ -356,6 +356,24 @@ ul.facts li { border-left: 3px solid var(--violet); padding: 2px 0 2px 12px; fon
 .bar > * { min-width: 0; max-width: 100%; }
 @media (max-width: 560px) { .subnav { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; scrollbar-width: none; } }
 
+/* Gruppierte Themenleiste */
+.subnav { display:none !important; }
+.gnav { display:flex; flex-wrap:wrap; justify-content:center; gap:4px 6px; }
+.gg { position:relative; }
+.gg > button { background:transparent; border:0; color:var(--muted); font:inherit; font-size:13.5px; padding:6px 10px; border-radius:8px; cursor:pointer; white-space:nowrap; }
+.gg > button:hover, .gg.open > button { color:var(--ink); background:rgba(79,227,240,.08); }
+.gg.cur > button { color:var(--cyan); box-shadow:inset 0 -2px 0 var(--cyan); border-radius:8px 8px 0 0; }
+.gg .caret { font-size:10px; margin-left:3px; opacity:.7; }
+.gdd { display:none; position:absolute; top:100%; left:50%; transform:translateX(-50%); margin-top:6px; background:#121A42; border:1px solid var(--line); border-radius:10px; padding:6px; min-width:220px; z-index:60; box-shadow:0 12px 30px #0009; }
+.gg.open .gdd { display:block; }
+.gdd a { display:flex; justify-content:space-between; gap:14px; color:#C8D2FF; padding:7px 10px; border-radius:6px; text-decoration:none; font-size:14px; }
+.gdd a:hover { background:rgba(79,227,240,.08); } .gdd a[aria-current="page"] { color:var(--cyan); }
+.gdd small { color:var(--muted); font-size:12px; }
+.gsub { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding-top:8px; border-top:1px solid var(--line); }
+.gsub a { color:var(--muted); padding:3px 10px; border-radius:999px; border:1px solid var(--line); font-size:12.5px; text-decoration:none; white-space:nowrap; }
+.gsub a:hover { color:var(--ink); } .gsub a[aria-current="page"] { color:var(--cyan); border-color:var(--cyan); }
+@media (max-width:560px){ .gnav, .gsub { flex-wrap:nowrap; overflow-x:auto; justify-content:flex-start; scrollbar-width:none; } .gnav { overflow:visible; flex-wrap:wrap; justify-content:center; } .gdd { position:fixed; left:12px; right:12px; top:auto; transform:none; min-width:0; } }
+
 .paperbox { background:#E9E1CC; color:#1E1B16; border-radius:10px; padding:18px; box-shadow:0 8px 30px #0008; }
 .news { font-family: Georgia, "Times New Roman", serif; text-align:center; transition: opacity .3s; }
 .news.fade { opacity:0; }
@@ -484,23 +502,11 @@ p.cap { min-height:2.8em; margin:10px 0 0; color:var(--amber); }
 .mqb button.right { border-color:var(--green); color:var(--green); } .mqb button.wrong { border-color:var(--red); color:var(--red); } .mqb button:disabled { cursor:default; }
 .mqa { font-size:14px; color:var(--muted); margin:8px 0 0 !important; }
 
-/* Gruppierte Themenleiste */
-.subnav { display:none !important; }
-.gnav { display:flex; flex-wrap:wrap; justify-content:center; gap:4px 6px; }
-.gg { position:relative; }
-.gg > button { background:transparent; border:0; color:var(--muted); font:inherit; font-size:13.5px; padding:6px 10px; border-radius:8px; cursor:pointer; white-space:nowrap; }
-.gg > button:hover, .gg.open > button { color:var(--ink); background:rgba(79,227,240,.08); }
-.gg.cur > button { color:var(--cyan); box-shadow:inset 0 -2px 0 var(--cyan); border-radius:8px 8px 0 0; }
-.gg .caret { font-size:10px; margin-left:3px; opacity:.7; }
-.gdd { display:none; position:absolute; top:100%; left:50%; transform:translateX(-50%); margin-top:6px; background:#121A42; border:1px solid var(--line); border-radius:10px; padding:6px; min-width:220px; z-index:60; box-shadow:0 12px 30px #0009; }
-.gg.open .gdd { display:block; }
-.gdd a { display:flex; justify-content:space-between; gap:14px; color:#C8D2FF; padding:7px 10px; border-radius:6px; text-decoration:none; font-size:14px; }
-.gdd a:hover { background:rgba(79,227,240,.08); } .gdd a[aria-current="page"] { color:var(--cyan); }
-.gdd small { color:var(--muted); font-size:12px; }
-.gsub { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding-top:8px; border-top:1px solid var(--line); }
-.gsub a { color:var(--muted); padding:3px 10px; border-radius:999px; border:1px solid var(--line); font-size:12.5px; text-decoration:none; white-space:nowrap; }
-.gsub a:hover { color:var(--ink); } .gsub a[aria-current="page"] { color:var(--cyan); border-color:var(--cyan); }
-@media (max-width:560px){ .gnav, .gsub { flex-wrap:nowrap; overflow-x:auto; justify-content:flex-start; scrollbar-width:none; } .gnav { overflow:visible; flex-wrap:wrap; justify-content:center; } .gdd { position:fixed; left:12px; right:12px; top:auto; transform:none; min-width:0; } }
+.sndl { font-size:13px; color:var(--muted); display:inline-flex; gap:6px; align-items:center; margin-left:12px; }
+.scene svg { width:100%; height:auto; display:block; border-radius:10px; border:1px solid var(--line); }
+.scene button.big:disabled { opacity:.5; cursor:wait; }
+.hero h1 { background:linear-gradient(90deg,#E8ECFF,#4FE3F0,#A77BFF,#E8ECFF); background-size:300% 100%; -webkit-background-clip:text; background-clip:text; color:transparent; animation: shine 8s linear infinite; }
+@keyframes shine { to { background-position:300% 0; } }
 </style>
 </head>
 <body>
@@ -509,14 +515,14 @@ p.cap { min-height:2.8em; margin:10px 0 0; color:var(--amber); }
     <div class="toprow"><a class="brand" href="observatory.html"><span class="dot" aria-hidden="true"></span>UAP Observatory</a><a class="back" href="index.html">← Wetterstation</a></div>
     <nav class="gnav" aria-label="Themen des UAP Observatory">
       <a class="ghome" href="observatory.html"><span aria-hidden="true">🛸</span> Übersicht</a>
-      <div class="gg"><button type="button" aria-expanded="false" aria-haspopup="true"><span aria-hidden="true">📍</span> Deutschland<span class="caret" aria-hidden="true">▾</span></button><div class="gdd"><a href="rodenstein.html">Odenwald &amp; Rodensteiner<small>Heimat</small></a><a href="cenap.html">CENAP-Meldestelle<small>Mannheim</small></a><a href="nuernberg.html">Nürnberg 1561<small>Flugblatt</small></a></div></div>
-      <div class="gg cur"><button type="button" aria-expanded="false" aria-haspopup="true"><span aria-hidden="true">🇺🇸</span> Klassiker USA<span class="caret" aria-hidden="true">▾</span></button><div class="gdd"><a href="arnold.html">Kenneth Arnold<small>1947</small></a><a href="roswell.html">Roswell<small>1947</small></a><a href="washington.html" aria-current="page">Washington<small>1952</small></a><a href="socorro.html">Socorro<small>1964</small></a><a href="hill.html">Betty &amp; Barney Hill<small>1961</small></a><a href="walton.html">Travis Walton<small>1975</small></a><a href="phoenix.html">Phoenix Lights<small>1997</small></a></div></div>
-      <div class="gg"><button type="button" aria-expanded="false" aria-haspopup="true"><span aria-hidden="true">📡</span> Militär &amp; Radar<span class="caret" aria-hidden="true">▾</span></button><div class="gdd"><a href="belgien.html">Belgische Welle<small>1989–90</small></a><a href="rendlesham.html">Rendlesham Forest<small>1980</small></a><a href="teheran.html">Teheran<small>1976</small></a><a href="tictac.html">Tic-Tac-Videos<small>2004</small></a></div></div>
-      <div class="gg"><button type="button" aria-expanded="false" aria-haspopup="true"><span aria-hidden="true">👽</span> Begegnungen<span class="caret" aria-hidden="true">▾</span></button><div class="gdd"><a href="valensole.html">Valensole<small>1965</small></a><a href="westall.html">Westall<small>1966</small></a><a href="ariel.html">Ariel School<small>1994</small></a><a href="varginha.html">Varginha<small>1996</small></a></div></div>
-      <div class="gg"><button type="button" aria-expanded="false" aria-haspopup="true"><span aria-hidden="true">🔒</span> Geheime Orte &amp; Mythen<span class="caret" aria-hidden="true">▾</span></button><div class="gdd"><a href="uap.html">Skinwalker Ranch<small>Utah</small></a><a href="area51.html">Area 51<small>Nevada</small></a><a href="lazar.html">Bob Lazar<small>S-4</small></a><a href="mib.html">Men in Black<small>Folklore</small></a></div></div>
-      <div class="gg"><button type="button" aria-expanded="false" aria-haspopup="true"><span aria-hidden="true">⚡</span> Aktuell<span class="caret" aria-hidden="true">▾</span></button><div class="gdd"><a href="drohnen.html">Drohnenwelle<small>2024–26</small></a></div></div>
+      <div class="gg"><button type="button" aria-expanded="false" aria-haspopup="true"><span aria-hidden="true">📍</span> Deutschland &amp; Europa<span class="caret" aria-hidden="true">▾</span></button><div class="gdd"><a href="rodenstein.html">Odenwald &amp; Rodensteiner<small>Heimat</small></a><a href="cenap.html">CENAP-Meldestelle<small>Mannheim</small></a><a href="nuernberg.html">Nürnberg 1561<small>Flugblatt</small></a><a href="hessdalen.html">Hessdalen-Lichter<small>seit 1981</small></a></div></div>
+      <div class="gg cur"><button type="button" aria-expanded="false" aria-haspopup="true"><span aria-hidden="true">🇺🇸</span> Klassiker USA<span class="caret" aria-hidden="true">▾</span></button><div class="gdd"><a href="arnold.html">Kenneth Arnold<small>1947</small></a><a href="roswell.html">Roswell<small>1947</small></a><a href="washington.html" aria-current="page">Washington<small>1952</small></a><a href="socorro.html">Socorro<small>1964</small></a><a href="hill.html">Betty &amp; Barney Hill<small>1961</small></a><a href="walton.html">Travis Walton<small>1975</small></a><a href="lubbock.html">Lubbock Lights<small>1951</small></a><a href="kecksburg.html">Kecksburg<small>1965</small></a><a href="hudson.html">Hudson Valley<small>1983–86</small></a><a href="phoenix.html">Phoenix Lights<small>1997</small></a><a href="ohare.html">O'Hare<small>2006</small></a><a href="stephenville.html">Stephenville<small>2008</small></a></div></div>
+      <div class="gg"><button type="button" aria-expanded="false" aria-haspopup="true"><span aria-hidden="true">📡</span> Militär &amp; Radar<span class="caret" aria-hidden="true">▾</span></button><div class="gdd"><a href="belgien.html">Belgische Welle<small>1989–90</small></a><a href="rendlesham.html">Rendlesham Forest<small>1980</small></a><a href="teheran.html">Teheran<small>1976</small></a><a href="malmstrom.html">Malmstrom<small>1967</small></a><a href="coyne.html">Coyne-Hubschrauber<small>1973</small></a><a href="jal1628.html">JAL 1628<small>1986</small></a><a href="tictac.html">Tic-Tac-Videos<small>2004</small></a></div></div>
+      <div class="gg"><button type="button" aria-expanded="false" aria-haspopup="true"><span aria-hidden="true">👽</span> Begegnungen<span class="caret" aria-hidden="true">▾</span></button><div class="gdd"><a href="valensole.html">Valensole<small>1965</small></a><a href="westall.html">Westall<small>1966</small></a><a href="ariel.html">Ariel School<small>1994</small></a><a href="kelly.html">Kelly-Hopkinsville<small>1955</small></a><a href="pascagoula.html">Pascagoula<small>1973</small></a><a href="voronezh.html">Woronesch<small>1989</small></a><a href="varginha.html">Varginha<small>1996</small></a></div></div>
+      <div class="gg"><button type="button" aria-expanded="false" aria-haspopup="true"><span aria-hidden="true">🔒</span> Geheime Orte &amp; Mythen<span class="caret" aria-hidden="true">▾</span></button><div class="gdd"><a href="uap.html">Skinwalker Ranch<small>Utah</small></a><a href="area51.html">Area 51<small>Nevada</small></a><a href="lazar.html">Bob Lazar<small>S-4</small></a><a href="mib.html">Men in Black<small>Folklore</small></a><a href="mothman.html">Mothman<small>1966/67</small></a><a href="dulce.html">Dulce-Basis<small>Legende</small></a><a href="mj12.html">Majestic 12<small>1984</small></a></div></div>
+      <div class="gg"><button type="button" aria-expanded="false" aria-haspopup="true"><span aria-hidden="true">⚡</span> Aktuell<span class="caret" aria-hidden="true">▾</span></button><div class="gdd"><a href="offenlegung.html">Offenlegung<small>2023–26</small></a><a href="drohnen.html">Drohnenwelle<small>2024–26</small></a></div></div>
     </nav>
-    <div class="gsub"><a href="arnold.html">Kenneth Arnold</a><a href="roswell.html">Roswell</a><a href="washington.html" aria-current="page">Washington</a><a href="socorro.html">Socorro</a><a href="hill.html">Betty &amp; Barney Hill</a><a href="walton.html">Travis Walton</a><a href="phoenix.html">Phoenix Lights</a></div>
+    <div class="gsub"><a href="arnold.html">Kenneth Arnold</a><a href="roswell.html">Roswell</a><a href="washington.html" aria-current="page">Washington</a><a href="socorro.html">Socorro</a><a href="hill.html">Betty &amp; Barney Hill</a><a href="walton.html">Travis Walton</a><a href="lubbock.html">Lubbock Lights</a><a href="kecksburg.html">Kecksburg</a><a href="hudson.html">Hudson Valley</a><a href="phoenix.html">Phoenix Lights</a><a href="ohare.html">O'Hare</a><a href="stephenville.html">Stephenville</a></div>
   </header>
 
   <figure class="title" style="margin:16px 0 0">

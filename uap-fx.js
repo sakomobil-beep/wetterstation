@@ -15,9 +15,11 @@
     '.timeline li{transition:background .2s}.timeline li:hover{background:rgba(79,227,240,.05)}',
     '#fxTop{position:fixed;right:16px;bottom:16px;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:#121A42;color:var(--cyan);font-size:18px;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .3s;z-index:70}',
     '#fxTop.show{opacity:1;pointer-events:auto}',
+    '.hero h1{background:linear-gradient(90deg,#E8ECFF,#4FE3F0,#A77BFF,#E8ECFF);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:fxShine 8s linear infinite}@keyframes fxShine{to{background-position:300% 0}}',
+    '.card{transition:box-shadow .3s,border-color .3s}.card:hover{box-shadow:0 0 0 1px rgba(79,227,240,.25),0 10px 40px rgba(79,227,240,.06)}',
     '#fxBar{position:fixed;left:0;top:0;height:3px;width:0;background:linear-gradient(90deg,var(--violet),var(--cyan));z-index:80}'
   ];
-  if (reduce) css = css.filter(function (r) { return r.indexOf('fx-in') < 0 && r.indexOf('fxPulse') < 0; });
+  if (reduce) css = css.filter(function (r) { return r.indexOf('fx-in') < 0 && r.indexOf('fxPulse') < 0 && r.indexOf('fxShine') < 0; });
   var st = document.createElement('style'); st.textContent = css.join('\n'); document.head.appendChild(st);
 
   // Lesefortschritt und "nach oben"
