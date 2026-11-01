@@ -652,6 +652,17 @@ button { font: inherit; color: inherit; }
 .nx-fig { margin: 0; display: grid; gap: 6px; justify-items: center; }
 .nx-fig img { width: 100%; max-width: 520px; border-radius: 12px; background: #000; min-height: 200px; object-fit: contain; }
 .nx-fig figcaption { font-size: 13px; text-align: center; max-width: 60ch; }
+.nx-stage { position: relative; width: 100%; max-width: 520px; }
+.nx-stage img { display: block; }
+.nx-stamp { position: absolute; left: 10px; bottom: 10px; background: rgba(0,0,0,.65); color: #fff; font-size: 12.5px; padding: 3px 9px; border-radius: 6px; font-variant-numeric: tabular-nums; pointer-events: none; }
+.nx-load { position: absolute; inset: 0; display: grid; place-items: center; color: #fff; font-size: 13.5px; background: rgba(0,0,0,.45); border-radius: 12px; }
+.nx-load[hidden] { display: none; }
+.nx-ctl { display: flex; align-items: center; gap: 10px; width: 100%; max-width: 520px; flex-wrap: wrap; }
+.nx-ctl button { border: 1px solid var(--line); background: var(--bg); border-radius: 8px; padding: 5px 12px; font: inherit; font-size: 14px; cursor: pointer; min-width: 44px; }
+.nx-ctl input[type=range] { flex: 1; min-width: 140px; accent-color: #E8930C; }
+.nx-ctl select { font: inherit; font-size: 13px; border: 1px solid var(--line); border-radius: 8px; padding: 4px 6px; background: var(--bg); }
+.nx-ctl .nx-live { font-size: 12px; color: #fff; background: #C93030; border-radius: 999px; padding: 2px 8px; animation: nxBlink 2s infinite; }
+@keyframes nxBlink { 50% { opacity: .55; } }
 .nx-alerts { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; max-height: 300px; overflow-y: auto; }
 .nx-alerts li { font-size: 13.5px; line-height: 1.4; border-left: 3px solid var(--line); padding-left: 10px; }
 .nx-alerts li.w { border-left-color: #E57A1F; }
@@ -1175,11 +1186,18 @@ button { font: inherit; color: inherit; }
       <div class="nx-imgs">
         <div class="sunbtns" id="nxBtns">
           <button data-k="ovation" aria-pressed="true">Polarlichtoval</button>
-          <button data-k="lasco">Koronagraph</button>
+          <button data-k="lasco">Koronagraph C3</button>
+          <button data-k="lasco2">Koronagraph C2</button>
           <button data-k="enlil">Sonnenwind-Modell</button>
-          <button data-k="suvi">Sonne (SUVI)</button>
+          <button data-k="suvi">Sonne 195</button>
+          <button data-k="suvi304">Protuberanzen 304</button>
+          <button data-k="suvi131">Flares 131</button>
         </div>
-        <figure class="nx-fig"><img id="nxImg" alt="Aktuelles Bild von NOAA" loading="lazy"><figcaption class="sw-muted" id="nxCap"></figcaption></figure>
+        <figure class="nx-fig">
+          <div class="nx-stage"><img id="nxImg" alt="Animation von NOAA" loading="lazy"><span class="nx-stamp" id="nxStamp"></span><div class="nx-load" id="nxLoad" hidden>Bilder werden geladen …</div></div>
+          <div class="nx-ctl"><button type="button" id="nxPlay" aria-label="Abspielen oder anhalten">⏸</button><input type="range" id="nxScrub" min="0" max="0" value="0" aria-label="Zeitpunkt der Animation"><select id="nxSpeed" aria-label="Geschwindigkeit"><option value="400">langsam</option><option value="180" selected>normal</option><option value="70">schnell</option></select><span class="nx-live" id="nxLiveTag">LIVE</span></div>
+          <figcaption class="sw-muted" id="nxCap"></figcaption>
+        </figure>
       </div>
       <div class="sw-two">
         <div class="ew-box"><h4>Sonnenzyklus 25: Sonnenflecken</h4><div id="nxCycle" class="ew-plot"></div><p class="sw-muted ew-t" id="nxCycleT">Monatliche Sonnenfleckenzahl seit 2019. Je mehr Flecken, desto häufiger Ausbrüche.</p></div>
@@ -4962,24 +4980,62 @@ setInterval(renderSaison, 600000);
     }).catch(function () { $('nxProt').innerHTML = '<p class="sw-muted ew-t">Nicht verfügbar.</p>'; return false; });
   }
 
-  // Bilder
+  // Animationen: echte Bildfolgen von NOAA und SOHO als Film
   var IMG = {
-    ovation: { u: B + '/images/animations/ovation/north/latest.jpg', c: 'Vorhersage des Polarlichtovals über der Nordhalbkugel (NOAA OVATION). Je weiter das grüne bis rote Band nach Süden reicht, desto besser die Chancen bei uns.' },
-    lasco: { u: 'https://soho.nascom.nasa.gov/data/realtime/c3/512/latest.jpg', c: 'Koronagraph LASCO C3 der Raumsonde SOHO: Die Sonne ist abgedeckt, so sieht man Auswürfe (CME). Ein Ring rund um die Scheibe („Halo“) bedeutet: Die Wolke kommt auf uns zu.' },
-    enlil: { anim: B + '/products/animations/enlil.json', c: 'Modell WSA-Enlil: wie sich Sonnenwind und Auswürfe im Sonnensystem ausbreiten. Die Erde ist der grüne Punkt rechts der Sonne.' },
-    suvi: { anim: B + '/products/animations/suvi-primary-195.json', u: B + '/images/animations/suvi/primary/195/latest.png', c: 'Die Sonne im extremen Ultraviolett (GOES-SUVI, 19,5 nm). Helle Gebiete sind aktive Regionen, dunkle Flecken koronale Löcher, aus denen schneller Sonnenwind strömt.' }
+    ovation: { anim: B + '/products/animations/ovation_north_24h.json', n: 72, c: 'Polarlichtoval der letzten 24 Stunden (NOAA OVATION, alle 10 Minuten neu berechnet). Je weiter das grüne bis rote Band nach Süden reicht, desto besser die Chancen bei uns.' },
+    lasco: { anim: B + '/products/animations/lasco-c3.json', n: 48, c: 'Koronagraph LASCO C3 der Raumsonde SOHO, die letzten Stunden als Film: Die Sonne ist abgedeckt, so sieht man Auswürfe (CME). Ein Ring rund um die Scheibe („Halo“) bedeutet: Die Wolke kommt auf uns zu. Die Sterne im Hintergrund ziehen langsam vorbei.' },
+    lasco2: { anim: B + '/products/animations/lasco-c2.json', n: 48, c: 'Koronagraph LASCO C2: näher an der Sonne als C3. Hier sieht man Auswürfe, kurz nachdem sie die Sonne verlassen.' },
+    enlil: { anim: B + '/products/animations/enlil.json', n: 120, c: 'Modell WSA-Enlil: wie sich Sonnenwind und Auswürfe in den nächsten Tagen im Sonnensystem ausbreiten. Die Erde ist der grüne Punkt rechts der Sonne. Rote Wolken, die die Erde treffen, bringen Polarlichter.' },
+    suvi: { anim: B + '/products/animations/suvi-primary-195.json', n: 60, c: 'Die Sonne im extremen Ultraviolett (GOES-SUVI, 19,5 nm), die letzten Stunden. Helle Gebiete sind aktive Regionen, dunkle Flecken koronale Löcher, aus denen schneller Sonnenwind strömt.' },
+    suvi304: { anim: B + '/products/animations/suvi-primary-304.json', n: 60, c: 'Die Sonne bei 30,4 nm (GOES-SUVI): Hier sieht man die Chromosphäre und Protuberanzen, riesige Gasbögen am Sonnenrand.' },
+    suvi131: { anim: B + '/products/animations/suvi-primary-131.json', n: 60, c: 'Die Sonne bei 13,1 nm (GOES-SUVI): sehr heißes Gas. Flares leuchten hier hell auf, oft für wenige Minuten.' }
   };
-  function showImg(k) {
-    var m = IMG[k], img = $('nxImg');
-    Array.prototype.forEach.call($('nxBtns').children, function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-k') === k ? 'true' : 'false'); });
-    $('nxCap').textContent = m.c;
-    img.onerror = function () { if (m.u && img.src !== m.u) img.src = m.u; else { img.style.visibility = 'hidden'; $('nxCap').textContent = 'Das Bild ist gerade nicht verfügbar. ' + m.c; } };
-    img.onload = function () { img.style.visibility = ''; };
-    if (m.anim) {
-      getJ(m.anim).then(function (a) { var l = a[a.length - 1]; img.src = (l.url.indexOf('http') === 0 ? '' : B) + l.url; })
-        .catch(function () { if (m.u) img.src = m.u + '?t=' + Date.now(); else img.onerror(); });
-    } else img.src = m.u + '?t=' + Math.floor(Date.now() / 300000);
+  var P = { frames: [], i: 0, play: true, tm: null, key: null, token: 0 };
+  function fmtT(s) { var d = tt(s); return isNaN(d) ? '' : d.toLocaleString('de-DE', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) + ' Uhr'; }
+  function draw() {
+    var f = P.frames[P.i]; if (!f) return;
+    $('nxImg').src = f.img.src; $('nxScrub').value = P.i;
+    $('nxStamp').textContent = (P.key === 'enlil' ? 'Modell: ' : '') + fmtT(f.t);
+    $('nxLiveTag').style.visibility = P.i === P.frames.length - 1 ? 'visible' : 'hidden';
   }
+  function tick() {
+    clearTimeout(P.tm); if (!P.play || !P.frames.length) return;
+    var last = P.i === P.frames.length - 1;
+    P.i = last ? 0 : P.i + 1; draw();
+    P.tm = setTimeout(tick, P.i === P.frames.length - 1 ? 1500 : +$('nxSpeed').value);
+  }
+  function setPlay(v) { P.play = v; $('nxPlay').textContent = v ? '⏸' : '▶'; if (v) tick(); else clearTimeout(P.tm); }
+  function showImg(k) {
+    var m = IMG[k], tok = ++P.token; P.key = k; clearTimeout(P.tm); P.frames = []; P.i = 0;
+    Array.prototype.forEach.call($('nxBtns').children, function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-k') === k ? 'true' : 'false'); });
+    $('nxCap').textContent = m.c; $('nxLoad').hidden = false; $('nxLoad').textContent = 'Bilder werden geladen …'; $('nxStamp').textContent = '';
+    getJ(m.anim).then(function (a) {
+      if (tok !== P.token) return;
+      var list = a.slice(-m.n * 3), step = Math.max(1, Math.ceil(list.length / m.n));
+      list = list.filter(function (x, i) { return (list.length - 1 - i) % step === 0; });
+      var loaded = 0, frames = list.map(function (x) { var im = new Image(); im.decoding = 'async'; return { img: im, t: x.time_tag, ok: false, u: (x.url.indexOf('http') === 0 ? '' : B) + x.url }; });
+      if (!frames.length) throw 0;
+      // neuestes Bild zuerst zeigen, dann den Rest nachladen
+      var newest = frames[frames.length - 1];
+      newest.img.onload = function () { if (tok !== P.token) return; $('nxImg').src = newest.img.src; $('nxStamp').textContent = fmtT(newest.t); $('nxImg').style.visibility = ''; };
+      newest.img.src = newest.u;
+      frames.forEach(function (f) {
+        f.img.onload = (f === newest ? (function (o) { return function () { o(); done(f); }; })(newest.img.onload) : function () { done(f); });
+        f.img.onerror = function () { done(null); };
+        if (f !== newest) f.img.src = f.u;
+      });
+      function done(f) {
+        if (tok !== P.token) return; if (f) f.ok = true; loaded++;
+        $('nxLoad').textContent = 'Bilder werden geladen … ' + Math.round(loaded / frames.length * 100) + ' %';
+        if (loaded === frames.length) {
+          P.frames = frames.filter(function (x) { return x.ok; }); if (!P.frames.length) { $('nxLoad').textContent = 'Die Bilder sind gerade nicht verfügbar.'; return; }
+          $('nxLoad').hidden = true; $('nxScrub').max = P.frames.length - 1; P.i = 0; draw(); if (P.play) P.tm = setTimeout(tick, +$('nxSpeed').value);
+        }
+      }
+    }).catch(function () { if (tok !== P.token) return; $('nxLoad').textContent = 'Die Animation ist gerade nicht verfügbar.'; });
+  }
+  $('nxPlay').addEventListener('click', function () { setPlay(!P.play); });
+  $('nxScrub').addEventListener('input', function () { setPlay(false); P.i = +this.value; draw(); });
   $('nxBtns').addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) showImg(b.getAttribute('data-k')); });
 
   function loadCycle() {
@@ -5031,7 +5087,7 @@ setInterval(renderSaison, 600000);
     });
   }
   var started = false;
-  function maybe() { if (!started && location.hash === '#solar') { started = true; run(); showImg('ovation'); setInterval(run, 300000); } }
+  function maybe() { if (!started && location.hash === '#solar') { started = true; run(); showImg('ovation'); setInterval(function () { run(); if (P.key) showImg(P.key); }, 600000); } }
   window.addEventListener('hashchange', maybe); maybe();
 })();
 </script>
