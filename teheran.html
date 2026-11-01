@@ -463,6 +463,16 @@ p.cap { min-height:2.8em; margin:10px 0 0; color:var(--amber); }
 .calc { display:grid; gap:10px; margin-top:12px; } .calc input { width:100%; } .big2 { font-size:24px; color:var(--amber); margin:4px 0; }
 .shapes { display:flex; flex-wrap:wrap; gap:16px; } .shapes figure { margin:0; width:200px; } .shapes svg { width:100%; background:var(--bg2); border-radius:10px; border:1px solid var(--line); } .shapes figcaption { font-size:13px; color:var(--muted); text-align:center; }
 .inv svg { width:100%; height:auto; display:block; border-radius:10px; border:1px solid var(--line); margin-top:10px; }
+
+.bars { display:grid; gap:10px; margin-top:12px; }
+.dbar { display:grid; grid-template-columns:56px 1fr 46px; gap:4px 12px; align-items:center; }
+.dbar > span { font-weight:700; color:var(--amber); } .dbar > div { height:22px; background:var(--bg2); border-radius:6px; overflow:hidden; }
+.dbar i { display:block; height:100%; width:0; background:linear-gradient(90deg,var(--violet),var(--red)); border-radius:6px; transition: width 1.4s ease; }
+.bars.on .dbar i { width:var(--w); } .dbar b { font-variant-numeric:tabular-nums; } .dbar small { grid-column:2; color:var(--muted); font-size:12px; }
+.skyquiz { display:grid; grid-template-columns:minmax(0,1.5fr) 1fr; gap:16px; align-items:start; margin-top:10px; }
+.skyquiz svg { width:100%; height:auto; display:block; border-radius:10px; border:1px solid var(--line); }
+.ql { cursor:pointer; } .ql:hover circle:first-child, .ql:focus circle:first-child { stroke-opacity:1; } .ql:focus { outline:none; }
+@media (max-width:700px){ .skyquiz { grid-template-columns:1fr; } }
 </style>
 </head>
 <body>
@@ -491,6 +501,7 @@ p.cap { min-height:2.8em; margin:10px 0 0; color:var(--amber); }
       <a href="arnold.html">Kenneth Arnold 1947</a>
       <a href="washington.html">Washington 1952</a>
       <a href="socorro.html">Socorro 1964</a>
+      <a href="drohnen.html">Drohnenwelle 2024–2026</a>
     </nav>
   </header>
 

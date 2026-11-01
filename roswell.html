@@ -421,6 +421,7 @@ ul.facts li { border-left: 3px solid var(--violet); padding: 2px 0 2px 12px; fon
       <a href="arnold.html">Kenneth Arnold 1947</a>
       <a href="washington.html">Washington 1952</a>
       <a href="socorro.html">Socorro 1964</a>
+      <a href="drohnen.html">Drohnenwelle 2024–2026</a>
     </nav>
   </header>
 
@@ -705,6 +706,7 @@ ul.facts li { border-left: 3px solid var(--violet); padding: 2px 0 2px 12px; fon
   // Mythos-Balken
   var gw = document.getElementById('grow');
   if ('IntersectionObserver' in window) { new IntersectionObserver(function (es, o) { es.forEach(function (x) { if (x.isIntersecting) { gw.classList.add('on'); o.disconnect(); } }); }, { threshold: .3 }).observe(gw); } else gw.classList.add('on');
+  setTimeout(function () { gw.classList.add('on'); }, 4000);
 
 })();
 </script>
