@@ -3098,7 +3098,7 @@ function renderExtremeView(rows) {
     recRow('Tiefster Luftdruck', extreme(rows, function (r) { return r.pmin; }, false), 1, 'hPa')
   ].join('');
   function tile(n, label) { return '<div class="kt"><b>' + n + '</b><span>' + label + '</span></div>'; }
-  var tiles = tile(ya.frost, 'Frosttage') + tile(ya.ice, 'Eistage') + tile(ya.summer, 'Sommertage') + tile(ya.hot, 'Heiße Tage') +
+  var tiles = tile(ya.frost, 'Frosttage') + tile(ya.ice, 'Eistage') + tile(ya.summer, 'Sommertage (ganzes Jahr)') + tile(ya.hot, 'Heiße Tage (ganzes Jahr)') +
     tile(ya.tropic, 'Tropennächte') + tile(ya.rainDays, 'Regentage');
   function streakRow(label, st) {
     return '<tr><th scope="row">' + label + '</th><td class="num">' + (st.len ? st.len + (st.len === 1 ? ' Tag' : ' Tage') : '–') + '</td><td>' +

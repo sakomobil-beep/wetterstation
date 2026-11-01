@@ -456,10 +456,10 @@ dl.gloss dd { margin: 0; font-size: 15px; }
     grid.innerHTML =
       tile(de(maxT, 1) + ' °C', 'Höchsttemperatur', 'am ' + dt(maxD)) +
       tile(n ? de(sum / n, 1) + ' °C' : '–', 'Mitteltemperatur Juni–August', 'Hessen: 19,9 °C') +
-      tile(h30, 'heiße Tage ab 30 °C', 'Hessen: rund 21') +
-      tile(h35, 'sehr heiße Tage ab 35 °C', 'Hessen: rund 5') +
-      tile(h25, 'Sommertage ab 25 °C') +
-      tile(tn, 'Tropennächte (nicht unter 20 °C)', 'wärmste Nacht: ' + de(warmN, 1) + ' °C am ' + dt(warmD)) +
+      tile(h30, 'heiße Tage ab 30 °C (Juni–August)', 'Hessen: rund 21') +
+      tile(h35, 'sehr heiße Tage ab 35 °C (Juni–August)', 'Hessen: rund 5') +
+      tile(h25, 'Sommertage ab 25 °C (Juni–August)') +
+      tile(tn, 'Tropennächte (Juni–August)', 'wärmste Nacht: ' + de(warmN, 1) + ' °C am ' + dt(warmD)) +
       tile(de(rain, 0) + ' l/m²', 'Regen Juni–August', 'Hessen: 126 l/m²');
     note.textContent = 'Berechnet aus ' + days.length + ' Tageswerten der Station. Die Station misst nicht nach DWD-Norm, Werte können daher leicht abweichen.' + (days.length < 92 ? ' Für einige Tage fehlen Daten.' : '');
   }
