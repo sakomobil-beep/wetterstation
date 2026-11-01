@@ -473,6 +473,16 @@ p.cap { min-height:2.8em; margin:10px 0 0; color:var(--amber); }
 .skyquiz svg { width:100%; height:auto; display:block; border-radius:10px; border:1px solid var(--line); }
 .ql { cursor:pointer; } .ql:hover circle:first-child, .ql:focus circle:first-child { stroke-opacity:1; } .ql:focus { outline:none; }
 @media (max-width:700px){ .skyquiz { grid-template-columns:1fr; } }
+
+.mibbox { display:grid; grid-template-columns:minmax(0,1.3fr) 1fr; gap:16px; align-items:start; margin-top:10px; }
+.mibbox svg { width:100%; height:auto; display:block; border-radius:10px; border:1px solid var(--line); }
+@media (max-width:700px){ .mibbox { grid-template-columns:1fr; } }
+.mt { cursor:pointer; } .mt:hover, .mt:focus, .mt.on { filter:drop-shadow(0 0 6px #4FE3F0); outline:none; }
+.mquiz { display:grid; gap:10px; margin-top:10px; }
+.mq { background:var(--bg2); border:1px solid var(--line); border-radius:10px; padding:12px 14px; } .mq > p { margin:0 0 8px; }
+.mqb { display:flex; flex-wrap:wrap; gap:6px; } .mqb button { background:transparent; border:1px solid var(--line); color:var(--ink); padding:6px 12px; border-radius:999px; cursor:pointer; font:inherit; font-size:13.5px; }
+.mqb button.right { border-color:var(--green); color:var(--green); } .mqb button.wrong { border-color:var(--red); color:var(--red); } .mqb button:disabled { cursor:default; }
+.mqa { font-size:14px; color:var(--muted); margin:8px 0 0 !important; }
 </style>
 </head>
 <body>
@@ -502,6 +512,7 @@ p.cap { min-height:2.8em; margin:10px 0 0; color:var(--amber); }
       <a href="washington.html">Washington 1952</a>
       <a href="socorro.html">Socorro 1964</a>
       <a href="drohnen.html">Drohnenwelle 2024–2026</a>
+      <a href="mib.html">Men in Black</a>
     </nav>
   </header>
 
