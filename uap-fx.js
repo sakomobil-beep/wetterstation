@@ -17,6 +17,7 @@
     '#fxTop.show{opacity:1;pointer-events:auto}',
     '.hero h1{background:linear-gradient(90deg,#E8ECFF,#4FE3F0,#A77BFF,#E8ECFF);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:fxShine 8s linear infinite}@keyframes fxShine{to{background-position:300% 0}}',
     '.card{transition:box-shadow .3s,border-color .3s}.card:hover{box-shadow:0 0 0 1px rgba(79,227,240,.25),0 10px 40px rgba(79,227,240,.06)}',
+    '.ghome{color:var(--muted);font-size:13.5px;padding:6px 8px;border-radius:8px;text-decoration:none;white-space:nowrap}.ghome:hover{color:var(--ink);background:rgba(79,227,240,.08)}.ghome[aria-current=page]{color:var(--cyan);box-shadow:inset 0 -2px 0 var(--cyan)}.gg>button{padding:6px 8px}',
     '#fxBar{position:fixed;left:0;top:0;height:3px;width:0;background:linear-gradient(90deg,var(--violet),var(--cyan));z-index:80}'
   ];
   if (reduce) css = css.filter(function (r) { return r.indexOf('fx-in') < 0 && r.indexOf('fxPulse') < 0 && r.indexOf('fxShine') < 0; });

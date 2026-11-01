@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Videothek · UAP Observatory</title>
+<meta name="description" content="UFO-Videothek: YouTube-Videos zu allen Fällen des UAP Observatory, Originalaufnahmen, Anhörungen und Dokus.">
+<meta name="theme-color" content="#0B0F24">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+:root {
+  --bg: #070A1A; --bg2: #0D1330; --card: #11183A; --line: #24305E;
+  --ink: #E8ECFF; --muted: #9AA6D4; --cyan: #4FE3F0; --violet: #A77BFF; --green: #6CF2A4; --amber: #FFC66B; --red: #FF6B7A;
+  --font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; color: var(--ink); font: 16px/1.6 var(--font);
+  background: radial-gradient(1200px 600px at 80% -10%, rgba(167,123,255,.18), transparent 60%),
+              radial-gradient(900px 500px at 0% 20%, rgba(79,227,240,.10), transparent 60%), var(--bg);
+  padding: 0 max(16px, env(safe-area-inset-right)) 56px max(16px, env(safe-area-inset-left)); }
+a { color: var(--cyan); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--violet); outline-offset: 2px; border-radius: 4px; }
+.wrap { max-width: 1100px; margin: 0 auto; display: grid; gap: 20px; }
+
+/* Kopfleiste mit eigener Navigation */
+.bar { position: sticky; top: 0; z-index: 10; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 20px;
+  padding: 12px 0; background: linear-gradient(180deg, rgba(7,10,26,.96), rgba(7,10,26,.85)); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); font-weight: 650; letter-spacing: .06em; font-size: 13px; text-transform: uppercase; }
+.brand .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 12px var(--cyan); }
+.subnav { display: flex; flex-wrap: wrap; gap: 4px 18px; }
+.subnav a, .subnav span { font-size: 14px; text-decoration: none; color: var(--muted); padding: 6px 0; border-bottom: 2px solid transparent; }
+.subnav a:hover { color: var(--ink); }
+.subnav a[aria-current="page"] { color: var(--cyan); border-bottom-color: var(--cyan); }
+.subnav span.soon { opacity: .55; cursor: default; }
+.subnav span.soon small { font-size: 10px; letter-spacing: .08em; text-transform: uppercase; margin-left: 4px; color: var(--violet); }
+.subnav a.back { color: var(--amber); }
+
+/* Titelbild */
+.title { position: relative; border-radius: 20px; overflow: hidden; border: 1px solid var(--line); margin-top: 16px; }
+.title img { display: block; width: 100%; height: auto; }
+
+/* Aufmacher */
+.hero { border-radius: 20px; padding: clamp(22px, 4vw, 40px); background: linear-gradient(160deg, #161E4C, #0A0E25 70%); border: 1px solid var(--line); display: grid; gap: 18px; position: relative; overflow: hidden; }
+.hero::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: linear-gradient(90deg, var(--cyan), var(--violet), var(--green)); }
+.kicker { font-size: 12.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--violet); font-weight: 600; }
+.hero h1 { margin: 4px 0 0; font-size: clamp(2rem, 6vw, 3.4rem); line-height: 1.04; letter-spacing: -.02em; }
+.hero p.lead { margin: 0; max-width: 66ch; color: #C9D1F5; font-size: clamp(16px, 2vw, 18px); }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.stat { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: 14px; padding: 14px 16px; display: grid; gap: 4px; align-content: start; }
+.stat .v { font-size: clamp(1.5rem, 3.4vw, 2.1rem); font-weight: 700; color: var(--cyan); line-height: 1.05; font-variant-numeric: tabular-nums; }
+.stat .k { font-size: 13.5px; color: #C9D1F5; line-height: 1.4; }
+@media (max-width: 820px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.toc { display: flex; flex-wrap: wrap; gap: 8px; }
+.toc a { text-decoration: none; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font-size: 14px; }
+.toc a:hover { border-color: var(--cyan); color: var(--cyan); }
+
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: clamp(20px, 3.4vw, 32px); display: grid; gap: 16px; min-width: 0; scroll-margin-top: 80px; }
+.card h2 { margin: 0; font-size: clamp(1.4rem, 3vw, 1.85rem); line-height: 1.2; }
+.card h3 { margin: 6px 0 0; font-size: 1.08rem; }
+.card p { margin: 0; max-width: 72ch; }
+.card ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 74ch; }
+.label { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+.src { font-size: 13px; color: var(--muted); }
+.src a { color: inherit; }
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 18px 28px; align-items: start; }
+
+/* Karte */
+.mapwrap { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 860px) { .mapwrap { grid-template-columns: minmax(0, 1fr); } }
+.map { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: #0A1030; }
+.map svg { display: block; width: 100%; height: auto; }
+.hs { cursor: pointer; }
+.hs circle.ring { fill: none; stroke-width: 2; animation: pulse 2.4s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes pulse { 0% { transform: scale(.6); opacity: 1; } 100% { transform: scale(2.2); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .hs circle.ring { animation: none; } }
+.hs:hover circle.core, .hs.active circle.core { stroke: #fff; stroke-width: 3; }
+.spot { border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 8px; background: var(--bg2); min-height: 220px; align-content: start; }
+.spot .tag { justify-self: start; font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; border-radius: 999px; padding: 2px 10px; font-weight: 600; }
+.spot h3 { margin: 0; }
+.spot p { font-size: 14.5px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.spotlist { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 10px; }
+.spotlist button { text-align: left; font: inherit; color: var(--ink); background: var(--bg2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; cursor: pointer; display: grid; gap: 2px; }
+.spotlist button:hover, .spotlist button[aria-pressed="true"] { border-color: var(--cyan); }
+.spotlist button b { font-size: 14.5px; }
+.spotlist button span { font-size: 12.5px; color: var(--muted); }
+
+/* Zeitleiste */
+.timeline { list-style: none; margin: 0; padding: 0; display: grid; max-width: none !important; }
+.timeline li { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 16px; padding: 12px 0; border-top: 1px solid var(--line); }
+.timeline li:first-child { border-top: 0; }
+.timeline time { font-weight: 700; color: var(--cyan); font-variant-numeric: tabular-nums; }
+.timeline li.hl time { color: var(--amber); }
+@media (max-width: 520px) { .timeline li { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+
+/* Besitzer-Grafik */
+.owners svg { width: 100%; height: auto; display: block; }
+
+/* Kacheln */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 12px; }
+.tile { border: 1px solid var(--line); border-radius: 14px; padding: 16px; display: grid; gap: 6px; align-content: start; background: var(--bg2); }
+.tile .ico { font-size: 22px; }
+.tile b { font-size: 16px; }
+.tile p { font-size: 14.5px; color: #C9D1F5; }
+
+/* Tabelle */
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 14px; }
+table { border-collapse: collapse; width: 100%; min-width: 680px; font-size: 14.5px; }
+th, td { text-align: left; padding: 11px 14px; border-top: 1px solid var(--line); vertical-align: top; }
+thead th { border-top: 0; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--bg2); }
+
+.callout { border-radius: 14px; background: rgba(167,123,255,.12); border: 1px solid rgba(167,123,255,.35); padding: 16px 18px; display: grid; gap: 6px; }
+.callout p { font-size: 14.5px; }
+.quote { margin: 0; border-left: 3px solid var(--violet); padding: 2px 0 2px 14px; color: #C9D1F5; max-width: 70ch; }
+
+.links { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 10px 28px; }
+.links h3 { margin: 0 0 6px; font-size: 1rem; }
+.links ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.links li { font-size: 14.5px; line-height: 1.4; }
+.links li span { display: block; font-size: 12.5px; color: var(--muted); }
+.foot { font-size: 13px; color: var(--muted); text-align: center; margin: 8px 0 0; }
+.hotline { justify-self: start; display: inline-flex; align-items: center; gap: 14px; text-decoration: none; color: var(--ink); background: rgba(108,242,164,.1); border: 1px solid rgba(108,242,164,.5); border-radius: 999px; padding: 10px 22px 10px 14px; font-size: 22px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.hotline small { display: block; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--green); font-weight: 600; }
+.hotline:hover { background: rgba(108,242,164,.2); }
+.pulse { width: 14px; height: 14px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 0 rgba(108,242,164,.7); animation: hl 1.8s infinite; }
+@keyframes hl { 70% { box-shadow: 0 0 0 14px rgba(108,242,164,0); } 100% { box-shadow: 0 0 0 0 rgba(108,242,164,0); } }
+/* Quiz */
+.quiz { border: 1px solid var(--line); border-radius: 14px; background: var(--bg2); padding: 20px; display: grid; gap: 14px; min-height: 200px; }
+.quiz .q { font-size: 1.15rem; font-weight: 650; }
+.quiz .step { font-size: 12px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+.quiz .opts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px; }
+.quiz button, .actions button, .btn { font: inherit; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; cursor: pointer; text-align: left; text-decoration: none; }
+.quiz button:hover, .actions button:hover, .btn:hover { border-color: var(--cyan); color: var(--cyan); }
+.quiz .res { display: grid; gap: 8px; animation: pop .4s ease; }
+.quiz .res .big { font-size: 1.6rem; font-weight: 750; color: var(--cyan); }
+.quiz .res .prob { font-size: 13px; color: var(--green); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+@keyframes pop { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.quiz .restart { justify-self: start; }
+/* Jahre */
+.years { margin-bottom: 40px; display: flex; align-items: flex-end; gap: clamp(16px, 5vw, 48px); height: 240px; padding: 10px 6px 0; border-bottom: 2px solid var(--line); max-width: 560px; }
+.yr { flex: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: stretch; gap: 6px; }
+.yr > span { text-align: center; color: var(--muted); font-weight: 600; margin-bottom: -30px; }
+.col { height: 0; background: linear-gradient(180deg, var(--cyan), rgba(79,227,240,.25)); border-radius: 10px 10px 0 0; display: flex; justify-content: center; transition: height 1.4s cubic-bezier(.2,.8,.2,1); position: relative; }
+.col.hot { background: linear-gradient(180deg, var(--violet), rgba(167,123,255,.3)); }
+.col b { position: absolute; top: -26px; font-variant-numeric: tabular-nums; }
+.seen .col { height: var(--h); }
+#zahlen h3 { margin-top: 26px; }
+.hbars { display: grid; gap: 10px; max-width: 640px; }
+.hb { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 12px; align-items: center; font-size: 14.5px; }
+.hb i { display: block; width: 0; font-style: normal; font-weight: 700; padding: 6px 10px; border-radius: 8px; background: linear-gradient(90deg, rgba(79,227,240,.2), rgba(79,227,240,.7)); transition: width 1.2s ease .2s; white-space: nowrap; }
+.seen .hb i { width: var(--w); }
+@media (max-width: 520px) { .hb { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+/* IFO-Karten mit Animation */
+.ifos { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 12px; }
+.ifo { border: 1px solid var(--line); border-radius: 14px; background: var(--bg2); padding: 0 0 14px; display: grid; gap: 6px; overflow: hidden; }
+.ifo b, .ifo p { padding: 0 14px; }
+.ifo p { font-size: 14px; color: #C9D1F5; margin: 0; }
+.anim { position: relative; height: 110px; background: radial-gradient(circle at 80% 20%, #1D2760, #070A1A 70%); overflow: hidden; }
+.anim::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(1px 1px at 20% 30%, #fff, transparent), radial-gradient(1px 1px at 70% 60%, #fff, transparent), radial-gradient(1px 1px at 40% 80%, #cfd6ff, transparent), radial-gradient(1px 1px at 85% 25%, #fff, transparent), radial-gradient(1px 1px at 10% 70%, #fff, transparent); opacity: .7; }
+.anim i { position: absolute; display: block; }
+.starlink i { width: 4px; height: 4px; border-radius: 50%; background: #fff; box-shadow: 0 0 6px #fff; left: -10%; top: 70%; animation: sl 7s linear infinite; }
+.starlink i:nth-child(2) { animation-delay: .35s } .starlink i:nth-child(3) { animation-delay: .7s } .starlink i:nth-child(4) { animation-delay: 1.05s } .starlink i:nth-child(5) { animation-delay: 1.4s } .starlink i:nth-child(6) { animation-delay: 1.75s } .starlink i:nth-child(7) { animation-delay: 2.1s } .starlink i:nth-child(8) { animation-delay: 2.45s }
+@keyframes sl { from { left: -5%; top: 75%; } to { left: 105%; top: 15%; } }
+.planet i { width: 10px; height: 10px; border-radius: 50%; left: 45%; top: 55%; background: #FFF6D8; box-shadow: 0 0 14px 4px #FFE9A8; animation: tw 1.4s ease-in-out infinite alternate; }
+@keyframes tw { 0% { box-shadow: 0 0 10px 3px #FFE9A8; } 33% { box-shadow: 0 0 16px 5px #A9D8FF; } 66% { box-shadow: 0 0 12px 4px #FFB0B9; } 100% { box-shadow: 0 0 18px 6px #FFE9A8; } }
+.lantern i { width: 8px; height: 8px; border-radius: 50%; background: #FFA640; box-shadow: 0 0 10px 3px #FF8A1E; animation: ln 8s ease-in infinite; bottom: -10px; }
+.lantern i:nth-child(1) { left: 30%; } .lantern i:nth-child(2) { left: 50%; animation-delay: 2.6s; } .lantern i:nth-child(3) { left: 66%; animation-delay: 5.2s; }
+@keyframes ln { 0% { bottom: -10px; opacity: 1; transform: translateX(0); } 80% { opacity: 1; } 100% { bottom: 110px; opacity: 0; transform: translateX(30px); } }
+.meteor i { width: 90px; height: 2px; background: linear-gradient(90deg, transparent, #B8FFD0, #fff); border-radius: 2px; transform: rotate(25deg); left: -30%; top: 0; animation: mt 3.2s ease-in infinite; opacity: 0; }
+@keyframes mt { 0% { left: -30%; top: -10%; opacity: 0; } 8% { opacity: 1; } 30% { left: 90%; top: 80%; opacity: 0; } 100% { opacity: 0; left: 90%; top: 80%; } }
+.drone i { width: 6px; height: 6px; border-radius: 50%; background: #FF4E5E; box-shadow: 14px 0 0 #6CF2A4; animation: dr 6s ease-in-out infinite, bl 1s steps(2) infinite; }
+@keyframes dr { 0% { left: 20%; top: 60%; } 25% { left: 45%; top: 30%; } 45% { left: 45%; top: 30%; } 70% { left: 70%; top: 55%; } 100% { left: 20%; top: 60%; } }
+@keyframes bl { 50% { opacity: .2; } }
+.plane i { width: 12px; height: 12px; border-radius: 50%; background: #fff; box-shadow: 0 0 22px 8px rgba(255,255,255,.8); left: 50%; top: 50%; animation: pl 5s ease-in-out infinite; }
+@keyframes pl { 0% { transform: scale(.3); opacity: .4; } 80% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(.3) translateX(80px); opacity: 0; } }
+.balloon i { width: 18px; height: 22px; border-radius: 50% 50% 45% 45%; background: radial-gradient(circle at 35% 30%, #fff, #CFE8FF 40%, #7FA9D8); left: 30%; top: 60%; animation: bn 9s ease-in-out infinite; }
+@keyframes bn { 0% { left: 25%; top: 70%; } 50% { left: 55%; top: 20%; } 100% { left: 25%; top: 70%; } }
+.laser i { width: 26px; height: 14px; border-radius: 50%; background: rgba(160,255,200,.7); filter: blur(3px); left: 40%; top: 40%; animation: lz 3s linear infinite; }
+.laser i:nth-child(2) { animation-delay: -1.5s; background: rgba(170,190,255,.7); }
+@keyframes lz { 0% { transform: rotate(0) translateX(40px) rotate(0); } 100% { transform: rotate(360deg) translateX(40px) rotate(-360deg); } }
+.rocket i { width: 40px; height: 40px; border: 3px solid rgba(160,220,255,.8); border-radius: 50%; border-top-color: transparent; left: 42%; top: 30%; animation: rk 2.6s linear infinite; box-shadow: 0 0 12px rgba(160,220,255,.6); }
+@keyframes rk { 0% { transform: rotate(0) scale(.4); opacity: 0; } 20% { opacity: 1; } 100% { transform: rotate(720deg) scale(1.6); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .anim i { animation: none !important; } .col, .hb i { transition: none; } }
+/* Ablauf */
+.flow { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr)); gap: 12px; max-width: none !important; counter-reset: s; }
+.flow li { border: 1px solid var(--line); border-radius: 14px; background: var(--bg2); padding: 14px; display: grid; gap: 8px; align-content: start; position: relative; }
+.flow .n { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: rgba(79,227,240,.15); color: var(--cyan); font-weight: 750; border: 1px solid rgba(79,227,240,.5); }
+.flow p { font-size: 14px; color: #C9D1F5; margin: 4px 0 0; }
+/* Fälle */
+.cases { display: grid; gap: 8px; }
+.cases details { border: 1px solid var(--line); border-radius: 12px; background: var(--bg2); padding: 0 16px; }
+.cases details[open] { border-color: rgba(167,123,255,.6); }
+.cases summary { cursor: pointer; padding: 14px 0; font-weight: 650; list-style: none; display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; }
+.cases summary::-webkit-details-marker { display: none; }
+.cases summary::after { content: "+"; margin-left: auto; color: var(--violet); font-size: 20px; }
+.cases details[open] summary::after { content: "–"; }
+.cases .cy { color: var(--amber); font-size: 13px; font-weight: 700; min-width: 120px; font-variant-numeric: tabular-nums; }
+.cases p { padding: 0 0 14px; font-size: 15px; color: #C9D1F5; }
+/* Formular */
+.report { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px; }
+.report label { display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
+.report .wide { grid-column: 1 / -1; }
+.report .chk { display: flex; align-items: center; gap: 8px; color: var(--ink); font-size: 14px; }
+.report input, .report select, .report textarea { font: inherit; font-size: 15px; color: var(--ink); background: var(--bg2); border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; color-scheme: dark; }
+.report input:focus, .report select:focus, .report textarea:focus { outline: 2px solid var(--cyan); border-color: transparent; }
+.out { margin: 0; white-space: pre-wrap; font: 14px/1.55 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: #050817; border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; color: #BFF6FF; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn.alt { border-color: rgba(108,242,164,.6); color: var(--green); }
+.clock { display: grid; gap: 0; border-left: 2px solid var(--line); margin-left: 8px; }
+.tick { position: relative; padding: 8px 0 12px 22px; display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 12px; }
+.tick::before { content: ""; position: absolute; left: -7px; top: 13px; width: 12px; height: 12px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+.tick.hl::before { background: var(--amber); box-shadow: 0 0 10px var(--amber); }
+.tick time { font-weight: 700; color: var(--cyan); font-variant-numeric: tabular-nums; }
+.tick.hl time { color: var(--amber); }
+.tick p { margin: 0; }
+@media (max-width: 560px) { .tick { grid-template-columns: minmax(0, 1fr); gap: 0; } }
+.craft { margin: 0; display: grid; gap: 8px; }
+.craft svg, .path svg { width: 100%; height: auto; display: block; border: 1px solid var(--line); border-radius: 14px; }
+.path { overflow-x: auto; } .path svg { min-width: 760px; background: #0A1030; }
+.craft figcaption { font-size: 13.5px; color: var(--muted); }
+/* Player */
+.player { border: 1px solid var(--line); border-radius: 16px; background: linear-gradient(160deg, #0B1130, #070A1A); padding: 18px; display: grid; gap: 14px; }
+.tape { position: relative; height: 120px; max-width: 380px; border-radius: 12px; background: linear-gradient(180deg, #2B2F3E, #1A1D28); border: 2px solid #3B4156; display: flex; justify-content: space-between; align-items: center; padding: 0 46px; }
+.reel { width: 64px; height: 64px; border-radius: 50%; background: radial-gradient(circle, #111 18%, #6B5A3A 20%, #3A2F1E 62%, #1A1D28 64%); border: 2px solid #4A5068; position: relative; }
+.reel i { position: absolute; inset: 22px; border-radius: 50%; border: 3px dashed #9AA6D4; }
+.playing .reel i { animation: spin 2s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.tapelabel { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); font: 600 10px/1 ui-monospace, Menlo, monospace; color: #F3E6C8; letter-spacing: .08em; white-space: nowrap; }
+.pctl { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+.big { font: inherit; font-weight: 700; color: #04121A; background: var(--cyan); border: 0; border-radius: 999px; padding: 11px 20px; cursor: pointer; }
+.big:hover { filter: brightness(1.1); }
+.snd { display: flex; gap: 8px; align-items: center; font-size: 14px; color: var(--muted); }
+.geiger { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--muted); }
+.needle { width: 140px; height: 10px; border-radius: 5px; background: linear-gradient(90deg, #6CF2A4, #FFC66B 60%, #FF6B7A); position: relative; }
+.needle i { position: absolute; top: -5px; left: 0; width: 3px; height: 20px; background: #fff; border-radius: 2px; transition: left .4s ease; box-shadow: 0 0 6px #fff; }
+.geiger b { color: var(--ink); min-width: 58px; font-variant-numeric: tabular-nums; }
+.log { list-style: none; margin: 0; padding: 12px 14px; max-height: 380px; overflow-y: auto; background: #03050F; border-radius: 12px; border: 1px solid var(--line); font: 14px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; display: grid; gap: 6px; max-width: none !important; min-height: 120px; }
+.log li { animation: pop .35s ease; }
+.log .t { color: var(--amber); margin-right: 8px; }
+.log .who { color: var(--cyan); margin-right: 6px; font-weight: 700; }
+.log .note { color: #6F7AA8; font-style: italic; }
+@keyframes pop { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.video { max-width: 720px; }
+.vframe { position: relative; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; background: #0B1130; border: 1px solid var(--line); }
+.vframe iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.vplay { position: absolute; inset: 0; width: 100%; border: 0; cursor: pointer; color: #fff; display: grid; place-content: center; justify-items: center; gap: 10px; padding: 16px; text-align: center; font: 600 15px/1.35 var(--font); background: radial-gradient(circle at 70% 30%, rgba(167,123,255,.35), transparent 55%), linear-gradient(160deg, #1A2350, #070A1A); }
+.vplay .pb { width: 64px; height: 64px; border-radius: 50%; background: rgba(255,255,255,.95); display: grid; place-items: center; }
+.vplay .pb svg { width: 26px; height: 26px; margin-left: 4px; fill: #0B1130; }
+.vplay small { color: var(--muted); font-size: 12px; font-weight: 400; max-width: 40ch; }
+/* Memo */
+.protocol { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 22px; align-items: start; }
+@media (max-width: 800px) { .protocol { grid-template-columns: minmax(0, 1fr); } }
+.paper { background: #F4F1E8; color: #1E1E1E; border-radius: 4px; padding: 22px; font: 14.5px/1.5 'Courier New', Courier, monospace; box-shadow: 0 12px 30px rgba(0,0,0,.45); transform: rotate(-.6deg); display: grid; gap: 8px; }
+.paper .ph { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid #999; padding-bottom: 6px; }
+.paper .pt { font-weight: 700; text-transform: uppercase; }
+.paper p { margin: 0; }
+.paper .sig { margin-top: 8px; font-weight: 700; }
+.paper .pn { font-size: 11px; color: #666; font-style: italic; }
+ul.facts { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; max-width: none; }
+ul.facts li { border-left: 3px solid var(--violet); padding: 2px 0 2px 12px; font-size: 15px; }
+/* Zeugen */
+.ranks { display: grid; gap: 14px; }
+.rank { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px; border-left: 4px solid var(--line); padding-left: 14px; position: relative; padding-top: 22px; }
+.rank .rl { position: absolute; top: 0; left: 14px; font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; }
+.r1 { border-color: var(--amber); } .r1 .rl { color: var(--amber); }
+.r2 { border-color: var(--violet); } .r2 .rl { color: var(--violet); }
+.r3 { border-color: var(--cyan); } .r3 .rl { color: var(--cyan); }
+.r4 { border-color: var(--green); } .r4 .rl { color: var(--green); }
+.w { border: 1px solid var(--line); border-radius: 12px; background: var(--bg2); padding: 12px 14px; display: grid; gap: 3px; align-content: start; }
+.w.hl { border-color: rgba(79,227,240,.55); box-shadow: 0 0 0 1px rgba(79,227,240,.15) inset; }
+.w b { font-size: 15px; } .w span { font-size: 12.5px; color: var(--muted); } .w p { font-size: 13.5px; color: #C9D1F5; margin: 4px 0 0; }
+.sketch { display: grid; gap: 12px; align-content: start; }
+.sketch svg, .rad svg { width: 100%; height: auto; display: block; border: 1px solid var(--line); border-radius: 14px; }
+/* Leuchtturm */
+.lhsim { display: grid; gap: 12px; }
+.lhsim svg { width: 100%; height: auto; display: block; border-radius: 14px; border: 1px solid var(--line); }
+.lhctl { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.lhctl #lhHit { font: inherit; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 10px 20px; cursor: pointer; }
+.lhctl span { font-size: 14px; color: var(--muted); }
+.binary { font: 12px/1.4 ui-monospace, Menlo, monospace; color: rgba(108,242,164,.55); word-break: break-all; max-height: 70px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+.pro h3 { color: var(--green); } .con h3 { color: var(--amber); }
+.lhc { animation: lhb 5s infinite; }
+@keyframes lhb { 0%, 6% { fill: #FFFFFF; } 10%, 100% { fill: #6B6440; } }
+@media (prefers-reduced-motion: reduce) { .lhc, .playing .reel i { animation: none; } }
+
+.cmp .ev { border: 1px solid var(--line); border-radius: 14px; background: var(--bg2); padding: 16px; display: grid; gap: 10px; align-content: start; }
+.ev svg { width: 100%; height: auto; border-radius: 10px; display: block; }
+.evt { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; }
+.ev1 .evt { color: var(--cyan); } .ev2 .evt { color: var(--amber); }
+.ev h3 { margin: 0; }
+.ev ul { font-size: 14.5px; }
+.flare-card { display: grid; gap: 8px; } .flare-card svg { width: 100%; max-width: 340px; height: auto; border-radius: 12px; border: 1px solid var(--line); }
+.scope svg { width: 100%; height: auto; display: block; border-radius: 14px; border: 1px solid var(--line); }
+.scope { display: grid; gap: 12px; }
+
+.nums { display: grid; gap: 10px; max-width: 720px; margin-top: 8px; }
+.num { display: grid; grid-template-columns: minmax(0, 1fr) 90px; grid-template-rows: auto auto; gap: 2px 12px; align-items: center; }
+.num .nb { grid-column: 1; grid-row: 1; height: 14px; border-radius: 7px; width: var(--w); background: linear-gradient(90deg, rgba(79,227,240,.3), var(--cyan)); }
+.num .nb.hot { background: linear-gradient(90deg, rgba(167,123,255,.3), var(--violet)); }
+.num b { grid-column: 2; grid-row: 1; font-variant-numeric: tabular-nums; }
+.num span:last-child { grid-column: 1 / -1; font-size: 13px; color: var(--muted); }
+.radarbox { display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: 20px; align-items: center; }
+@media (max-width: 760px) { .radarbox { grid-template-columns: minmax(0, 1fr); } }
+.radarbox .scope { width: 100%; height: auto; display: block; }
+.hud { border: 1px solid #2E6B4A; border-radius: 14px; background: #03110A; padding: 16px; display: grid; gap: 8px; font-family: ui-monospace, Menlo, Consolas, monospace; color: #6CF2A4; }
+.hrow { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px dashed #1F5A3C; padding-bottom: 4px; }
+.hrow span { color: #3FA673; font-size: 13px; } .hrow b { font-size: 16px; }
+.hnote { font-size: 13px; color: #A8F5C8; margin: 4px 0; min-height: 3.2em; }
+#sweep { transform-origin: 210px 210px; animation: sw 3s linear infinite; }
+@keyframes sw { to { transform: rotate(360deg); } }
+.fake svg { width: 100%; height: auto; display: block; border-radius: 14px; border: 1px solid var(--line); }
+.fake { display: grid; gap: 12px; }
+
+.nightbar { display: grid; gap: 10px; }
+.nb-track { position: relative; height: 56px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); }
+.seg { position: absolute; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; font-size: 11.5px; text-align: center; padding: 0 4px; color: #E8ECFF; border-right: 1px solid rgba(0,0,0,.4); }
+.s1 { background: #1E3A5A; } .s2 { background: #3A2F6B; } .s3 { background: #6B3A4A; } .s4 { background: repeating-linear-gradient(45deg, #7A1F2E, #7A1F2E 8px, #5A1622 8px, #5A1622 16px); } .s5 { background: #1E4A3A; }
+.cursor { position: absolute; top: -2px; bottom: -2px; width: 3px; background: #FFC66B; box-shadow: 0 0 10px #FFC66B; left: 0; }
+.nightbar input { width: 100%; accent-color: #FFC66B; }
+.nb-out { display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; } .nb-out b { font-size: 1.6rem; color: var(--amber); font-variant-numeric: tabular-nums; } .nb-out span { color: #C9D1F5; }
+.starbox { display: grid; gap: 10px; } .starbox svg { width: 100%; height: auto; border-radius: 14px; border: 1px solid var(--line); display: block; }
+.sec { font: inherit; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 10px 18px; cursor: pointer; }
+.ol-tl svg { width: 100%; height: auto; display: block; border-radius: 14px; border: 1px solid var(--line); background: #0A1030; }
+#hills .two .w { padding: 16px; } .tick { grid-template-columns: 130px minmax(0, 1fr); }
+
+.scene svg { width: 100%; height: auto; display: block; border-radius: 14px; border: 1px solid var(--line); }
+.scene { display: grid; gap: 12px; }
+.days { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 10px; }
+.day { border: 1px solid var(--line); border-radius: 12px; background: var(--bg2); padding: 12px 14px; display: grid; gap: 4px; }
+.day.hl { border-color: rgba(255,198,107,.6); } .day b { color: var(--cyan); } .day.hl b { color: var(--amber); } .day p { font-size: 14px; color: #C9D1F5; margin: 0; }
+.countdown { display: flex; gap: 14px; align-items: baseline; justify-content: center; border: 1px dashed rgba(255,107,122,.5); border-radius: 12px; padding: 12px; font-family: ui-monospace, Menlo, monospace; }
+.countdown span { color: var(--red); letter-spacing: .3em; font-weight: 700; } .countdown b { font-size: 1.8rem; color: #FFB0B9; }
+.poly { display: grid; grid-template-columns: minmax(0, 280px) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 760px) { .poly { grid-template-columns: minmax(0, 1fr); } }
+.ptests { display: grid; gap: 8px; }
+.ptests button { text-align: left; font: inherit; color: var(--ink); background: var(--bg2); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; cursor: pointer; display: grid; gap: 2px; }
+.ptests button[aria-pressed="true"], .ptests button:hover { border-color: var(--cyan); }
+.ptests b { font-size: 14px; } .ptests span { font-size: 12.5px; color: var(--muted); }
+.pchart svg { width: 100%; height: auto; display: block; border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.4); }
+.pdesc { font-size: 14.5px; margin-top: 10px !important; }
+.cal svg { width: 100%; min-width: 720px; height: auto; display: block; border-radius: 14px; border: 1px solid var(--line); background: #0A1030; }
+.cal { overflow-x: auto; }
+/* Themenleiste: Marke oben, Themen darunter in zentrierten Reihen */
+.bar { flex-direction: column; align-items: stretch; gap: 8px; padding: 10px 0; }
+.toprow { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.toprow .back { color: var(--amber); font-size: 13.5px; text-decoration: none; }
+.subnav { display: flex; flex-wrap: wrap; justify-content: center; gap: 2px 18px; min-width: 0; }
+.subnav a, .subnav span { white-space: nowrap; font-size: 13.5px; padding: 4px 0; }
+.wrap > * { min-width: 0; }
+.bar > * { min-width: 0; max-width: 100%; }
+@media (max-width: 560px) { .subnav { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; scrollbar-width: none; } }
+
+/* Gruppierte Themenleiste */
+.subnav { display:none !important; }
+.gnav { display:flex; flex-wrap:wrap; justify-content:center; gap:4px 6px; }
+.gg { position:relative; }
+.gg > button { background:transparent; border:0; color:var(--muted); font:inherit; font-size:13.5px; padding:6px 10px; border-radius:8px; cursor:pointer; white-space:nowrap; }
+.gg > button:hover, .gg.open > button { color:var(--ink); background:rgba(79,227,240,.08); }
+.gg.cur > button { color:var(--cyan); box-shadow:inset 0 -2px 0 var(--cyan); border-radius:8px 8px 0 0; }
+.gg .caret { font-size:10px; margin-left:3px; opacity:.7; }
+.gdd { display:none; position:absolute; top:100%; left:50%; transform:translateX(-50%); margin-top:6px; background:#121A42; border:1px solid var(--line); border-radius:10px; padding:6px; min-width:220px; z-index:60; box-shadow:0 12px 30px #0009; }
+.gg.open .gdd { display:block; }
+.gdd a { display:flex; justify-content:space-between; gap:14px; color:#C8D2FF; padding:7px 10px; border-radius:6px; text-decoration:none; font-size:14px; }
+.gdd a:hover { background:rgba(79,227,240,.08); } .gdd a[aria-current="page"] { color:var(--cyan); }
+.gdd small { color:var(--muted); font-size:12px; }
+.gsub { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding-top:8px; border-top:1px solid var(--line); }
+.gsub a { color:var(--muted); padding:3px 10px; border-radius:999px; border:1px solid var(--line); font-size:12.5px; text-decoration:none; white-space:nowrap; }
+.gsub a:hover { color:var(--ink); } .gsub a[aria-current="page"] { color:var(--cyan); border-color:var(--cyan); }
+@media (max-width:560px){ .gnav, .gsub { flex-wrap:nowrap; overflow-x:auto; justify-content:flex-start; scrollbar-width:none; } .gnav { overflow:visible; flex-wrap:wrap; justify-content:center; } .gdd { position:fixed; left:12px; right:12px; top:auto; transform:none; min-width:0; } }
+
+.vsearch { width:100%; padding:12px 14px; font:inherit; font-size:16px; border-radius:10px; border:1px solid var(--line); background:var(--bg2); color:var(--ink); }
+.vh { margin:18px 0 8px; font-size:16px; } .vh a { color:var(--ink); text-decoration:none; border-bottom:1px dashed var(--muted); } .vh a:hover { color:var(--cyan); }
+.vgrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:10px; }
+.vt { position:relative; display:flex; flex-direction:column; justify-content:flex-end; min-height:120px; padding:12px 14px; border-radius:12px; border:1px solid var(--line); text-decoration:none; color:#EEE; overflow:hidden; background:radial-gradient(circle at 70% 20%, #2A2E5A, #0A0E22 70%); transition:transform .25s, border-color .25s, box-shadow .25s; }
+.vt::before { content:""; position:absolute; inset:0; background:repeating-linear-gradient(0deg, rgba(255,255,255,.03) 0 2px, transparent 2px 4px); }
+.vt:hover { transform:translateY(-4px) scale(1.02); border-color:#E3262E; box-shadow:0 10px 30px rgba(227,38,46,.25); }
+.vt .pl { position:absolute; top:16px; left:14px; width:44px; height:30px; border-radius:8px; background:#E3262E; display:grid; place-items:center; font-size:14px; color:#fff; transition:transform .25s; }
+.vt:hover .pl { transform:scale(1.15); }
+.vt b { position:relative; font-size:14.5px; } .vt span:last-child { position:relative; font-size:12px; color:#9AA6D4; }
+.vt.hide, .vh.hide { display:none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="bar">
+    <div class="toprow"><a class="brand" href="observatory.html"><span class="dot" aria-hidden="true"></span>UAP Observatory</a><a class="back" href="index.html">← Wetterstation</a></div>
+    <nav class="gnav" aria-label="Themen des UAP Observatory">
+      <a class="ghome" href="observatory.html"><span aria-hidden="true">🛸</span> Übersicht</a>
+      <a class="ghome" href="videos.html" aria-current="page"><span aria-hidden="true">🎬</span> Videos</a>
+      <div class="gg"><button type="button" aria-expanded="false" aria-haspopup="true"><span aria-hidden="true">📍</span> Deutschland &amp; Europa<span class="caret" aria-hidden="true">▾</span></button><div class="gdd"><a href="rodenstein.html">Odenwald &amp; Rodensteiner<small>Heimat</small></a><a href="cenap.html">CENAP-Meldestelle<small>Mannheim</small></a><a href="nuernberg.html">Nürnberg 1561<small>Flugblatt</small></a><a href="hessdalen.html">Hessdalen-Lichter<small>seit 1981</small></a></div></div>
+      <div class="gg"><button type="button" aria-expanded="false" aria-haspopup="true"><span aria-hidden="true">🇺🇸</span> Klassiker USA<span class="caret" aria-hidden="true">▾</span></button><div class="gdd"><a href="arnold.html">Kenneth Arnold<small>1947</small></a><a href="roswell.html">Roswell<small>1947</small></a><a href="washington.html">Washington<small>1952</small></a><a href="socorro.html">Socorro<small>1964</small></a><a href="hill.html">Betty &amp; Barney Hill<small>1961</small></a><a href="walton.html">Travis Walton<small>1975</small></a><a href="lubbock.html">Lubbock Lights<small>1951</small></a><a href="kecksburg.html">Kecksburg<small>1965</small></a><a href="hudson.html">Hudson Valley<small>1983–86</small></a><a href="phoenix.html">Phoenix Lights<small>1997</small></a><a href="ohare.html">O'Hare<small>2006</small></a><a href="stephenville.html">Stephenville<small>2008</small></a></div></div>
+      <div class="gg"><button type="button" aria-expanded="false" aria-haspopup="true"><span aria-hidden="true">📡</span> Militär &amp; Radar<span class="caret" aria-hidden="true">▾</span></button><div class="gdd"><a href="belgien.html">Belgische Welle<small>1989–90</small></a><a href="rendlesham.html">Rendlesham Forest<small>1980</small></a><a href="teheran.html">Teheran<small>1976</small></a><a href="malmstrom.html">Malmstrom<small>1967</small></a><a href="coyne.html">Coyne-Hubschrauber<small>1973</small></a><a href="jal1628.html">JAL 1628<small>1986</small></a><a href="tictac.html">Tic-Tac-Videos<small>2004</small></a></div></div>
+      <div class="gg"><button type="button" aria-expanded="false" aria-haspopup="true"><span aria-hidden="true">👽</span> Begegnungen<span class="caret" aria-hidden="true">▾</span></button><div class="gdd"><a href="valensole.html">Valensole<small>1965</small></a><a href="westall.html">Westall<small>1966</small></a><a href="ariel.html">Ariel School<small>1994</small></a><a href="kelly.html">Kelly-Hopkinsville<small>1955</small></a><a href="pascagoula.html">Pascagoula<small>1973</small></a><a href="voronezh.html">Woronesch<small>1989</small></a><a href="varginha.html">Varginha<small>1996</small></a></div></div>
+      <div class="gg"><button type="button" aria-expanded="false" aria-haspopup="true"><span aria-hidden="true">🔒</span> Geheime Orte &amp; Mythen<span class="caret" aria-hidden="true">▾</span></button><div class="gdd"><a href="uap.html">Skinwalker Ranch<small>Utah</small></a><a href="area51.html">Area 51<small>Nevada</small></a><a href="lazar.html">Bob Lazar<small>S-4</small></a><a href="mib.html">Men in Black<small>Folklore</small></a><a href="mothman.html">Mothman<small>1966/67</small></a><a href="dulce.html">Dulce-Basis<small>Legende</small></a><a href="mj12.html">Majestic 12<small>1984</small></a><a href="bluebook.html">Projekt Blue Book<small>1952–69</small></a></div></div>
+      <div class="gg"><button type="button" aria-expanded="false" aria-haspopup="true"><span aria-hidden="true">⚡</span> Aktuell<span class="caret" aria-hidden="true">▾</span></button><div class="gdd"><a href="offenlegung.html">Offenlegung<small>2023–26</small></a><a href="grusch.html">David Grusch<small>Whistleblower</small></a><a href="pentagon-akten.html">Pentagon-Akten<small>2026</small></a><a href="drohnen.html">Drohnenwelle<small>2024–26</small></a></div></div>
+    </nav>
+  </header>
+
+  <figure class="title" style="margin:16px 0 0">
+    <img src="uap-titel.jpg" width="1024" height="434" alt="Nachthimmel mit Milchstraße über einem Schlosshof, darüber schwebt ein leuchtendes geometrisches Objekt – Titelbild des UAP Observatory">
+  </figure>
+
+  <section class="hero" aria-labelledby="heroTitle"><div><div class="kicker">Videothek · 77 Video-Sammlungen</div><h1 id="heroTitle">Die UFO-Videothek</h1></div><p class="lead">Originalaufnahmen, Zeitzeugen, Kongressanhörungen, Dokus auf Deutsch und Englisch: Zu jedem Fall unserer Seite die passenden Videos auf YouTube. Jeder Link öffnet eine YouTube-Suche in einem neuen Tab, so findest du immer die aktuellsten Uploads. Tipp: Fahr über ein Feld, dann leuchtet es auf.</p></section>
+  <section class="card"><div class="label">Suche</div><h2>Video finden</h2><input type="search" id="vq" placeholder="z. B. Roswell, Navy, Lazar …" aria-label="Videos durchsuchen" class="vsearch"><p class="src" id="vqc"></p></section>
+  <section class="card vsec"><div class="label">Empfehlungen</div><h2>🎬 Große Dokus und Überblick</h2><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=UFO+Doku+deutsch+ganze+Folge" target="_blank" rel="noopener"><span class="pl">▶</span><b>UFOs: Die großen Fälle, Doku deutsch</b><span>Doku · YouTube-Suche</span></a><a class="vt" href="https://www.youtube.com/results?search_query=Terra+X+Au%C3%9Ferirdische" target="_blank" rel="noopener"><span class="pl">▶</span><b>Terra X und die Frage nach Außerirdischen</b><span>Doku · YouTube-Suche</span></a><a class="vt" href="https://www.youtube.com/results?search_query=Harald+Lesch+UFOs" target="_blank" rel="noopener"><span class="pl">▶</span><b>Harald Lesch über UFOs</b><span>Doku · YouTube-Suche</span></a><a class="vt" href="https://www.youtube.com/results?search_query=Unidentified+Inside+America%27s+UFO+Investigation" target="_blank" rel="noopener"><span class="pl">▶</span><b>„Unidentified“ und die Navy-Piloten</b><span>Doku · YouTube-Suche</span></a><a class="vt" href="https://www.youtube.com/results?search_query=The+Phenomenon+2020+James+Fox+trailer" target="_blank" rel="noopener"><span class="pl">▶</span><b>„The Phenomenon“ (2020)</b><span>Doku · YouTube-Suche</span></a><a class="vt" href="https://www.youtube.com/results?search_query=The+Age+of+Disclosure+trailer" target="_blank" rel="noopener"><span class="pl">▶</span><b>„The Age of Disclosure“ (2025)</b><span>Doku · YouTube-Suche</span></a><a class="vt" href="https://www.youtube.com/results?search_query=Mick+West+UFO+explained" target="_blank" rel="noopener"><span class="pl">▶</span><b>Mick West: UFOs nüchtern erklärt</b><span>Doku · YouTube-Suche</span></a><a class="vt" href="https://www.youtube.com/results?search_query=Avi+Loeb+Galileo+Project" target="_blank" rel="noopener"><span class="pl">▶</span><b>Avi Loeb und das Galileo-Projekt</b><span>Doku · YouTube-Suche</span></a></div></section>
+  <section class="card vsec"><div class="label">Gruppe</div><h2>📍 Deutschland &amp; Europa</h2>
+<h3 class="vh"><a href="rodenstein.html">Odenwald &amp; Rodensteiner</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Rodensteiner+Sage+Odenwald" target="_blank" rel="noopener"><span class="pl">▶</span><b>Der Rodensteiner, Sage aus dem Odenwald</b><span>Odenwald &amp; Rodensteiner</span></a><a class="vt" href="https://www.youtube.com/results?search_query=UFO+Sichtung+Hessen" target="_blank" rel="noopener"><span class="pl">▶</span><b>UFO-Sichtungen in Hessen</b><span>Odenwald &amp; Rodensteiner</span></a></div>
+<h3 class="vh"><a href="cenap.html">CENAP-Meldestelle</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=CENAP+Werner+Walter+UFO" target="_blank" rel="noopener"><span class="pl">▶</span><b>Werner Walter und CENAP</b><span>CENAP-Meldestelle</span></a><a class="vt" href="https://www.youtube.com/results?search_query=UFO+Meldungen+Deutschland+Doku" target="_blank" rel="noopener"><span class="pl">▶</span><b>UFO-Meldungen in Deutschland</b><span>CENAP-Meldestelle</span></a></div>
+<h3 class="vh"><a href="nuernberg.html">Nürnberg 1561</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Himmelserscheinung+N%C3%BCrnberg+1561" target="_blank" rel="noopener"><span class="pl">▶</span><b>Himmelsschlacht über Nürnberg</b><span>Nürnberg 1561</span></a><a class="vt" href="https://www.youtube.com/results?search_query=Nuremberg+1561+celestial+phenomenon+explained" target="_blank" rel="noopener"><span class="pl">▶</span><b>Nuremberg 1561 erklärt</b><span>Nürnberg 1561</span></a></div>
+<h3 class="vh"><a href="hessdalen.html">Hessdalen-Lichter</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Hessdalen+lights+footage" target="_blank" rel="noopener"><span class="pl">▶</span><b>Aufnahmen der Lichter</b><span>Hessdalen-Lichter</span></a><a class="vt" href="https://www.youtube.com/results?search_query=Hessdalen+lights+documentary" target="_blank" rel="noopener"><span class="pl">▶</span><b>Doku Hessdalen</b><span>Hessdalen-Lichter</span></a></div>
+<h3 class="vh"><a href="belgien.html">Belgische UFO-Welle</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Belgische+UFO+Welle+1990+Doku" target="_blank" rel="noopener"><span class="pl">▶</span><b>Belgische UFO-Welle Doku</b><span>Belgische UFO-Welle</span></a><a class="vt" href="https://www.youtube.com/results?search_query=Belgian+UFO+wave+F-16+radar" target="_blank" rel="noopener"><span class="pl">▶</span><b>Belgian UFO wave F-16</b><span>Belgische UFO-Welle</span></a></div>
+<h3 class="vh"><a href="rendlesham.html">Rendlesham Forest</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Halt+tape+Rendlesham" target="_blank" rel="noopener"><span class="pl">▶</span><b>Charles Halt Tonband</b><span>Rendlesham Forest</span></a><a class="vt" href="https://www.youtube.com/results?search_query=Rendlesham+Forest+incident+documentary" target="_blank" rel="noopener"><span class="pl">▶</span><b>Doku Rendlesham Forest</b><span>Rendlesham Forest</span></a></div>
+<h3 class="vh"><a href="valensole.html">Valensole</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Valensole+1965+bande+annonce" target="_blank" rel="noopener"><span class="pl">▶</span><b>Valensole 1965 (Film)</b><span>Valensole</span></a></div>
+  </section>
+  <section class="card vsec"><div class="label">Gruppe</div><h2>🇺🇸 Klassiker USA</h2>
+<h3 class="vh"><a href="arnold.html">Kenneth Arnold</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Kenneth+Arnold+interview+flying+saucers" target="_blank" rel="noopener"><span class="pl">▶</span><b>Kenneth Arnold Interview</b><span>Kenneth Arnold</span></a></div>
+<h3 class="vh"><a href="roswell.html">Roswell</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Roswell+Doku+deutsch" target="_blank" rel="noopener"><span class="pl">▶</span><b>Roswell Doku deutsch</b><span>Roswell</span></a><a class="vt" href="https://www.youtube.com/results?search_query=Roswell+1947+witnesses+interview" target="_blank" rel="noopener"><span class="pl">▶</span><b>Roswell 1947 Zeitzeugen</b><span>Roswell</span></a></div>
+<h3 class="vh"><a href="washington.html">Washington 1952</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Samford+press+conference+1952+UFO" target="_blank" rel="noopener"><span class="pl">▶</span><b>Pressekonferenz Samford 1952</b><span>Washington 1952</span></a></div>
+<h3 class="vh"><a href="socorro.html">Socorro</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Lonnie+Zamora+Socorro+1964" target="_blank" rel="noopener"><span class="pl">▶</span><b>Lonnie Zamora Socorro</b><span>Socorro</span></a></div>
+<h3 class="vh"><a href="hill.html">Betty &amp; Barney Hill</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Betty+Barney+Hill+documentary" target="_blank" rel="noopener"><span class="pl">▶</span><b>Betty und Barney Hill Doku</b><span>Betty &amp; Barney Hill</span></a><a class="vt" href="https://www.youtube.com/results?search_query=Betty+Hill+star+map" target="_blank" rel="noopener"><span class="pl">▶</span><b>Die Sternenkarte</b><span>Betty &amp; Barney Hill</span></a></div>
+<h3 class="vh"><a href="walton.html">Travis Walton</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Travis+Walton+interview" target="_blank" rel="noopener"><span class="pl">▶</span><b>Travis Walton erzählt</b><span>Travis Walton</span></a><a class="vt" href="https://www.youtube.com/results?search_query=Fire+in+the+Sky+1993+trailer" target="_blank" rel="noopener"><span class="pl">▶</span><b>Feuer am Himmel, Trailer</b><span>Travis Walton</span></a></div>
+<h3 class="vh"><a href="phoenix.html">Phoenix Lights</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Phoenix+Lights+1997+footage" target="_blank" rel="noopener"><span class="pl">▶</span><b>Original-Aufnahmen 1997</b><span>Phoenix Lights</span></a><a class="vt" href="https://www.youtube.com/results?search_query=Fife+Symington+Phoenix+Lights" target="_blank" rel="noopener"><span class="pl">▶</span><b>Gouverneur Symington</b><span>Phoenix Lights</span></a></div>
+<h3 class="vh"><a href="lubbock.html">Lubbock Lights</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Lubbock+Lights+1951" target="_blank" rel="noopener"><span class="pl">▶</span><b>Lubbock Lights 1951</b><span>Lubbock Lights</span></a></div>
+<h3 class="vh"><a href="kecksburg.html">Kecksburg</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Kecksburg+UFO+incident+documentary" target="_blank" rel="noopener"><span class="pl">▶</span><b>Kecksburg Doku</b><span>Kecksburg</span></a></div>
+<h3 class="vh"><a href="hudson.html">Hudson Valley</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Hudson+Valley+UFO+sightings+documentary" target="_blank" rel="noopener"><span class="pl">▶</span><b>Hudson Valley UFO</b><span>Hudson Valley</span></a></div>
+<h3 class="vh"><a href="ohare.html">O'Hare 2006</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=O%27Hare+UFO+2006" target="_blank" rel="noopener"><span class="pl">▶</span><b>O'Hare UFO</b><span>O'Hare 2006</span></a></div>
+<h3 class="vh"><a href="stephenville.html">Stephenville</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Stephenville+UFO+2008" target="_blank" rel="noopener"><span class="pl">▶</span><b>Stephenville UFO</b><span>Stephenville</span></a></div>
+  </section>
+  <section class="card vsec"><div class="label">Gruppe</div><h2>📡 Militär &amp; Radar</h2>
+<h3 class="vh"><a href="teheran.html">Teheran 1976</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Parviz+Jafari+National+Press+Club+2007" target="_blank" rel="noopener"><span class="pl">▶</span><b>Parviz Jafari erzählt</b><span>Teheran 1976</span></a></div>
+<h3 class="vh"><a href="malmstrom.html">Malmstrom</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Robert+Salas+Malmstrom+UFO" target="_blank" rel="noopener"><span class="pl">▶</span><b>Robert Salas</b><span>Malmstrom</span></a><a class="vt" href="https://www.youtube.com/results?search_query=UFOs+nuclear+weapons+press+conference+2010" target="_blank" rel="noopener"><span class="pl">▶</span><b>Pressekonferenz 2010</b><span>Malmstrom</span></a></div>
+<h3 class="vh"><a href="coyne.html">Coyne-Hubschrauber</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Coyne+helicopter+UFO+1973" target="_blank" rel="noopener"><span class="pl">▶</span><b>Coyne 1973</b><span>Coyne-Hubschrauber</span></a></div>
+<h3 class="vh"><a href="jal1628.html">JAL 1628</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Kenju+Terauchi+JAL+1628+UFO+interview" target="_blank" rel="noopener"><span class="pl">▶</span><b>Kapitän Terauchi</b><span>JAL 1628</span></a></div>
+<h3 class="vh"><a href="tictac.html">Tic-Tac-Videos</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=FLIR1+Tic+Tac+Navy+video" target="_blank" rel="noopener"><span class="pl">▶</span><b>FLIR1 Original</b><span>Tic-Tac-Videos</span></a><a class="vt" href="https://www.youtube.com/results?search_query=Gimbal+UAP+Navy+video" target="_blank" rel="noopener"><span class="pl">▶</span><b>GIMBAL Original</b><span>Tic-Tac-Videos</span></a><a class="vt" href="https://www.youtube.com/results?search_query=GoFast+UAP+Navy+video" target="_blank" rel="noopener"><span class="pl">▶</span><b>GOFAST Original</b><span>Tic-Tac-Videos</span></a><a class="vt" href="https://www.youtube.com/results?search_query=60+Minutes+UFO+Navy+pilots+Fravor+Dietrich" target="_blank" rel="noopener"><span class="pl">▶</span><b>60 Minutes: Fravor und Dietrich</b><span>Tic-Tac-Videos</span></a><a class="vt" href="https://www.youtube.com/results?search_query=Mick+West+Gimbal+explained" target="_blank" rel="noopener"><span class="pl">▶</span><b>Mick West erklärt Gimbal</b><span>Tic-Tac-Videos</span></a></div>
+  </section>
+  <section class="card vsec"><div class="label">Gruppe</div><h2>👽 Begegnungen</h2>
+<h3 class="vh"><a href="kelly.html">Kelly-Hopkinsville</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Kelly+Hopkinsville+encounter+documentary" target="_blank" rel="noopener"><span class="pl">▶</span><b>Kelly-Hopkinsville Doku</b><span>Kelly-Hopkinsville</span></a></div>
+<h3 class="vh"><a href="westall.html">Westall 1966</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Westall+66+A+Suburban+UFO+Mystery" target="_blank" rel="noopener"><span class="pl">▶</span><b>Westall ’66</b><span>Westall 1966</span></a></div>
+<h3 class="vh"><a href="pascagoula.html">Pascagoula</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Pascagoula+abduction+tape" target="_blank" rel="noopener"><span class="pl">▶</span><b>Das Polizei-Tonband</b><span>Pascagoula</span></a></div>
+<h3 class="vh"><a href="voronezh.html">Woronesch</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Voronezh+UFO+1989" target="_blank" rel="noopener"><span class="pl">▶</span><b>Woronesch 1989</b><span>Woronesch</span></a></div>
+<h3 class="vh"><a href="ariel.html">Ariel School</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=John+Mack+Ariel+School+interviews" target="_blank" rel="noopener"><span class="pl">▶</span><b>John Mack und die Kinder</b><span>Ariel School</span></a><a class="vt" href="https://www.youtube.com/results?search_query=Ariel+Phenomenon+trailer" target="_blank" rel="noopener"><span class="pl">▶</span><b>Ariel Phenomenon Trailer</b><span>Ariel School</span></a></div>
+<h3 class="vh"><a href="varginha.html">Varginha</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Varginha+UFO+incident+documentary" target="_blank" rel="noopener"><span class="pl">▶</span><b>Varginha Doku</b><span>Varginha</span></a><a class="vt" href="https://www.youtube.com/results?search_query=ET+de+Varginha+30+anos" target="_blank" rel="noopener"><span class="pl">▶</span><b>ET de Varginha 30 anos</b><span>Varginha</span></a></div>
+  </section>
+  <section class="card vsec"><div class="label">Gruppe</div><h2>🔒 Geheime Orte &amp; Mythen</h2>
+<h3 class="vh"><a href="uap.html">Skinwalker Ranch</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Secret+of+Skinwalker+Ranch+trailer" target="_blank" rel="noopener"><span class="pl">▶</span><b>The Secret of Skinwalker Ranch</b><span>Skinwalker Ranch</span></a><a class="vt" href="https://www.youtube.com/results?search_query=Skinwalker+Ranch+Doku+deutsch" target="_blank" rel="noopener"><span class="pl">▶</span><b>Skinwalker Ranch Doku deutsch</b><span>Skinwalker Ranch</span></a></div>
+<h3 class="vh"><a href="area51.html">Area 51</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Area+51+Doku+deutsch" target="_blank" rel="noopener"><span class="pl">▶</span><b>Area 51 Doku deutsch</b><span>Area 51</span></a><a class="vt" href="https://www.youtube.com/results?search_query=Storm+Area+51+2019" target="_blank" rel="noopener"><span class="pl">▶</span><b>Storm Area 51</b><span>Area 51</span></a></div>
+<h3 class="vh"><a href="lazar.html">Bob Lazar</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Bob+Lazar+Dennis+KLAS+1989" target="_blank" rel="noopener"><span class="pl">▶</span><b>„Dennis“-Interview 1989</b><span>Bob Lazar</span></a><a class="vt" href="https://www.youtube.com/results?search_query=Joe+Rogan+Experience+1315+Bob+Lazar" target="_blank" rel="noopener"><span class="pl">▶</span><b>Joe Rogan #1315</b><span>Bob Lazar</span></a><a class="vt" href="https://www.youtube.com/results?search_query=S4+The+Bob+Lazar+Story+trailer" target="_blank" rel="noopener"><span class="pl">▶</span><b>S4: The Bob Lazar Story</b><span>Bob Lazar</span></a></div>
+<h3 class="vh"><a href="mib.html">Men in Black</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Men+in+Black+UFO+legend+documentary" target="_blank" rel="noopener"><span class="pl">▶</span><b>Die echten Men in Black</b><span>Men in Black</span></a></div>
+<h3 class="vh"><a href="mothman.html">Mothman</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Mothman+Point+Pleasant+documentary" target="_blank" rel="noopener"><span class="pl">▶</span><b>Mothman Doku</b><span>Mothman</span></a></div>
+<h3 class="vh"><a href="dulce.html">Dulce-Basis</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Dulce+base+documentary" target="_blank" rel="noopener"><span class="pl">▶</span><b>Dulce Base Legende</b><span>Dulce-Basis</span></a></div>
+<h3 class="vh"><a href="mj12.html">Majestic 12</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Majestic+12+documents+documentary" target="_blank" rel="noopener"><span class="pl">▶</span><b>Majestic 12 Dokumente</b><span>Majestic 12</span></a></div>
+<h3 class="vh"><a href="bluebook.html">Projekt Blue Book</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Project+Blue+Book+documentary" target="_blank" rel="noopener"><span class="pl">▶</span><b>Project Blue Book Doku</b><span>Projekt Blue Book</span></a><a class="vt" href="https://www.youtube.com/results?search_query=Hynek+swamp+gas+1966" target="_blank" rel="noopener"><span class="pl">▶</span><b>Hynek und das Sumpfgas</b><span>Projekt Blue Book</span></a></div>
+  </section>
+  <section class="card vsec"><div class="label">Gruppe</div><h2>⚡ Aktuell</h2>
+<h3 class="vh"><a href="offenlegung.html">Offenlegung</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=UAP+hearing+July+26+2023+Grusch" target="_blank" rel="noopener"><span class="pl">▶</span><b>Anhörung Juli 2023</b><span>Offenlegung</span></a><a class="vt" href="https://www.youtube.com/results?search_query=UAP+hearing+November+13+2024" target="_blank" rel="noopener"><span class="pl">▶</span><b>Anhörung November 2024</b><span>Offenlegung</span></a></div>
+<h3 class="vh"><a href="grusch.html">David Grusch</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=David+Grusch+opening+statement+UAP+hearing" target="_blank" rel="noopener"><span class="pl">▶</span><b>Grusch-Aussage unter Eid</b><span>David Grusch</span></a><a class="vt" href="https://www.youtube.com/results?search_query=David+Grusch+Ross+Coulthart+interview" target="_blank" rel="noopener"><span class="pl">▶</span><b>NewsNation-Interview</b><span>David Grusch</span></a></div>
+<h3 class="vh"><a href="pentagon-akten.html">Pentagon-Akten 2026</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=Pentagon+UFO+files+release+2026" target="_blank" rel="noopener"><span class="pl">▶</span><b>Die neuen UFO-Akten</b><span>Pentagon-Akten 2026</span></a><a class="vt" href="https://www.youtube.com/results?search_query=PURSUE+UAP+videos+war.gov" target="_blank" rel="noopener"><span class="pl">▶</span><b>war.gov UFO Videos</b><span>Pentagon-Akten 2026</span></a></div>
+<h3 class="vh"><a href="drohnen.html">Drohnenwelle</a></h3><div class="vgrid"><a class="vt" href="https://www.youtube.com/results?search_query=New+Jersey+drones+December+2024" target="_blank" rel="noopener"><span class="pl">▶</span><b>New Jersey Drohnen</b><span>Drohnenwelle</span></a><a class="vt" href="https://www.youtube.com/results?search_query=Drohnen+Flughafen+M%C3%BCnchen" target="_blank" rel="noopener"><span class="pl">▶</span><b>Drohnen Flughafen München</b><span>Drohnenwelle</span></a><a class="vt" href="https://www.youtube.com/results?search_query=Leipzig+Flughafen+Drohne+Sprengstoff" target="_blank" rel="noopener"><span class="pl">▶</span><b>Drohne Leipzig</b><span>Drohnenwelle</span></a></div>
+  </section>
+  <section class="card"><div class="label">Hinweis</div><h2>Gut zu wissen</h2><p>Auf YouTube gibt es zu UFOs alles, von Original-Akten bis zu Fälschungen und KI-Videos. Achte auf die Quelle: Videos von Nachrichtensendern, Behörden wie dem Pentagon oder der NASA und bekannten Dokumentarfilmern sind verlässlicher als anonyme Kanäle mit reißerischen Titeln.</p></section>
+  <p class="foot">Unidentified Anomalous Phenomena Observatory · ein Projekt der <a href="index.html">Wetterstation Bad König</a> · Stand 1. November 2026 · Alle Angaben ohne Gewähr · <a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a></p>
+</div>
+<script>
+(function () {
+  var inp=document.getElementById('vq'),c=document.getElementById('vqc');
+  inp.addEventListener('input',function(){var v=inp.value.toLowerCase().trim(),n=0;document.querySelectorAll('.vt').forEach(function(a){var ok=!v||a.textContent.toLowerCase().indexOf(v)>=0;a.classList.toggle('hide',!ok);if(ok)n++;});
+   document.querySelectorAll('.vh').forEach(function(h){var g=h.nextElementSibling;h.classList.toggle('hide',!!v&&!g.querySelector('.vt:not(.hide)')&&h.textContent.toLowerCase().indexOf(v)<0);});
+   c.textContent=v?n+' Treffer':'';});
+})();
+</script>
+<script>(function(){var gs=document.querySelectorAll('.gg');gs.forEach(function(g){var b=g.querySelector('button');b.addEventListener('click',function(e){e.stopPropagation();var o=g.classList.contains('open');gs.forEach(function(x){x.classList.remove('open');x.querySelector('button').setAttribute('aria-expanded','false');});if(!o){g.classList.add('open');b.setAttribute('aria-expanded','true');if(window.innerWidth<=560){var r=b.getBoundingClientRect();g.querySelector('.gdd').style.top=(r.bottom+6)+'px';}}});});document.addEventListener('click',function(){gs.forEach(function(x){x.classList.remove('open');});});document.addEventListener('keydown',function(e){if(e.key==='Escape')gs.forEach(function(x){x.classList.remove('open');});});var s=document.querySelector('.gsub'),a=s&&s.querySelector('[aria-current="page"]');if(a&&s.scrollWidth>s.clientWidth){s.scrollLeft=a.offsetLeft-s.clientWidth/2+a.offsetWidth/2;}})();</script>
+<script src="uap-fx.js" defer></script>
+</body>
+</html>
