@@ -483,37 +483,39 @@ p.cap { min-height:2.8em; margin:10px 0 0; color:var(--amber); }
 .mqb { display:flex; flex-wrap:wrap; gap:6px; } .mqb button { background:transparent; border:1px solid var(--line); color:var(--ink); padding:6px 12px; border-radius:999px; cursor:pointer; font:inherit; font-size:13.5px; }
 .mqb button.right { border-color:var(--green); color:var(--green); } .mqb button.wrong { border-color:var(--red); color:var(--red); } .mqb button:disabled { cursor:default; }
 .mqa { font-size:14px; color:var(--muted); margin:8px 0 0 !important; }
+
+/* Gruppierte Themenleiste */
+.subnav { display:none !important; }
+.gnav { display:flex; flex-wrap:wrap; justify-content:center; gap:4px 6px; }
+.gg { position:relative; }
+.gg > button { background:transparent; border:0; color:var(--muted); font:inherit; font-size:13.5px; padding:6px 10px; border-radius:8px; cursor:pointer; white-space:nowrap; }
+.gg > button:hover, .gg.open > button { color:var(--ink); background:rgba(79,227,240,.08); }
+.gg.cur > button { color:var(--cyan); box-shadow:inset 0 -2px 0 var(--cyan); border-radius:8px 8px 0 0; }
+.gg .caret { font-size:10px; margin-left:3px; opacity:.7; }
+.gdd { display:none; position:absolute; top:100%; left:50%; transform:translateX(-50%); margin-top:6px; background:#121A42; border:1px solid var(--line); border-radius:10px; padding:6px; min-width:220px; z-index:60; box-shadow:0 12px 30px #0009; }
+.gg.open .gdd { display:block; }
+.gdd a { display:flex; justify-content:space-between; gap:14px; color:#C8D2FF; padding:7px 10px; border-radius:6px; text-decoration:none; font-size:14px; }
+.gdd a:hover { background:rgba(79,227,240,.08); } .gdd a[aria-current="page"] { color:var(--cyan); }
+.gdd small { color:var(--muted); font-size:12px; }
+.gsub { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; padding-top:8px; border-top:1px solid var(--line); }
+.gsub a { color:var(--muted); padding:3px 10px; border-radius:999px; border:1px solid var(--line); font-size:12.5px; text-decoration:none; white-space:nowrap; }
+.gsub a:hover { color:var(--ink); } .gsub a[aria-current="page"] { color:var(--cyan); border-color:var(--cyan); }
+@media (max-width:560px){ .gnav, .gsub { flex-wrap:nowrap; overflow-x:auto; justify-content:flex-start; scrollbar-width:none; } .gnav { overflow:visible; flex-wrap:wrap; justify-content:center; } .gdd { position:fixed; left:12px; right:12px; top:auto; transform:none; min-width:0; } }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="bar">
     <div class="toprow"><a class="brand" href="uap.html"><span class="dot" aria-hidden="true"></span>UAP Observatory</a><a class="back" href="index.html">← Wetterstation</a></div>
-    <nav class="subnav" aria-label="Themen des UAP Observatory">
-      <a href="uap.html">Skinwalker Ranch</a>
-      <a href="rodenstein.html">Odenwald &amp; Rodensteiner</a>
-      <a href="cenap.html">CENAP-Meldestelle</a>
-      <a href="rendlesham.html">Rendlesham Forest</a>
-      <a href="phoenix.html">Phoenix Lights</a>
-      <a href="belgien.html">Belgische Welle</a>
-      <a href="hill.html">Betty &amp; Barney Hill</a>
-      <a href="walton.html">Travis Walton</a>
-      <a href="roswell.html">Roswell</a>
-      <a href="area51.html">Area 51</a>
-      <a href="tictac.html">Tic-Tac-Videos</a>
-      <a href="lazar.html">Bob Lazar</a>
-      <a href="nuernberg.html">Nürnberg 1561</a>
-      <a href="valensole.html">Valensole 1965</a>
-      <a href="teheran.html">Teheran 1976</a>
-      <a href="westall.html">Westall 1966</a>
-      <a href="ariel.html">Ariel School 1994</a>
-      <a href="varginha.html">Varginha 1996</a>
-      <a href="arnold.html">Kenneth Arnold 1947</a>
-      <a href="washington.html" aria-current="page">Washington 1952</a>
-      <a href="socorro.html">Socorro 1964</a>
-      <a href="drohnen.html">Drohnenwelle 2024–2026</a>
-      <a href="mib.html">Men in Black</a>
+    <nav class="gnav" aria-label="Themen des UAP Observatory">
+      <div class="gg"><button type="button" aria-expanded="false" aria-haspopup="true"><span aria-hidden="true">📍</span> Deutschland<span class="caret" aria-hidden="true">▾</span></button><div class="gdd"><a href="rodenstein.html">Odenwald &amp; Rodensteiner<small>Heimat</small></a><a href="cenap.html">CENAP-Meldestelle<small>Mannheim</small></a><a href="nuernberg.html">Nürnberg 1561<small>Flugblatt</small></a></div></div>
+      <div class="gg cur"><button type="button" aria-expanded="false" aria-haspopup="true"><span aria-hidden="true">🇺🇸</span> Klassiker USA<span class="caret" aria-hidden="true">▾</span></button><div class="gdd"><a href="arnold.html">Kenneth Arnold<small>1947</small></a><a href="roswell.html">Roswell<small>1947</small></a><a href="washington.html" aria-current="page">Washington<small>1952</small></a><a href="socorro.html">Socorro<small>1964</small></a><a href="hill.html">Betty &amp; Barney Hill<small>1961</small></a><a href="walton.html">Travis Walton<small>1975</small></a><a href="phoenix.html">Phoenix Lights<small>1997</small></a></div></div>
+      <div class="gg"><button type="button" aria-expanded="false" aria-haspopup="true"><span aria-hidden="true">📡</span> Militär &amp; Radar<span class="caret" aria-hidden="true">▾</span></button><div class="gdd"><a href="belgien.html">Belgische Welle<small>1989–90</small></a><a href="rendlesham.html">Rendlesham Forest<small>1980</small></a><a href="teheran.html">Teheran<small>1976</small></a><a href="tictac.html">Tic-Tac-Videos<small>2004</small></a></div></div>
+      <div class="gg"><button type="button" aria-expanded="false" aria-haspopup="true"><span aria-hidden="true">👽</span> Begegnungen<span class="caret" aria-hidden="true">▾</span></button><div class="gdd"><a href="valensole.html">Valensole<small>1965</small></a><a href="westall.html">Westall<small>1966</small></a><a href="ariel.html">Ariel School<small>1994</small></a><a href="varginha.html">Varginha<small>1996</small></a></div></div>
+      <div class="gg"><button type="button" aria-expanded="false" aria-haspopup="true"><span aria-hidden="true">🔒</span> Geheime Orte &amp; Mythen<span class="caret" aria-hidden="true">▾</span></button><div class="gdd"><a href="uap.html">Skinwalker Ranch<small>Utah</small></a><a href="area51.html">Area 51<small>Nevada</small></a><a href="lazar.html">Bob Lazar<small>S-4</small></a><a href="mib.html">Men in Black<small>Folklore</small></a></div></div>
+      <div class="gg"><button type="button" aria-expanded="false" aria-haspopup="true"><span aria-hidden="true">⚡</span> Aktuell<span class="caret" aria-hidden="true">▾</span></button><div class="gdd"><a href="drohnen.html">Drohnenwelle<small>2024–26</small></a></div></div>
     </nav>
+    <div class="gsub"><a href="arnold.html">Kenneth Arnold</a><a href="roswell.html">Roswell</a><a href="washington.html" aria-current="page">Washington</a><a href="socorro.html">Socorro</a><a href="hill.html">Betty &amp; Barney Hill</a><a href="walton.html">Travis Walton</a><a href="phoenix.html">Phoenix Lights</a></div>
   </header>
 
   <figure class="title" style="margin:16px 0 0">
@@ -578,6 +580,6 @@ p.cap { min-height:2.8em; margin:10px 0 0; color:var(--amber); }
 
 })();
 </script>
-<script>(function(){var a=document.querySelector('.subnav [aria-current="page"]'),n=document.querySelector('.subnav');if(a&&n&&n.scrollWidth>n.clientWidth){n.scrollLeft=a.offsetLeft-n.clientWidth/2+a.offsetWidth/2;}})();</script>
+<script>(function(){var gs=document.querySelectorAll('.gg');gs.forEach(function(g){var b=g.querySelector('button');b.addEventListener('click',function(e){e.stopPropagation();var o=g.classList.contains('open');gs.forEach(function(x){x.classList.remove('open');x.querySelector('button').setAttribute('aria-expanded','false');});if(!o){g.classList.add('open');b.setAttribute('aria-expanded','true');if(window.innerWidth<=560){var r=b.getBoundingClientRect();g.querySelector('.gdd').style.top=(r.bottom+6)+'px';}}});});document.addEventListener('click',function(){gs.forEach(function(x){x.classList.remove('open');});});document.addEventListener('keydown',function(e){if(e.key==='Escape')gs.forEach(function(x){x.classList.remove('open');});});var s=document.querySelector('.gsub'),a=s&&s.querySelector('[aria-current="page"]');if(a&&s.scrollWidth>s.clientWidth){s.scrollLeft=a.offsetLeft-s.clientWidth/2+a.offsetWidth/2;}})();</script>
 </body>
 </html>
