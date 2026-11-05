@@ -695,7 +695,7 @@ def baue(segmente, heute, ziel, special, titel=None):
         mix = os.path.join(tmp, 'ton_mix.wav')
         fo = max(gesamt - 2.0, 0)
         fk = ('[0:a]aformat=sample_rates=44100:channel_layouts=stereo,apad,atrim=0:%.2f,asplit[v][sc];'
-              '[1:a]aformat=sample_rates=44100:channel_layouts=stereo,volume=0.13,afade=t=in:d=1.5,afade=t=out:st=%.2f:d=2,atrim=0:%.2f[m];'
+              '[1:a]aformat=sample_rates=44100:channel_layouts=stereo,volume=0.065,afade=t=in:d=1.5,afade=t=out:st=%.2f:d=2,atrim=0:%.2f[m];'
               '[m][sc]sidechaincompress=threshold=0.03:ratio=5:attack=30:release=500[md];'
               '[v][md]amix=inputs=2:duration=first:normalize=0' % (gesamt, fo, gesamt))
         try:
