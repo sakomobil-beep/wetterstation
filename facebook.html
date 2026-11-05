@@ -185,9 +185,9 @@
     var url = 'https://api.open-meteo.com/v1/forecast?latitude=49.750&longitude=9.017&timezone=Europe%2FBerlin&forecast_days=3' +
       '&hourly=temperature_2m,dew_point_2m,visibility,weather_code,precipitation,wind_speed_10m,relative_humidity_2m';
     var jetzt = new Date(), std = +jetzt.toLocaleString('de-DE', { hour: 'numeric', hour12: false, timeZone: 'Europe/Berlin' });
-    var ziel = new Date(jetzt.getTime() + (std >= 9 ? 864e5 : 0));
+    var ziel = new Date(jetzt.getTime() + 864e5);
     var zielTag = ziel.toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
-    var morgenWort = std >= 9 ? 'Morgen früh' : 'Heute früh';
+    var morgenWort = 'Morgen früh';
     var tagName = ziel.toLocaleDateString('de-DE', { weekday: 'long', timeZone: 'Europe/Berlin' });
     var datumLang = ziel.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Berlin' });
     Promise.all([
@@ -249,9 +249,9 @@
       g.font = '700 56px system-ui, sans-serif'; g.fillText('Tiefstwert um ' + tt, 540, 625);
       var info = [frost ? '🧊 Frost / Glätte möglich' : (kratz ? '🧊 Reif auf den Scheiben möglich' : ''), nebel ? '🌫️ Nebel möglich' : ''].filter(Boolean).join('   ');
       g.font = '600 44px system-ui, sans-serif'; g.fillText(info, 540, 705);
-      g.shadowBlur = 0; g.fillStyle = 'rgba(255,255,255,.92)'; g.beginPath(); g.roundRect ? g.roundRect(90, 780, 900, 180, 30) : g.rect(90, 780, 900, 180); g.fill();
+      g.shadowBlur = 0; g.fillStyle = 'rgba(255,255,255,.92)'; g.beginPath(); g.roundRect ? g.roundRect(70, 775, 940, 195, 30) : g.rect(70, 775, 940, 195); g.fill();
       g.fillStyle = '#01579b'; g.font = '700 46px system-ui, sans-serif'; g.fillText('🚗 Fahrt vorsichtig & plant Zeit ein', 540, 855);
-      g.font = '500 34px system-ui, sans-serif'; g.fillStyle = '#37587a'; g.fillText(datumLang + ' · Empfehlung, keine amtliche Warnung', 540, 915);
+      g.font = '500 32px system-ui, sans-serif'; g.fillStyle = '#37587a'; g.fillText(datumLang, 540, 905); g.font = 'italic 500 28px system-ui, sans-serif'; g.fillText('Empfehlung – keine amtliche Warnung', 540, 942);
       g.fillStyle = '#01579b'; g.font = '700 40px system-ui, sans-serif'; g.fillText('wetter-badkoenig.de', 540, 1035);
       var src = cv.toDataURL('image/jpeg', .9), b = null;
       cv.toBlob(function (x) { b = x; }, 'image/jpeg', .9);
