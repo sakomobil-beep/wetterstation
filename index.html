@@ -799,6 +799,8 @@ button { font: inherit; color: inherit; }
 .nowcast{margin:12px 0;padding:10px 14px;border-radius:12px;background:rgba(47,127,193,.07);border:1px solid rgba(47,127,193,.18);font-size:14px}.nowcast.wet{background:rgba(47,127,193,.15);border-color:rgba(47,127,193,.4)}.nowcast .nch{font-size:12px;opacity:.75;margin-bottom:3px}.ncbars{display:flex;align-items:flex-end;gap:2px;height:36px;margin-top:8px}.ncbars i{flex:1;background:#2F7FC1;border-radius:2px 2px 0 0;opacity:.8}.ncax{display:flex;justify-content:space-between;font-size:11px;opacity:.6}.pxnote{font-size:12px;opacity:.75;margin:4px 0 10px}
 .visits{display:inline-block;margin-top:4px;font-size:11px;opacity:.55;font-variant-numeric:tabular-nums}
 .fbfollow{display:flex;align-items:center;gap:12px;margin-top:10px;padding:10px 16px;border-radius:14px;background:#1877f2;color:#fff;text-decoration:none;box-shadow:0 4px 14px rgba(24,119,242,.3);transition:transform .15s}.fbfollow:hover{transform:translateY(-2px)}.fbfollow b{display:block;font-size:1rem}.fbfollow small{display:block;opacity:.9;font-size:.82rem}
+.arow{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;width:100%}
+.astro .daylen{color:var(--muted);font-weight:600}
 </style>
 
 </head>
@@ -3129,9 +3131,11 @@ function renderAstro() {
   }
   var name = moonPhaseName(il.phase);
   $('astro').innerHTML =
-    item('sun', true, st.rise, 'Sonnenaufgang') + item('sun', false, st.set, 'Sonnenuntergang') +
-    item('moon', true, mt.rise, 'Mondaufgang') + item('moon', false, mt.set, 'Monduntergang') +
-    '<span class="ai moonph" title="Mondphase">' + moonPhaseIcon(il.phase) + '<span><b>' + name + '</b> · ' + nf(il.fraction * 100, 0) + ' %</span></span>';
+    '<span class="arow">' + item('sun', true, st.rise, 'Sonnenaufgang') + item('sun', false, st.set, 'Sonnenuntergang') +
+    (st.rise && st.set ? '<span class="ai daylen" title="Tageslänge">☀️ ' + Math.floor((st.set - st.rise) / 36e5) + ' h ' +
+      String(Math.round((st.set - st.rise) / 6e4) % 60).padStart(2, '0') + ' min</span>' : '') + '</span>' +
+    '<span class="arow">' + item('moon', true, mt.rise, 'Mondaufgang') + item('moon', false, mt.set, 'Monduntergang') + '</span>' +
+    '<span class="arow"><span class="ai moonph" title="Mondphase">' + moonPhaseIcon(il.phase) + '<span><b>' + name + '</b> · ' + nf(il.fraction * 100, 0) + ' %</span></span></span>';
 }
 
 /* ---------- Heute vor 1 Jahr ----------
