@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Facebook-Beitrag – Wetterstation Bad König</title>
+<link rel="icon" href="favicon-32.png">
+<style>
+  :root { --blau:#3d8fd0; --text:#24364f; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; color:var(--text);
+         background:linear-gradient(#3d8fd0,#a9d5f2 70%,#e4d2b2); min-height:100vh; }
+  main { max-width:620px; margin:0 auto; padding:20px 14px 40px; }
+  h1 { color:#fff; text-align:center; font-size:1.5rem; margin:6px 0 2px; text-shadow:0 2px 3px #1e3c64; }
+  .sub { color:#eef6ff; text-align:center; margin:0 0 16px; font-size:.95rem; }
+  .card { background:#fff; border-radius:18px; padding:14px; box-shadow:0 6px 20px rgba(20,50,90,.18); margin-bottom:14px; }
+  img { width:100%; border-radius:12px; display:block; }
+  textarea { width:100%; min-height:220px; border:1px solid #cfdbe8; border-radius:12px; padding:12px;
+             font:inherit; font-size:.95rem; color:var(--text); resize:vertical; }
+  .btns { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+  button, a.btn { border:0; border-radius:12px; padding:14px 10px; font:inherit; font-weight:700; font-size:1rem;
+                  cursor:pointer; text-align:center; text-decoration:none; }
+  .prim { background:#1877f2; color:#fff; grid-column:1 / -1; font-size:1.1rem; }
+  .sec { background:#e8f1fb; color:#24507f; }
+  .hint { font-size:.85rem; color:#5a6b80; margin:10px 2px 0; line-height:1.4; }
+  video { width:100%; max-height:80vh; border-radius:12px; background:#000; display:block; }
+  .vhead { font-weight:800; margin:0 0 10px; font-size:1.05rem; }
+  .vhead.sp { color:#c62828; }
+  .sonder { border:3px solid #c62828; }
+  .sonder .vhead { color:#c62828; }
+  .sonder .badge { display:inline-block; font-size:.75rem; font-weight:700; padding:3px 9px; border-radius:20px; margin-left:6px; vertical-align:2px; }
+  .badge.amt { background:#fde2e2; color:#b71c1c; } .badge.mod { background:#ede7f6; color:#5e35b1; }
+  .sonder img { margin-bottom:12px; }
+  .abend { border:3px solid #3949ab; } .abend .vhead { color:#283593; } .abend img { margin-bottom:12px; }
+  .ruhig { text-align:center; color:#2e7d32; font-weight:600; }
+  #ok { position:fixed; left:50%; bottom:24px; transform:translateX(-50%); background:#24364f; color:#fff;
+        padding:10px 18px; border-radius:20px; opacity:0; transition:opacity .3s; pointer-events:none; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Facebook-Beitrag von heute</h1>
+  <p class="sub" id="stand">wird geladen …</p>
+  <p class="sub"><a href="tiktok.html" style="color:#fff;font-weight:700">🎵 Zum TikTok-Abendvideo →</a></p>
+
+  <div id="sonderBox"></div>
+  <div id="abendBox"></div>
+
+  <div class="card" id="vidCard" hidden>
+    <div class="vhead" id="vTitel">🎬 Video-Wetterbericht</div>
+    <video id="vid" controls playsinline preload="metadata"></video>
+    <div class="btns">
+      <button class="prim" id="vTeilen">📤 Video teilen</button>
+      <a class="btn sec" id="vLaden" download="odenwald-wetter.mp4" style="grid-column:1 / -1">💾 Video speichern</a>
+    </div>
+    <p class="hint">Tipp: Auf Facebook als <b>Reel</b> hochladen – das Video ist hochkant (9:16) dafür gemacht.</p>
+  </div>
+
+  <div class="card"><img id="bild" alt="Vorhersagebild für Facebook"></div>
+
+  <div class="card">
+    <textarea id="text" aria-label="Beitragstext"></textarea>
+    <div class="btns">
+      <button class="prim" id="teilen">📤 Teilen (Bild + Text)</button>
+      <button class="sec" id="kopieren">📋 Text kopieren</button>
+      <a class="btn sec" id="laden" download="wetter-bad-koenig.jpg">💾 Bild speichern</a>
+    </div>
+    <p class="hint">Am Handy: <b>„Teilen“</b> antippen → Facebook wählen → als Seite „Wetterstation Bad König“ posten.
+      Falls Facebook den Text nicht übernimmt: vorher „Text kopieren“ und im Beitrag einfügen.
+      Den Text kannst du oben vor dem Teilen noch ändern.</p>
+  </div>
+</main>
+<div id="ok"></div>
+<script>
+(function () {
+  var v = Date.now(), img = 'fb/post.jpg?v=' + v, blob = null;
+  function toast(t) { var o = document.getElementById('ok'); o.textContent = t; o.style.opacity = 1; setTimeout(function () { o.style.opacity = 0; }, 1800); }
+  document.getElementById('bild').src = img;
+  document.getElementById('laden').href = img;
+  fetch('fb/post.json?v=' + v, { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
+    document.getElementById('text').value = j.text;
+    var d = new Date(j.erstellt);
+    document.getElementById('stand').textContent = 'Erstellt am ' + d.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' }) +
+      ' um ' + d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) + ' Uhr';
+  }).catch(function () { document.getElementById('stand').textContent = 'Noch kein Beitrag vorhanden.'; });
+  var vblob = null, vname = 'wetter';
+  function zeigeVideo(n, j) {
+    vname = n; var src = 'fb/' + n + '.mp4?v=' + v;
+    document.getElementById('vid').src = src; document.getElementById('vLaden').href = src;
+    var t = document.getElementById('vTitel');
+    t.textContent = (n === 'special' ? '⚠️ Wetter-Special' : j.special ? '⚠️ Video-Wetterbericht mit Special' : '🎬 Video-Wetterbericht') + ' · ' + Math.round(j.dauer) + ' Sek.';
+    t.className = 'vhead' + (n === 'special' || j.special ? ' sp' : '');
+    document.getElementById('vidCard').hidden = false;
+    fetch(src, { cache: 'no-store' }).then(function (r) { return r.blob(); }).then(function (b) { vblob = b; }).catch(function () {});
+  }
+  var heute = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
+  fetch('fb/special.json?v=' + v, { cache: 'no-store' }).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (j) {
+    if (j.datum !== heute) throw 0; zeigeVideo('special', j);
+  }).catch(function () {
+    fetch('fb/wetter.json?v=' + v, { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) { zeigeVideo('wetter', j); }).catch(function () {});
+  });
+  document.getElementById('vTeilen').onclick = function () {
+    var t = document.getElementById('text').value;
+    kopieren().finally(function () {
+      if (vblob && navigator.canShare) {
+        var f = new File([vblob], 'odenwald-wetter.mp4', { type: 'video/mp4' });
+        if (navigator.canShare({ files: [f] })) { navigator.share({ files: [f], text: t }).catch(function () {}); return; }
+      }
+      toast('Text kopiert ✓ – Video bitte speichern und auf Facebook hochladen');
+    });
+  };
+  fetch(img, { cache: 'no-store' }).then(function (r) { return r.blob(); }).then(function (b) { blob = b; }).catch(function () {});
+
+  function kopieren(ta) {
+    ta = ta || document.getElementById('text'); var t = ta.value;
+    return (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).catch(function () {
+      ta.select(); document.execCommand('copy');
+    });
+  }
+
+  // ---- Abendbeitrag (ca. 18 Uhr: Ausblick auf morgen, freitags Wochenende) ----
+  fetch('fb/abend.json?v=' + v, { cache: 'no-store' }).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (j) {
+    if (new Date(j.erstellt).toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' }) !== heute) return;
+    var c = document.createElement('div'), src = 'fb/abend.jpg?v=' + v, b = null;
+    var stand = new Date(j.erstellt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+    c.className = 'card abend';
+    c.innerHTML = '<div class="vhead">🌙 Abendbeitrag – Ausblick</div><img alt="Abendbeitrag"><textarea aria-label="Text des Abendbeitrags" rows="14"></textarea>' +
+      '<div class="btns"><button class="prim">📤 Abendbeitrag teilen</button><button class="sec">📋 Text kopieren</button>' +
+      '<a class="btn sec" download="wetter-abend.jpg">💾 Bild speichern</a></div>' +
+      '<p class="hint">Erstellt um ' + stand + ' Uhr · wird automatisch auf Facebook gepostet.</p>';
+    c.querySelector('img').src = src; c.querySelector('a').href = src;
+    var ta = c.querySelector('textarea'); ta.value = j.text;
+    fetch(src, { cache: 'no-store' }).then(function (r) { return r.blob(); }).then(function (x) { b = x; }).catch(function () {});
+    var bt = c.querySelectorAll('button');
+    bt[1].onclick = function () { kopieren(ta).then(function () { toast('Text kopiert ✓'); }); };
+    bt[0].onclick = function () {
+      kopieren(ta).finally(function () {
+        if (b && navigator.canShare) {
+          var f = new File([b], 'wetter-abend.jpg', { type: 'image/jpeg' });
+          if (navigator.canShare({ files: [f] })) { navigator.share({ files: [f], text: ta.value }).catch(function () {}); return; }
+        }
+        toast('Text kopiert ✓ – Bild bitte speichern und auf Facebook hochladen');
+      });
+    };
+    document.getElementById('abendBox').appendChild(c);
+  }).catch(function () {});
+
+  // ---- Wetter-Sondermeldungen (Gewitter, Schnee, Glätte, Sturm …) ----
+  fetch('fb/sonder.json?v=' + v, { cache: 'no-store' }).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (j) {
+    var box = document.getElementById('sonderBox'), alter = (Date.now() - new Date(j.erstellt).getTime()) / 36e5;
+    var stand = new Date(j.erstellt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+    if (!j.meldungen.length || alter > 6) {
+      box.innerHTML = '<div class="card ruhig">✅ Keine Sondermeldung nötig – kein Unwetter, Schnee oder Glätte in Sicht' +
+        (alter <= 6 ? ' <small style="color:#5a6b80;font-weight:400">(geprüft ' + stand + ' Uhr)</small>' : '') + '</div>';
+      return;
+    }
+    j.meldungen.forEach(function (m, i) {
+      var c = document.createElement('div'), src = 'fb/' + m.bild + '?v=' + v, b = null;
+      c.className = 'card sonder';
+      c.innerHTML = '<div class="vhead">' + m.emoji + ' Sondermeldung: ' + m.titel +
+        '<span class="badge ' + (m.amtlich ? 'amt">amtliche DWD-Warnung' : 'mod">laut Vorhersage') + '</span></div>' +
+        '<img alt="Sondermeldung ' + m.titel + '"><textarea aria-label="Text der Sondermeldung"></textarea>' +
+        '<div class="btns"><button class="prim">📤 Sondermeldung teilen</button><button class="sec">📋 Text kopieren</button>' +
+        '<a class="btn sec" download="sondermeldung-' + m.typ + '.jpg">💾 Bild speichern</a></div>' +
+        '<p class="hint">Stand ' + stand + ' Uhr · wird stündlich neu geprüft.</p>';
+      c.querySelector('img').src = src; c.querySelector('a').href = src;
+      var ta = c.querySelector('textarea'); ta.value = m.text;
+      fetch(src, { cache: 'no-store' }).then(function (r) { return r.blob(); }).then(function (x) { b = x; }).catch(function () {});
+      var bt = c.querySelectorAll('button');
+      bt[1].onclick = function () { kopieren(ta).then(function () { toast('Text kopiert ✓'); }); };
+      bt[0].onclick = function () {
+        kopieren(ta).finally(function () {
+          if (b && navigator.canShare) {
+            var f = new File([b], 'sondermeldung-' + m.typ + '.jpg', { type: 'image/jpeg' });
+            if (navigator.canShare({ files: [f] })) { navigator.share({ files: [f], text: ta.value }).catch(function () {}); return; }
+          }
+          toast('Text kopiert ✓ – Bild bitte speichern und auf Facebook hochladen');
+        });
+      };
+      box.appendChild(c);
+    });
+  }).catch(function () {});
+  document.getElementById('kopieren').onclick = function () { kopieren().then(function () { toast('Text kopiert ✓'); }); };
+  document.getElementById('teilen').onclick = function () {
+    var t = document.getElementById('text').value;
+    kopieren().finally(function () {
+      if (blob && navigator.canShare) {
+        var f = new File([blob], 'wetter-bad-koenig.jpg', { type: 'image/jpeg' });
+        if (navigator.canShare({ files: [f] })) {
+          navigator.share({ files: [f], text: t }).catch(function () {});
+          return;
+        }
+      }
+      toast('Text kopiert ✓ – Bild bitte speichern und auf Facebook hochladen');
+    });
+  };
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+name: Facebook-Vorhersage + Video
+
+on:
+  schedule:
+    - cron: '30 4 * * *'   # 6:30 Uhr Sommerzeit: Bild, Text und Video erstellen (Website)
+    - cron: '30 5 * * *'   # 6:30 Uhr Winterzeit
+    - cron: '0 11 * * *'   # Mittag: neue Unwetterwarnung? -> Special-Video
+    - cron: '0 15 * * *'   # Nachmittag: neue Unwetterwarnung? -> Special-Video
+    - cron: '0 5 * * 1-5'   # 7 Uhr Sommerzeit (Mo–Fr): Wettervideo auf Facebook
+    - cron: '0 6 * * 1-5'   # 7 Uhr Winterzeit (Mo–Fr)
+    - cron: '0 6 * * 0,6'   # 8 Uhr Sommerzeit (Sa/So): Wettervideo auf Facebook
+    - cron: '0 7 * * 0,6'   # 8 Uhr Winterzeit (Sa/So)
+    - cron: '0 16 * * *'    # 18 Uhr Sommerzeit: Abendbeitrag (morgen/übermorgen, freitags Wochenende)
+    - cron: '0 17 * * *'    # 18 Uhr Winterzeit: Abendbeitrag
+    - cron: '20 4-20 * * *' # stündlich: Sondermeldungen (Gewitter, Schnee, Glätte …) für Facebook prüfen
+  workflow_dispatch:
+  push:
+    paths: ['.github/scripts/**', '.github/workflows/facebook-post.yml', 'video/hintergruende/**']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: repo-schreiben
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - uses: FedericoCarboni/setup-ffmpeg@v3
+        if: github.event_name != 'schedule' || contains(fromJSON('["30 4 * * *","30 5 * * *","0 11 * * *","0 15 * * *","0 16 * * *","0 17 * * *"]'), github.event.schedule)
+        timeout-minutes: 5
+      - run: pip install pillow numpy edge-tts
+      - name: Morgens – Bild, Text und Wettervideo
+        if: github.event.schedule == '30 4 * * *' || github.event.schedule == '30 5 * * *' || github.event_name != 'schedule'
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then ARG=--nur-um-6; fi
+          python .github/scripts/fb_post.py $ARG
+          if git status --porcelain fb | grep -q daten.json; then python .github/scripts/wetter_video.py; fi
+      - name: Tagsüber – Special-Video bei neuer Warnung
+        if: github.event.schedule == '0 11 * * *' || github.event.schedule == '0 15 * * *'
+        run: |
+          cp fb/post.jpg /tmp/ ; cp fb/post.txt /tmp/ ; cp fb/post.json /tmp/
+          python .github/scripts/fb_post.py
+          cp /tmp/post.jpg /tmp/post.txt /tmp/post.json fb/
+          python .github/scripts/wetter_video.py --special
+      - name: Abends – Ausblick auf morgen (freitags Wochenende)
+        if: github.event.schedule == '0 16 * * *' || github.event.schedule == '0 17 * * *'
+        run: |
+          python .github/scripts/fb_post.py --abend --nur-abends
+          # TikTok: Abendvideo mit Max (nur wenn der Abendbeitrag gerade neu erstellt wurde)
+          if git status --porcelain fb | grep -q abend.json; then python .github/scripts/wetter_video.py --abend || echo "TikTok-Video nicht möglich"; fi
+      - name: TikTok-Abendvideo (bei manuellem Start / Änderungen)
+        if: github.event_name != 'schedule'
+        run: |
+          python .github/scripts/fb_post.py --abend
+          python .github/scripts/wetter_video.py --abend || echo "TikTok-Video nicht möglich"
+      - name: Sondermeldungen prüfen
+        run: python .github/scripts/sonder.py || echo "Sondermeldung nicht möglich"
+      - name: Speichern
+        run: |
+          git config user.name "wetter-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A fb
+          git diff --cached --quiet && exit 0
+          git commit -m "Wetter-Beitrag $(TZ=Europe/Berlin date +'%d.%m.%Y %H:%M')"
+          for i in 1 2 3; do git pull --rebase -X theirs -q && git push && break; git rebase --abort 2>/dev/null; sleep 5; done
+      - name: Automatisch auf Facebook posten (Make oder direkt – je nach Secret)
+        env:
+          MAKE_WEBHOOK: ${{ secrets.MAKE_WEBHOOK }}
+          MAKE_VIDEO_WEBHOOK: ${{ secrets.MAKE_VIDEO_WEBHOOK }}
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_SONDER_AUTO: ${{ vars.FB_SONDER_AUTO }}
+        run: |
+          if [ -z "$MAKE_WEBHOOK$MAKE_VIDEO_WEBHOOK$FB_PAGE_TOKEN" ]; then echo "Kein Auto-Posting eingerichtet."; exit 0; fi
+          # morgens nur noch das Video (Mo–Fr 7 Uhr, Sa/So 8 Uhr), abends der Ausblick um 18 Uhr
+          case "${{ github.event.schedule }}" in
+            "0 5 * * 1-5"|"0 6 * * 1-5"|"0 6 * * 0,6"|"0 7 * * 0,6")
+              python .github/scripts/fb_senden.py video || echo "Video nicht gepostet" ;;
+            "0 16 * * *"|"0 17 * * *")
+              python .github/scripts/fb_senden.py abend || echo "Abendbeitrag nicht gepostet" ;;
+          esac
+          python .github/scripts/fb_senden.py sonder || echo "Sondermeldung nicht gepostet"
+          git add fb/gepostet.json 2>/dev/null || true
+          git diff --cached --quiet && exit 0
+          git commit -m "Facebook: gepostet $(TZ=Europe/Berlin date +'%d.%m. %H:%M')"
+          for i in 1 2 3; do git pull --rebase -X theirs -q && git push && break; git rebase --abort 2>/dev/null; sleep 5; done

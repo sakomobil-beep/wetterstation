@@ -1,0 +1,5 @@
+Eigene (KI-)Hintergrundbilder für den Video-Wetterbericht
+
+Leg hier .jpg- oder .png-Bilder aus der Region ab (z. B. Mümlingtal, Odenwälder Höhen, Schloss Bad König).
+Am besten im Hochformat, mind. 1000 x 1500 Pixel.
+Sie werden automatisch im nächsten Video statt der gezeichneten Landschaften verwendet.

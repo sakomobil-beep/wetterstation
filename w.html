@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Wetter Bad König – Widget</title>
+<style>
+  :root { --bg:#ffffff; --ink:#1d2b3f; --mut:#62728a; --line:#e3e9f1; --warm:#e0661f; --cold:#2f74c0; --acc:#2a6db5; --chip:#f1f5fa; }
+  .dunkel { --bg:#16202e; --ink:#eef3f9; --mut:#9fb0c6; --line:#2a3a50; --warm:#ff9a52; --cold:#7db4f0; --acc:#8cc0ff; --chip:#1f2c3e; }
+  * { box-sizing:border-box; margin:0; }
+  html, body { background:transparent; }
+  body { font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; color:var(--ink); }
+  a.w { display:block; color:inherit; text-decoration:none; background:var(--bg); border:1px solid var(--line); border-radius:14px; padding:12px 14px; overflow:hidden; }
+  a.w:hover { border-color:var(--acc); }
+  .kopf { display:flex; justify-content:space-between; align-items:baseline; gap:8px; font-size:12px; color:var(--mut); }
+  .kopf b { color:var(--ink); font-size:13px; }
+  .jetzt { display:flex; align-items:center; gap:10px; margin-top:6px; }
+  .ic { font-size:40px; line-height:1; }
+  .t { font-size:42px; font-weight:700; color:var(--warm); line-height:1; letter-spacing:-.02em; }
+  .t.kalt { color:var(--cold); }
+  .gf { font-size:12px; color:var(--mut); }
+  .werte { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:4px 12px; margin-top:10px; font-size:13px; }
+  .werte span { color:var(--mut); } .werte b { font-weight:600; float:right; }
+  .tage { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; margin-top:10px; }
+  .tag { background:var(--chip); border-radius:10px; padding:6px 4px; text-align:center; font-size:12px; }
+  .tag .i { font-size:20px; display:block; margin:2px 0; }
+  .tag .mx { color:var(--warm); font-weight:700; } .tag .mn { color:var(--cold); }
+  .warn { margin-top:8px; background:#fde4e1; color:#a42014; border-radius:8px; padding:5px 8px; font-size:12px; font-weight:600; }
+  .dunkel .warn { background:#4a1f1b; color:#ffb4a9; }
+  .fuss { margin-top:8px; font-size:11px; color:var(--acc); text-align:right; }
+  .alt { color:#b26a00; }
+  /* klein */
+  .klein .werte, .klein .tage { display:none; }
+  /* breit: alles in einer Zeile */
+  .breit a.w { display:flex; align-items:center; gap:16px; padding:8px 14px; }
+  .breit .kopf { display:block; min-width:110px; } .breit .kopf small { display:block; }
+  .breit .jetzt { margin:0; } .breit .ic { font-size:30px; } .breit .t { font-size:32px; }
+  .breit .werte { margin:0; display:flex; gap:14px; flex-wrap:wrap; } .breit .werte b { float:none; margin-left:4px; }
+  .breit .tage, .breit .fuss { display:none; } .breit .warn { margin:0; }
+  .breit .t { white-space:nowrap; } .breit .gf { display:none; } .breit .warn { white-space:nowrap; }
+  .breit .werte div:nth-child(n+4) { display:none; } .breit .kopf { white-space:nowrap; }
+  .breit a.w { min-height:60px; }
+  @media (max-width:620px) { .breit .werte { display:none; } }
+</style>
+</head>
+<body>
+<a class="w" id="w" href="https://wetter-badkoenig.de/?ref=widget" target="_blank" rel="noopener">
+  <div class="kopf"><b>Wetter Bad König</b><small id="stand">wird geladen …</small></div>
+  <div class="jetzt"><span class="ic" id="ic">⛅</span><div><div class="t" id="t">–</div><div class="gf" id="gf"></div></div></div>
+  <div class="werte" id="werte"></div>
+  <div id="warn"></div>
+  <div class="tage" id="tage"></div>
+  <div class="fuss">wetter-badkoenig.de →</div>
+</a>
+<script>
+(function () {
+  var q = new URLSearchParams(location.search);
+  document.body.className = (q.get('g') === 'klein' ? 'klein' : q.get('g') === 'breit' ? 'breit' : 'mittel') + (q.get('t') === 'dunkel' ? ' dunkel' : '');
+  var TAGE = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+  function ic(c, tag) {
+    if (c == null) return '🌡️';
+    if (c === 0) return tag === 0 ? '🌙' : '☀️';
+    if (c <= 2) return tag === 0 ? '☁️' : '⛅';
+    if (c === 3) return '☁️';
+    if (c === 45 || c === 48) return '🌫️';
+    if (c >= 95) return '⛈️';
+    if ((c >= 71 && c <= 77) || c === 85 || c === 86) return '❄️';
+    if (c >= 80) return '🌦️';
+    return '🌧️';
+  }
+  function nf(v, d) { return v == null ? '–' : Number(v).toLocaleString('de-DE', { minimumFractionDigits: d, maximumFractionDigits: d }); }
+  function el(id) { return document.getElementById(id); }
+  function laden() {
+    fetch('data/widget.json?v=' + Math.floor(Date.now() / 60000), { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
+      var L = d.live || {}, st = d.stand ? new Date(d.stand) : null, alt = st && Date.now() - st.getTime() > 45 * 60000;
+      el('stand').innerHTML = st ? '<span class="' + (alt ? 'alt' : '') + '">Stand ' + st.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) + ' Uhr</span>' : '';
+      el('t').textContent = nf(L.temp, 1) + ' °C';
+      el('t').className = 't' + (L.temp != null && L.temp <= 3 ? ' kalt' : '');
+      el('gf').textContent = L.gefuehlt != null ? 'gefühlt ' + nf(L.gefuehlt, 1) + ' °C' : '';
+      el('ic').textContent = ic(d.code, d.tag);
+      el('werte').innerHTML =
+        '<div><span>Wind</span><b>' + nf(L.wind, 0) + ' km/h</b></div>' +
+        '<div><span>Böen</span><b>' + nf(L.boe, 0) + ' km/h</b></div>' +
+        '<div><span>Regen heute</span><b>' + nf(L.regen, 1) + ' mm</b></div>' +
+        '<div><span>Feuchte</span><b>' + nf(L.feuchte, 0) + ' %</b></div>' +
+        '<div><span>Luftdruck</span><b>' + nf(L.druck, 0) + ' hPa</b></div>' +
+        '<div><span>UV-Index</span><b>' + nf(L.uv, 0) + '</b></div>';
+      el('tage').innerHTML = (d.tage || []).map(function (x, i) {
+        var n = i === 0 ? 'Heute' : TAGE[new Date(x.datum + 'T12:00').getDay()];
+        return '<div class="tag">' + n + '<span class="i">' + ic(x.code) + '</span><span class="mx">' + x.max + '°</span> <span class="mn">' + x.min + '°</span></div>';
+      }).join('');
+      el('warn').innerHTML = (d.warn || []).length ? '<div class="warn">⚠ DWD: ' + d.warn.slice(0, 2).map(function (w) { return w.text; }).join(', ') + '</div>' : '';
+    }).catch(function () { el('stand').textContent = 'gerade nicht erreichbar'; });
+  }
+  laden(); setInterval(laden, 5 * 60000);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>TikTok-Video – Wetterstation Bad König</title>
+<link rel="icon" href="favicon-32.png">
+<style>
+  :root { --text:#24364f; --pink:#fe2c55; --cyan:#25f4ee; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; color:var(--text);
+         background:linear-gradient(#141432,#2b2a6b 55%,#4a3f8f); min-height:100vh; }
+  main { max-width:620px; margin:0 auto; padding:20px 14px 40px; }
+  h1 { color:#fff; text-align:center; font-size:1.5rem; margin:6px 0 2px; text-shadow:2px 2px 0 var(--pink), -2px -2px 0 var(--cyan); }
+  .sub { color:#dfe3ff; text-align:center; margin:0 0 16px; font-size:.95rem; }
+  .card { background:#fff; border-radius:18px; padding:14px; box-shadow:0 6px 20px rgba(0,0,0,.3); margin-bottom:14px; }
+  .vhead { font-weight:800; margin:0 0 10px; font-size:1.05rem; }
+  video { width:100%; max-height:80vh; border-radius:12px; background:#000; display:block; }
+  textarea { width:100%; min-height:170px; border:1px solid #cfd3e8; border-radius:12px; padding:12px; margin-top:12px;
+             font:inherit; font-size:.95rem; color:var(--text); resize:vertical; }
+  .btns { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+  button, a.btn { border:0; border-radius:12px; padding:14px 10px; font:inherit; font-weight:700; font-size:1rem;
+                  cursor:pointer; text-align:center; text-decoration:none; }
+  .prim { background:#111; color:#fff; grid-column:1 / -1; font-size:1.1rem; box-shadow:3px 3px 0 var(--pink), -3px -3px 0 var(--cyan); }
+  .sec { background:#eef0fb; color:#2b2a6b; }
+  .hint { font-size:.88rem; color:#4c5670; margin:10px 2px 0; line-height:1.45; }
+  .ki { background:#fff4e5; border-left:4px solid #f59e0b; padding:10px 12px; border-radius:8px; font-size:.9rem; margin-top:12px; }
+  .liste { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:10px; }
+  .alt { background:#f4f5fb; border-radius:12px; overflow:hidden; text-decoration:none; color:var(--text); font-size:.85rem; cursor:pointer; }
+  .alt img { width:100%; display:block; aspect-ratio:9/16; object-fit:cover; }
+  .alt div { padding:6px 8px; font-weight:600; }
+  .leer { text-align:center; color:#5a6b80; }
+  #ok { position:fixed; left:50%; bottom:24px; transform:translateX(-50%); background:#111; color:#fff;
+        padding:10px 18px; border-radius:20px; opacity:0; transition:opacity .3s; pointer-events:none; }
+</style>
+</head>
+<body>
+<main>
+  <h1>TikTok-Video für morgen</h1>
+  <p class="sub" id="stand">wird geladen …</p>
+
+  <div class="card" id="vidCard" hidden>
+    <div class="vhead" id="vTitel">🌙 Max' Wetter für morgen</div>
+    <video id="vid" controls playsinline preload="metadata"></video>
+    <textarea id="txt" aria-label="Beschreibung für TikTok"></textarea>
+    <div class="btns">
+      <button class="prim" id="teilen">📤 An TikTok teilen</button>
+      <a class="btn sec" id="laden" download="wetter-morgen.mp4">💾 Video speichern</a>
+      <button class="sec" id="kopie">📋 Text kopieren</button>
+    </div>
+    <div class="ki">⚠️ <b>Nicht vergessen:</b> In TikTok unter „Weitere Optionen“ den Schalter <b>„KI-generierte Inhalte“</b> einschalten.</div>
+    <p class="hint">„An TikTok teilen“ kopiert die Beschreibung und öffnet das Teilen-Menü – dort TikTok wählen und den Text einfügen.
+      Klappt das Teilen nicht, zuerst „Video speichern“ und dann in TikTok aus der Galerie hochladen. Bester Zeitpunkt: abends zwischen 18 und 21 Uhr.</p>
+  </div>
+  <div class="card leer" id="keins" hidden>Heute ist noch kein Abendvideo da – es entsteht jeden Abend gegen 18 Uhr.</div>
+
+  <div class="card">
+    <div class="vhead">📚 Videos der letzten 7 Abende</div>
+    <div class="liste" id="liste"><span class="leer">wird geladen …</span></div>
+  </div>
+</main>
+<div id="ok"></div>
+<script>
+(function () {
+  var v = Date.now(), vblob = null, aktuell = null;
+  var TAGE = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+  function $(id) { return document.getElementById(id); }
+  function toast(t) { var o = $('ok'); o.textContent = t; o.style.opacity = 1; setTimeout(function () { o.style.opacity = 0; }, 1800); }
+  function datum(iso) { var d = new Date(iso + 'T12:00:00'); return TAGE[d.getDay()] + ', ' + d.getDate() + '.' + (d.getMonth() + 1) + '.'; }
+  function kopieren() {
+    var t = $('txt').value;
+    return (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).catch(function () {
+      $('txt').select(); document.execCommand('copy');
+    });
+  }
+  function zeige(src, titel, text, info) {
+    aktuell = src; vblob = null;
+    $('vidCard').hidden = false; $('keins').hidden = true;
+    $('vid').src = src; $('laden').href = src;
+    $('vTitel').textContent = titel; $('txt').value = text || '';
+    if (info) $('stand').textContent = info;
+    fetch(src, { cache: 'no-store' }).then(function (r) { return r.blob(); }).then(function (b) { if (aktuell === src) vblob = b; }).catch(function () {});
+  }
+
+  fetch('fb/tiktok/abend.json?v=' + v, { cache: 'no-store' }).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (j) {
+    var e = new Date(j.erstellt);
+    zeige('fb/tiktok/abend.mp4?v=' + v, '🌙 Max\' Wetter für ' + datum(j.fuer), j.beschreibung,
+          'Erstellt am ' + e.toLocaleDateString('de-DE') + ' um ' + e.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) + ' Uhr · ' + Math.round(j.dauer) + ' Sekunden');
+  }).catch(function () { $('keins').hidden = false; $('stand').textContent = 'Noch kein Video vorhanden.'; });
+
+  fetch('fb/tiktok/archiv/liste.json?v=' + v, { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (l) {
+    var box = $('liste'); box.innerHTML = '';
+    if (!l.length) { box.innerHTML = '<span class="leer">Noch keine Videos.</span>'; return; }
+    l.forEach(function (e) {
+      var a = document.createElement('a'); a.className = 'alt';
+      a.innerHTML = '<img loading="lazy" alt="" src="fb/tiktok/archiv/' + e.datei.replace('.mp4', '.jpg') + '"><div>für ' + datum(e.fuer || e.datum) + '</div>';
+      a.onclick = function () {
+        zeige('fb/tiktok/archiv/' + e.datei, '🌙 Max\' Wetter für ' + datum(e.fuer || e.datum), e.beschreibung, null);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+      box.appendChild(a);
+    });
+  }).catch(function () { $('liste').innerHTML = '<span class="leer">Noch keine Videos.</span>'; });
+
+  $('kopie').onclick = function () { kopieren().then(function () { toast('Text kopiert ✓'); }); };
+  $('teilen').onclick = function () {
+    kopieren().finally(function () {
+      if (vblob && navigator.canShare) {
+        var f = new File([vblob], 'wetter-morgen.mp4', { type: 'video/mp4' });
+        if (navigator.canShare({ files: [f] })) { toast('Text kopiert – in TikTok einfügen'); navigator.share({ files: [f] }).catch(function () {}); return; }
+      }
+      toast('Bitte erst „Video speichern“');
+    });
+  };
+})();
+</script>
+</body>
+</html>
