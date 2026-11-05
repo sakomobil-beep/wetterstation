@@ -15,7 +15,7 @@ on:
     - cron: '20 4-20 * * *' # stündlich: Sondermeldungen (Gewitter, Schnee, Glätte …) für Facebook prüfen
   workflow_dispatch:
   push:
-    paths: ['.github/scripts/**', '.github/workflows/facebook-post.yml', 'video/hintergruende/**']
+    paths: ['.github/scripts/**', '.github/workflows/facebook-post.yml', 'video/hintergruende/**', 'video/musik/**']
 
 permissions:
   contents: write

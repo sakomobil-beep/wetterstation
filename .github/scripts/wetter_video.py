@@ -689,6 +689,21 @@ def baue(segmente, heute, ziel, special, titel=None):
     lv = pegel(ton, N)
     if not echt:  # Testmodus: künstliche Sprechbewegung
         lv = np.array([0.8 + 0.6 * math.sin(i * 1.7) for i in range(N)])
+    # Hintergrundmusik (Pixabay, Sonican – lizenzfrei): leise darunter, bei Sprache zusätzlich abgesenkt
+    musik = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'video', 'musik', 'hintergrund.mp3')
+    if os.path.exists(musik):
+        mix = os.path.join(tmp, 'ton_mix.wav')
+        fo = max(gesamt - 2.0, 0)
+        fk = ('[0:a]aformat=sample_rates=44100:channel_layouts=stereo,apad,atrim=0:%.2f,asplit[v][sc];'
+              '[1:a]aformat=sample_rates=44100:channel_layouts=stereo,volume=0.13,afade=t=in:d=1.5,afade=t=out:st=%.2f:d=2,atrim=0:%.2f[m];'
+              '[m][sc]sidechaincompress=threshold=0.03:ratio=5:attack=30:release=500[md];'
+              '[v][md]amix=inputs=2:duration=first:normalize=0' % (gesamt, fo, gesamt))
+        try:
+            subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', ton, '-stream_loop', '-1', '-i', musik,
+                            '-filter_complex', fk, mix], check=True)
+            ton = mix
+        except Exception as e:
+            print('Musik übersprungen:', e)
 
     # vorbereiten
     mods = {}
