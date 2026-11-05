@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Erstellt jeden Morgen das Facebook-Vorhersagebild + Text für die Wetterstation Bad König.
+"""Erstellt jeden Morgen das Facebook-Vorhersagebild + Text für die Private Wetterstation Bad König.
 Ausgabe: fb/post.jpg, fb/post.txt, fb/post.json
 Quellen: DWD ICON (Open-Meteo), Korrektur mit Messwerten der Station IBADKN33 (Weather Underground),
 amtliche Warnungen des DWD (Bright Sky)."""
@@ -234,7 +234,7 @@ def bild(days, warn, path, labels=('HEUTE', 'MORGEN'), kopf=None, nacht=False):
         w = dr.textlength(t, font=f)
         if sh: dr.text(((W - w) / 2 + 2, y + 3), t, font=f, fill=(30, 60, 100))
         dr.text(((W - w) / 2, y), t, font=f, fill=fill)
-    ct('Wetterstation Bad König', 50, font(66, True))
+    ct('Private Wetterstation Bad König', 50, font(60, True))
     ct(kopf or dat, 140, font(40))
     # zwei Karten
     for k, d in enumerate(days[:2]):

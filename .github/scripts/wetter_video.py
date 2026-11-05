@@ -608,7 +608,7 @@ def kopfband(heute, special, titel=None):
     dr.rectangle([0, 120, W, 128], fill=(245, 175, 40, 255))
     schatten_text(dr, (28, 75), titel or ('WETTER-SPECIAL' if special else 'ODENWALD-WETTER'), F(40), anchor='lm')
     dr.text((W - 30, 75), '%d.%d.%d' % (heute.day, heute.month, heute.year), font=F(24, False), fill=(230, 238, 250), anchor='rm')
-    dr.text((30, 150), 'Wetterstation Bad König', font=F(22), fill=(255, 255, 255), anchor='lm', stroke_width=3, stroke_fill=(20, 40, 70))
+    dr.text((30, 150), 'Private Wetterstation Bad König', font=F(22), fill=(255, 255, 255), anchor='lm', stroke_width=3, stroke_fill=(20, 40, 70))
     return im
 
 
