@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Postet Beiträge automatisch auf die Facebook-Seite „Wetterstation Bad König“.
+"""Postet Beiträge automatisch auf die Facebook-Seite „Private Wetterstation Bad König“.
 
 Zwei Wege – welcher aktiv ist, entscheiden allein die GitHub-Secrets:
   B) FB_PAGE_TOKEN (+ FB_PAGE_ID) gesetzt  -> direkt über die Facebook Graph API (Entwicklerkonto)
