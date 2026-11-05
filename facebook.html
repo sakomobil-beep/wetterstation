@@ -57,6 +57,11 @@
   <p class="sub" id="stand">wird geladen …</p>
   <p class="sub"><a href="tiktok.html" style="color:#fff;font-weight:700">🎵 Zum TikTok-Abendvideo →</a></p>
 
+  <div class="card" id="letzte" style="margin:0 0 16px;font-size:.95rem;color:#24507f">
+    <div class="vhead">🕒 Zuletzt erstellt</div>
+    <div id="letzteListe">wird geladen …</div>
+  </div>
+
   <div class="raster">
     <section class="spalte">
       <h2 class="sp">⚡ Aktuelle Hinweise</h2>
@@ -97,6 +102,24 @@
 </main>
 <div id="ok"></div>
 <script>
+(function () {
+  var q = '?v=' + Date.now(), quellen = [
+    ['☀️ Morgen-Beitrag', 'fb/post.json'], ['🎬 Wettervideo', 'fb/wetter.json'],
+    ['🌙 Abendbeitrag', 'fb/abend.json'], ['⚡ Sondermeldungen (Prüfung)', 'fb/sonder.json']];
+  Promise.all(quellen.map(function (x) {
+    return fetch(x[1] + q, { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+  })).then(function (res) {
+    var heute = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
+    document.getElementById('letzteListe').innerHTML = quellen.map(function (x, i) {
+      var j = res[i];
+      if (!j || !j.erstellt) return '<div>' + x[0] + ': –</div>';
+      var d = new Date(j.erstellt), tag = d.toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
+      var t = (tag === heute ? 'heute' : d.toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit', timeZone: 'Europe/Berlin' })) +
+        ', ' + d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Berlin' }) + ' Uhr';
+      return '<div>' + x[0] + ': <b' + (tag !== heute ? ' style="color:#b45309"' : '') + '>' + t + '</b></div>';
+    }).join('');
+  });
+})();
 (function () {
   var v = Date.now(), img = 'fb/post.jpg?v=' + v, blob = null;
   function toast(t) { var o = document.getElementById('ok'); o.textContent = t; o.style.opacity = 1; setTimeout(function () { o.style.opacity = 0; }, 1800); }
