@@ -11,12 +11,25 @@
   * { box-sizing:border-box; }
   body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; color:var(--text);
          background:linear-gradient(#3d8fd0,#a9d5f2 70%,#e4d2b2); min-height:100vh; }
-  main { max-width:620px; margin:0 auto; padding:20px 14px 40px; }
+  main { max-width:1240px; margin:0 auto; padding:20px 14px 40px; }
+  .raster { display:grid; grid-template-columns:1fr; gap:14px; align-items:start; }
+  .raster > div, .raster > section { min-width:0; }
+  .spalte > .card, .spalte > div > .card { margin-bottom:14px; }
+  @media (min-width:900px) { .raster { grid-template-columns:1fr 1fr; } }
+  @media (min-width:1200px) { .raster { grid-template-columns:1fr 1fr 1fr; } }
+  .datum { display:inline-block; background:#eef4fb; color:#24507f; border-radius:20px; padding:3px 10px;
+           font-size:.8rem; font-weight:700; margin:0 0 10px; }
+  .datum.alt { background:#fff3e0; color:#b45309; }
+  .frost { border:3px solid #0288d1; } .frost .vhead { color:#01579b; }
+  .frost img { margin-bottom:12px; }
+  .frost .werte { display:flex; flex-wrap:wrap; gap:6px; margin:0 0 10px; }
+  .frost .werte span { background:#e1f5fe; color:#01579b; border-radius:10px; padding:4px 9px; font-size:.82rem; font-weight:600; }
+  h2.sp { color:#fff; font-size:1rem; margin:0 0 8px 4px; text-shadow:0 1px 2px #1e3c64; }
   h1 { color:#fff; text-align:center; font-size:1.5rem; margin:6px 0 2px; text-shadow:0 2px 3px #1e3c64; }
   .sub { color:#eef6ff; text-align:center; margin:0 0 16px; font-size:.95rem; }
   .card { background:#fff; border-radius:18px; padding:14px; box-shadow:0 6px 20px rgba(20,50,90,.18); margin-bottom:14px; }
   img { width:100%; border-radius:12px; display:block; }
-  textarea { width:100%; min-height:220px; border:1px solid #cfdbe8; border-radius:12px; padding:12px;
+  textarea { width:100%; min-height:180px; border:1px solid #cfdbe8; border-radius:12px; padding:12px;
              font:inherit; font-size:.95rem; color:var(--text); resize:vertical; }
   .btns { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
   button, a.btn { border:0; border-radius:12px; padding:14px 10px; font:inherit; font-weight:700; font-size:1rem;
@@ -44,31 +57,42 @@
   <p class="sub" id="stand">wird geladen …</p>
   <p class="sub"><a href="tiktok.html" style="color:#fff;font-weight:700">🎵 Zum TikTok-Abendvideo →</a></p>
 
-  <div id="sonderBox"></div>
-  <div id="abendBox"></div>
-
-  <div class="card" id="vidCard" hidden>
-    <div class="vhead" id="vTitel">🎬 Video-Wetterbericht</div>
-    <video id="vid" controls playsinline preload="metadata"></video>
-    <div class="btns">
-      <button class="prim" id="vTeilen">📤 Video teilen</button>
-      <a class="btn sec" id="vLaden" download="odenwald-wetter.mp4" style="grid-column:1 / -1">💾 Video speichern</a>
-    </div>
-    <p class="hint">Tipp: Auf Facebook als <b>Reel</b> hochladen – das Video ist hochkant (9:16) dafür gemacht.</p>
-  </div>
-
-  <div class="card"><img id="bild" alt="Vorhersagebild für Facebook"></div>
-
-  <div class="card">
-    <textarea id="text" aria-label="Beitragstext"></textarea>
-    <div class="btns">
-      <button class="prim" id="teilen">📤 Teilen (Bild + Text)</button>
-      <button class="sec" id="kopieren">📋 Text kopieren</button>
-      <a class="btn sec" id="laden" download="wetter-bad-koenig.jpg">💾 Bild speichern</a>
-    </div>
-    <p class="hint">Am Handy: <b>„Teilen“</b> antippen → Facebook wählen → als Seite „Private Wetterstation Bad König“ posten.
-      Falls Facebook den Text nicht übernimmt: vorher „Text kopieren“ und im Beitrag einfügen.
-      Den Text kannst du oben vor dem Teilen noch ändern.</p>
+  <div class="raster">
+    <section class="spalte">
+      <h2 class="sp">⚡ Aktuelle Hinweise</h2>
+      <div id="sonderBox"></div>
+      <div id="frostBox"></div>
+    </section>
+    <section class="spalte">
+      <h2 class="sp">🌙 Abend</h2>
+      <div id="abendBox"><div class="card ruhig" style="color:#5a6b80">Der Abendbeitrag erscheint gegen 18 Uhr.</div></div>
+    </section>
+    <section class="spalte">
+      <h2 class="sp">☀️ Morgen-Beitrag &amp; Video</h2>
+      <div class="card" id="vidCard" hidden>
+        <div class="vhead" id="vTitel">🎬 Video-Wetterbericht</div>
+        <div class="datum" id="vDatum"></div>
+        <video id="vid" controls playsinline preload="metadata"></video>
+        <div class="btns">
+          <button class="prim" id="vTeilen">📤 Video teilen</button>
+          <a class="btn sec" id="vLaden" download="odenwald-wetter.mp4" style="grid-column:1 / -1">💾 Video speichern</a>
+        </div>
+        <p class="hint">Tipp: Auf Facebook als <b>Reel</b> hochladen – das Video ist hochkant (9:16) dafür gemacht.</p>
+      </div>
+      <div class="card">
+        <div class="vhead">🖼️ Tagesbeitrag</div>
+        <div class="datum" id="tDatum">–</div>
+        <img id="bild" alt="Vorhersagebild für Facebook" style="margin-bottom:12px">
+        <textarea id="text" aria-label="Beitragstext"></textarea>
+        <div class="btns">
+          <button class="prim" id="teilen">📤 Teilen (Bild + Text)</button>
+          <button class="sec" id="kopieren">📋 Text kopieren</button>
+          <a class="btn sec" id="laden" download="wetter-bad-koenig.jpg">💾 Bild speichern</a>
+        </div>
+        <p class="hint">Am Handy: <b>„Teilen“</b> antippen → Facebook wählen → als Seite „Private Wetterstation Bad König“ posten.
+          Falls Facebook den Text nicht übernimmt: vorher „Text kopieren“ und im Beitrag einfügen.</p>
+      </div>
+    </section>
   </div>
 </main>
 <div id="ok"></div>
@@ -76,11 +100,19 @@
 (function () {
   var v = Date.now(), img = 'fb/post.jpg?v=' + v, blob = null;
   function toast(t) { var o = document.getElementById('ok'); o.textContent = t; o.style.opacity = 1; setTimeout(function () { o.style.opacity = 0; }, 1800); }
+  function datumTxt(iso) {
+    var d = new Date(iso), h = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
+    var tag = d.toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
+    var t = (tag === h ? 'Heute, ' : '') + d.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) +
+      ' · ' + d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) + ' Uhr';
+    return { t: '📅 ' + t, alt: tag !== h };
+  }
+  function setzeDatum(el, iso) { var x = datumTxt(iso); el.textContent = x.t + (x.alt ? ' (nicht von heute!)' : ''); el.className = 'datum' + (x.alt ? ' alt' : ''); }
   document.getElementById('bild').src = img;
   document.getElementById('laden').href = img;
   fetch('fb/post.json?v=' + v, { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
     document.getElementById('text').value = j.text;
-    var d = new Date(j.erstellt);
+    var d = new Date(j.erstellt); setzeDatum(document.getElementById('tDatum'), j.erstellt);
     document.getElementById('stand').textContent = 'Erstellt am ' + d.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' }) +
       ' um ' + d.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) + ' Uhr';
   }).catch(function () { document.getElementById('stand').textContent = 'Noch kein Beitrag vorhanden.'; });
@@ -91,6 +123,7 @@
     var t = document.getElementById('vTitel');
     t.textContent = (n === 'special' ? '⚠️ Wetter-Special' : j.special ? '⚠️ Video-Wetterbericht mit Special' : '🎬 Video-Wetterbericht') + ' · ' + Math.round(j.dauer) + ' Sek.';
     t.className = 'vhead' + (n === 'special' || j.special ? ' sp' : '');
+    if (j.erstellt) setzeDatum(document.getElementById('vDatum'), j.erstellt); else document.getElementById('vDatum').hidden = true;
     document.getElementById('vidCard').hidden = false;
     fetch(src, { cache: 'no-store' }).then(function (r) { return r.blob(); }).then(function (b) { vblob = b; }).catch(function () {});
   }
@@ -125,7 +158,7 @@
     var c = document.createElement('div'), src = 'fb/abend.jpg?v=' + v, b = null;
     var stand = new Date(j.erstellt).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
     c.className = 'card abend';
-    c.innerHTML = '<div class="vhead">🌙 Abendbeitrag – Ausblick</div><img alt="Abendbeitrag"><textarea aria-label="Text des Abendbeitrags" rows="14"></textarea>' +
+    c.innerHTML = '<div class="vhead">🌙 Abendbeitrag – Ausblick</div><div class="datum">' + datumTxt(j.erstellt).t + '</div><img alt="Abendbeitrag"><textarea aria-label="Text des Abendbeitrags" rows="14"></textarea>' +
       '<div class="btns"><button class="prim">📤 Abendbeitrag teilen</button><button class="sec">📋 Text kopieren</button>' +
       '<a class="btn sec" download="wetter-abend.jpg">💾 Bild speichern</a></div>' +
       '<p class="hint">Erstellt um ' + stand + ' Uhr · wird automatisch auf Facebook gepostet.</p>';
@@ -143,8 +176,112 @@
         toast('Text kopiert ✓ – Bild bitte speichern und auf Facebook hochladen');
       });
     };
-    document.getElementById('abendBox').appendChild(c);
+    document.getElementById('abendBox').innerHTML = ''; document.getElementById('abendBox').appendChild(c);
   }).catch(function () {});
+
+  // ---- Frost-/Nebel-Hinweis (persönliche Empfehlung, keine amtliche Warnung) ----
+  (function () {
+    var box = document.getElementById('frostBox');
+    var url = 'https://api.open-meteo.com/v1/forecast?latitude=49.750&longitude=9.017&timezone=Europe%2FBerlin&forecast_days=3' +
+      '&hourly=temperature_2m,dew_point_2m,visibility,weather_code,precipitation,wind_speed_10m,relative_humidity_2m';
+    var jetzt = new Date(), std = +jetzt.toLocaleString('de-DE', { hour: 'numeric', hour12: false, timeZone: 'Europe/Berlin' });
+    var ziel = new Date(jetzt.getTime() + (std >= 9 ? 864e5 : 0));
+    var zielTag = ziel.toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
+    var morgenWort = std >= 9 ? 'Morgen früh' : 'Heute früh';
+    var tagName = ziel.toLocaleDateString('de-DE', { weekday: 'long', timeZone: 'Europe/Berlin' });
+    var datumLang = ziel.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Berlin' });
+    Promise.all([
+      fetch(url).then(function (r) { return r.json(); }),
+      fetch('fb/daten-abend.json?v=' + v, { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
+    ]).then(function (res) {
+      var h = res[0].hourly, tmin = 99, sicht = 99999, nebel = false, glatt = false, feucht = 0, wind = 0, n = 0;
+      h.time.forEach(function (t, i) {
+        var hh = +t.slice(11, 13);
+        if (t.slice(0, 10) !== zielTag || hh > 9) return;
+        n++; tmin = Math.min(tmin, h.temperature_2m[i]); sicht = Math.min(sicht, h.visibility[i]);
+        if (h.weather_code[i] === 45 || h.weather_code[i] === 48 || h.visibility[i] < 1000) nebel = true;
+        if (h.precipitation[i] > 0 && h.temperature_2m[i] <= 1) glatt = true;
+        if (h.temperature_2m[i] - h.dew_point_2m[i] < 2) feucht++;
+        wind = Math.max(wind, h.wind_speed_10m[i]);
+      });
+      var tg = res[1] && res[1].tage && res[1].tage.filter(function (x) { return x.datum === zielTag; })[0];
+      if (tg && tg.tmin != null) tmin = Math.min(tmin, tg.tmin);
+      if (tg && (tg.code === 45 || tg.code === 48)) nebel = true;
+      if (!n) throw 0;
+      var reif = tmin <= 3 && feucht >= 2 && wind < 12;   // Bodenfrost/Reif auch bei leichten Plusgraden
+      var frost = tmin <= 1, kratz = frost || reif;
+      var stand = jetzt.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+      if (!kratz && !nebel && !glatt) {
+        box.innerHTML = '<div class="card ruhig">❄️ Kein Frost erwartet – ' + morgenWort.toLowerCase() + ' (' + tagName + ') voraussichtlich frostfrei, tiefster Wert um ' +
+          Math.round(tmin) + ' °C <small style="color:#5a6b80;font-weight:400">(geprüft ' + stand + ' Uhr)</small></div>';
+        return;
+      }
+      var tr = Math.round(tmin), tt = (tr <= 0 ? '' : '+') + tr + ' °C';
+      var zeilen = [];
+      zeilen.push('❄️ Kleiner Hinweis für ' + morgenWort.toLowerCase() + ' (' + tagName + ')');
+      zeilen.push('');
+      if (kratz) zeilen.push('🌡️ Die Temperaturen gehen in der Nacht auf etwa ' + tt + ' zurück' + (frost ? ' – es kann Frost geben.' : ', in Bodennähe kann es trotzdem frieren.'));
+      if (kratz) zeilen.push('🧊 Plant am besten ein paar Minuten zum Scheibenkratzen ein, bevor ihr losfahrt.');
+      if (glatt) zeilen.push('⚠️ Dazu ist etwas Niederschlag möglich – auf Brücken, in Waldstücken und auf Nebenstraßen kann es glatt werden.');
+      else if (frost) zeilen.push('🛣️ Auf Brücken, in Senken und im Wald kann es stellenweise glatt sein.');
+      if (nebel) zeilen.push('🌫️ Auch Nebel ist möglich' + (sicht < 500 ? ', teils mit Sichtweiten unter 500 m' : '') + ' – Licht an und Abstand halten.');
+      zeilen.push('');
+      zeilen.push('🚗 Wer früh zur Arbeit oder zur Schule fährt: etwas mehr Zeit einplanen und vorsichtig fahren!');
+      zeilen.push('');
+      zeilen.push('Das ist keine amtliche Warnung, nur eine Empfehlung von eurer privaten Wetterstation. 😊');
+      zeilen.push('Kommt gut an! 👋');
+      zeilen.push('');
+      zeilen.push('🌐 wetter-badkoenig.de');
+      zeilen.push('#BadKönig #Odenwald #Wetter #Frost');
+      var text = zeilen.join('\n');
+
+      // Bild zeichnen (1080 × 1080)
+      var cv = document.createElement('canvas'); cv.width = cv.height = 1080; var g = cv.getContext('2d');
+      var gr = g.createLinearGradient(0, 0, 0, 1080); gr.addColorStop(0, '#0d47a1'); gr.addColorStop(.6, '#4fc3f7'); gr.addColorStop(1, '#e1f5fe');
+      g.fillStyle = gr; g.fillRect(0, 0, 1080, 1080);
+      g.fillStyle = 'rgba(255,255,255,.55)';
+      for (var k = 0; k < 90; k++) { var x = (k * 397) % 1080, y = (k * 211) % 760; g.beginPath(); g.arc(x, y, 2 + (k % 4), 0, 7); g.fill(); }
+      g.textAlign = 'center'; g.fillStyle = '#fff'; g.shadowColor = 'rgba(0,30,80,.5)'; g.shadowBlur = 12;
+      g.font = '700 46px system-ui, sans-serif'; g.fillText('Private Wetterstation Bad König', 540, 90);
+      g.font = '170px system-ui, sans-serif'; g.fillText(nebel && !kratz ? '🌫️' : '❄️', 540, 300);
+      g.font = '800 82px system-ui, sans-serif'; g.fillText(morgenWort + ':', 540, 430);
+      g.fillText(kratz ? 'Kratzen einplanen!' : 'Nebel möglich!', 540, 525);
+      g.font = '700 56px system-ui, sans-serif'; g.fillText('Tiefstwert um ' + tt, 540, 625);
+      var info = [frost ? '🧊 Frost / Glätte möglich' : (kratz ? '🧊 Reif auf den Scheiben möglich' : ''), nebel ? '🌫️ Nebel möglich' : ''].filter(Boolean).join('   ');
+      g.font = '600 44px system-ui, sans-serif'; g.fillText(info, 540, 705);
+      g.shadowBlur = 0; g.fillStyle = 'rgba(255,255,255,.92)'; g.beginPath(); g.roundRect ? g.roundRect(90, 780, 900, 180, 30) : g.rect(90, 780, 900, 180); g.fill();
+      g.fillStyle = '#01579b'; g.font = '700 46px system-ui, sans-serif'; g.fillText('🚗 Fahrt vorsichtig & plant Zeit ein', 540, 855);
+      g.font = '500 34px system-ui, sans-serif'; g.fillStyle = '#37587a'; g.fillText(datumLang + ' · Empfehlung, keine amtliche Warnung', 540, 915);
+      g.fillStyle = '#01579b'; g.font = '700 40px system-ui, sans-serif'; g.fillText('wetter-badkoenig.de', 540, 1035);
+      var src = cv.toDataURL('image/jpeg', .9), b = null;
+      cv.toBlob(function (x) { b = x; }, 'image/jpeg', .9);
+
+      var c = document.createElement('div'); c.className = 'card frost';
+      c.innerHTML = '<div class="vhead">' + (kratz ? '❄️' : '🌫️') + ' Hinweis: ' + (kratz ? 'Frost / Kratzen' : 'Nebel') + ' für ' + morgenWort.toLowerCase() +
+        '<span class="badge mod" style="display:inline-block;font-size:.75rem;font-weight:700;padding:3px 9px;border-radius:20px;margin-left:6px;background:#e1f5fe;color:#01579b">deine Empfehlung</span></div>' +
+        '<div class="datum">📅 Für ' + datumLang + ' · berechnet ' + stand + ' Uhr</div>' +
+        '<div class="werte"><span>🌡️ Tiefstwert ' + tt + '</span>' + (frost ? '<span>🧊 Frost</span>' : reif ? '<span>🧊 Reif möglich</span>' : '') +
+        (nebel ? '<span>🌫️ Sicht ab ' + (sicht >= 1000 ? Math.round(sicht / 1000) + ' km' : Math.round(sicht / 10) * 10 + ' m') + '</span>' : '') + (glatt ? '<span>⚠️ Glätte</span>' : '') + '</div>' +
+        '<img alt="Frost-Hinweis"><textarea aria-label="Text des Frost-Hinweises" rows="12"></textarea>' +
+        '<div class="btns"><button class="prim">📤 Hinweis teilen</button><button class="sec">📋 Text kopieren</button>' +
+        '<a class="btn sec" download="frost-hinweis.jpg">💾 Bild speichern</a></div>' +
+        '<p class="hint">Wird nicht automatisch gepostet – du entscheidest selbst. Text vorher gern anpassen.</p>';
+      c.querySelector('img').src = src; c.querySelector('a').href = src;
+      var ta = c.querySelector('textarea'); ta.value = text;
+      var bt = c.querySelectorAll('button');
+      bt[1].onclick = function () { kopieren(ta).then(function () { toast('Text kopiert ✓'); }); };
+      bt[0].onclick = function () {
+        kopieren(ta).finally(function () {
+          if (b && navigator.canShare) {
+            var f = new File([b], 'frost-hinweis.jpg', { type: 'image/jpeg' });
+            if (navigator.canShare({ files: [f] })) { navigator.share({ files: [f], text: ta.value }).catch(function () {}); return; }
+          }
+          toast('Text kopiert ✓ – Bild bitte speichern und auf Facebook hochladen');
+        });
+      };
+      box.appendChild(c);
+    }).catch(function () { box.innerHTML = '<div class="card ruhig" style="color:#5a6b80">Frost-Check gerade nicht möglich.</div>'; });
+  })();
 
   // ---- Wetter-Sondermeldungen (Gewitter, Schnee, Glätte, Sturm …) ----
   fetch('fb/sonder.json?v=' + v, { cache: 'no-store' }).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (j) {
@@ -160,7 +297,7 @@
       c.className = 'card sonder';
       c.innerHTML = '<div class="vhead">' + m.emoji + ' Sondermeldung: ' + m.titel +
         '<span class="badge ' + (m.amtlich ? 'amt">amtliche DWD-Warnung' : 'mod">laut Vorhersage') + '</span></div>' +
-        '<img alt="Sondermeldung ' + m.titel + '"><textarea aria-label="Text der Sondermeldung"></textarea>' +
+        '<div class="datum">' + datumTxt(j.erstellt).t + '</div><img alt="Sondermeldung ' + m.titel + '"><textarea aria-label="Text der Sondermeldung"></textarea>' +
         '<div class="btns"><button class="prim">📤 Sondermeldung teilen</button><button class="sec">📋 Text kopieren</button>' +
         '<a class="btn sec" download="sondermeldung-' + m.typ + '.jpg">💾 Bild speichern</a></div>' +
         '<p class="hint">Stand ' + stand + ' Uhr · wird stündlich neu geprüft.</p>';
