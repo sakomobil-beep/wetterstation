@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Erstellt jeden Morgen das Facebook-Vorhersagebild + Text für die Private Wetterstation Bad König.
 Ausgabe: fb/post.jpg, fb/post.txt, fb/post.json
-Quellen: DWD ICON (Open-Meteo), Korrektur mit Messwerten der Station IBADKN33 (Weather Underground),
+Quellen: Präzisions-Vorhersage wie auf der Website (0–48 h DWD ICON-D2 + MOSMIX, lernende Korrektur mit Messwerten der Station IBADKN33), danach DWD ICON (Open-Meteo),
 amtliche Warnungen des DWD (Bright Sky)."""
 import json, os, sys, math, statistics, urllib.request, datetime as dt
 from zoneinfo import ZoneInfo
@@ -46,7 +46,8 @@ def load():
     except Exception as e:
         print('Stationskorrektur nicht möglich:', e)
         st = []
-    stunden = korrigierte_stunden(om, st)
+    nah, wf = praezision(om, st)
+    stunden = korrigierte_stunden(om, st, nah)
     warn = []
     try:
         al = get('https://api.brightsky.dev/alerts?lat=%s&lon=%s' % (LAT, LON)).get('alerts') or []
@@ -68,15 +69,62 @@ def load():
             code=(2 if D['weather_code'][i] == 3 and (D['sunshine_duration'][i] or 0) >= 4 * 3600 else 1 if D['weather_code'][i] in (2, 3) and (D['sunshine_duration'][i] or 0) >= 7 * 3600 else D['weather_code'][i]),
             tmax=round(max(stunden[D['time'][i]]) if stunden.get(D['time'][i]) else D['temperature_2m_max'][i] + bias['tag']),
             tmin=round(min(stunden[D['time'][i]]) if stunden.get(D['time'][i]) else D['temperature_2m_min'][i] + bias['nacht']),
-            regen=D['precipitation_sum'][i] or 0,
+            regen=tagwert(nah, D['time'][i], 'regen', sum, D['precipitation_sum'][i] or 0),
             rp=D['precipitation_probability_max'][i] or 0,
-            boe=D['wind_gusts_10m_max'][i] or 0,
+            boe=tagwert(nah, D['time'][i], 'boe', max, D['wind_gusts_10m_max'][i] or 0, wf),
             sonne=(D['sunshine_duration'][i] or 0) / 3600,
             schnee=D['snowfall_sum'][i] or 0, rp_vm=teil(6, 12), rp_nm=teil(12, 18), rp_ab=teil(18, 24)))
     return days, warn
 
 
-def korrigierte_stunden(om, st):
+def praezision(om, st):
+    """Wie die Präzisions-Vorhersage der Website: für 0–48 h DWD ICON-D2 (70 %) + DWD MOSMIX (30 %),
+    Regen 60/40, Böen mit dem an der Station gelernten Windfaktor. Liefert {'JJJJ-MM-TTTHH': {...}}, Windfaktor."""
+    nah, wf = {}, 1.0
+    try:
+        d2 = get('https://api.open-meteo.com/v1/forecast?latitude=%s&longitude=%s&models=icon_d2'
+                 '&hourly=temperature_2m,precipitation,wind_speed_10m,wind_gusts_10m&past_days=1&forecast_days=2'
+                 '&timezone=Europe%%2FBerlin' % (LAT, LON))['hourly']
+    except Exception as e:
+        print('ICON-D2 nicht abrufbar:', e); return nah, wf
+    mos = {}
+    try:
+        h = dt.datetime.now(TZ).date()
+        for r in get('https://api.brightsky.dev/weather?lat=%s&lon=%s&date=%s&last_date=%s&tz=Europe/Berlin'
+                     % (LAT, LON, (h - dt.timedelta(days=1)).isoformat(), (h + dt.timedelta(days=2)).isoformat())).get('weather') or []:
+            mos[r['timestamp'][:13]] = r
+    except Exception as e:
+        print('MOSMIX nicht abrufbar:', e)
+    def mix(a, b, wa):
+        if a is None: return b
+        return a if b is None else wa * a + (1 - wa) * b
+    for k, t in enumerate(d2['time']):
+        m = mos.get(t[:13], {})
+        nah[t[:13]] = dict(t2=d2['temperature_2m'][k], tm=m.get('temperature'),
+                           regen=mix(d2['precipitation'][k], m.get('precipitation'), 0.6),
+                           boe=mix(d2['wind_gusts_10m'][k], m.get('wind_gust_speed'), 0.7))
+    # Windfaktor: Stationswind / Modellwind der letzten 7 Tage (wie auf der Website)
+    try:
+        idx = {t[:13]: i for i, t in enumerate(om['hourly']['time'])}
+        sw = mw = 0
+        for o in st:
+            i = idx.get(dt.datetime.fromtimestamp(o['epoch'], TZ).strftime('%Y-%m-%dT%H'))
+            v = (o.get('metric') or {}).get('windspeedAvg'); mv = om['hourly']['wind_speed_10m'][i] if i is not None else None
+            if v is not None and mv is not None and mv > 3: sw += v; mw += mv
+        if mw > 20: wf = max(0.4, min(1.5, sw / mw))
+    except Exception:
+        pass
+    return nah, wf
+
+
+def tagwert(nah, tag, feld, fn, ersatz, faktor=1.0):
+    """Tageswert aus den Präzisionsstunden – nur wenn der Tag komplett abgedeckt ist, sonst Tageswert des Modells."""
+    v = [x[feld] for t, x in nah.items() if t[:10] == tag and x[feld] is not None]
+    if len(v) < 24: return ersatz
+    return round(fn(v) * faktor, 1)
+
+
+def korrigierte_stunden(om, st, nah=None):
     """Stündliche Temperaturen je Tag: vergangene Stunden = Messwerte der Station,
     künftige = Modell + gelernte Korrektur nach Wetterlage (data/lernen-bias.json) + Anker am aktuellen Messwert."""
     try:
@@ -104,7 +152,12 @@ def korrigierte_stunden(om, st):
         if zt <= jetzt - dt.timedelta(hours=1) and t[:13] in gemessen:
             v = gemessen[t[:13]]
         else:
-            v = m + B['bias'][lage(Hh['cloud_cover'][k], Hh['wind_speed_10m'][k])][block(zt.hour)]
+            b_ = B['bias'][lage(Hh['cloud_cover'][k], Hh['wind_speed_10m'][k])][block(zt.hour)]
+            p_ = (nah or {}).get(t[:13]) or {}
+            if p_.get('t2') is not None:   # 0–48 h: ICON-D2 korrigiert 70 % + MOSMIX 30 %
+                v = p_['t2'] + b_ if p_.get('tm') is None else 0.7 * (p_['t2'] + b_) + 0.3 * p_['tm']
+            else:
+                v = m + b_
             dh = (zt - jetzt).total_seconds() / 3600
             if anker is None and jetzt_t is not None and dh >= -1:
                 anker = max(-8, min(8, jetzt_t - v))
