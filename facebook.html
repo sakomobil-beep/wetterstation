@@ -214,7 +214,7 @@
     var datumLang = ziel.toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Berlin' });
     Promise.all([
       fetch(url).then(function (r) { return r.json(); }),
-      fetch('fb/daten-abend.json?v=' + v, { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
+      fetch('fb/daten.json?v=' + v, { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
     ]).then(function (res) {
       var h = res[0].hourly, tmin = 99, sicht = 99999, nebel = false, glatt = false, feucht = 0, wind = 0, n = 0;
       h.time.forEach(function (t, i) {

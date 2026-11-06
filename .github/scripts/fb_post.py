@@ -389,9 +389,6 @@ def abend(now):
     txt = text_abend(paar, wochenende, warn, days[3:6])
     open(os.path.join(OUT, 'abend.txt'), 'w', encoding='utf-8').write(txt)
     json.dump({'erstellt': now.isoformat(timespec='minutes'), 'text': txt}, open(os.path.join(OUT, 'abend.json'), 'w', encoding='utf-8'), ensure_ascii=False)
-    # frische Daten für das abendliche TikTok-Video (wetter_video.py --abend)
-    json.dump({'erstellt': now.isoformat(timespec='minutes'), 'warn': warn, 'tage': [dict(d, datum=d['datum'].isoformat()) for d in days]},
-              open(os.path.join(OUT, 'daten-abend.json'), 'w', encoding='utf-8'), ensure_ascii=False)
     print(txt)
 
 

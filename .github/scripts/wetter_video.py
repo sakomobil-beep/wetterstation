@@ -269,77 +269,6 @@ def skript(days, warn, heute, nur_special=False):
     return seg
 
 
-def skript_abend(days, warn, heute):
-    """Abendvideo (TikTok): Ausblick auf morgen, freitags aufs Wochenende."""
-    rnd = random.Random('abend' + heute.isoformat())
-    b = days[1]; morgen = b['datum']
-    wt = TAGE[morgen.weekday()]
-    seg = []
-    w = wort(b['code'])
-    if warn: hook = 'Achtung, Odenwald! Für morgen gibt es eine Wetterwarnung – bleibt dran!'
-    elif w == 'Schnee' or b['schnee'] >= 1: hook = 'Schnee im Odenwald? Morgen könnte es so weit sein – bleibt dran!'
-    elif w == 'Gewitter': hook = 'Morgen kracht es im Odenwald! Wann die Gewitter kommen – jetzt!'
-    elif b['boe'] >= 55: hook = 'Haltet eure Mützen fest – morgen wird es stürmisch im Odenwald!'
-    elif b['tmin'] <= 0: hook = 'Eiskratzer bereit? Morgen früh wird es frostig im Odenwald!'
-    elif b['rp'] >= 60: hook = 'Schirm oder nicht? Ich sag euch, wann es morgen im Odenwald regnet!'
-    elif b['tmax'] >= 25: hook = 'Sonnencreme raus – morgen wird es richtig warm im Odenwald!'
-    elif b['rp'] < 20 and w in ('sonnig', 'heiter bis wolkig'): hook = 'Morgen wird ein Ausflugstag im Odenwald – und ich hab den perfekten Tipp!'
-    else: hook = rnd.choice(['Was macht das Wetter morgen im Odenwald? In 30 Sekunden wisst ihr es!', 'Wetter für morgen in 30 Sekunden – los geht es!'])
-    seg.append(dict(art='intro', bg='schloss', text=hook + ' Hier ist euer Max mit dem Wetter für %s.' % wt))
-    if warn:
-        seg.append(dict(art='special', karte='DWD warnt: ' + '. '.join(warn[:2]), bg='sturm',
-                        text='Aber zuerst: Der Deutsche Wetterdienst warnt: %s.' % '. '.join(warn[:2])))
-    t = tagtext(b, 'Morgen')
-    if days[0]['tmin'] <= 0 or b['tmin'] <= 0:
-        t += ' Denkt morgen früh ans Scheibenkratzen!'
-    seg.append(dict(art='tag', tag=b, titel='MORGEN', bg='auto', text=t))
-    seg.append(dict(art='tipp', tag=b, bg='wald' if b['rp'] < 40 else 'schloss',
-                    text=rnd.choice(['Mein Tipp für morgen: ', 'Max-Tipp für morgen: ']) + tipp(b, rnd, morgen) + max_privat(b, rnd, morgen)))
-    if heute.weekday() == 4 and len(days) >= 3:   # Freitag: Wochenende
-        sa, so = days[1], days[2]
-        gut = [n for n, d in (('Samstag', sa), ('Sonntag', so)) if d['rp'] < 40]
-        t = 'Und am Sonntag: %s bei %s Grad.' % (wort(so['code']), zahl(so['tmax']))
-        t += (' Euer Ausflugstag ist der %s!' % gut[0]) if len(gut) == 1 else (' Das ganze Wochenende passt für draußen!' if gut else ' Plant fürs Wochenende lieber etwas für drinnen ein.')
-        seg.append(dict(art='wochenende', tage=[sa, so], bg='hoehen', text=t))
-    elif len(days) >= 3:
-        c = days[2]
-        seg.append(dict(art='tag', tag=c, titel='ÜBERMORGEN', bg='hoehen',
-                        text='Übermorgen, am %s, gibt es %s bei %s Grad.' % (TAGE[c['datum'].weekday()], art(c), zahl(c['tmax']))))
-    if w == 'Gewitter' or b['boe'] >= 60: ab = 'Passt morgen gut auf euch auf. Gute Nacht!'
-    elif w == 'Schnee' or b['schnee'] >= 1: ab = 'Schlitten bereitstellen – und gute Nacht!'
-    elif b['rp'] >= 60: ab = 'Schirm schon mal an die Tür stellen. Gute Nacht!'
-    else: ab = rnd.choice(['Rucksack packen und gut schlafen!', 'Schlaft gut – morgen geht es raus!'])
-    nass = b['rp'] >= 60 or w in ('Regen', 'Schauer', 'Gewitter', 'Schnee')
-    frage = rnd.choice(['Was macht ihr morgen bei dem Wetter? Schreibt es mir in die Kommentare!',
-                        'Sofa oder Therme? Verratet es mir in den Kommentaren!'] if nass else
-                       ['Wo geht ihr morgen hin? Schreibt mir euren Lieblingsplatz im Odenwald in die Kommentare!',
-                        'Wanderschuhe oder Sofa? Schreibt es mir in die Kommentare!',
-                        'Welchen Ausflugstipp habt ihr für morgen? Ab damit in die Kommentare!'])
-    seg.append(dict(art='cta', bg='schloss',
-                    text=frage + ' Und wenn euch mein Wetter gefällt: Folgen, liken und mit allen aus dem Odenwald teilen! Euer Max sagt: ' + ab))
-    return seg
-
-
-def tiktok_text(days, warn, heute):
-    b = days[1]; c = days[2] if len(days) > 2 else None
-    m = b['datum']
-    zeilen = ['🌙 Wetter für morgen im Odenwald – %s, %d.%d.' % (TAGE[m.weekday()], m.day, m.month)]
-    if warn: zeilen.append('⚠️ DWD-Warnung: ' + '. '.join(warn[:2]))
-    zeilen.append('%s %s, %s bis %s °C, Regenrisiko %d %%' % ({'sonnig': '☀️', 'heiter bis wolkig': '⛅', 'bedeckt': '☁️', 'neblig': '🌫️', 'Nieselregen': '🌦️', 'Regen': '🌧️', 'Schnee': '❄️', 'Schauer': '🌦️', 'Gewitter': '⛈️'}.get(wort(b['code']), '🌤️'), wort(b['code']), zahl(b['tmin']), zahl(b['tmax']), b['rp']))
-    if heute.weekday() == 4 and c:
-        zeilen.append('Sonntag: %s, bis %s °C' % (wort(c['code']), zahl(c['tmax'])))
-    zeilen.append('Live-Daten: wetter-badkoenig.de (Link im Profil)')
-    tags = ['#badkönig', '#odenwald', '#wetter', '#wetterbericht', '#michelstadt', '#erbach', '#odenwaldkreis', '#hessen']
-    w = wort(b['code'])
-    extra = {'Schnee': '#schnee', 'Gewitter': '#gewitter', 'Regen': '#regen', 'neblig': '#nebel', 'sonnig': '#sonne'}.get(w)
-    if extra: tags.append(extra)
-    if heute.weekday() == 4: tags.append('#wochenende')
-    return '\n'.join(zeilen) + '\n\n' + ' '.join(tags)
-
-
-# =====================================================================
-#  2) Bilder: Hintergründe, Moderator, Tafeln
-# =====================================================================
 def verlauf(w, h, oben, unten):
     a = np.linspace(0, 1, h)[:, None, None]
     arr = np.array(oben)[None, None, :] * (1 - a) + np.array(unten)[None, None, :] * a
@@ -851,13 +780,10 @@ def baue(segmente, heute, ziel, special, titel=None):
 
 
 def main():
-    abend = '--abend' in sys.argv
-    quelle = 'daten-abend.json' if abend and os.path.exists(os.path.join(FB, 'daten-abend.json')) else 'daten.json'
-    daten = json.load(open(os.path.join(FB, quelle), encoding='utf-8'))
+    daten = json.load(open(os.path.join(FB, 'daten.json'), encoding='utf-8'))
     days = [dict(d, datum=dt.date.fromisoformat(d['datum'])) for d in daten['tage']]
     warn = [' '.join(w_.capitalize() if w_.isupper() and len(w_) > 2 else w_ for w_ in x.split()) for x in (daten.get('warn') or [])]
     heute = days[0]['datum']
-    if abend: return main_abend(days, warn, heute)
     nur_special = '--special' in sys.argv
     if nur_special:
         # Mittags/Nachmittags: nur wenn eine NEUE Warnung dazukommt
@@ -882,40 +808,6 @@ def main():
               open(os.path.join(FB, name + '.json'), 'w', encoding='utf-8'), ensure_ascii=False)
     archiv(name, heute, special, warn, gesamt)
     print('Video fertig: %s (%.0f s)\n%s' % (ziel, gesamt, text))
-
-
-def main_abend(days, warn, heute):
-    """TikTok: Abendvideo mit Ausblick auf morgen -> fb/tiktok/abend.mp4 + abend.json, Archiv der letzten 7 Tage."""
-    import shutil
-    td = os.path.join(FB, 'tiktok'); os.makedirs(td, exist_ok=True)
-    segs = skript_abend(days, warn, heute)
-    ziel = os.path.join(td, 'abend.mp4')
-    titel = 'WOCHENENDWETTER' if heute.weekday() == 4 else 'WETTER MORGEN'
-    gesamt, echt = baue(segs, days[1]['datum'], ziel, False, titel)
-    text = ' '.join(s['text'] for s in segs)
-    beschr = tiktok_text(days, warn, heute)
-    tipps_speichern()
-    json.dump({'erstellt': dt.datetime.now().astimezone().isoformat(timespec='minutes'), 'datum': heute.isoformat(),
-               'fuer': days[1]['datum'].isoformat(), 'warn': warn, 'dauer': round(gesamt, 1), 'stimme': echt,
-               'skript': text, 'beschreibung': beschr},
-              open(os.path.join(td, 'abend.json'), 'w', encoding='utf-8'), ensure_ascii=False)
-    # Archiv (7 Tage)
-    ad = os.path.join(td, 'archiv'); os.makedirs(ad, exist_ok=True)
-    datei = heute.isoformat() + '.mp4'
-    shutil.copy(ziel, os.path.join(ad, datei))
-    subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-ss', '3', '-i', os.path.join(ad, datei), '-frames:v', '1', '-vf', 'scale=270:-2', '-q:v', '5',
-                    os.path.join(ad, datei.replace('.mp4', '.jpg'))], check=False)
-    lp = os.path.join(ad, 'liste.json')
-    try: liste = json.load(open(lp, encoding='utf-8'))
-    except Exception: liste = []
-    liste = [e for e in liste if e['datei'] != datei]
-    liste.append({'datum': heute.isoformat(), 'fuer': days[1]['datum'].isoformat(), 'datei': datei, 'dauer': round(gesamt, 1), 'beschreibung': beschr})
-    grenze = (heute - dt.timedelta(days=6)).isoformat()
-    for f in glob.glob(os.path.join(ad, '*.mp4')) + glob.glob(os.path.join(ad, '*.jpg')):
-        if os.path.basename(f)[:10] < grenze: os.remove(f)
-    liste = sorted([e for e in liste if e['datum'] >= grenze], key=lambda e: e['datei'], reverse=True)
-    json.dump(liste, open(lp, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
-    print('TikTok-Video fertig: %s (%.0f s)\n%s\n---\n%s' % (ziel, gesamt, text, beschr))
 
 
 def archiv(name, heute, special, warn, gesamt, tage=7):
