@@ -431,63 +431,102 @@ def haus(dr, x, y, w, dach=(170, 70, 50), wand=(240, 230, 210), licht=False):
 
 
 def bg_land(art_, seed):
-    """Ländliche Odenwald-Szenen aus der Fantasie: sanfte Höhen, Felder, Laubwald, kleines Dorf mit Kirchturm."""
+    """Gemalte Mümlingtal-Ansicht aus der Fantasie: bewaldete Höhenzüge, Wiesen mit Streuobst, die Mümling im Talgrund,
+    ein Städtchen mit roten Dächern und spitzem Kirchturm, vorn ein Feld. Je nach Jahreszeit/Stimmung andere Farben."""
     BW, BH = 1000, 1500
     r = random.Random(seed * 7 + len(art_))
-    himmel = {'fruehling': ((110, 175, 235), (225, 240, 245)), 'sommer': ((60, 140, 225), (240, 230, 190)),
-              'herbst': ((120, 160, 205), (245, 215, 170)), 'abend': ((60, 60, 120), (250, 150, 90)),
-              'nebel': ((185, 190, 198), (225, 228, 232)), 'dorfwinter': ((140, 170, 210), (232, 238, 246))}[art_]
-    im = verlauf(BW, BH, *himmel); dr = ImageDraw.Draw(im)
-    if art_ == 'abend': dr.ellipse([200, 560, 360, 720], fill=(255, 185, 90))
-    elif art_ not in ('nebel',): dr.ellipse([700, 220, 860, 380], fill=(255, 235, 150))
-    for _ in range(8 if art_ != 'nebel' else 0):   # Schönwetterwolken
-        x, y, rr = r.uniform(0, BW), r.uniform(80, 450), r.uniform(40, 90)
-        for j in range(4): dr.ellipse([x + j * rr * 0.6 - rr, y - rr * 0.5, x + j * rr * 0.6 + rr, y + rr * 0.5], fill=(250, 250, 250) if art_ != 'abend' else (240, 160, 140))
-    pal = {'fruehling': [(150, 180, 200), (120, 175, 120), (105, 170, 90), (90, 160, 75)],
-           'sommer': [(140, 165, 190), (110, 150, 95), (190, 170, 80), (95, 145, 70)],
-           'herbst': [(160, 165, 185), (150, 120, 70), (175, 110, 50), (120, 120, 60)],
-           'abend': [(95, 80, 120), (75, 70, 95), (60, 60, 75), (45, 48, 60)],
-           'nebel': [(175, 180, 188), (160, 168, 172), (140, 150, 150), (115, 128, 120)],
-           'dorfwinter': [(200, 210, 228), (222, 230, 240), (236, 241, 248), (248, 250, 254)]}[art_]
-    krone = {'fruehling': (120, 185, 90), 'sommer': (70, 130, 60), 'herbst': (210, 120, 40), 'abend': (50, 55, 60),
-             'nebel': (120, 135, 125), 'dorfwinter': (120, 105, 95)}[art_]
-    for k, c in enumerate(pal):
-        y = 720 + k * 170
-        pts = huegel(dr, BW, y, 55 + k * 22, c, seed * 13 + k)
-        if k == 2 and art_ in ('sommer', 'fruehling', 'herbst'):   # Felderstreifen
-            for j in range(6):
-                x0 = j * 180 + r.uniform(-30, 30); fc = tuple(max(0, min(255, v + r.choice((-25, 0, 25)))) for v in c)
-                dr.polygon([(x0, y + 60), (x0 + 170, y + 50), (x0 + 210, y + 160), (x0 + 30, y + 175)], fill=fc)
-        if k == 1:   # Waldkante auf der Höhe: gemischt Tanne + Laub
-            for _ in range(22):
-                x = r.uniform(0, BW)
-                if r.random() < 0.5: tanne(dr, x, y + 60, 70, tuple(max(0, v - 40) for v in pal[1]) if art_ != 'dorfwinter' else (70, 105, 90))
-                else: laubbaum(dr, x, y + 60, 80, krone, r)
-        if k == 2:   # kleines Dorf mit Kirchturm
-            x0 = r.uniform(250, 550); yb = y + 70
-            licht = art_ in ('abend', 'dorfwinter')
-            for j in range(5): haus(dr, x0 + j * 62 + r.uniform(-8, 8), yb + r.uniform(-6, 6), 48, licht=licht,
-                                     dach=(150, 150, 160) if art_ == 'dorfwinter' else (170, 70, 50))
-            tx = x0 + 140
-            dr.rectangle([tx, yb - 150, tx + 30, yb - 30], fill=(235, 225, 205), outline=(60, 45, 35), width=2)
-            dr.polygon([(tx - 4, yb - 150), (tx + 15, yb - 220), (tx + 34, yb - 150)], fill=(70, 75, 90))
-        if k == 3:   # Feldweg und Bäume vorn
-            dr.polygon([(420, BH), (560, BH), (520, y + 60), (500, y + 60)], fill=(200, 180, 140) if art_ != 'dorfwinter' else (235, 238, 244))
-            for _ in range(5):
-                x = r.choice((r.uniform(40, 330), r.uniform(670, 960)))
-                if art_ == 'fruehling' and r.random() < 0.6: laubbaum(dr, x, y + 200, 170, (250, 225, 235), r)   # Obstblüte
-                else: laubbaum(dr, x, y + 200, 170, krone, r)
-    if art_ == 'nebel':   # weiche Nebelschwaden über dem Tal
-        ov = Image.new('RGBA', (BW, BH)); od = ImageDraw.Draw(ov)
+    P = {  # himmel oben/unten, ferne Höhe, nahe Höhe, Waldtupfer, Wiese, Feld vorn, Obstbaum, Dach, Wand, Wasser
+        'fruehling': ((120, 170, 225), (225, 235, 240), (120, 150, 165), (60, 105, 70), (95, 150, 80), (150, 195, 95), (140, 190, 70), (245, 235, 240), (200, 90, 55), (240, 232, 215), (150, 190, 215)),
+        'sommer':    ((90, 145, 215), (235, 235, 220), (105, 130, 145), (45, 85, 55), (70, 125, 60), (135, 175, 75), (195, 185, 90), (85, 140, 60), (205, 95, 55), (240, 232, 215), (140, 180, 205)),
+        'herbst':    ((130, 160, 200), (240, 220, 185), (135, 140, 150), (90, 95, 60), (185, 120, 50), (140, 160, 80), (150, 125, 70), (210, 140, 50), (190, 85, 50), (235, 225, 205), (150, 175, 195)),
+        'abend':     ((70, 75, 135), (250, 170, 110), (105, 90, 125), (55, 55, 75), (85, 75, 80), (95, 95, 70), (110, 95, 60), (70, 75, 55), (150, 80, 60), (230, 190, 150), (230, 160, 120)),
+        'nebel':     ((190, 195, 202), (226, 229, 233), (170, 176, 184), (120, 135, 130), (115, 130, 120), (150, 165, 140), (140, 150, 120), (120, 135, 115), (170, 110, 90), (225, 222, 215), (190, 200, 205)),
+        'dorfwinter':((150, 175, 210), (232, 238, 246), (175, 190, 210), (80, 100, 95), (110, 115, 110), (236, 240, 247), (240, 243, 249), (130, 120, 110), (175, 120, 110), (238, 232, 222), (170, 190, 205)),
+    }[art_]
+    h_o, h_u, ferne, nahe, wald, wiese, feld, obst, dach, wand, wasser = P
+    im = verlauf(BW, BH, h_o, h_u); dr = ImageDraw.Draw(im)
+    def var(c, d=14): return tuple(max(0, min(255, v + r.randint(-d, d))) for v in c)
+    # Sonne / Wolken (weich)
+    ov = Image.new('RGBA', (BW, BH)); od = ImageDraw.Draw(ov)
+    if art_ == 'abend': od.ellipse([620, 470, 760, 610], fill=(255, 200, 120, 255))
+    for _ in range(0 if art_ == 'nebel' else 6):   # Haufenwolken aus vielen Bällchen, flacher Boden
+        cx_, cy_, w_ = r.uniform(-50, BW), r.uniform(90, 420), r.uniform(160, 320)
         for _ in range(14):
-            x, y, w_ = r.uniform(-200, BW), r.uniform(680, 1250), r.uniform(300, 700)
-            od.ellipse([x, y, x + w_, y + r.uniform(60, 130)], fill=(238, 240, 244, 170))
-        im = Image.alpha_composite(im.convert('RGBA'), ov.filter(ImageFilter.GaussianBlur(45))).convert('RGB'); dr = ImageDraw.Draw(im)
+            bx = cx_ + r.uniform(-w_ / 2, w_ / 2); br = r.uniform(25, 55) * (1 - abs(bx - cx_) / w_)
+            od.ellipse([bx - br, cy_ - br * 1.3, bx + br, cy_ + br * 0.3], fill=(255, 250, 245, 200) if art_ != 'abend' else (255, 175, 140, 190))
+    im = Image.alpha_composite(im.convert('RGBA'), ov.filter(ImageFilter.GaussianBlur(6))).convert('RGB'); dr = ImageDraw.Draw(im)
+    def kamm(y, amp, f, ph):
+        return [(x, y + amp * (0.6 * math.sin(x / f + ph) + 0.4 * math.sin(x / (f * 0.37) + ph * 2))) for x in range(0, BW + 10, 10)]
+    # zwei bewaldete Höhenzüge (hinten bläulich, vorn dunkelgrün) mit Baumtupfern
+    for k, (y, amp, col) in enumerate(((610, 45, ferne), (690, 55, nahe))):
+        pts = kamm(y, amp, 260 + k * 60, r.uniform(0, 6))
+        dr.polygon([(0, BH)] + pts + [(BW, BH)], fill=col)
+        for _ in range(1400 if k else 700):
+            x = r.uniform(0, BW); i = min(len(pts) - 1, int(x / 10)); yt = pts[i][1]
+            yy = r.uniform(yt + 4, yt + 190); rr = r.uniform(4, 9) * (1 + k * 0.4)
+            c = var(col if not k else wald, 18)
+            if art_ == 'herbst' and k and r.random() < 0.35: c = var((90, 105, 60), 15)   # Tannen zwischen buntem Laub
+            if art_ == 'dorfwinter': c = var((215, 222, 232), 10) if r.random() < 0.55 else var((85, 100, 95), 12)
+            dr.ellipse([x - rr, yy - rr * 0.8, x + rr, yy + rr * 0.8], fill=c)
+    # Talgrund: Wiesen und Felder
+    tal = kamm(860, 18, 300, r.uniform(0, 6))
+    dr.polygon([(0, BH)] + tal + [(BW, BH)], fill=wiese)
+    for _ in range(14):
+        x, y = r.uniform(-60, BW), r.uniform(850, 1000); w_ = r.uniform(120, 260)
+        dr.polygon([(x, y), (x + w_, y - 10), (x + w_ + 40, y + 45), (x + 25, y + 55)], fill=var(wiese, 22 if art_ != 'dorfwinter' else 4))
+    # die Mümling: schlängelt sich durch den Talgrund, mit Ufergehölz
+    fl = [(x, 985 + 22 * math.sin(x / 120 + 1.3) + 10 * math.sin(x / 47)) for x in range(-20, BW + 30, 15)]
+    dr.line(fl, fill=wasser, width=14, joint='curve')
+    dr.line([(x, y - 3) for x, y in fl], fill=tuple(min(255, v + 35) for v in wasser), width=3)
+    for x, y in fl[::2]:
+        if r.random() < 0.55:
+            rr = r.uniform(8, 15); dr.ellipse([x - rr, y - 18 - rr, x + rr, y - 18 + rr * 0.8], fill=var(wald, 15) if art_ != 'dorfwinter' else var((120, 110, 100), 10))
+    # Städtchen mit roten Dächern und Kirchturm
+    cx = r.uniform(330, 620); haeuser = []
+    for _ in range(140):
+        x = r.gauss(cx, 150); y = r.gauss(930, 26)
+        if 0 < x < BW: haeuser.append((y, x))
+    haeuser.sort()
+    for y, x in haeuser:
+        w_ = r.uniform(14, 24); h_ = w_ * 0.55
+        dr.rectangle([x, y - h_, x + w_, y], fill=var(wand, 10))
+        dr.polygon([(x - 2, y - h_), (x + w_ / 2, y - h_ - w_ * 0.45), (x + w_ + 2, y - h_)], fill=var(dach if art_ != 'dorfwinter' else (240, 243, 248), 18))
+        if art_ in ('abend', 'dorfwinter') and r.random() < 0.6: dr.rectangle([x + w_ * 0.3, y - h_ * 0.7, x + w_ * 0.5, y - h_ * 0.35], fill=(255, 205, 110))
+        if r.random() < 0.18:
+            rr = r.uniform(6, 11); dr.ellipse([x - rr, y - rr * 1.6, x + rr, y], fill=var(wald, 15) if art_ != 'dorfwinter' else var((120, 110, 100), 10))
+    ky = 935
+    dr.rectangle([cx, ky - 95, cx + 22, ky], fill=var(wand, 6), outline=(80, 65, 55))
+    dr.polygon([(cx - 2, ky - 95), (cx + 11, ky - 190), (cx + 24, ky - 95)], fill=(55, 60, 75))
+    dr.rectangle([cx - 50, ky - 38, cx, ky], fill=var(wand, 6)); dr.polygon([(cx - 54, ky - 38), (cx - 25, ky - 62), (cx + 4, ky - 38)], fill=var(dach, 8))
+    # Streuobstwiese am Hang vorn
+    hang = kamm(1090, 30, 340, r.uniform(0, 6))
+    dr.polygon([(0, BH)] + hang + [(BW, BH)], fill=feld)
+    for _ in range(9):
+        x = r.choice((r.uniform(10, 330), r.uniform(650, 990))); i = min(len(hang) - 1, int(x / 10)); y = hang[i][1] + r.uniform(10, 60)
+        hh = r.uniform(70, 120)
+        dr.line([(x, y), (x, y - hh * 0.5)], fill=(90, 65, 45), width=6)
+        for _ in range(9 if art_ != 'dorfwinter' else 0):
+            rr = r.uniform(14, 26); dx, dy = r.uniform(-30, 30), r.uniform(-hh, -hh * 0.45)
+            dr.ellipse([x + dx - rr, y + dy - rr, x + dx + rr, y + dy + rr], fill=var(obst, 20))
+        if art_ == 'dorfwinter':
+            for a_ in (-1, 1): dr.line([(x, y - hh * 0.45), (x + a_ * 30, y - hh * 0.9)], fill=(95, 80, 70), width=4)
+    for _ in range(2600):   # Pinselstriche im Feld
+        x, y = r.uniform(0, BW), r.uniform(1110, BH); l = r.uniform(8, 22)
+        dr.line([(x, y), (x + r.uniform(-3, 3), y - l)], fill=var(feld, 22), width=2)
+    if art_ == 'nebel':
+        ov = Image.new('RGBA', (BW, BH)); od = ImageDraw.Draw(ov)
+        for _ in range(16):
+            x, y, w_ = r.uniform(-250, BW), r.uniform(700, 1060), r.uniform(350, 750)
+            od.ellipse([x, y, x + w_, y + r.uniform(50, 120)], fill=(238, 240, 244, 185))
+        im = Image.alpha_composite(im.convert('RGBA'), ov.filter(ImageFilter.GaussianBlur(40))).convert('RGB'); dr = ImageDraw.Draw(im)
     if art_ == 'dorfwinter':
-        for _ in range(220):
-            x, y = r.uniform(0, BW), r.uniform(0, BH); s_ = r.uniform(2, 5)
+        for _ in range(200):
+            x, y = r.uniform(0, BW), r.uniform(0, BH); s_ = r.uniform(1.5, 4)
             dr.ellipse([x - s_, y - s_, x + s_, y + s_], fill=(255, 255, 255))
-    return im.filter(ImageFilter.SMOOTH)
+    # leicht gemalter Look: weichzeichnen + feines Korn
+    im = im.filter(ImageFilter.GaussianBlur(1.1))
+    arr = np.asarray(im).astype('int16') + np.random.RandomState(seed % 1000).randint(-7, 8, (BH, BW, 1))
+    return Image.fromarray(np.clip(arr, 0, 255).astype('uint8'))
 
 
 LAND_SAISON = {'fruehling': (3, 4, 5), 'sommer': (6, 7, 8), 'herbst': (9, 10, 11), 'dorfwinter': (12, 1, 2), 'abend': tuple(range(1, 13))}
