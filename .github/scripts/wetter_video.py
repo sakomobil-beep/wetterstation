@@ -177,13 +177,37 @@ def tipp(d, rnd, heute):
     return r
 
 
+ADJ = {'sonnig': 'richtig sonnig', 'heiter bis wolkig': 'freundlich mit ein paar Wolken', 'bedeckt': 'ziemlich grau',
+       'neblig': 'neblig und trüb', 'Nieselregen': 'ungemütlich mit Niesel', 'Regen': 'nass', 'Schnee': 'winterlich',
+       'Schauer': 'wechselhaft mit Schauern', 'Gewitter': 'gewittrig'}
+
+
 def tagtext(d, wann):
-    s = '%s gibt es %s bei Höchstwerten um %s Grad.' % (wann, art(d), zahl(d['tmax']))
+    """Tagesvorhersage in wechselnden, gesprochen klingenden Formulierungen (pro Tag fest, damit Tests gleich bleiben)."""
+    rnd = random.Random('tag' + str(d['datum']) + wann)
+    W, w, t = wann, wort(d['code']), zahl(d['tmax'])
+    Wk = W.rstrip(',')
+    adj = ADJ.get(w, 'wechselhaft')
+    opt = ['%s gibt es %s bei Höchstwerten um %s Grad.' % (W, art(d), t),
+           '%s wird es %s, bei rund %s Grad.' % (W, adj, t),
+           '%s erwartet uns %s – die Temperatur schafft es auf etwa %s Grad.' % (W, art(d), t),
+           '%s: %s, und das Thermometer klettert auf %s Grad.' % (Wk, art(d)[0].upper() + art(d)[1:], t)]
+    if d['tmax'] <= 10: opt.append('%s wird es %s, und mehr als %s Grad sind nicht drin.' % (W, adj, t))
+    if d['tmax'] >= 22: opt.append('%s wird es %s – und mit %s Grad schön warm.' % (W, adj, t))
+    s = rnd.choice(opt)
     rz = regenzeit(d)
-    if rz and wort(d['code']) not in ('Regen',): s += ' Regen ist vor allem %s wahrscheinlich.' % rz
-    if d['tmin'] <= 0: s += ' In der Nacht wird es frostig, bis %s Grad.' % zahl(d['tmin'])
+    if rz and w not in ('Regen',):
+        s += ' ' + rnd.choice(['Regen ist vor allem %s wahrscheinlich.' % rz, 'Den Schirm braucht ihr vor allem %s.' % rz,
+                                'Nass werden kann es %s.' % rz])
+    if d['tmin'] <= 0:
+        n = zahl(d['tmin'])
+        s += ' ' + rnd.choice(['In der Nacht wird es frostig, bis %s Grad.' % n,
+                                'Nachts geht es runter auf %s Grad. Also: morgens Scheiben kratzen!' % n,
+                                'Und Achtung, in der Nacht gibt es Frost, bis %s Grad.' % n,
+                                'Nachts friert es, mit bis zu %s Grad.' % n])
     if d['boe'] >= 60: s += ' Vorsicht, Sturmböen bis %d Kilometer pro Stunde!' % round(d['boe'])
-    elif d['boe'] >= 45: s += ' Dazu frischer Wind mit Böen um %d.' % round(d['boe'])
+    elif d['boe'] >= 45: s += ' ' + rnd.choice(['Dazu frischer Wind mit Böen um %d.' % round(d['boe']),
+                                                 'Und der Wind frischt auf, Böen um %d Kilometer pro Stunde.' % round(d['boe'])])
     return s
 
 
@@ -213,6 +237,10 @@ def max_privat(d, rnd, heute):
         opt = ['Ich verrate euch was: Bei so einem Wetter sitz ich am liebsten mit einem Buch über die Römer auf dem Sofa.',
                'Mein Rucksack ist heute übrigens wasserdicht verpackt – na ja, fast. Irgendwas wird immer nass.',
                'Bei Regen ist mein Lieblingsplatz das warme Becken in der Therme. Vielleicht sieht man sich!']
+    elif d['code'] in (45, 48, 3):
+        opt = ['Bei so grauem Wetter hilft nur eins: eine Thermoskanne heißer Tee im Rucksack.',
+               'Ich mag Nebel ja irgendwie. Im Wald am Limes wirkt dann alles, als wären die Römer gleich um die Ecke.',
+               'Ganz ehrlich: An so einem grauen Tag darf man sich auch mal einfach eine Decke schnappen.']
     elif d['tmax'] <= 4:
         opt = ['Ganz ehrlich: Bei der Kälte ist mir ein Glühwein lieber als jede Wanderung. Aber erst die Runde, dann der Glühwein!',
                'Ich hab heute Morgen extra die dicken Socken eingepackt. Mein Rucksack wird dadurch natürlich nicht leichter.']
@@ -234,6 +262,11 @@ def abschied(d, rnd):
     if w in ('Regen', 'Nieselregen', 'Schauer') or d['rp'] >= 60:
         return rnd.choice(['Euer Max sagt: Macht es euch heute gemütlich – der Odenwald läuft nicht weg!',
                            'Euer Max sagt: Tee kochen, Füße hoch – das nächste Wanderwetter kommt bestimmt!'])
+    if d['code'] in (45, 48):
+        return rnd.choice(['Euer Max sagt: Licht an im Nebel, fahrt vorsichtig – und macht es euch gemütlich!',
+                           'Euer Max sagt: Warm einpacken und vorsichtig fahren – bis morgen!'])
+    if d['code'] == 3:
+        return rnd.choice(['Euer Max sagt: Auch ein grauer Tag kann schön werden – macht was draus!', 'Euer Max sagt: Jacke an und los – bis morgen!'])
     if d['tmax'] <= 3:
         return 'Euer Max sagt: Dick einpacken – und dann raus an die frische Luft!'
     return 'Euer Max sagt: Rucksack auf und raus – der Odenwald wartet!'
@@ -287,10 +320,12 @@ def skript(days, warn, heute, nur_special=False):
     else:
         seg.append(dict(art='intro', bg='schloss', text=gruss + (' Für alle, die neu dabei sind: Ich bin Max, Wanderführer aus Vielbrunn.' if heute.weekday() == 0 else '') + ' Das ist euer Odenwald-Wetter für %s.' % TAGE[heute.weekday()]))
     seg.append(dict(art='tag', tag=a, titel='HEUTE', bg='auto', text=tagtext(a, 'Heute')))
-    seg.append(dict(art='tipp', tag=a, bg='wald' if a['rp'] < 40 else 'schloss', text=rnd.choice(['Mein Outdoor-Tipp für heute: ', 'Max-Tipp des Tages: ', 'Und jetzt mein Tipp: ']) + tipp(a, rnd, heute) + max_privat(a, rnd, heute)))
+    seg.append(dict(art='tipp', tag=a, bg='wald' if a['rp'] < 40 else 'schloss', text=rnd.choice(['Mein Outdoor-Tipp für heute: ', 'Max-Tipp des Tages: ', 'Und jetzt mein Tipp: ', 'Übrigens, mein Tipp für heute: ',
+                                                                               'Was könnt ihr heute machen? ', 'Und wenn ihr noch nichts vorhabt: ']) + tipp(a, rnd, heute) + max_privat(a, rnd, heute)))
     if not nur_special:
         seg.append(dict(art='tag', tag=b, titel='MORGEN', bg='hoehen',
-                        text=tagtext(b, 'Und morgen, am %s,' % TAGE[b['datum'].weekday()]).replace('Und morgen, am %s, gibt' % TAGE[b['datum'].weekday()], 'Morgen, am %s, gibt' % TAGE[b['datum'].weekday()])))
+                        text=rnd.choice(['', 'So, und jetzt der Blick nach vorn. ', 'Was bringt der nächste Tag? ', 'Schauen wir auf morgen. '])
+                             + tagtext(b, rnd.choice(['Morgen, am %s,', 'Am %s']) % TAGE[b['datum'].weekday()])))
         if heute.weekday() <= 4 and len(days) >= 7:
             sa = next(d for d in days if d['datum'].weekday() == 5)
             so = next(d for d in days if d['datum'].weekday() == 6)
@@ -298,10 +333,11 @@ def skript(days, warn, heute, nur_special=False):
                 nass = (51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 71, 73, 75, 77, 80, 81, 82, 85, 86, 95, 96, 99)
                 gut = [n for n, d in (('Samstag', sa), ('Sonntag', so)) if d['rp'] < 40 and d['code'] not in nass]
                 grau = any(d['code'] in (45, 48) or d['code'] == 3 for d in (sa, so))
-                t = 'Ein Blick aufs Wochenende: Samstag %s bei %s Grad, Sonntag %s bei %s Grad.' % (wort(sa['code']), zahl(sa['tmax']), wort(so['code']), zahl(so['tmax']))
+                t = '%s Samstag %s bei %s Grad, Sonntag %s bei %s Grad.' % (rnd.choice(['Ein Blick aufs Wochenende:', 'Und das Wochenende?', 'Kurz noch zum Wochenende:']), wort(sa['code']), zahl(sa['tmax']), wort(so['code']), zahl(so['tmax']))
                 t += (' Trockener bleibt es am %s.' % gut[0]) if len(gut) == 1 else ((' Beide Tage bleiben wohl trocken – zieht euch aber warm an.' if grau else ' Beide Tage sehen gut aus für draußen!') if gut else ' Plant lieber etwas für drinnen ein.')
                 seg.append(dict(art='wochenende', tage=[sa, so], bg='wald', text=t))
-    seg.append(dict(art='outro', bg='schloss', text=rnd.choice(['Alle Live-Werte findet ihr auf wetter-badkoenig.de.', 'Mehr gibt es live auf wetter-badkoenig.de.'])
+    seg.append(dict(art='outro', bg='schloss', text=rnd.choice(['Alle Live-Werte findet ihr auf wetter-badkoenig.de.', 'Mehr gibt es live auf wetter-badkoenig.de.',
+                                                       'Die aktuellen Werte von meiner Station gibt es jederzeit auf wetter-badkoenig.de.', 'Schaut gern mal rein auf wetter-badkoenig.de.'])
                        + ' ' + abschied(a, rnd)))
     # Wetter-Effekte: Tages-Tafeln zeigen das Wetter ihres Tages, im Special das ganze Video
     gfx = special_fx(sp, warn, a) if (nur_special or sp) else None
@@ -704,11 +740,21 @@ def untertitel_bild(t):
 # =====================================================================
 #  3) Stimme
 # =====================================================================
+def sprechtext(t):
+    """Text für die Stimme natürlicher machen (Untertitel bleiben unverändert)."""
+    for a, b in (('wetter-badkoenig.de', 'wetter bad könig punkt d e'), ('°C', ' Grad'), ('km/h', 'Kilometer pro Stunde'),
+                 ('l/m²', 'Liter pro Quadratmeter'), ('z. B.', 'zum Beispiel'), ('ca.', 'circa'), (' – ', ', '), ('!', '! '), ('Ei gude', 'Ei gude,')):
+        t = t.replace(a, b)
+    t = t.replace('Ei gude,,', 'Ei gude,').replace('Ei gude, wie', 'Ei gude wie')
+    return ' '.join(t.split())
+
+
 def sprich(text, pfad):
+    text = sprechtext(text)
     try:
         import edge_tts
         async def go():
-            await edge_tts.Communicate(text, VOICE, rate='+6%').save(pfad)
+            await edge_tts.Communicate(text, VOICE, rate='+2%').save(pfad)
         asyncio.run(go())
         return True
     except Exception as e:
@@ -748,13 +794,13 @@ def baue(segmente, heute, ziel, special, titel=None):
     for i, s in enumerate(segmente):
         p = os.path.join(tmp, 's%02d.mp3' % i)
         echt = sprich(s['text'], p) and echt
-        s['dauer'] = dauer(p) + 0.35
+        s['dauer'] = dauer(p) + 0.6
         s['audio'] = p
     liste = os.path.join(tmp, 'liste.txt')
     with open(liste, 'w') as f:
         for s in segmente:
             pad = s['audio'].replace('.mp3', '_p.wav')
-            subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', s['audio'], '-af', 'apad=pad_dur=0.35', '-ar', '24000', '-ac', '1', pad], check=True)
+            subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', s['audio'], '-af', 'apad=pad_dur=0.6', '-ar', '24000', '-ac', '1', pad], check=True)
             f.write("file '%s'\n" % pad)
     ton = os.path.join(tmp, 'ton.wav')
     subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', liste, '-c', 'copy', ton], check=True)
