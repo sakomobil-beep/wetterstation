@@ -749,12 +749,15 @@ def sprechtext(t):
     return ' '.join(t.split())
 
 
-def sprich(text, pfad):
+TEMPO = {'special': '-6%', 'tag': '+0%', 'wochenende': '+2%', 'tipp': '+5%', 'intro': '+4%', 'outro': '+3%'}
+
+
+def sprich(text, pfad, rate='+2%'):
     text = sprechtext(text)
     try:
         import edge_tts
         async def go():
-            await edge_tts.Communicate(text, VOICE, rate='+2%').save(pfad)
+            await edge_tts.Communicate(text, VOICE, rate=rate).save(pfad)
         asyncio.run(go())
         return True
     except Exception as e:
@@ -793,7 +796,7 @@ def baue(segmente, heute, ziel, special, titel=None):
     # Audio je Abschnitt
     for i, s in enumerate(segmente):
         p = os.path.join(tmp, 's%02d.mp3' % i)
-        echt = sprich(s['text'], p) and echt
+        echt = sprich(s['text'], p, TEMPO.get(s['art'], '+2%')) and echt
         s['dauer'] = dauer(p) + 0.6
         s['audio'] = p
     liste = os.path.join(tmp, 'liste.txt')
