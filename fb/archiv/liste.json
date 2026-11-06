@@ -2,11 +2,11 @@
  {
   "datum": "2026-11-06",
   "datei": "2026-11-06.mp4",
-  "special": true,
+  "special": false,
   "warn": [
    "Amtliche Warnung vor Frost"
   ],
-  "dauer": 68.7
+  "dauer": 69.8
  },
  {
   "datum": "2026-11-06",
