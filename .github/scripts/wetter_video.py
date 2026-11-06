@@ -414,6 +414,85 @@ def bg_landschaft(art_, seed):
     return im.filter(ImageFilter.SMOOTH)
 
 
+def laubbaum(dr, x, y, h, krone, r):
+    dr.rectangle([x - h * 0.05, y - h * 0.45, x + h * 0.05, y], fill=(85, 60, 40))
+    for _ in range(6):
+        dx, dy, rr = r.uniform(-0.28, 0.28) * h, r.uniform(-0.75, -0.45) * h, r.uniform(0.18, 0.28) * h
+        c = tuple(max(0, min(255, v + r.randint(-18, 18))) for v in krone)
+        dr.ellipse([x + dx - rr, y + dy - rr, x + dx + rr, y + dy + rr], fill=c)
+
+
+def haus(dr, x, y, w, dach=(170, 70, 50), wand=(240, 230, 210), licht=False):
+    h = w * 0.7
+    dr.rectangle([x, y - h, x + w, y], fill=wand, outline=(60, 45, 35), width=2)
+    dr.polygon([(x - w * 0.1, y - h), (x + w / 2, y - h - w * 0.55), (x + w * 1.1, y - h)], fill=dach, outline=(60, 40, 30))
+    for fx in (0.2, 0.6):
+        dr.rectangle([x + w * fx, y - h * 0.7, x + w * (fx + 0.18), y - h * 0.4], fill=(255, 205, 110) if licht else (110, 130, 150))
+
+
+def bg_land(art_, seed):
+    """Ländliche Odenwald-Szenen aus der Fantasie: sanfte Höhen, Felder, Laubwald, kleines Dorf mit Kirchturm."""
+    BW, BH = 1000, 1500
+    r = random.Random(seed * 7 + len(art_))
+    himmel = {'fruehling': ((110, 175, 235), (225, 240, 245)), 'sommer': ((60, 140, 225), (240, 230, 190)),
+              'herbst': ((120, 160, 205), (245, 215, 170)), 'abend': ((60, 60, 120), (250, 150, 90)),
+              'nebel': ((185, 190, 198), (225, 228, 232)), 'dorfwinter': ((140, 170, 210), (232, 238, 246))}[art_]
+    im = verlauf(BW, BH, *himmel); dr = ImageDraw.Draw(im)
+    if art_ == 'abend': dr.ellipse([200, 560, 360, 720], fill=(255, 185, 90))
+    elif art_ not in ('nebel',): dr.ellipse([700, 220, 860, 380], fill=(255, 235, 150))
+    for _ in range(8 if art_ != 'nebel' else 0):   # Schönwetterwolken
+        x, y, rr = r.uniform(0, BW), r.uniform(80, 450), r.uniform(40, 90)
+        for j in range(4): dr.ellipse([x + j * rr * 0.6 - rr, y - rr * 0.5, x + j * rr * 0.6 + rr, y + rr * 0.5], fill=(250, 250, 250) if art_ != 'abend' else (240, 160, 140))
+    pal = {'fruehling': [(150, 180, 200), (120, 175, 120), (105, 170, 90), (90, 160, 75)],
+           'sommer': [(140, 165, 190), (110, 150, 95), (190, 170, 80), (95, 145, 70)],
+           'herbst': [(160, 165, 185), (150, 120, 70), (175, 110, 50), (120, 120, 60)],
+           'abend': [(95, 80, 120), (75, 70, 95), (60, 60, 75), (45, 48, 60)],
+           'nebel': [(175, 180, 188), (160, 168, 172), (140, 150, 150), (115, 128, 120)],
+           'dorfwinter': [(200, 210, 228), (222, 230, 240), (236, 241, 248), (248, 250, 254)]}[art_]
+    krone = {'fruehling': (120, 185, 90), 'sommer': (70, 130, 60), 'herbst': (210, 120, 40), 'abend': (50, 55, 60),
+             'nebel': (120, 135, 125), 'dorfwinter': (120, 105, 95)}[art_]
+    for k, c in enumerate(pal):
+        y = 720 + k * 170
+        pts = huegel(dr, BW, y, 55 + k * 22, c, seed * 13 + k)
+        if k == 2 and art_ in ('sommer', 'fruehling', 'herbst'):   # Felderstreifen
+            for j in range(6):
+                x0 = j * 180 + r.uniform(-30, 30); fc = tuple(max(0, min(255, v + r.choice((-25, 0, 25)))) for v in c)
+                dr.polygon([(x0, y + 60), (x0 + 170, y + 50), (x0 + 210, y + 160), (x0 + 30, y + 175)], fill=fc)
+        if k == 1:   # Waldkante auf der Höhe: gemischt Tanne + Laub
+            for _ in range(22):
+                x = r.uniform(0, BW)
+                if r.random() < 0.5: tanne(dr, x, y + 60, 70, tuple(max(0, v - 40) for v in pal[1]) if art_ != 'dorfwinter' else (70, 105, 90))
+                else: laubbaum(dr, x, y + 60, 80, krone, r)
+        if k == 2:   # kleines Dorf mit Kirchturm
+            x0 = r.uniform(250, 550); yb = y + 70
+            licht = art_ in ('abend', 'dorfwinter')
+            for j in range(5): haus(dr, x0 + j * 62 + r.uniform(-8, 8), yb + r.uniform(-6, 6), 48, licht=licht,
+                                     dach=(150, 150, 160) if art_ == 'dorfwinter' else (170, 70, 50))
+            tx = x0 + 140
+            dr.rectangle([tx, yb - 150, tx + 30, yb - 30], fill=(235, 225, 205), outline=(60, 45, 35), width=2)
+            dr.polygon([(tx - 4, yb - 150), (tx + 15, yb - 220), (tx + 34, yb - 150)], fill=(70, 75, 90))
+        if k == 3:   # Feldweg und Bäume vorn
+            dr.polygon([(420, BH), (560, BH), (520, y + 60), (500, y + 60)], fill=(200, 180, 140) if art_ != 'dorfwinter' else (235, 238, 244))
+            for _ in range(5):
+                x = r.choice((r.uniform(40, 330), r.uniform(670, 960)))
+                if art_ == 'fruehling' and r.random() < 0.6: laubbaum(dr, x, y + 200, 170, (250, 225, 235), r)   # Obstblüte
+                else: laubbaum(dr, x, y + 200, 170, krone, r)
+    if art_ == 'nebel':   # weiche Nebelschwaden über dem Tal
+        ov = Image.new('RGBA', (BW, BH)); od = ImageDraw.Draw(ov)
+        for _ in range(14):
+            x, y, w_ = r.uniform(-200, BW), r.uniform(680, 1250), r.uniform(300, 700)
+            od.ellipse([x, y, x + w_, y + r.uniform(60, 130)], fill=(238, 240, 244, 170))
+        im = Image.alpha_composite(im.convert('RGBA'), ov.filter(ImageFilter.GaussianBlur(45))).convert('RGB'); dr = ImageDraw.Draw(im)
+    if art_ == 'dorfwinter':
+        for _ in range(220):
+            x, y = r.uniform(0, BW), r.uniform(0, BH); s_ = r.uniform(2, 5)
+            dr.ellipse([x - s_, y - s_, x + s_, y + s_], fill=(255, 255, 255))
+    return im.filter(ImageFilter.SMOOTH)
+
+
+LAND_SAISON = {'fruehling': (3, 4, 5), 'sommer': (6, 7, 8), 'herbst': (9, 10, 11), 'dorfwinter': (12, 1, 2), 'abend': tuple(range(1, 13))}
+
+
 # Eigene Bilder: Dateiname = Ort, optional _saison (_sommer, _herbst, _winter, _fruehling, _advent)
 EIGEN_NAME = {}
 ORT_WORTE = {'kurpark': ('Kurpark',), 'therme': ('Therme', 'Sauna', 'Salzgrotte', 'Thermalbad'), 'limesturm': ('Limesturm', 'Vielbrunn'),
@@ -450,6 +529,8 @@ def hintergruende(seed):
     bgs['schloss'] = sch.resize((int(sch.width * s), 1500), Image.LANCZOS)
     for k in ('wald', 'hoehen', 'sturm', 'winter', 'frost', 'regen', 'gewitter'):
         bgs[k] = bg_landschaft(k, seed)
+    for k in ('fruehling', 'sommer', 'herbst', 'abend', 'nebel', 'dorfwinter'):
+        bgs['land_' + k] = bg_land(k, seed)
     eigene = sorted(glob.glob(os.path.join(ROOT, 'video', 'hintergruende', '*.[jp][pn]g')))
     for i, p in enumerate(eigene):  # eigene KI-Bilder ersetzen reihum die gezeichneten Landschaften
         try:
@@ -822,6 +903,8 @@ def baue(segmente, heute, ziel, special, titel=None):
     seed = int(heute.strftime('%Y%m%d'))
     bgs = hintergruende(seed)
     eigene = [k for k in bgs if k.startswith('eigen') and saison_ok(EIGEN_NAME.get(k, ''), heute)]
+    land = [k for k in bgs if k.startswith('land_') and heute.month in LAND_SAISON.get(k[5:], ())]   # gezeichnete Odenwald-Szenen der Jahreszeit
+    pool = eigene + land
     echt = True
     # Audio je Abschnitt
     for i, s in enumerate(segmente):
@@ -885,12 +968,12 @@ def baue(segmente, heute, ziel, special, titel=None):
             if not treffer and s['art'] == 'intro': treffer = next((e for e in eigene if EIGEN_NAME[e].endswith('_advent')), None)
             if treffer: bg = treffer
         if fx and bg != 'schloss' or fx and s['art'] in ('tag', 'special'):
-            bg = {'schnee': 'winter', 'frost': 'frost', 'nebel': 'hoehen', 'regen': 'regen', 'gewitter': 'gewitter', 'sturm': 'sturm'}[fx]
+            bg = {'schnee': 'winter', 'frost': 'frost', 'nebel': 'land_nebel', 'regen': 'regen', 'gewitter': 'gewitter', 'sturm': 'sturm'}[fx]
             passend = [e for e in eigene if EIGEN_NAME[e].startswith(fx)]   # eigenes Stimmungsbild (z. B. schnee-…, nebel-…) bevorzugen
             if passend: bg = passend[(seed + k) % len(passend)]
         elif s['art'] == 'tag' and s.get('tag') and s['tag']['code'] in (45, 48) and any(EIGEN_NAME[e].startswith('nebel') for e in eigene):
             nb = [e for e in eigene if EIGEN_NAME[e].startswith('nebel')]; bg = nb[(seed + k) % len(nb)]   # Nebeltag
-        elif eigene and bg in ('wald', 'hoehen'): bg = eigene[(k + seed) % len(eigene)]
+        elif pool and bg in ('wald', 'hoehen'): bg = pool[(k + seed) % len(pool)]
         s['look'], s['prop'] = FX_LOOK.get(fx, (lk0, None))
         if s['look'] == 'regen' and s['prop'] is None and fx == 'regen': s['prop'] = 'schirm'
         s['bgimg'] = bgs[bg]
