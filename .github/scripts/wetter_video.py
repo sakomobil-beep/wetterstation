@@ -305,7 +305,7 @@ def skript(days, warn, heute, nur_special=False):
     gruss = rnd.choice(['Ei gude, Odenwald! Hier ist euer Max.', 'Guten Morgen, Bad König! Euer Max meldet sich vom Wanderweg.',
                         'Ei gude wie, Odenwald? Max hier, euer Outdoor-Guide.', 'Moin aus dem Mümlingtal – euer Max ist schon draußen!'])
     sp = special_grund(days, warn)
-    if nur_special or sp:
+    if nur_special:   # eigenes Special-Video (mittags/nachmittags bei neuer Warnung)
         if warn:
             t = 'Achtung, Wetter-Special! Der Deutsche Wetterdienst warnt: %s.' % '. '.join(warn[:2])
         elif 'schnee' in sp: t = 'Wetter-Special: Es wird winterlich im Odenwald – Schnee ist im Anmarsch!'
@@ -318,7 +318,8 @@ def skript(days, warn, heute, nur_special=False):
         seg.append(dict(art='special', karte=karte, bg='sturm' if sp and sp[0] in ('warn', 'sturm', 'gewitter', 'regen') else 'winter' if 'schnee' in sp else 'hoehen',
                         text=(gruss + ' ' if not nur_special else '') + t))
     else:
-        seg.append(dict(art='intro', bg='schloss', text=gruss + (' Für alle, die neu dabei sind: Ich bin Max, Wanderführer aus Vielbrunn.' if heute.weekday() == 0 else '') + ' Das ist euer Odenwald-Wetter für %s.' % TAGE[heute.weekday()]))
+        hinweis = (' Kurz vorweg: Der Deutsche Wetterdienst warnt aktuell – %s. Passt auf euch auf!' % '. '.join(warn[:2])) if warn else ''
+        seg.append(dict(art='intro', bg='schloss', text=gruss + (' Für alle, die neu dabei sind: Ich bin Max, Wanderführer aus Vielbrunn.' if heute.weekday() == 0 else '') + ' Das ist euer Odenwald-Wetter für %s.' % TAGE[heute.weekday()] + hinweis))
     seg.append(dict(art='tag', tag=a, titel='HEUTE', bg='auto', text=tagtext(a, 'Heute')))
     seg.append(dict(art='tipp', tag=a, bg='wald' if a['rp'] < 40 else 'schloss', text=rnd.choice(['Mein Outdoor-Tipp für heute: ', 'Max-Tipp des Tages: ', 'Und jetzt mein Tipp: ', 'Übrigens, mein Tipp für heute: ',
                                                                                'Was könnt ihr heute machen? ', 'Und wenn ihr noch nichts vorhabt: ']) + tipp(a, rnd, heute) + max_privat(a, rnd, heute)))
@@ -340,7 +341,7 @@ def skript(days, warn, heute, nur_special=False):
                                                        'Die aktuellen Werte von meiner Station gibt es jederzeit auf wetter-badkoenig.de.', 'Schaut gern mal rein auf wetter-badkoenig.de.'])
                        + ' ' + abschied(a, rnd)))
     # Wetter-Effekte: Tages-Tafeln zeigen das Wetter ihres Tages, im Special das ganze Video
-    gfx = special_fx(sp, warn, a) if (nur_special or sp) else None
+    gfx = special_fx(sp, warn, a) if nur_special else None
     for x in seg:
         if gfx: x['fx'] = gfx
         elif x['art'] == 'tag': x['fx'] = lage_fx(x['tag'])
@@ -1147,7 +1148,7 @@ def main():
         if not neu:
             print('Keine neue Warnung – kein Special.'); return
     segs = skript(days, warn, heute, nur_special)
-    special = nur_special or bool(special_grund(days, warn))
+    special = nur_special   # das Morgenvideo ist immer das normale Video
     name = 'special' if nur_special else 'wetter'
     ziel = os.path.join(FB, name + '.mp4')
     gesamt, echt = baue(segs, heute, ziel, special)

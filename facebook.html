@@ -144,8 +144,8 @@
     vname = n; var src = 'fb/' + n + '.mp4?v=' + v;
     document.getElementById('vid').src = src; document.getElementById('vLaden').href = src;
     var t = document.getElementById('vTitel');
-    t.textContent = '🎬 Video-Wettervorhersage morgens' + (j.special ? ' (mit Warnhinweis)' : '') + ' · ' + Math.round(j.dauer) + ' Sek.';
-    t.className = 'vhead' + (j.special ? ' sp' : '');
+    t.textContent = '🎬 Video-Wettervorhersage morgens · ' + Math.round(j.dauer) + ' Sek.';
+    t.className = 'vhead';
     if (j.erstellt) setzeDatum(document.getElementById('vDatum'), j.erstellt); else document.getElementById('vDatum').hidden = true;
     document.getElementById('vidCard').hidden = false;
     fetch(src, { cache: 'no-store' }).then(function (r) { return r.blob(); }).then(function (b) { vblob = b; }).catch(function () {});
