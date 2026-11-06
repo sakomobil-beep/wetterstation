@@ -1,0 +1,14 @@
+name: Frost-Hinweis testweise posten
+on: workflow_dispatch
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get install -y -q fonts-noto-color-emoji >/dev/null && npm i -s playwright && npx -y playwright install chromium >/dev/null
+      - run: node .github/scripts/frost_test.mjs
+      - env: { TOK: '${{ secrets.FB_PAGE_TOKEN }}', PID: '${{ secrets.FB_PAGE_ID }}', NTFY_TOPIC: '${{ secrets.NTFY_TOPIC }}' }
+        run: |
+          R=$(curl -sS -F "source=@/tmp/frost.jpg" -F "caption=<\/tmp/frost.txt" -F "access_token=$TOK" "https://graph.facebook.com/v21.0/$PID/photos"); echo "$R"
+          echo "$R" | grep -q '"post_id"\|"id"' || exit 1
+          curl -sS -H "Title: Frost-Hinweis gepostet" -H "Tags: snowflake,white_check_mark" -d "Test: Der Frost-/Kratzen-Hinweis ist jetzt auf Facebook online." "https://ntfy.sh/$NTFY_TOPIC"
