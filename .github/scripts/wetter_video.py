@@ -414,6 +414,33 @@ def bg_landschaft(art_, seed):
     return im.filter(ImageFilter.SMOOTH)
 
 
+# Eigene Bilder: Dateiname = Ort, optional _saison (_sommer, _herbst, _winter, _fruehling, _advent)
+EIGEN_NAME = {}
+ORT_WORTE = {'kurpark': ('Kurpark',), 'therme': ('Therme', 'Sauna', 'Salzgrotte', 'Thermalbad'), 'limesturm': ('Limesturm', 'Vielbrunn'),
+             'wuerzberg': ('Würzberg', 'Römerbad', 'Kastellbad'), 'haselburg': ('Haselburg',), 'eulbach': ('Eulbach',),
+             'erbach': ('Schloss Erbach', 'Erbach'), 'felsenmeer': ('Felsenmeer',), 'michelstadt': ('Michelstadt', 'Michelstädter'),
+             'stausee': ('Stausee', 'Marbach'), 'viadukt': ('Viadukt',), 'badkoenig-schloss': ('Christmas Lights', 'Wintermarkt'),
+             'burg': ('Breuberg', 'Freienstein')}
+
+
+def saison_ok(name, heute):
+    m, t = heute.month, heute.day
+    if name.endswith('_advent'): return (m == 11 and t >= 15) or m == 12 or (m == 1 and t <= 6)
+    if name.endswith('_winter'): return m in (11, 12, 1, 2)
+    if name.endswith('_herbst'): return m in (9, 10, 11)
+    if name.endswith('_fruehling'): return m in (3, 4, 5)
+    if name.endswith('_sommer'): return m in (5, 6, 7, 8, 9)
+    return True
+
+
+def bild_zum_text(text, kandidaten):
+    for k in kandidaten:
+        n = EIGEN_NAME.get(k, '')
+        for ort, worte in ORT_WORTE.items():
+            if n.startswith(ort) and any(w in text for w in worte): return k
+    return None
+
+
 def hintergruende(seed):
     bgs = {}
     sch = Image.open(os.path.join(ROOT, 'vorschau.jpg')).convert('RGB')
@@ -426,6 +453,7 @@ def hintergruende(seed):
         try:
             im = Image.open(p).convert('RGB'); s = max(1000 / im.width, 1500 / im.height)
             bgs['eigen%d' % i] = im.resize((int(im.width * s) + 1, int(im.height * s) + 1), Image.LANCZOS)
+            EIGEN_NAME['eigen%d' % i] = os.path.splitext(os.path.basename(p))[0].lower()
         except Exception as e:
             print('Bild übersprungen:', p, e)
     return bgs
@@ -791,7 +819,7 @@ def baue(segmente, heute, ziel, special, titel=None):
     tmp = tempfile.mkdtemp()
     seed = int(heute.strftime('%Y%m%d'))
     bgs = hintergruende(seed)
-    eigene = [k for k in bgs if k.startswith('eigen')]
+    eigene = [k for k in bgs if k.startswith('eigen') and saison_ok(EIGEN_NAME.get(k, ''), heute)]
     echt = True
     # Audio je Abschnitt
     for i, s in enumerate(segmente):
@@ -850,9 +878,13 @@ def baue(segmente, heute, ziel, special, titel=None):
         bg = s['bg']
         fx = s.get('fx')
         if bg == 'auto': bg = 'hoehen'
+        if not fx and s['art'] in ('tipp', 'intro', 'outro'):   # passendes eigenes Bild zum genannten Ort / Advent
+            treffer = bild_zum_text(s['text'], eigene)
+            if not treffer and s['art'] == 'intro': treffer = next((e for e in eigene if EIGEN_NAME[e].endswith('_advent')), None)
+            if treffer: bg = treffer
         if fx and bg != 'schloss' or fx and s['art'] in ('tag', 'special'):
             bg = {'schnee': 'winter', 'frost': 'frost', 'nebel': 'hoehen', 'regen': 'regen', 'gewitter': 'gewitter', 'sturm': 'sturm'}[fx]
-        elif eigene and bg in ('wald', 'hoehen'): bg = eigene[k % len(eigene)]
+        elif eigene and bg in ('wald', 'hoehen'): bg = eigene[(k + seed) % len(eigene)]
         s['look'], s['prop'] = FX_LOOK.get(fx, (lk0, None))
         if s['look'] == 'regen' and s['prop'] is None and fx == 'regen': s['prop'] = 'schirm'
         s['bgimg'] = bgs[bg]
