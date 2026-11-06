@@ -74,6 +74,10 @@ def load():
             boe=tagwert(nah, D['time'][i], 'boe', max, D['wind_gusts_10m_max'][i] or 0, wf),
             sonne=(D['sunshine_duration'][i] or 0) / 3600,
             schnee=D['snowfall_sum'][i] or 0, rp_vm=teil(6, 12), rp_nm=teil(12, 18), rp_ab=teil(18, 24)))
+        # Abgleich: Wettersymbol „Regen/Niesel/Schauer“, aber laut Präzisions-Vorhersage kaum Regen → kein Regen
+        t_ = days[-1]
+        if t_['code'] in (51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82) and t_['regen'] < 0.3 and t_['rp'] < 30:
+            t_['code'] = 1 if t_['sonne'] >= 7 else 2 if t_['sonne'] >= 4 else 3
     return days, warn
 
 
