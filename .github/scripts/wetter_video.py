@@ -420,7 +420,8 @@ ORT_WORTE = {'kurpark': ('Kurpark',), 'therme': ('Therme', 'Sauna', 'Salzgrotte'
              'wuerzberg': ('Würzberg', 'Römerbad', 'Kastellbad'), 'haselburg': ('Haselburg',), 'eulbach': ('Eulbach',),
              'erbach': ('Schloss Erbach', 'Erbach'), 'felsenmeer': ('Felsenmeer',), 'michelstadt': ('Michelstadt', 'Michelstädter'),
              'stausee': ('Stausee', 'Marbach'), 'viadukt': ('Viadukt',), 'christmas-lights': ('Christmas Lights', 'Wintermarkt'),
-             'burg-breuberg': ('Breuberg',), 'burg-freienstein': ('Freienstein',)}
+             'burg-breuberg': ('Breuberg',), 'burg-freienstein': ('Freienstein',),
+             'schnee': ('Schlitten', 'Schnee', 'Winterwunderland')}
 
 
 def saison_ok(name, heute):
@@ -885,6 +886,8 @@ def baue(segmente, heute, ziel, special, titel=None):
             if treffer: bg = treffer
         if fx and bg != 'schloss' or fx and s['art'] in ('tag', 'special'):
             bg = {'schnee': 'winter', 'frost': 'frost', 'nebel': 'hoehen', 'regen': 'regen', 'gewitter': 'gewitter', 'sturm': 'sturm'}[fx]
+            passend = [e for e in eigene if EIGEN_NAME[e].startswith(fx)]   # eigenes Stimmungsbild (z. B. schnee-…, nebel-…) bevorzugen
+            if passend: bg = passend[(seed + k) % len(passend)]
         elif eigene and bg in ('wald', 'hoehen'): bg = eigene[(k + seed) % len(eigene)]
         s['look'], s['prop'] = FX_LOOK.get(fx, (lk0, None))
         if s['look'] == 'regen' and s['prop'] is None and fx == 'regen': s['prop'] = 'schirm'
