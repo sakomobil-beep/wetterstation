@@ -101,6 +101,7 @@ def main():
         if M.get('video') == heute: print('Video heute schon gepostet.'); return
         try: zeilen = json.load(open(os.path.join(FB, 'post.json'), encoding='utf-8'))['text'].split('\n')[1:]
         except Exception: zeilen = ['', 'Live-Werte & Vorhersage 👉 https://wetter-badkoenig.de', '#BadKönig #Odenwald #Wetter']
+        time.sleep(int(os.environ.get('FB_WARTEN', '90')))   # warten, bis GitHub Pages das frisch erstellte Video ausliefert
         d = dt.date.fromisoformat(heute)
         tage = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
         kopf = ('⚠️ Wetter-Special' if j.get('special') else '🎬 Euer Odenwald-Wetter') + ' für %s, %d.%d. – mit dem Odenwälder Outdoor-Guide!' % (tage[d.weekday()], d.day, d.month)

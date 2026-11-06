@@ -33,7 +33,7 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
       - uses: FedericoCarboni/setup-ffmpeg@v3
-        if: github.event_name != 'schedule' || contains(fromJSON('["30 4 * * *","30 5 * * *","0 11 * * *","0 15 * * *","0 16 * * *","0 17 * * *"]'), github.event.schedule)
+        if: github.event_name != 'schedule' || contains(fromJSON('["30 4 * * *","30 5 * * *","0 11 * * *","0 15 * * *","0 16 * * *","0 17 * * *","0 5 * * 1-5","0 6 * * 1-5","0 6 * * 0,6","0 7 * * 0,6"]'), github.event.schedule)
         timeout-minutes: 5
       - run: pip install pillow numpy edge-tts
       - name: Morgens – Bild, Text und Wettervideo
@@ -42,7 +42,16 @@ jobs:
           if [ "${{ github.event_name }}" = "schedule" ]; then ARG=--nur-um-6; fi
           python .github/scripts/fb_post.py $ARG
           if git status --porcelain fb | grep -q daten.json; then python .github/scripts/wetter_video.py; fi
-      - name: Tagsüber – Special-Video bei neuer Warnung
+      - name: Kurz vor dem Posten – Bild, Text und Video frisch erstellen
+        if: contains(fromJSON('["0 5 * * 1-5","0 6 * * 1-5","0 6 * * 0,6","0 7 * * 0,6"]'), github.event.schedule)
+        run: |
+          H=$(TZ=Europe/Berlin date +%-H); D=$(TZ=Europe/Berlin date +%u); HEUTE=$(TZ=Europe/Berlin date +%F)
+          AB=7; [ "$D" -ge 6 ] && AB=8
+          if [ "$H" -lt "$AB" ]; then echo "Noch nicht Posting-Zeit ($H Uhr)."; exit 0; fi
+          if grep -q "\"video\": \"$HEUTE\"" fb/gepostet.json 2>/dev/null; then echo "Video heute schon gepostet."; exit 0; fi
+          python .github/scripts/fb_post.py
+          python .github/scripts/wetter_video.py
+
         if: github.event.schedule == '0 11 * * *' || github.event.schedule == '0 15 * * *'
         run: |
           cp fb/post.jpg /tmp/ ; cp fb/post.txt /tmp/ ; cp fb/post.json /tmp/
