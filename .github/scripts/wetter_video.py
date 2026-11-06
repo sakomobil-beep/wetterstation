@@ -44,6 +44,30 @@ def regenzeit(d):
     return ' und '.join(nass)
 
 
+# --- Tipp-Gedächtnis: kein Freizeittipp doppelt innerhalb von 14 Tagen (fb/tipps.json) ---
+TIPP_DATEI = os.path.join(FB, 'tipps.json')
+def _tipps_laden():
+    try: return json.load(open(TIPP_DATEI, encoding='utf-8'))
+    except Exception: return []
+TIPP_LOG = _tipps_laden()
+def _schluessel(t): return t[:40]
+
+
+def wahl(rnd, liste, tage=14):
+    """Wählt einen Tipp, der in den letzten `tage` Tagen nicht vorkam (falls möglich)."""
+    grenze = (dt.date.today() - dt.timedelta(days=tage)).isoformat()
+    neu = {e['k'] for e in TIPP_LOG if e['d'] >= grenze}
+    frei = [t for t in liste if _schluessel(t) not in neu] or liste
+    t = rnd.choice(frei)
+    TIPP_LOG.append(dict(d=dt.date.today().isoformat(), k=_schluessel(t)))
+    return t
+
+
+def tipps_speichern():
+    grenze = (dt.date.today() - dt.timedelta(days=30)).isoformat()
+    json.dump([e for e in TIPP_LOG if e['d'] >= grenze][-80:], open(TIPP_DATEI, 'w', encoding='utf-8'), ensure_ascii=False, indent=0)
+
+
 def abend_tipp(heute, rnd, regen=False):
     """Weihnachtsmärkte und Christmas Lights, je nach Datum und Wochentag."""
     m, tag, wt = heute.month, heute.day, heute.weekday()
@@ -66,7 +90,7 @@ def abend_tipp(heute, rnd, regen=False):
             opt.append(('Heute Abend hat auch der Wintermarkt bei den Christmas Lights im Kurpark offen – mit Glühwein, Livebühne und Kunsthandwerk, bis 21 Uhr.',
                         'Aufwärmen im Zirkuszelt: Der Wintermarkt bei den Christmas Lights im Kurpark Bad König hat heute bis 21 Uhr geöffnet – mit Glühwein und Livebühne.'))
     if not opt: return ''
-    return ' ' + rnd.choice(opt)[1 if regen else 0]
+    return ' ' + wahl(rnd, [o[1 if regen else 0] for o in opt], tage=3)
 
 
 def tipp(d, rnd, heute):
@@ -75,13 +99,13 @@ def tipp(d, rnd, heute):
     w = wort(d['code'])
     trocken = d['rp'] < 40 and w not in ('Regen', 'Gewitter', 'Schnee')
     if w == 'Schnee' or d['schnee'] >= 1:
-        return rnd.choice(['Erst durch den Schnee stapfen, dann ab ins warme Thermalbad der Odenwald-Therme Bad König – besser geht Winter nicht!',
+        return wahl(rnd, ['Erst durch den Schnee stapfen, dann ab ins warme Thermalbad der Odenwald-Therme Bad König – besser geht Winter nicht!',
                            'Holt die Schlitten raus! Auf der Tromm und rund um den Katzenbuckel wird es weiß – aber fahrt vorsichtig, es kann glatt sein.',
                            'Winterwunderland Odenwald! Ein Schneespaziergang durchs Mümlingtal – mit festen Schuhen und warmer Mütze.'])
     if w == 'Gewitter':
         return 'Bei Gewitter gilt: raus aus dem Wald und weg von den Höhen. Lieber ab ins Trockene – zum Beispiel ins Elfenbeinmuseum nach Erbach.'
     if not trocken:
-        r = rnd.choice(['Ideales Wetter für die Odenwald-Therme hier in Bad König – warmes Thermalwasser statt kalter Regen.',
+        r = wahl(rnd, ['Ideales Wetter für die Odenwald-Therme hier in Bad König – warmes Thermalwasser statt kalter Regen.',
                         'Schwitzen statt nass werden: Die Saunalandschaft der Odenwald-Therme Bad König ist bei Regen genau richtig.',
                         'Ab nach Michelstadt ins Stadtmuseum in der historischen Kellerei – und danach ein Kaffee in der Altstadt.',
                         'Ein Bummel durch die Michelstädter Altstadt geht auch mit Schirm – unter dem Fachwerk-Rathaus von 1484 bleibt man sogar trocken.',
@@ -91,7 +115,7 @@ def tipp(d, rnd, heute):
         r += abend_tipp(heute, rnd, regen=True)
         return r
     if d['tmax'] <= 3:
-        return abend_tipp(heute, rnd).strip() and (rnd.choice(['Klare, kalte Luft – perfekt für einen Winterspaziergang im Kurpark Bad König.', 'Dick einpacken und hoch auf die Odenwälder Höhen – die Fernsicht ist bei Kälte oft großartig.']) + abend_tipp(heute, rnd)) or rnd.choice(['Klare, kalte Luft – perfekt für einen Winterspaziergang im Kurpark Bad König. Danach einen heißen Kakao!',
+        return wahl(rnd, ['Klare, kalte Luft – perfekt für einen Winterspaziergang im Kurpark Bad König. Danach einen heißen Kakao!',
                            'Klare Winterluft auf der Höhe: Ein Spaziergang am Limes bei Würzberg zum römischen Kastellbad – mit warmem Tee im Rucksack.',
                            'Klare Winterluft heißt Fernsicht: Von der Burg Breuberg schaut ihr weit übers Mümlingtal – die Burghöfe sind frei zugänglich.',
                         'Bei klarer, kalter Luft ist die Aussicht von der Burgruine Freienstein über das Gammelsbachtal besonders weit.',
@@ -100,9 +124,9 @@ def tipp(d, rnd, heute):
                            'Nach dem Winterspaziergang ab ins warme Thermalbad der Odenwald-Therme Bad König – herrlich, wenn draußen die Luft klirrt.',
                            'Eine Runde um die beiden Seen im Kurpark Bad König – und danach aufwärmen im Café am See.',
                            'Wenn es früh dunkel wird: Die beleuchteten Spazierwege im Kurpark Bad König sind perfekt für eine Abendrunde.',
-                           'Dick einpacken und hoch auf die Odenwälder Höhen: Bei so kalter Luft ist die Fernsicht oft großartig.'])
+                           'Dick einpacken und hoch auf die Odenwälder Höhen: Bei so kalter Luft ist die Fernsicht oft großartig.']) + abend_tipp(heute, rnd)
     if d['tmax'] >= 28:
-        return rnd.choice(['Heute lieber früh los! Morgens wandern, mittags in den Schatten – und viel trinken.',
+        return wahl(rnd, ['Heute lieber früh los! Morgens wandern, mittags in den Schatten – und viel trinken.',
                         'Ab an den Marbach-Stausee in Oberzent – Liegewiese, Abkühlung im Wasser und ein Spaziergang am Ufer.',
                         'Schattig und kühl: Die Obrunnschlucht bei Höchst führt am Bach entlang durch den Wald – mit Mini-Burgen und Mühlen im Maßstab 1:20.',
                            'Abkühlung gefällig? Füße rein in die Kneipp-Anlage im Kurpark Bad König – und für die Kinder gibt es den Wasserspielplatz.',
@@ -123,7 +147,7 @@ def tipp(d, rnd, heute):
         kurpark += ['Wie wäre es mit einer Runde Minigolf im Kurpark Bad König? Danach ein Eis im Café am See.',
                     'Für Familien: Wasserspielplatz und Balancierparcours im Kurpark Bad König – da werden die Kids richtig ausgepowert.']
         if d['tmax'] >= 18: kurpark.append('Schuhe aus und rein in die Kneipp-Anlage im Kurpark Bad König – das macht müde Wanderbeine wieder munter.')
-    r = rnd.choice(kurpark + ['Perfektes Wanderwetter! Auf dem Limes-Wanderweg geht ihr direkt an der alten römischen Grenze entlang – quer durch den Odenwald.',
+    r = wahl(rnd, kurpark + ['Perfektes Wanderwetter! Auf dem Limes-Wanderweg geht ihr direkt an der alten römischen Grenze entlang – quer durch den Odenwald.',
                     'Ab nach Vielbrunn zum nachgebauten Limesturm – so sahen die römischen Wachtürme vor fast 1900 Jahren aus. Bei gutem Wetter seht ihr sogar die Segelflieger.',
                     'Römer-Wanderung bei Würzberg: Am Kastell steht ein teilweise wiederaufgebautes Römerbad, mit Infotafeln, Schutzhütte und Bänken für die Rast.',
                     'Eine Limes-Runde bei Vielbrunn: Rund um das alte Kastell Hainhaus lagen einst bis zu 150 römische Soldaten an der Grenze.',
@@ -394,11 +418,22 @@ HAUT, HAAR, JACKE, JACKE2, HOSE, LINIE = (247, 205, 170), (95, 60, 35), (30, 130
 
 
 def look_fuer(d):
+    """Kleidung nach Wetterlage: winter, regen, kuehl, normal, warm, sonne."""
     w = wort(d['code'])
     if w == 'Schnee' or d['schnee'] >= 1 or d['tmax'] <= 4: return 'winter'
-    if w in ('Regen', 'Gewitter', 'Nieselregen') or d['rp'] >= 60: return 'regen'
-    if w in ('sonnig', 'heiter bis wolkig') and d['tmax'] >= 20: return 'sonne'
+    if w in ('Regen', 'Gewitter', 'Nieselregen', 'Schauer') or d['rp'] >= 60: return 'regen'
+    if d['tmax'] <= 11: return 'kuehl'
+    if d['tmax'] >= 20: return 'sonne' if w in ('sonnig', 'heiter bis wolkig') else 'warm'
     return 'normal'
+
+
+# Oberteil je Look: (Farbe Jacke/Shirt, Farbe Weste oder None, kurze Ärmel)
+OUTFIT = {'winter': ((200, 45, 50), None, False),          # dicke rote Daunenjacke
+          'regen': ((250, 200, 30), None, False),          # gelbe Regenjacke (Friesennerz)
+          'kuehl': ((30, 130, 120), (60, 70, 85), False),  # Softshell mit dunkler Weste
+          'normal': ((30, 130, 120), (240, 140, 40), False),
+          'warm': ((70, 140, 200), None, True),            # blaues Funktions-Shirt
+          'sonne': ((240, 140, 40), None, True)}           # oranges T-Shirt
 
 
 def moderator(mund, blinzeln, zeigen, wink=0, look='normal'):
@@ -410,6 +445,17 @@ def moderator(mund, blinzeln, zeigen, wink=0, look='normal'):
     L = 5 * S
     cx = w // 2
     def P(*xy): return [v * S for v in xy]
+    JACKE, WESTE, KURZ = OUTFIT.get(look, OUTFIT['normal'])
+    def aermel(pts):
+        """Arm zeichnen: lang in Jackenfarbe oder kurz (Haut + kurzer Ärmel)."""
+        d.line(pts, fill=LINIE, width=48 * S, joint='curve')
+        if not KURZ:
+            d.line(pts, fill=JACKE, width=36 * S, joint='curve'); return
+        d.line(pts, fill=HAUT, width=36 * S, joint='curve')
+        x0, y0, x1, y1 = pts[0], pts[1], pts[2], pts[3]
+        xm, ym = x0 + (x1 - x0) * 0.45, y0 + (y1 - y0) * 0.45
+        d.line([x0, y0, xm, ym], fill=LINIE, width=50 * S)
+        d.line([x0, y0, xm, ym], fill=JACKE, width=40 * S)
     # Rucksack (schaut hinter den Schultern hervor)
     d.rounded_rectangle(P(92, 262, 288, 500), radius=40 * S, fill=(150, 45, 40), outline=LINIE, width=L)
     d.rounded_rectangle(P(150, 236, 230, 280), radius=18 * S, fill=(150, 45, 40), outline=LINIE, width=L)
@@ -419,18 +465,23 @@ def moderator(mund, blinzeln, zeigen, wink=0, look='normal'):
     d.rounded_rectangle(P(115, 700, 188, 745), radius=16 * S, fill=(120, 75, 45), outline=LINIE, width=L)
     d.rounded_rectangle(P(192, 700, 265, 745), radius=16 * S, fill=(120, 75, 45), outline=LINIE, width=L)
     # linker Arm (hängt, Hand an der Hüfte)
-    d.line(P(118, 330, 92, 450, 120, 530), fill=LINIE, width=48 * S, joint='curve')
-    d.line(P(118, 330, 92, 450, 120, 530), fill=JACKE, width=36 * S, joint='curve')
+    aermel(P(118, 330, 92, 450, 120, 530))
     d.ellipse(P(100, 512, 142, 554), fill=HAUT, outline=LINIE, width=L)
     # Rumpf: Softshelljacke mit Weste
     d.rounded_rectangle(P(108, 290, 272, 560), radius=46 * S, fill=JACKE, outline=LINIE, width=L)
-    d.polygon(P(150, 300, 190, 300, 182, 560, 150, 560), fill=JACKE2, outline=LINIE)     # Weste links
-    d.polygon(P(230, 300, 190, 300, 198, 560, 230, 560), fill=JACKE2, outline=LINIE)     # Weste rechts
-    d.line(P(190, 300, 190, 560), fill=(220, 220, 225), width=4 * S)                    # Reißverschluss
+    if WESTE:
+        d.polygon(P(150, 300, 190, 300, 182, 560, 150, 560), fill=WESTE, outline=LINIE)     # Weste links
+        d.polygon(P(230, 300, 190, 300, 198, 560, 230, 560), fill=WESTE, outline=LINIE)     # Weste rechts
+    if look == 'winter':                                                                # Steppnähte der Daunenjacke
+        for y in (360, 410, 460, 510): d.line(P(116, y, 264, y), fill=(160, 30, 40), width=4 * S)
+    if not KURZ: d.line(P(190, 300, 190, 560), fill=(220, 220, 225), width=4 * S)       # Reißverschluss
     d.rounded_rectangle(P(156, 400, 184, 430), radius=5 * S, fill=(205, 110, 30), outline=LINIE, width=3 * S)  # Tasche
     d.rounded_rectangle(P(196, 400, 224, 430), radius=5 * S, fill=(205, 110, 30), outline=LINIE, width=3 * S)
-    d.polygon(P(148, 278, 190, 330, 232, 278, 224, 300, 190, 345, 156, 300), fill=JACKE, outline=LINIE)  # Softshell-Stehkragen
-    d.polygon(P(166, 284, 190, 318, 214, 284), fill=(245, 245, 245), outline=LINIE)
+    if KURZ:
+        d.chord(P(160, 270, 220, 320), 0, 180, fill=HAUT, outline=LINIE, width=L)     # Rundhals-Ausschnitt
+    else:
+        d.polygon(P(148, 278, 190, 330, 232, 278, 224, 300, 190, 345, 156, 300), fill=JACKE, outline=LINIE)  # Stehkragen
+        d.polygon(P(166, 284, 190, 318, 214, 284), fill=(245, 245, 245), outline=LINIE)
     for x0, x1 in ((132, 146), (248, 234)):                                                   # Rucksackgurte
         d.line(P(x0, 296, x1, 470), fill=LINIE, width=15 * S)
         d.line(P(x0, 296, x1, 470), fill=(60, 60, 70), width=10 * S)
@@ -452,8 +503,7 @@ def moderator(mund, blinzeln, zeigen, wink=0, look='normal'):
     else:
         arm = P(262, 330, 288, 450, 260, 530)
         hand = P(240, 512, 282, 554)
-    d.line(arm, fill=LINIE, width=48 * S, joint='curve')
-    d.line(arm, fill=JACKE, width=36 * S, joint='curve')
+    aermel(arm)
     d.ellipse(hand, fill=HAUT, outline=LINIE, width=L)
     if zeigen == 2:
         d.rounded_rectangle(P(302, 318, 322, 362), radius=9 * S, fill=HAUT, outline=LINIE, width=4 * S)
@@ -510,6 +560,10 @@ def moderator(mund, blinzeln, zeigen, wink=0, look='normal'):
         d.rounded_rectangle(P(140, 250, 240, 296), radius=20 * S, fill=(200, 45, 50), outline=LINIE, width=L)
         d.rounded_rectangle(P(150, 280, 186, 400), radius=10 * S, fill=(200, 45, 50), outline=LINIE, width=L)
         for y in (330, 360): d.line(P(150, y, 186, y), fill=(240, 240, 240), width=6 * S)
+    elif look == 'kuehl':  # grüne Strickmütze
+        d.chord(P(108, 40, 272, 200), 180, 360, fill=(40, 110, 70), outline=LINIE, width=L)
+        d.rounded_rectangle(P(106, 104, 274, 130), radius=10 * S, fill=(30, 90, 55), outline=LINIE, width=L)
+        for x in range(128, 262, 18): d.line(P(x, 108, x, 126), fill=(50, 130, 85), width=3 * S)
     elif look == 'regen':  # gelber Friesennerz-Hut
         d.ellipse(P(80, 92, 300, 140), fill=(250, 200, 30), outline=LINIE, width=L)
         d.chord(P(122, 34, 258, 170), 180, 360, fill=(250, 200, 30), outline=LINIE, width=L)
@@ -822,6 +876,7 @@ def main():
     ziel = os.path.join(FB, name + '.mp4')
     gesamt, echt = baue(segs, heute, ziel, special)
     text = ' '.join(s['text'] for s in segs)
+    tipps_speichern()
     json.dump({'erstellt': dt.datetime.now().astimezone().isoformat(timespec='minutes'), 'datum': heute.isoformat(),
                'special': special, 'warn': warn, 'dauer': round(gesamt, 1), 'stimme': echt, 'skript': text},
               open(os.path.join(FB, name + '.json'), 'w', encoding='utf-8'), ensure_ascii=False)
@@ -839,6 +894,7 @@ def main_abend(days, warn, heute):
     gesamt, echt = baue(segs, days[1]['datum'], ziel, False, titel)
     text = ' '.join(s['text'] for s in segs)
     beschr = tiktok_text(days, warn, heute)
+    tipps_speichern()
     json.dump({'erstellt': dt.datetime.now().astimezone().isoformat(timespec='minutes'), 'datum': heute.isoformat(),
                'fuer': days[1]['datum'].isoformat(), 'warn': warn, 'dauer': round(gesamt, 1), 'stimme': echt,
                'skript': text, 'beschreibung': beschr},
