@@ -244,11 +244,15 @@ def lage_fx(d):
 def special_fx(sp, warn, a):
     """Wetterlage fürs ganze Special-Video – aus DWD-Warnung oder Special-Grund."""
     t = ' '.join(warn).upper()
-    for wort_, fx in (('GEWITTER', 'gewitter'), ('SCHNEE', 'schnee'), ('GLÄTTE', 'schnee'), ('GLATTEIS', 'schnee'),
-                      ('ORKAN', 'sturm'), ('STURM', 'sturm'), ('WIND', 'sturm'), ('REGEN', 'regen'), ('TAUWETTER', 'regen')):
+    for wort_, fx in (('GEWITTER', 'gewitter'), ('SCHNEE', 'schnee'), ('GLATTEIS', 'frost'), ('GLÄTTE', 'frost'),
+                      ('FROST', 'frost'), ('NEBEL', 'nebel'), ('ORKAN', 'sturm'), ('STURM', 'sturm'), ('WIND', 'sturm'),
+                      ('STARKREGEN', 'regen'), ('DAUERREGEN', 'regen'), ('TAUWETTER', 'regen'), ('HITZE', None)):
         if wort_ in t: return fx
+    if warn: return None   # andere Warnung: keine Wetter-Effekte raten
     for g in sp:
         if g in ('schnee', 'gewitter', 'sturm', 'regen'): return g
+        if g == 'kaelte': return 'frost'
+        if g == 'hitze': return None
     return lage_fx(a)
 
 
@@ -321,6 +325,8 @@ def tanne(dr, x, y, h, col):
 
 def bg_landschaft(art_, seed):
     BW, BH = 1000, 1500
+    frost = art_ == 'frost'
+    if frost: art_ = 'winter'   # Raureif-Landschaft wie Winter, aber ohne Schneeflocken
     if art_ == 'sturm': im = verlauf(BW, BH, (70, 80, 100), (150, 160, 175))
     elif art_ == 'regen': im = verlauf(BW, BH, (105, 115, 130), (175, 185, 195))
     elif art_ == 'gewitter': im = verlauf(BW, BH, (35, 35, 55), (95, 90, 110))
@@ -354,7 +360,7 @@ def bg_landschaft(art_, seed):
             x0 = 760
             dr.rectangle([x0, y - 150, x0 + 26, y + 10], fill=(110, 95, 85), outline=(40, 30, 25), width=3)
             dr.polygon([(x0 - 12, y - 150), (x0 + 13, y - 190), (x0 + 38, y - 150)], fill=(160, 70, 50), outline=(40, 30, 25))
-    if art_ == 'winter':
+    if art_ == 'winter' and not frost:
         for _ in range(250):
             x, y = r.uniform(0, BW), r.uniform(0, BH); s = r.uniform(2, 5)
             dr.ellipse([x - s, y - s, x + s, y + s], fill=(255, 255, 255))
@@ -366,7 +372,7 @@ def hintergruende(seed):
     sch = Image.open(os.path.join(ROOT, 'vorschau.jpg')).convert('RGB')
     s = 1500 / sch.height
     bgs['schloss'] = sch.resize((int(sch.width * s), 1500), Image.LANCZOS)
-    for k in ('wald', 'hoehen', 'sturm', 'winter', 'regen', 'gewitter'):
+    for k in ('wald', 'hoehen', 'sturm', 'winter', 'frost', 'regen', 'gewitter'):
         bgs[k] = bg_landschaft(k, seed)
     eigene = sorted(glob.glob(os.path.join(ROOT, 'video', 'hintergruende', '*.[jp][pn]g')))
     for i, p in enumerate(eigene):  # eigene KI-Bilder ersetzen reihum die gezeichneten Landschaften
@@ -774,7 +780,7 @@ def baue(segmente, heute, ziel, special, titel=None):
                         im_ = moderator(m, b_, z, wk * 22, look, prop); mm_[(m, b_, z, wk)] = im_.resize((int(im_.width * 0.92), int(im_.height * 0.92)), Image.LANCZOS)
             MODS[(look, prop)] = mm_
         return MODS[(look, prop)]
-    FX_LOOK = {'schnee': ('winter', 'schippe'), 'regen': ('regen', 'schirm'), 'gewitter': ('regen', None), 'sturm': ('sturm', None)}
+    FX_LOOK = {'frost': ('winter', None), 'nebel': ('kuehl', None), 'schnee': ('winter', 'schippe'), 'regen': ('regen', 'schirm'), 'gewitter': ('regen', None), 'sturm': ('sturm', None)}
     BAEUME = [baum(a_) for a_ in range(-14, 15, 2)]
     KAPPE = kappe()
     kopf = kopfband(heute, special, titel)
@@ -785,7 +791,7 @@ def baue(segmente, heute, ziel, special, titel=None):
         fx = s.get('fx')
         if bg == 'auto': bg = 'hoehen'
         if fx and bg != 'schloss' or fx and s['art'] in ('tag', 'special'):
-            bg = {'schnee': 'winter', 'regen': 'regen', 'gewitter': 'gewitter', 'sturm': 'sturm'}[fx]
+            bg = {'schnee': 'winter', 'frost': 'frost', 'nebel': 'hoehen', 'regen': 'regen', 'gewitter': 'gewitter', 'sturm': 'sturm'}[fx]
         elif eigene and bg in ('wald', 'hoehen'): bg = eigene[k % len(eigene)]
         s['look'], s['prop'] = FX_LOOK.get(fx, (lk0, None))
         if s['look'] == 'regen' and s['prop'] is None and fx == 'regen': s['prop'] = 'schirm'
@@ -803,7 +809,7 @@ def baue(segmente, heute, ziel, special, titel=None):
         for x in saetze:
             d_ = (s['dauer'] - 0.35) * len(x) / ges
             s['ut'].append((t, t + d_, untertitel_bild(x))); t += d_
-        s['partikel'] = fx or ('schnee' if bg == 'winter' else None)
+        s['partikel'] = fx
 
     rnd = random.Random(1)
     tropfen = [(rnd.uniform(0, W), rnd.uniform(0, H), rnd.uniform(14, 26)) for _ in range(110)]
@@ -855,6 +861,17 @@ def baue(segmente, heute, ziel, special, titel=None):
             for (x, y, r_, ph, c) in blaetter:
                 xx = (x + t * 420) % W; yy = (y + 60 * math.sin(t * 2 + ph) + t * 40) % H
                 dr.ellipse([xx - r_, yy - r_ / 2, xx + r_, yy + r_ / 2], fill=c + (230,))
+        elif pk == 'frost':   # glitzernde Eiskristalle, kein Niederschlag
+            for j_, (x, y, r_, ph) in enumerate(flocken[:60]):
+                a_ = int(255 * max(0, math.sin(t * 3 + ph * 2)))
+                if a_ > 60:
+                    dr.line([x - r_ * 2, y, x + r_ * 2, y], fill=(255, 255, 255, a_), width=2)
+                    dr.line([x, y - r_ * 2, x, y + r_ * 2], fill=(255, 255, 255, a_), width=2)
+        elif pk == 'nebel':   # ziehende Nebelschleier
+            for j_ in range(5):
+                yy = 500 + j_ * 230; xx = ((t * 25 + j_ * 300) % (W + 600)) - 300
+                dr.ellipse([xx - 500, yy - 90, xx + 500, yy + 90], fill=(235, 238, 242, 70))
+            dr.rectangle([0, 0, W, H], fill=(230, 233, 238, 60))
         elif pk == 'schnee':
             for (x, y, r_, ph) in flocken:
                 yy = (y + t * 60 * r_) % H; xx = (x + 20 * math.sin(t + ph)) % W
