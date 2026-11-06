@@ -73,6 +73,7 @@
     </section>
     <section class="spalte">
       <h2 class="sp">☀️ Morgen-Beitrag &amp; Video</h2>
+      <div id="specialBox"></div>
       <div class="card" id="vidCard" hidden>
         <div class="vhead" id="vTitel">🎬 Video-Wetterbericht</div>
         <div class="datum" id="vDatum"></div>
@@ -143,18 +144,32 @@
     vname = n; var src = 'fb/' + n + '.mp4?v=' + v;
     document.getElementById('vid').src = src; document.getElementById('vLaden').href = src;
     var t = document.getElementById('vTitel');
-    t.textContent = (n === 'special' ? '⚠️ Wetter-Special' : j.special ? '⚠️ Video-Wetterbericht mit Special' : '🎬 Video-Wetterbericht') + ' · ' + Math.round(j.dauer) + ' Sek.';
-    t.className = 'vhead' + (n === 'special' || j.special ? ' sp' : '');
+    t.textContent = '🎬 Video-Wettervorhersage morgens' + (j.special ? ' (mit Warnhinweis)' : '') + ' · ' + Math.round(j.dauer) + ' Sek.';
+    t.className = 'vhead' + (j.special ? ' sp' : '');
     if (j.erstellt) setzeDatum(document.getElementById('vDatum'), j.erstellt); else document.getElementById('vDatum').hidden = true;
     document.getElementById('vidCard').hidden = false;
     fetch(src, { cache: 'no-store' }).then(function (r) { return r.blob(); }).then(function (b) { vblob = b; }).catch(function () {});
   }
   var heute = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
+  // Morgenvideo: immer eigene Karte
+  fetch('fb/wetter.json?v=' + v, { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) { zeigeVideo('wetter', j); }).catch(function () {});
+  // Wetter-Special (mittags/nachmittags bei neuer Warnung): eigene Karte, nur am selben Tag
   fetch('fb/special.json?v=' + v, { cache: 'no-store' }).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (j) {
-    if (j.datum !== heute) throw 0; zeigeVideo('special', j);
-  }).catch(function () {
-    fetch('fb/wetter.json?v=' + v, { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) { zeigeVideo('wetter', j); }).catch(function () {});
-  });
+    if (j.datum !== heute) return;
+    var src = 'fb/special.mp4?v=' + v, sb = null, c = document.createElement('div'); c.className = 'card';
+    c.innerHTML = '<div class="vhead sp">⚠️ Wetter-Special-Video · ' + Math.round(j.dauer) + ' Sek.</div><div class="datum"></div>' +
+      '<video controls playsinline preload="metadata"></video><div class="btns"><button class="prim">📤 Special teilen</button>' +
+      '<a class="btn sec" download="odenwald-wetter-special.mp4" style="grid-column:1 / -1">💾 Video speichern</a></div>';
+    c.querySelector('video').src = src; c.querySelector('a').href = src;
+    if (j.erstellt) setzeDatum(c.querySelector('.datum'), j.erstellt);
+    fetch(src, { cache: 'no-store' }).then(function (r) { return r.blob(); }).then(function (b) { sb = b; }).catch(function () {});
+    c.querySelector('button').onclick = function () {
+      if (sb && navigator.canShare) { var f = new File([sb], 'odenwald-wetter-special.mp4', { type: 'video/mp4' });
+        if (navigator.canShare({ files: [f] })) { navigator.share({ files: [f] }).catch(function () {}); return; } }
+      toast('Video bitte speichern und auf Facebook hochladen');
+    };
+    document.getElementById('specialBox').appendChild(c);
+  }).catch(function () {});
   document.getElementById('vTeilen').onclick = function () {
     var t = document.getElementById('text').value;
     kopieren().finally(function () {
