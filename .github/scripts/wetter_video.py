@@ -420,7 +420,7 @@ ORT_WORTE = {'kurpark': ('Kurpark',), 'therme': ('Therme', 'Sauna', 'Salzgrotte'
              'wuerzberg': ('Würzberg', 'Römerbad', 'Kastellbad'), 'haselburg': ('Haselburg',), 'eulbach': ('Eulbach',),
              'erbach': ('Schloss Erbach', 'Erbach'), 'felsenmeer': ('Felsenmeer',), 'michelstadt': ('Michelstadt', 'Michelstädter'),
              'stausee': ('Stausee', 'Marbach'), 'viadukt': ('Viadukt',), 'christmas-lights': ('Christmas Lights', 'Wintermarkt'),
-             'burg': ('Breuberg', 'Freienstein')}
+             'burg-breuberg': ('Breuberg',), 'burg-freienstein': ('Freienstein',)}
 
 
 def saison_ok(name, heute):
