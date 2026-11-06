@@ -53,13 +53,9 @@ jobs:
         if: github.event.schedule == '0 16 * * *' || github.event.schedule == '0 17 * * *'
         run: |
           python .github/scripts/fb_post.py --abend --nur-abends
-          # TikTok: Abendvideo mit Max (nur wenn der Abendbeitrag gerade neu erstellt wurde)
-          if git status --porcelain fb | grep -q abend.json; then python .github/scripts/wetter_video.py --abend || echo "TikTok-Video nicht möglich"; fi
-      - name: TikTok-Abendvideo (bei manuellem Start / Änderungen)
+      - name: Abendbeitrag (bei manuellem Start / Änderungen)
         if: github.event_name != 'schedule'
-        run: |
-          python .github/scripts/fb_post.py --abend
-          python .github/scripts/wetter_video.py --abend || echo "TikTok-Video nicht möglich"
+        run: python .github/scripts/fb_post.py --abend
       - name: Sondermeldungen prüfen
         run: python .github/scripts/sonder.py || echo "Sondermeldung nicht möglich"
       - name: Speichern
