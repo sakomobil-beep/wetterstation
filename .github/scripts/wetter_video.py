@@ -114,6 +114,13 @@ def tipp(d, rnd, heute):
                         'Wer trotzdem raus will: Regenjacke an, Gummistiefel an – der Wald im Mümlingtal riecht nach Regen am besten.'])
         r += abend_tipp(heute, rnd, regen=True)
         return r
+    if d['code'] in (45, 48):   # Nebel: kein „schöner Tag für draußen“
+        return wahl(rnd, ['Bei Nebel lieber gemütlich: Ab in die warme Odenwald-Therme Bad König – Sauna und Thermalwasser statt grauer Suppe.',
+                           'Grau in grau draußen? Dann ein Besuch im Elfenbeinmuseum in Erbach oder im Schloss Erbach.',
+                           'Nebeltage sind Museumstage: Das Stadtmuseum in der Michelstädter Kellerei lohnt sich immer.',
+                           'Wer trotzdem raus will: Ein kurzer Spaziergang im Kurpark Bad König – im Nebel wirken die Seen richtig mystisch. Aber warm anziehen!',
+                           'Durchatmen trotz Nebel: Die Salzgrotte in der Odenwald-Therme Bad König ist wie ein Kurzurlaub am Meer.',
+                           'Ein Tag zum Aufwärmen: Heißer Kakao und ein gutes Buch – und wer mag, schaut nachmittags, ob sich der Nebel auf den Höhen lichtet.']) + abend_tipp(heute, rnd)
     if d['tmax'] <= 3:
         return wahl(rnd, ['Klare, kalte Luft – perfekt für einen Winterspaziergang im Kurpark Bad König. Danach einen heißen Kakao!',
                            'Klare Winterluft auf der Höhe: Ein Spaziergang am Limes bei Würzberg zum römischen Kastellbad – mit warmem Tee im Rucksack.',
@@ -147,7 +154,9 @@ def tipp(d, rnd, heute):
         kurpark += ['Wie wäre es mit einer Runde Minigolf im Kurpark Bad König? Danach ein Eis im Café am See.',
                     'Für Familien: Wasserspielplatz und Balancierparcours im Kurpark Bad König – da werden die Kids richtig ausgepowert.']
         if d['tmax'] >= 18: kurpark.append('Schuhe aus und rein in die Kneipp-Anlage im Kurpark Bad König – das macht müde Wanderbeine wieder munter.')
-    r = wahl(rnd, kurpark + ['Perfektes Wanderwetter! Auf dem Limes-Wanderweg geht ihr direkt an der alten römischen Grenze entlang – quer durch den Odenwald.',
+    schoen = ('Perfektes Wanderwetter', 'schöner Tag', 'bei Sonne', 'bei diesem Wetter', 'Bei gutem Wetter')
+    def passt(liste): return liste if d['code'] <= 2 else [x for x in liste if not any(k in x for k in schoen)]
+    r = wahl(rnd, passt(kurpark + ['Perfektes Wanderwetter! Auf dem Limes-Wanderweg geht ihr direkt an der alten römischen Grenze entlang – quer durch den Odenwald.',
                     'Ab nach Vielbrunn zum nachgebauten Limesturm – so sahen die römischen Wachtürme vor fast 1900 Jahren aus. Bei gutem Wetter seht ihr sogar die Segelflieger.',
                     'Römer-Wanderung bei Würzberg: Am Kastell steht ein teilweise wiederaufgebautes Römerbad, mit Infotafeln, Schutzhütte und Bänken für die Rast.',
                     'Eine Limes-Runde bei Vielbrunn: Rund um das alte Kastell Hainhaus lagen einst bis zu 150 römische Soldaten an der Grenze.',
@@ -161,7 +170,7 @@ def tipp(d, rnd, heute):
                         'Bummeln, Eis essen, Fachwerk bestaunen: Die Michelstädter Altstadt mit dem Rathaus von 1484 ist bei Sonne ein Traum.',
                     'Ab aufs Rad: Der Mümlingtal-Radweg ist bei diesem Wetter genau richtig.',
                     'Wie wäre es mit dem Felsenmeer bei Reichenbach? Bei trockenem Wetter klettert es sich dort am besten.',
-                    'Ein schöner Tag für einen Ausflug zur Burg Breuberg – mit toller Aussicht übers Mümlingtal.'])
+                    'Ein schöner Tag für einen Ausflug zur Burg Breuberg – mit toller Aussicht übers Mümlingtal.']))
     rz = regenzeit(d)
     if rz: r += ' Packt aber für %s die Regenjacke ein.' % rz.replace('am ', 'den ').replace('den ganzen Tag über', 'alle Fälle')
     r += abend_tipp(heute, rnd)
@@ -286,9 +295,11 @@ def skript(days, warn, heute, nur_special=False):
             sa = next(d for d in days if d['datum'].weekday() == 5)
             so = next(d for d in days if d['datum'].weekday() == 6)
             if sa['datum'] > b['datum'] or so['datum'] > b['datum']:
-                gut = [n for n, d in (('Samstag', sa), ('Sonntag', so)) if d['rp'] < 40]
+                nass = (51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 71, 73, 75, 77, 80, 81, 82, 85, 86, 95, 96, 99)
+                gut = [n for n, d in (('Samstag', sa), ('Sonntag', so)) if d['rp'] < 40 and d['code'] not in nass]
+                grau = any(d['code'] in (45, 48) or d['code'] == 3 for d in (sa, so))
                 t = 'Ein Blick aufs Wochenende: Samstag %s bei %s Grad, Sonntag %s bei %s Grad.' % (wort(sa['code']), zahl(sa['tmax']), wort(so['code']), zahl(so['tmax']))
-                t += (' Euer Ausflugstag ist der %s!' % gut[0]) if len(gut) == 1 else (' Beide Tage sehen gut aus für draußen!' if gut else ' Plant lieber etwas für drinnen ein.')
+                t += (' Trockener bleibt es am %s.' % gut[0]) if len(gut) == 1 else ((' Beide Tage bleiben wohl trocken – zieht euch aber warm an.' if grau else ' Beide Tage sehen gut aus für draußen!') if gut else ' Plant lieber etwas für drinnen ein.')
                 seg.append(dict(art='wochenende', tage=[sa, so], bg='wald', text=t))
     seg.append(dict(art='outro', bg='schloss', text=rnd.choice(['Alle Live-Werte findet ihr auf wetter-badkoenig.de.', 'Mehr gibt es live auf wetter-badkoenig.de.'])
                        + ' ' + abschied(a, rnd)))
