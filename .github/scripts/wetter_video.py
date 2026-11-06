@@ -419,7 +419,7 @@ EIGEN_NAME = {}
 ORT_WORTE = {'kurpark': ('Kurpark',), 'therme': ('Therme', 'Sauna', 'Salzgrotte', 'Thermalbad'), 'limesturm': ('Limesturm', 'Vielbrunn'),
              'wuerzberg': ('Würzberg', 'Römerbad', 'Kastellbad'), 'haselburg': ('Haselburg',), 'eulbach': ('Eulbach',),
              'erbach': ('Schloss Erbach', 'Erbach'), 'felsenmeer': ('Felsenmeer',), 'michelstadt': ('Michelstadt', 'Michelstädter'),
-             'stausee': ('Stausee', 'Marbach'), 'viadukt': ('Viadukt',), 'badkoenig-schloss': ('Christmas Lights', 'Wintermarkt'),
+             'stausee': ('Stausee', 'Marbach'), 'viadukt': ('Viadukt',), 'christmas-lights': ('Christmas Lights', 'Wintermarkt'),
              'burg': ('Breuberg', 'Freienstein')}
 
 
@@ -433,11 +433,12 @@ def saison_ok(name, heute):
     return True
 
 
-def bild_zum_text(text, kandidaten):
-    for k in kandidaten:
-        n = EIGEN_NAME.get(k, '')
-        for ort, worte in ORT_WORTE.items():
-            if n.startswith(ort) and any(w in text for w in worte): return k
+def bild_zum_text(text, kandidaten, n_=0):
+    """Passendes Bild zum Text. Spezifischere Orte (Christmas Lights) vor allgemeinen (Kurpark); bei mehreren Bildern wird gewechselt."""
+    for ort, worte in sorted(ORT_WORTE.items(), key=lambda x: x[0] != 'christmas-lights'):
+        if any(w in text for w in worte):
+            tr = [k for k in kandidaten if EIGEN_NAME.get(k, '').startswith(ort)]
+            if tr: return tr[n_ % len(tr)]
     return None
 
 
@@ -879,7 +880,7 @@ def baue(segmente, heute, ziel, special, titel=None):
         fx = s.get('fx')
         if bg == 'auto': bg = 'hoehen'
         if not fx and s['art'] in ('tipp', 'intro', 'outro'):   # passendes eigenes Bild zum genannten Ort / Advent
-            treffer = bild_zum_text(s['text'], eigene)
+            treffer = bild_zum_text(s['text'], eigene, seed + k)
             if not treffer and s['art'] == 'intro': treffer = next((e for e in eigene if EIGEN_NAME[e].endswith('_advent')), None)
             if treffer: bg = treffer
         if fx and bg != 'schloss' or fx and s['art'] in ('tag', 'special'):
