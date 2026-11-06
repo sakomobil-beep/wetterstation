@@ -79,13 +79,10 @@ jobs:
           FB_SONDER_AUTO: ${{ vars.FB_SONDER_AUTO }}
         run: |
           if [ -z "$MAKE_WEBHOOK$MAKE_VIDEO_WEBHOOK$FB_PAGE_TOKEN" ]; then echo "Kein Auto-Posting eingerichtet."; exit 0; fi
-          # morgens nur noch das Video (Mo–Fr 7 Uhr, Sa/So 8 Uhr), abends der Ausblick um 18 Uhr
-          case "${{ github.event.schedule }}" in
-            "0 5 * * 1-5"|"0 6 * * 1-5"|"0 6 * * 0,6"|"0 7 * * 0,6")
-              python .github/scripts/fb_senden.py video || echo "Video nicht gepostet" ;;
-            "0 16 * * *"|"0 17 * * *")
-              python .github/scripts/fb_senden.py abend || echo "Abendbeitrag nicht gepostet" ;;
-          esac
+          # Video (ab 7 Uhr, Sa/So ab 8 Uhr) und Abendbeitrag (ab 18 Uhr) – jeder Lauf versucht es,
+          # fb_senden.py postet beides höchstens 1x pro Tag (falls GitHub den festen Termin verspätet oder auslässt)
+          python .github/scripts/fb_senden.py video || echo "Video nicht gepostet"
+          python .github/scripts/fb_senden.py abend || echo "Abendbeitrag nicht gepostet"
           python .github/scripts/fb_senden.py sonder || echo "Sondermeldung nicht gepostet"
           git add fb/gepostet.json 2>/dev/null || true
           git diff --cached --quiet && exit 0
