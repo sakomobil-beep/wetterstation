@@ -323,7 +323,7 @@ def abend(now):
             print('Noch vor 18 Uhr Ortszeit (%s) – übersprungen.' % now.strftime('%H:%M')); return
         try:
             alt = dt.datetime.fromisoformat(json.load(open(os.path.join(OUT, 'abend.json'), encoding='utf-8'))['erstellt']).astimezone(TZ)
-            if alt.date() == now.date(): print('Abendbeitrag heute schon erstellt – übersprungen.'); return
+            if alt.date() == now.date() and alt.hour >= 18: print('Abendbeitrag heute schon erstellt – übersprungen.'); return
         except Exception:
             pass
     days, warn = demo() if DEMO else load()
