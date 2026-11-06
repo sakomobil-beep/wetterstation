@@ -5045,11 +5045,12 @@ function frostState() {
     return { kind: 'glatt', temp: t, rain: rain12, hum: d.humidity };
   }
   if (t !== null && t < 0) {
-    var since = null;
-    for (var i = hist.length - 1; i >= 0; i--) {
+    var since = null, i;
+    for (i = hist.length - 1; i >= 0; i--) {
       if (hist[i].temp !== null && hist[i].temp < 0) since = new Date(hist[i].t); else break;
     }
-    var all = since && hist.length >= 24 && hist[0].temp < 0;
+    // „mehr als 24 Stunden“ nur, wenn der GANZE Verlauf unter 0 °C lag und er wirklich ≥ 24 h zurückreicht
+    var all = since && i < 0 && hist.length > 1 && (new Date(hist[hist.length - 1].t) - new Date(hist[0].t)) >= 23.5 * 3600000;
     return { kind: 'jetzt', temp: t, since: since ? (all ? 'mehr als 24 Stunden' : hhmm(since) + ' Uhr') : null };
   }
   var n = frostNight();
