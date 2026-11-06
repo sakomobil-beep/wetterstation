@@ -72,6 +72,8 @@ def main():
         j = json.load(open(os.path.join(FB, 'abend.json'), encoding='utf-8'))
         if not j.get('erstellt', '').startswith(heute): print('Abendbeitrag ist nicht von heute – übersprungen.'); return
         if M.get('abend') == heute: print('Abendbeitrag heute schon gepostet.'); return
+        if dt.datetime.now(TZ).hour < 18 or int(j['erstellt'][11:13]) < 18:   # nur der echte Abendbeitrag ab 18 Uhr (nicht Test-/TikTok-Erstellungen tagsüber)
+            print('Abendbeitrag erst ab 18 Uhr.'); return
         time.sleep(int(os.environ.get('FB_WARTEN', '90')))
         if senden('abend.jpg', j['text'], 'tag'): M['abend'] = heute
     elif modus == 'video':
