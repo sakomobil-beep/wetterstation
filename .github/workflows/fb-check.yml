@@ -1,0 +1,18 @@
+name: Facebook-Verbindung prüfen
+on: workflow_dispatch
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - env: { TOK: '${{ secrets.FB_PAGE_TOKEN }}', PID: '${{ secrets.FB_PAGE_ID }}' }
+        run: |
+          python3 - <<'P'
+          import os,json,urllib.request,urllib.error
+          t,p=os.environ['TOK'].strip(),os.environ['PID'].strip()
+          print('Token-Länge',len(t),'beginnt mit',t[:3],'| ID-Länge',len(p),'nur Ziffern',p.isdigit())
+          for u in ['me?fields=id,name','%s?fields=name,fan_count'%p,'me/permissions']:
+            try:
+              r=urllib.request.urlopen('https://graph.facebook.com/v21.0/'+u+('&' if '?' in u else '?')+'access_token='+t,timeout=30).read().decode()
+              print('OK',u.split('?')[0].replace(p,'SEITE'),r[:400])
+            except urllib.error.HTTPError as e: print('FEHLER',u.split('?')[0].replace(p,'SEITE'),e.read().decode()[:300])
+          P
