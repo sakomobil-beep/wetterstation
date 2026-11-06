@@ -27,6 +27,19 @@ def post_json(url, daten):
         return r.status, r.read().decode()[:300]
 
 
+def push(titel, text, prio='default', tags='white_check_mark'):
+    """Handy-Push über ntfy (Secret NTFY_TOPIC) – Fehler stoppen das Posten nie."""
+    topic = os.environ.get('NTFY_TOPIC')
+    if not topic: return
+    try:
+        req = urllib.request.Request('https://ntfy.sh/' + topic, data=text.encode('utf-8'), headers={
+            'Title': titel.encode('utf-8').decode('latin-1'), 'Priority': prio, 'Tags': tags,
+            'Click': 'https://www.facebook.com/profile.php?id=' + (os.environ.get('FB_PAGE_ID') or '')
+            if os.environ.get('FB_PAGE_ID') else 'https://www.facebook.com/'})
+        urllib.request.urlopen(req, timeout=20).read(); print('Push gesendet:', titel)
+    except Exception as e: print('Push fehlgeschlagen:', e)
+
+
 def video_senden(datei, text):
     url = BASIS + datei + '?v=' + str(int(time.time()))
     tok, page, hook = os.environ.get('FB_PAGE_TOKEN'), os.environ.get('FB_PAGE_ID'), os.environ.get('MAKE_VIDEO_WEBHOOK')
@@ -58,6 +71,8 @@ def senden(bild, text, art):
 
 def main():
     modus = sys.argv[1] if len(sys.argv) > 1 else 'tag'
+    if modus == 'pushtest':
+        push('Wetterstation verbunden', 'Ab jetzt bekommst du eine Nachricht, sobald etwas automatisch auf Facebook gepostet wurde 👍'); return
     heute = dt.datetime.now(TZ).date().isoformat()
     try: M = json.load(open(MERK, encoding='utf-8'))
     except Exception: M = {}
@@ -75,7 +90,8 @@ def main():
         if dt.datetime.now(TZ).hour < 18 or int(j['erstellt'][11:13]) < 18:   # nur der echte Abendbeitrag ab 18 Uhr (nicht Test-Erstellungen tagsüber)
             print('Abendbeitrag erst ab 18 Uhr.'); return
         time.sleep(int(os.environ.get('FB_WARTEN', '90')))
-        if senden('abend.jpg', j['text'], 'tag'): M['abend'] = heute
+        if senden('abend.jpg', j['text'], 'tag'):
+            M['abend'] = heute; push('Abendbeitrag gepostet', 'Der Abendbeitrag ist jetzt auf Facebook online.', tags='crescent_moon,white_check_mark')
     elif modus == 'video':
         jetzt = dt.datetime.now(TZ)
         ab = 8 if jetzt.weekday() >= 5 else 7   # Wochenende erst ab 8 Uhr
@@ -88,7 +104,8 @@ def main():
         d = dt.date.fromisoformat(heute)
         tage = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
         kopf = ('⚠️ Wetter-Special' if j.get('special') else '🎬 Euer Odenwald-Wetter') + ' für %s, %d.%d. – mit dem Odenwälder Outdoor-Guide!' % (tage[d.weekday()], d.day, d.month)
-        if video_senden('wetter.mp4', '\n'.join([kopf] + zeilen).strip() + ' #Wettervideo'): M['video'] = heute
+        if video_senden('wetter.mp4', '\n'.join([kopf] + zeilen).strip() + ' #Wettervideo'):
+            M['video'] = heute; push('Wettervideo gepostet', kopf + '\nMax ist jetzt auf Facebook online.', tags='movie_camera,white_check_mark')
     elif modus == 'sonder':
         modus_s = os.environ.get('FB_SONDER_AUTO') or 'amtlich'   # amtlich (Standard) | alle | aus
         if modus_s == 'aus': print('Sondermeldungen werden von Hand geteilt.'); return
@@ -97,7 +114,10 @@ def main():
         neu = [m for m in j.get('meldungen', []) if M.get('sonder-' + m['typ']) != heute and (m.get('amtlich') or modus_s == 'alle')]
         if neu: time.sleep(int(os.environ.get('FB_WARTEN', '90')))
         for m in neu:
-            if senden(m['bild'], m['text'], 'sonder'): M['sonder-' + m['typ']] = heute
+            if senden(m['bild'], m['text'], 'sonder'):
+                M['sonder-' + m['typ']] = heute
+                push('Sondermeldung gepostet', m['text'].split('\n')[0][:200] + '\nAutomatisch auf Facebook veröffentlicht.',
+                     prio='high' if m.get('amtlich') else 'default', tags='warning,white_check_mark')
     json.dump(M, open(MERK, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
 
 

@@ -73,6 +73,7 @@ jobs:
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
           FB_SONDER_AUTO: ${{ vars.FB_SONDER_AUTO }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
         run: |
           if [ -z "$MAKE_WEBHOOK$MAKE_VIDEO_WEBHOOK$FB_PAGE_TOKEN" ]; then echo "Kein Auto-Posting eingerichtet."; exit 0; fi
           # Video (ab 7 Uhr, Sa/So ab 8 Uhr) und Abendbeitrag (ab 18 Uhr) – jeder Lauf versucht es,
