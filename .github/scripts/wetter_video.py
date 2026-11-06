@@ -230,6 +230,28 @@ def abschied(d, rnd):
     return 'Euer Max sagt: Rucksack auf und raus – der Odenwald wartet!'
 
 
+def lage_fx(d):
+    """Wetterlage für Hintergrund-Effekte: schnee, gewitter, sturm, regen oder None."""
+    if not d: return None
+    w = wort(d['code'])
+    if w == 'Schnee' or d['schnee'] >= 1: return 'schnee'
+    if w == 'Gewitter': return 'gewitter'
+    if d['boe'] >= 55: return 'sturm'
+    if w in ('Regen', 'Nieselregen', 'Schauer') or d['rp'] >= 60 or d['regen'] >= 5: return 'regen'
+    return None
+
+
+def special_fx(sp, warn, a):
+    """Wetterlage fürs ganze Special-Video – aus DWD-Warnung oder Special-Grund."""
+    t = ' '.join(warn).upper()
+    for wort_, fx in (('GEWITTER', 'gewitter'), ('SCHNEE', 'schnee'), ('GLÄTTE', 'schnee'), ('GLATTEIS', 'schnee'),
+                      ('ORKAN', 'sturm'), ('STURM', 'sturm'), ('WIND', 'sturm'), ('REGEN', 'regen'), ('TAUWETTER', 'regen')):
+        if wort_ in t: return fx
+    for g in sp:
+        if g in ('schnee', 'gewitter', 'sturm', 'regen'): return g
+    return lage_fx(a)
+
+
 def skript(days, warn, heute, nur_special=False):
     rnd = random.Random(heute.isoformat())
     a, b = days[0], days[1]
@@ -266,6 +288,11 @@ def skript(days, warn, heute, nur_special=False):
                 seg.append(dict(art='wochenende', tage=[sa, so], bg='wald', text=t))
     seg.append(dict(art='outro', bg='schloss', text=rnd.choice(['Alle Live-Werte findet ihr auf wetter-badkoenig.de.', 'Mehr gibt es live auf wetter-badkoenig.de.'])
                        + ' ' + abschied(a, rnd)))
+    # Wetter-Effekte: Tages-Tafeln zeigen das Wetter ihres Tages, im Special das ganze Video
+    gfx = special_fx(sp, warn, a) if (nur_special or sp) else None
+    for x in seg:
+        if gfx: x['fx'] = gfx
+        elif x['art'] == 'tag': x['fx'] = lage_fx(x['tag'])
     return seg
 
 
@@ -295,15 +322,24 @@ def tanne(dr, x, y, h, col):
 def bg_landschaft(art_, seed):
     BW, BH = 1000, 1500
     if art_ == 'sturm': im = verlauf(BW, BH, (70, 80, 100), (150, 160, 175))
+    elif art_ == 'regen': im = verlauf(BW, BH, (105, 115, 130), (175, 185, 195))
+    elif art_ == 'gewitter': im = verlauf(BW, BH, (35, 35, 55), (95, 90, 110))
     elif art_ == 'winter': im = verlauf(BW, BH, (150, 185, 225), (235, 242, 250))
     else: im = verlauf(BW, BH, (70, 150, 225), (250, 215, 165))
     dr = ImageDraw.Draw(im)
     r = random.Random(seed)
-    if art_ not in ('sturm',):
+    if art_ in ('regen', 'gewitter', 'sturm'):   # dicke Wolkenbänke
+        wc = {'regen': (135, 140, 150), 'gewitter': (55, 55, 75), 'sturm': (95, 100, 115)}[art_]
+        for _ in range(28):
+            x, y, rr = r.uniform(-100, BW + 100), r.uniform(-60, 420), r.uniform(90, 190)
+            dr.ellipse([x - rr * 1.6, y - rr * 0.6, x + rr * 1.6, y + rr * 0.6], fill=tuple(max(0, v + r.randint(-12, 12)) for v in wc))
+    if art_ not in ('sturm', 'regen', 'gewitter'):
         dr.ellipse([680, 230, 860, 410], fill=(255, 225, 120))
     farben = {'wald': [(120, 160, 140), (80, 130, 90), (50, 105, 70), (35, 80, 55)],
               'hoehen': [(150, 170, 200), (115, 150, 170), (85, 125, 120), (60, 100, 80)],
               'sturm': [(100, 110, 125), (80, 95, 100), (60, 80, 75), (45, 65, 55)],
+              'regen': [(125, 135, 145), (95, 115, 110), (70, 100, 85), (55, 85, 65)],
+              'gewitter': [(70, 70, 90), (55, 65, 70), (45, 60, 55), (35, 50, 45)],
               'winter': [(205, 215, 230), (225, 232, 242), (240, 244, 250), (250, 252, 255)]}[art_]
     for k, c in enumerate(farben):
         y = 700 + k * 170
@@ -330,7 +366,7 @@ def hintergruende(seed):
     sch = Image.open(os.path.join(ROOT, 'vorschau.jpg')).convert('RGB')
     s = 1500 / sch.height
     bgs['schloss'] = sch.resize((int(sch.width * s), 1500), Image.LANCZOS)
-    for k in ('wald', 'hoehen', 'sturm', 'winter'):
+    for k in ('wald', 'hoehen', 'sturm', 'winter', 'regen', 'gewitter'):
         bgs[k] = bg_landschaft(k, seed)
     eigene = sorted(glob.glob(os.path.join(ROOT, 'video', 'hintergruende', '*.[jp][pn]g')))
     for i, p in enumerate(eigene):  # eigene KI-Bilder ersetzen reihum die gezeichneten Landschaften
@@ -361,11 +397,28 @@ OUTFIT = {'winter': ((200, 45, 50), None, False),          # dicke rote Daunenja
           'regen': ((250, 200, 30), None, False),          # gelbe Regenjacke (Friesennerz)
           'kuehl': ((30, 130, 120), (60, 70, 85), False),  # Softshell mit dunkler Weste
           'normal': ((30, 130, 120), (240, 140, 40), False),
+          'sturm': ((30, 130, 120), (60, 70, 85), False),   # Softshell, Mütze ist weggeflogen
           'warm': ((70, 140, 200), None, True),            # blaues Funktions-Shirt
           'sonne': ((240, 140, 40), None, True)}           # oranges T-Shirt
 
 
-def moderator(mund, blinzeln, zeigen, wink=0, look='normal'):
+def schippe(d, P, L):
+    """Schneeschippe in der linken Hand (Stiel bis zum Boden, Schaufelblatt neben den Schuhen)."""
+    d.line(P(118, 520, 100, 718), fill=LINIE, width=16 * 2)
+    d.line(P(118, 520, 100, 718), fill=(150, 100, 55), width=10 * 2)
+    d.rounded_rectangle(P(100, 500, 140, 516), radius=6 * 2, fill=(40, 40, 45), outline=LINIE, width=L)   # Griff
+    d.polygon(P(52, 712, 148, 712, 140, 758, 60, 758), fill=(30, 110, 200), outline=LINIE)                # Blatt
+    d.line(P(58, 738, 142, 738), fill=(250, 250, 255), width=8 * 2)                                       # Schnee drauf
+
+
+def schirm(d, P, L):
+    """Roter Regenschirm über dem Kopf, Griff in der linken Hand."""
+    d.line(P(118, 530, 112, 90), fill=LINIE, width=10 * 2)
+    d.chord(P(-8, 4, 262, 176), 180, 360, fill=(200, 40, 50), outline=LINIE, width=L)
+    for x in (32, 77, 127, 172, 217): d.line(P(127, 6, x, 88), fill=(150, 25, 35), width=3 * 2)
+
+
+def moderator(mund, blinzeln, zeigen, wink=0, look='normal', prop=None):
     """zeigen: 0 = Arm hängt, 1 = zeigt zur Tafel, 2 = Daumen hoch, 3 = winkt"""
     S = 2  # doppelt zeichnen, dann verkleinern = glatte Linien
     w, h = 380 * S, 760 * S
@@ -493,7 +546,7 @@ def moderator(mund, blinzeln, zeigen, wink=0, look='normal'):
         d.chord(P(108, 40, 272, 200), 180, 360, fill=(40, 110, 70), outline=LINIE, width=L)
         d.rounded_rectangle(P(106, 104, 274, 130), radius=10 * S, fill=(30, 90, 55), outline=LINIE, width=L)
         for x in range(128, 262, 18): d.line(P(x, 108, x, 126), fill=(50, 130, 85), width=3 * S)
-    elif look == 'regen':  # gelber Friesennerz-Hut
+    elif look == 'regen' and prop != 'schirm':  # gelber Friesennerz-Hut
         d.ellipse(P(80, 92, 300, 140), fill=(250, 200, 30), outline=LINIE, width=L)
         d.chord(P(122, 34, 258, 170), 180, 360, fill=(250, 200, 30), outline=LINIE, width=L)
         d.line(P(124, 104, 256, 104), fill=(210, 160, 20), width=6 * S)
@@ -505,7 +558,28 @@ def moderator(mund, blinzeln, zeigen, wink=0, look='normal'):
             d.rounded_rectangle(P(ex - 24, 136, ex + 24, 170), radius=12 * S, fill=(30, 40, 60), outline=LINIE, width=4 * S)
             d.line(P(ex - 14, 142, ex - 4, 142), fill=(120, 150, 200), width=3 * S)
         d.line(P(182, 148, 198, 148), fill=LINIE, width=5 * S)
+    if look == 'sturm':   # Haare zerzaust vom Wind
+        for k in range(6): d.line(P(120 + k * 26, 70, 150 + k * 26, 36 + (k % 2) * 10), fill=HAAR, width=9 * S)
+    if prop == 'schippe': schippe(d, P, L)
+    elif prop == 'schirm': schirm(d, P, L)
     return im.resize((w // S, h // S), Image.LANCZOS)
+
+
+def baum(sway):
+    """Großer Laubbaum im Vordergrund – Krone neigt sich im Sturm (sway in Grad)."""
+    im = Image.new('RGBA', (360, 620), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+    d.polygon([(165, 620), (195, 620), (190, 300), (172, 300)], fill=(85, 60, 40), outline=LINIE)
+    for (x, y, r_, c) in ((180, 170, 120, (55, 110, 60)), (110, 220, 85, (45, 95, 50)), (250, 215, 90, (60, 120, 65)),
+                          (180, 90, 85, (70, 130, 70)), (130, 130, 70, (50, 105, 55)), (235, 135, 70, (65, 125, 65))):
+        d.ellipse([x - r_, y - r_, x + r_, y + r_], fill=c, outline=(30, 60, 35), width=3)
+    return im.rotate(sway, resample=Image.BICUBIC, center=(180, 610))
+
+
+def kappe():
+    im = Image.new('RGBA', (130, 80), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+    d.chord([10, 5, 100, 95], 180, 360, fill=(30, 130, 120), outline=LINIE, width=4)
+    d.pieslice([60, 30, 128, 60], 180, 360, fill=(25, 105, 95), outline=LINIE, width=4)
+    return im
 
 
 # --- Tafeln ---
@@ -689,21 +763,32 @@ def baue(segmente, heute, ziel, special, titel=None):
             print('Musik übersprungen:', e)
 
     # vorbereiten
-    mods = {}
-    lk = next((look_fuer(s['tag']) for s in segmente if s.get('tag')), 'normal')
-    for m in range(4):
-        for b_ in (0, 1):
-            for z, wk in ((0, 0), (1, 0), (2, 0), (3, 0), (3, 1)):
-                im_ = moderator(m, b_, z, wk * 22, lk); mods[(m, b_, z, wk)] = im_.resize((int(im_.width * 0.92), int(im_.height * 0.92)), Image.LANCZOS)
+    MODS = {}
+    lk0 = next((look_fuer(s['tag']) for s in segmente if s.get('tag')), 'normal')
+    def mods_fuer(look, prop):
+        if (look, prop) not in MODS:
+            mm_ = {}
+            for m in range(4):
+                for b_ in (0, 1):
+                    for z, wk in ((0, 0), (1, 0), (2, 0), (3, 0), (3, 1)):
+                        im_ = moderator(m, b_, z, wk * 22, look, prop); mm_[(m, b_, z, wk)] = im_.resize((int(im_.width * 0.92), int(im_.height * 0.92)), Image.LANCZOS)
+            MODS[(look, prop)] = mm_
+        return MODS[(look, prop)]
+    FX_LOOK = {'schnee': ('winter', 'schippe'), 'regen': ('regen', 'schirm'), 'gewitter': ('regen', None), 'sturm': ('sturm', None)}
+    BAEUME = [baum(a_) for a_ in range(-14, 15, 2)]
+    KAPPE = kappe()
     kopf = kopfband(heute, special, titel)
     zeit = 0.0
     for k, s in enumerate(segmente):
         s['t0'] = zeit; zeit += s['dauer']
         bg = s['bg']
-        if bg == 'auto':
-            w = wort(s['tag']['code'])
-            bg = 'winter' if w == 'Schnee' else 'sturm' if w in ('Regen', 'Gewitter') or s['tag']['boe'] >= 55 else 'hoehen'
-        if eigene and bg in ('wald', 'hoehen') : bg = eigene[k % len(eigene)]
+        fx = s.get('fx')
+        if bg == 'auto': bg = 'hoehen'
+        if fx and bg != 'schloss' or fx and s['art'] in ('tag', 'special'):
+            bg = {'schnee': 'winter', 'regen': 'regen', 'gewitter': 'gewitter', 'sturm': 'sturm'}[fx]
+        elif eigene and bg in ('wald', 'hoehen'): bg = eigene[k % len(eigene)]
+        s['look'], s['prop'] = FX_LOOK.get(fx, (lk0, None))
+        if s['look'] == 'regen' and s['prop'] is None and fx == 'regen': s['prop'] = 'schirm'
         s['bgimg'] = bgs[bg]
         s['tafel'] = tafel_fuer(s, special)
         # Untertitel: Sätze, Zeit nach Zeichenanzahl verteilt
@@ -718,11 +803,13 @@ def baue(segmente, heute, ziel, special, titel=None):
         for x in saetze:
             d_ = (s['dauer'] - 0.35) * len(x) / ges
             s['ut'].append((t, t + d_, untertitel_bild(x))); t += d_
-        s['partikel'] = 'regen' if bg == 'sturm' else 'schnee' if bg == 'winter' else None
+        s['partikel'] = fx or ('schnee' if bg == 'winter' else None)
 
     rnd = random.Random(1)
     tropfen = [(rnd.uniform(0, W), rnd.uniform(0, H), rnd.uniform(14, 26)) for _ in range(110)]
     flocken = [(rnd.uniform(0, W), rnd.uniform(0, H), rnd.uniform(2, 5), rnd.uniform(0, 6)) for _ in range(140)]
+    blaetter = [(rnd.uniform(0, W), rnd.uniform(0, H), rnd.uniform(6, 11), rnd.uniform(0, 6), rnd.choice([(200, 120, 30), (170, 70, 30), (220, 170, 40)])) for _ in range(40)]
+    blitze = [rnd.uniform(0, 1) for _ in range(50)]
 
     ff = subprocess.Popen(['ffmpeg', '-y', '-loglevel', 'error', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', '%dx%d' % (W, H), '-r', str(FPS), '-i', '-',
                            '-i', ton, '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '27', '-pix_fmt', 'yuv420p',
@@ -742,12 +829,33 @@ def baue(segmente, heute, ziel, special, titel=None):
         # Übergang: kurzes Einblenden aus Weiß
         if lt < 0.3 and i > 0:
             fr = Image.blend(Image.new('RGBA', (W, H), (255, 255, 255, 255)), fr, lt / 0.3)
+        pk = s['partikel']
+        if pk == 'sturm':    # Baum im Wind, rechts hinten
+            sw = 12 * math.sin(t * 3.1) + 5 * math.sin(t * 7.3)
+            bm = BAEUME[max(0, min(len(BAEUME) - 1, int(round((sw + 14) / 2))))]
+            fr.alpha_composite(bm, (W - bm.width + 40, H - bm.height - 120))
+        if pk == 'gewitter':  # Blitz: alle paar Sekunden kurzes Aufleuchten mit Blitzstrahl
+            z = int(t / 2.7); ph = t - z * 2.7
+            if blitze[z % len(blitze)] < 0.7 and ph < 0.22:
+                rb = random.Random(z); bx = rb.uniform(W * 0.35, W * 0.9)
+                fr = Image.blend(fr, Image.new('RGBA', (W, H), (255, 255, 240, 255)), 0.55 if ph < 0.08 else 0.2)
+                pts = [(bx, 0)]
+                for _ in range(7): pts.append((pts[-1][0] + rb.uniform(-45, 45), pts[-1][1] + rb.uniform(60, 110)))
+                bd = ImageDraw.Draw(fr); bd.line(pts, fill=(255, 255, 200, 255), width=7); bd.line(pts, fill=(255, 255, 255, 255), width=3)
         dr = ImageDraw.Draw(fr)
-        if s['partikel'] == 'regen':
+        if pk in ('regen', 'gewitter', 'sturm'):
+            schraeg = 260 if pk == 'sturm' else 120
             for (x, y, l) in tropfen:
-                yy = (y + t * 900) % H; xx = (x - t * 120) % W
-                dr.line([xx, yy, xx - 5, yy + l], fill=(200, 215, 235, 200), width=2)
-        elif s['partikel'] == 'schnee':
+                yy = (y + t * 900) % H; xx = (x - t * schraeg) % W
+                dr.line([xx, yy, xx - 5 - schraeg / 40, yy + l], fill=(200, 215, 235, 200), width=2)
+            for j_ in range(14):   # Spritzer am Boden
+                sx = (j_ * 53 + int(t * 7) * 131) % W; sp_ = (t * 6 + j_ * 0.37) % 1
+                dr.ellipse([sx - 6 * sp_ - 2, H - 175 - 3 * sp_, sx + 6 * sp_ + 2, H - 171 + 3 * sp_], outline=(220, 230, 245, int(200 * (1 - sp_))), width=2)
+        if pk == 'sturm':    # herumwirbelnde Blätter
+            for (x, y, r_, ph, c) in blaetter:
+                xx = (x + t * 420) % W; yy = (y + 60 * math.sin(t * 2 + ph) + t * 40) % H
+                dr.ellipse([xx - r_, yy - r_ / 2, xx + r_, yy + r_ / 2], fill=c + (230,))
+        elif pk == 'schnee':
             for (x, y, r_, ph) in flocken:
                 yy = (y + t * 60 * r_) % H; xx = (x + 20 * math.sin(t + ph)) % W
                 dr.ellipse([xx - r_, yy - r_, xx + r_, yy + r_], fill=(255, 255, 255, 230))
@@ -765,10 +873,15 @@ def baue(segmente, heute, ziel, special, titel=None):
         elif s['art'] == 'cta' and (lt < 1.5 or lt > s['dauer'] - 2.5): zeigt = 3
         elif s['art'] == 'tipp' and 0.6 < lt < 2.6: zeigt = 2
         wk = 1 if zeigt == 3 and int(t * 5) % 2 else 0
-        mod = mods[(m, blink, zeigt, wk)]
+        mm = mods_fuer(s['look'], s['prop'])[(m, blink, zeigt, wk)]
         bob = int(4 * math.sin(t * 2.2))
-        mm = mod
-        fr.alpha_composite(mm, (-20, H - mm.height - 150 + bob))
+        if pk == 'sturm': bob += int(5 * math.sin(t * 9))   # Max wackelt im Wind
+        mx, my = -20, H - mm.height - 150 + bob
+        fr.alpha_composite(mm, (mx, my))
+        if pk == 'sturm' and lt < 2.4:   # die Kappe fliegt ihm vom Kopf davon
+            q = lt / 2.4
+            kp = KAPPE.rotate(-q * 540, expand=True)
+            fr.alpha_composite(kp, (int(mx + 120 + q * 700), int(my + 20 - 260 * q + 300 * q * q)))
         fr.alpha_composite(kopf, (0, 0))
         # Untertitel
         for (a, b_, img) in s['ut']:
