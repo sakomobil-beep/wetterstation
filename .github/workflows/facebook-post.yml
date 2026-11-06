@@ -12,7 +12,7 @@ on:
     - cron: '0 7 * * 0,6'   # 8 Uhr Winterzeit (Sa/So)
     - cron: '0 16 * * *'    # 18 Uhr Sommerzeit: Abendbeitrag (morgen/übermorgen, freitags Wochenende)
     - cron: '0 17 * * *'    # 18 Uhr Winterzeit: Abendbeitrag
-    - cron: '20 4-20 * * *' # stündlich: Sondermeldungen (Gewitter, Schnee, Glätte …) für Facebook prüfen
+    - cron: '5,20,35,50 * * * *' # alle 15 Minuten, rund um die Uhr: Sondermeldungen / DWD-Warnungen prüfen
   workflow_dispatch:
   push:
     paths: ['.github/scripts/**', '.github/workflows/facebook-post.yml', 'video/hintergruende/**', 'video/musik/**']
