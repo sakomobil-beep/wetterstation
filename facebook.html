@@ -49,12 +49,26 @@
   .ruhig { text-align:center; color:#2e7d32; font-weight:600; }
   #ok { position:fixed; left:50%; bottom:24px; transform:translateX(-50%); background:#24364f; color:#fff;
         padding:10px 18px; border-radius:20px; opacity:0; transition:opacity .3s; pointer-events:none; }
+  .autopost { border:3px solid #1877f2; background:#eef4ff; } .autopost .vhead { color:#1877f2; font-weight:800; letter-spacing:.03em; }
+  .autopost ul { margin:6px 0 0; padding-left:20px; } .autopost li { margin:3px 0; }
+  .apb { display:inline-block; font-size:.7rem; font-weight:800; letter-spacing:.04em; background:#1877f2; color:#fff; border-radius:20px; padding:3px 9px; margin-left:6px; vertical-align:middle; }
 </style>
 </head>
 <body>
 <main>
   <h1>Facebook-Beitrag von heute</h1>
   <p class="sub" id="stand">wird geladen …</p>
+
+  <div class="card autopost">
+    <div class="vhead">🤖 AUTOPOST FACEBOOK</div>
+    <div>Diese Beiträge werden <b>automatisch</b> auf Facebook gepostet – du musst nichts tun:</div>
+    <ul>
+      <li>🎬 <b>Wettervideo mit Max</b> – morgens (Mo–Fr 7 Uhr, Sa/So 8 Uhr)</li>
+      <li>🌙 <b>Abendbeitrag</b> – gegen 18 Uhr</li>
+      <li>⚡ <b>Amtliche DWD-Warnungen</b> als Sondermeldung – sofort</li>
+    </ul>
+    <div class="hint" style="margin:6px 0 0">Selbst teilen: Mittagswetter, Frost-/Kratzen-Hinweis, Special-Videos und Sondermeldungen ohne amtliche Warnung.</div>
+  </div>
 
   <div class="card" id="letzte" style="margin:0 0 16px;font-size:.95rem;color:#24507f">
     <div class="vhead">🕒 Zuletzt erstellt</div>
@@ -63,7 +77,7 @@
 
   <div class="raster">
     <section class="spalte">
-      <h2 class="sp">☀️ Morgens</h2>
+      <h2 class="sp">☀️ Morgens <span class="apb">AUTOPOST FACEBOOK</span></h2>
       <div class="card" id="vidCard" hidden>
         <div class="vhead" id="vTitel">🎬 Video-Wetterbericht</div>
         <div class="datum" id="vDatum"></div>
@@ -92,12 +106,12 @@
       </div>
     </section>
     <section class="spalte">
-      <h2 class="sp">🌙 Abends</h2>
+      <h2 class="sp">🌙 Abends <span class="apb">AUTOPOST FACEBOOK</span></h2>
       <div id="abendBox"><div class="card ruhig" style="color:#5a6b80">Der Abendbeitrag erscheint gegen 18 Uhr.</div></div>
       <div id="frostBox"></div>
     </section>
     <section class="spalte">
-      <h2 class="sp">⚡ Sondermeldungen</h2>
+      <h2 class="sp">⚡ Sondermeldungen <span class="apb">AUTOPOST bei DWD-Warnung</span></h2>
       <div id="specialBox"></div>
       <div id="sonderBox"></div>
     </section>
