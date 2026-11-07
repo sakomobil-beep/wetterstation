@@ -219,8 +219,11 @@
   // ---- Frost-/Nebel-Hinweis (persönliche Empfehlung, keine amtliche Warnung) ----
   (function () {
     var box = document.getElementById('frostBox');
-    var url = 'https://api.open-meteo.com/v1/forecast?latitude=49.750&longitude=9.017&timezone=Europe%2FBerlin&forecast_days=3' +
-      '&hourly=temperature_2m,dew_point_2m,visibility,weather_code,precipitation,wind_speed_10m,relative_humidity_2m';
+    /* Nur wenn Frost SICHER kommt: alle Modelle (ICON-D2, AROME, ECMWF, ICON-EU) und die an die Station angepasste Vorhersage
+       sehen für morgen früh (0–9 Uhr) Frost (≤ 0 °C). Reif bei Plusgraden oder reiner Nebel reichen nicht mehr. */
+    var MODS = ['icon_d2', 'meteofrance_arome_france_hd', 'ecmwf_ifs025', 'icon_eu'];
+    var url = 'https://api.open-meteo.com/v1/forecast?latitude=49.750&longitude=9.017&elevation=185&timezone=Europe%2FBerlin&forecast_days=3' +
+      '&models=' + MODS.join(',') + '&hourly=temperature_2m,dew_point_2m,visibility,weather_code,precipitation,wind_speed_10m';
     var jetzt = new Date(), std = +jetzt.toLocaleString('de-DE', { hour: 'numeric', hour12: false, timeZone: 'Europe/Berlin' });
     var ziel = new Date(jetzt.getTime() + 864e5);
     var zielTag = ziel.toLocaleDateString('sv-SE', { timeZone: 'Europe/Berlin' });
@@ -231,33 +234,40 @@
       fetch(url).then(function (r) { return r.json(); }),
       fetch('fb/daten.json?v=' + v, { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
     ]).then(function (res) {
-      var h = res[0].hourly, tmin = 99, sicht = 99999, nebel = false, glatt = false, feucht = 0, wind = 0, n = 0;
-      h.time.forEach(function (t, i) {
-        var hh = +t.slice(11, 13);
-        if (t.slice(0, 10) !== zielTag || hh > 9) return;
-        n++; tmin = Math.min(tmin, h.temperature_2m[i]); sicht = Math.min(sicht, h.visibility[i]);
-        if (h.weather_code[i] === 45 || h.weather_code[i] === 48 || h.visibility[i] < 1000) nebel = true;
-        if (h.precipitation[i] > 0 && h.temperature_2m[i] <= 1) glatt = true;
-        if (h.temperature_2m[i] - h.dew_point_2m[i] < 2) feucht++;
-        wind = Math.max(wind, h.wind_speed_10m[i]);
+      var h = res[0].hourly, sicht = 99999, nebel = false, glatt = false, n = 0, mins = [];
+      function ser(k, m) { return h[k + '_' + m] || null; }
+      MODS.forEach(function (m) {
+        var T = ser('temperature_2m', m); if (!T) return;
+        var mn = 99, cnt = 0;
+        h.time.forEach(function (t, i) {
+          var hh = +t.slice(11, 13);
+          if (t.slice(0, 10) !== zielTag || hh > 9 || T[i] === null) return;
+          cnt++; n++; mn = Math.min(mn, T[i]);
+          var V = ser('visibility', m), W = ser('weather_code', m), P = ser('precipitation', m);
+          if (V && V[i] !== null) sicht = Math.min(sicht, V[i]);
+          if ((W && (W[i] === 45 || W[i] === 48)) || (V && V[i] !== null && V[i] < 1000)) nebel = true;
+          if (P && P[i] > 0 && T[i] <= 1) glatt = true;
+        });
+        if (cnt) mins.push(mn);
       });
       var tg = res[1] && res[1].tage && res[1].tage.filter(function (x) { return x.datum === zielTag; })[0];
-      if (tg && tg.tmin != null) tmin = Math.min(tmin, tg.tmin);
-      if (tg && (tg.code === 45 || tg.code === 48)) nebel = true;
-      if (!n) throw 0;
-      var reif = tmin <= 3 && feucht >= 2 && wind < 12;   // Bodenfrost/Reif auch bei leichten Plusgraden
-      var frost = tmin <= 1, kratz = frost || reif;
+      if (!n || mins.length < 2) throw 0;
+      var tmin = Math.max.apply(null, mins);                     /* der wärmste Modellwert – so sicher muss der Frost sein */
+      if (tg && tg.tmin != null) tmin = Math.max(tmin, tg.tmin);
+      var frost = tmin <= 0 && mins.length >= 3, reif = false, kratz = frost;
+      nebel = nebel && frost; glatt = glatt && frost;
       var stand = jetzt.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
       if (!kratz && !nebel && !glatt) {
-        box.innerHTML = '<div class="card ruhig">❄️ Kein Frost erwartet – ' + morgenWort.toLowerCase() + ' (' + tagName + ') voraussichtlich frostfrei, tiefster Wert um ' +
-          Math.round(tmin) + ' °C <small style="color:#5a6b80;font-weight:400">(geprüft ' + stand + ' Uhr)</small></div>';
+        var kalt = Math.min.apply(null, mins);
+        box.innerHTML = '<div class="card ruhig">❄️ Kein sicherer Frost – ' + morgenWort.toLowerCase() + ' (' + tagName + ') ' +
+          (kalt <= 0 ? 'zeigen nur einzelne Modelle Frost (' + Math.round(kalt) + ' bis ' + Math.round(tmin) + ' °C), deshalb kein Hinweis' : 'voraussichtlich frostfrei, tiefster Wert um ' + Math.round(tmin) + ' °C') + ' <small style="color:#5a6b80;font-weight:400">(' + mins.length + ' Modelle geprüft um ' + stand + ' Uhr)</small></div>';
         return;
       }
       var tr = Math.round(tmin), tt = (tr <= 0 ? '' : '+') + tr + ' °C';
       var zeilen = [];
       zeilen.push('❄️ Kleiner Hinweis für ' + morgenWort.toLowerCase() + ' (' + tagName + ')');
       zeilen.push('');
-      if (kratz) zeilen.push('🌡️ Die Temperaturen gehen in der Nacht auf etwa ' + tt + ' zurück' + (frost ? ' – es kann Frost geben.' : ', in Bodennähe kann es trotzdem frieren.'));
+      if (kratz) zeilen.push('🌡️ Die Temperaturen gehen in der Nacht auf etwa ' + tt + ' zurück' + ' – alle Wettermodelle sind sich einig: Es gibt Frost.');
       if (kratz) zeilen.push('🧊 Plant am besten ein paar Minuten zum Scheibenkratzen ein, bevor ihr losfahrt.');
       if (glatt) zeilen.push('⚠️ Dazu ist etwas Niederschlag möglich – auf Brücken, in Waldstücken und auf Nebenstraßen kann es glatt werden.');
       else if (frost) zeilen.push('🛣️ Auf Brücken, in Senken und im Wald kann es stellenweise glatt sein.');
@@ -269,7 +279,7 @@
       zeilen.push('Kommt gut an! 👋');
       zeilen.push('');
       zeilen.push('🌐 wetter-badkoenig.de');
-      zeilen.push('#BadKönig #Odenwald #Wetter #Frost');
+      zeilen.push('#Odenwald #Odenwaldkreis #BadKönig #Wetter #Frost');
       var text = zeilen.join('\n');
 
       // Bild zeichnen (1080 × 1080)
