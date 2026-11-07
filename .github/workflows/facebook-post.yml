@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '30 4 * * *'   # 6:30 Uhr Sommerzeit: Bild, Text und Video erstellen (Website)
     - cron: '30 5 * * *'   # 6:30 Uhr Winterzeit
-    - cron: '0 11 * * *'   # Mittag: neue Unwetterwarnung? -> Special-Video
+    - cron: '0 11 * * *'   # Mittag (12 Uhr Winter / 13 Uhr Sommer): Tagesbeitrag neu + neue Unwetterwarnung? -> Special-Video
     - cron: '0 15 * * *'   # Nachmittag: neue Unwetterwarnung? -> Special-Video
     - cron: '0 5 * * 1-5'   # 7 Uhr Sommerzeit (Mo–Fr): Wettervideo auf Facebook
     - cron: '0 6 * * 1-5'   # 7 Uhr Winterzeit (Mo–Fr)
@@ -51,8 +51,13 @@ jobs:
           if grep -q "\"video\": \"$HEUTE\"" fb/gepostet.json 2>/dev/null; then echo "Video heute schon gepostet."; exit 0; fi
           python .github/scripts/fb_post.py
           python .github/scripts/wetter_video.py
-      - name: Mittag/Nachmittag – Special-Video bei neuer Unwetterwarnung
-        if: github.event.schedule == '0 11 * * *' || github.event.schedule == '0 15 * * *'
+      - name: Mittag – Tagesbeitrag (Mittagswetter, zum Selbst-Teilen) + Special-Video bei neuer Unwetterwarnung
+        if: github.event.schedule == '0 11 * * *'
+        run: |
+          python .github/scripts/fb_post.py
+          python .github/scripts/wetter_video.py --special
+      - name: Nachmittag – Special-Video bei neuer Unwetterwarnung (Tagesbeitrag bleibt)
+        if: github.event.schedule == '0 15 * * *'
         run: |
           cp fb/post.jpg /tmp/ ; cp fb/post.txt /tmp/ ; cp fb/post.json /tmp/
           python .github/scripts/fb_post.py

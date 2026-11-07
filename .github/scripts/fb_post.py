@@ -289,10 +289,13 @@ def hoehe_txt(d):
 
 def text(days, warn):
     a, b = days[:2]
-    gruss = 'Guten Morgen Odenwald! %s' % emoji(a['code'])
+    gruss = 'Mahlzeit, Odenwald! %s Euer Wetter für den Rest des Tages:' % emoji(a['code'])
+    rest = [n for n, p in (('am Nachmittag', a['rp_nm']), ('am Abend', a['rp_ab'])) if p >= 40]
     zeilen = [gruss, '',
-              'Heute (%s): %s, in den Tälern %d bis %d °C%s.%s' % (TAGE[a['datum'].weekday()], wort(a['code']), a['tmin'], a['tmax'],
-                                                    ', Regenrisiko %d %%' % a['rp'] if a['rp'] >= 30 else ', meist trocken', hoehe_txt(a))]
+              'Heute Nachmittag (%s): %s, in den Tälern bis %d °C%s.%s' % (TAGE[a['datum'].weekday()], wort(a['code']), a['tmax'],
+                  (', Regen vor allem ' + ' und '.join(rest)) if rest else ', meist trocken',
+                  (' Auf den Höhen um %d °C%s.' % (a['hoch']['tmax'], ', Schnee möglich ❄️' if a['hoch']['schnee'] else '')) if a.get('hoch') else ''),
+              '🌃 Heute Nacht: Täler um %d °C%s.' % (b['tmin'], (', Höhen um %d °C' % b['hoch']['tmin']) if b.get('hoch') else '')]
     for x in hinweise(a): zeilen.append('⚠️ ' + x)
     zeilen.append('Morgen (%s): %s %s, Täler %d bis %d °C%s' % (TAGE[b['datum'].weekday()], emoji(b['code']), wort(b['code']), b['tmin'], b['tmax'],
                   (', Höhen um %d °C.' % b['hoch']['tmax']) if b.get('hoch') else '.'))
@@ -374,7 +377,7 @@ def bild(days, warn, path, labels=('HEUTE', 'MORGEN'), kopf=None, nacht=False):
         if sh: dr.text(((W - w) / 2 + 2, y + 3), t, font=f, fill=(30, 60, 100))
         dr.text(((W - w) / 2, y), t, font=f, fill=fill)
     ct('Odenwald-Wetter', 40, font(64, True))
-    ct(kopf or dat, 125, font(38))
+    ct(kopf or ('Mittagswetter · ' + dat), 125, font(38))
     ct('Private Wetterstation Bad König', 180, font(28), fill=(235, 242, 252))
     # zwei Karten
     for k, d in enumerate(days[:2]):
