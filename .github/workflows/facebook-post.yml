@@ -51,7 +51,7 @@ jobs:
           if grep -q "\"video\": \"$HEUTE\"" fb/gepostet.json 2>/dev/null; then echo "Video heute schon gepostet."; exit 0; fi
           python .github/scripts/fb_post.py
           python .github/scripts/wetter_video.py
-
+      - name: Mittag/Nachmittag – Special-Video bei neuer Unwetterwarnung
         if: github.event.schedule == '0 11 * * *' || github.event.schedule == '0 15 * * *'
         run: |
           cp fb/post.jpg /tmp/ ; cp fb/post.txt /tmp/ ; cp fb/post.json /tmp/
