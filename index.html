@@ -2695,8 +2695,8 @@ function rainPhrase(d) {
   var word = (d.icon === 'snow' || d.icon === 'sleet') ? 'Niederschlag' : (d.icon === 'rain' && d.conv !== null && d.conv < 0.3 && r >= 3) ? 'Länger anhaltender Regen' : 'Regen';
   return word + ' um ' + nf(r, r < 10 ? 1 : 0) + ' mm' + (p !== null ? ', Wahrscheinlichkeit bis ' + nf(p, 0) + ' %' : '') + '.';
 }
-/* Ab Tag 6 (heute = Tag 1) nur noch eine Tendenz statt fester Werte */
-function isTendenz(d) { return !d.night && d.date >= addDays(todayStr(), 5); }
+/* Heute + 3 Tage mit Werten, danach nur noch eine Tendenz aus den Modellen */
+function isTendenz(d) { return !d.night && d.date >= addDays(todayStr(), 4); }
 function tendText(d) {
   var sky = (SKY_DAY[d.icon] || 'Wechselnd bewölkt').replace(', zwischendurch Sonne', '');
   var lo = Math.round((d.tmin || 0) / 2) * 2, hi = Math.round((d.tmax || 0) / 2) * 2;
