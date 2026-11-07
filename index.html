@@ -2689,7 +2689,21 @@ function rainPhrase(d) {
   var word = (d.icon === 'snow' || d.icon === 'sleet') ? 'Niederschlag' : (d.icon === 'rain' && d.conv !== null && d.conv < 0.3 && r >= 3) ? 'Länger anhaltender Regen' : 'Regen';
   return word + ' um ' + nf(r, r < 10 ? 1 : 0) + ' mm' + (p !== null ? ', Wahrscheinlichkeit bis ' + nf(p, 0) + ' %' : '') + '.';
 }
+/* Ab Tag 6 (heute = Tag 1) nur noch eine Tendenz statt fester Werte */
+function isTendenz(d) { return !d.night && d.date >= addDays(todayStr(), 5); }
+function tendText(d) {
+  var sky = (SKY_DAY[d.icon] || 'Wechselnd bewölkt').replace(', zwischendurch Sonne', '');
+  var lo = Math.round((d.tmin || 0) / 2) * 2, hi = Math.round((d.tmax || 0) / 2) * 2;
+  var out = ['Tendenz: ' + sky + ', Temperaturen grob ' + (lo === hi ? 'um ' + nf(hi, 0) : 'zwischen ' + nf(lo, 0) + ' und ' + nf(hi, 0)) + ' °C.'];
+  var r = d.rain || 0, p = d.prob === null ? 0 : d.prob;
+  out.push(r >= 3 || p >= 70 ? 'Eher nass.' : r >= 0.5 || p >= 40 ? 'Regen möglich.' : 'Eher trocken.');
+  if (d.tmin !== null && d.tmin <= 0) out.push('Frost möglich.');
+  if (d.gust !== null && d.gust >= 60) out.push('Möglicherweise stürmisch.');
+  out.push('So weit im Voraus ist das nur eine Richtung, Details können sich noch deutlich ändern.');
+  return out.join(' ');
+}
 function dayText(d) {
+  if (isTendenz(d)) return tendText(d);
   var out = [];
   if (d.night) out.push((SKY_NIGHT[d.icon] || 'Wechselnd bewölkt') + ', Tiefstwerte um ' + nf(d.tmin, 0) + ' °C.');
   else out.push((SKY_DAY[d.icon] || 'Wechselnd bewölkt') + ' bei ' + nf(d.tmin, 0) + ' bis ' + nf(d.tmax, 0) + ' °C.');
@@ -3041,7 +3055,7 @@ function setForecast(hours, demo) {
   FC.days = order.filter(function (ds) { return ds >= today; })
     .map(function (ds) { return summarize(ds, groups[ds], false); })
     .filter(function (d) { return d.date === today || d.hours.length >= 12; })
-    .slice(0, 8);
+    .slice(0, 7);                                             /* 7 Tage – Tag 8 wäre eher geraten */
   renderOutlook();
   if (!$('panel-vorhersage').hidden) renderFcTab();
   updateSky();
