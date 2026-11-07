@@ -478,6 +478,12 @@ button { font: inherit; color: inherit; }
 .fdays { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(104px, 1fr); gap: 8px; overflow-x: auto; padding-bottom: 4px; scroll-snap-type: x proximity; }
 .fday { scroll-snap-align: start; display: grid; justify-items: center; gap: 4px; padding: 12px 8px; border: 1px solid var(--line); background: var(--bg); border-radius: 12px; cursor: pointer; text-align: center; }
 .fday:hover { border-color: var(--accent); }
+.fday.ftend { cursor: default; border-style: dashed; background: transparent; color: var(--muted, #5B6B78); align-content: start; }
+.fday.ftend:hover { border-color: var(--line); }
+.fday.ftend svg { width: 30px; height: 30px; margin: 4px 0; }
+.fday.ftend .tl { font: 500 11px/1.3 var(--font-data); white-space: nowrap; }
+.fday.ftend .tw { font: 600 13px/1.3 var(--font-body); color: var(--ink); text-align: center; }
+.fday.ftend .tn { font: 400 10.5px/1.3 var(--font-data); opacity: .75; }
 .fday[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
 .fday .d { font: 500 11px/1.3 var(--font-data); letter-spacing: .05em; text-transform: uppercase; opacity: .8; white-space: nowrap; }
 .fday svg { display: block; width: 42px; height: 42px; }
@@ -3148,7 +3154,8 @@ function renderFcTab() {
   var wkLo = minOf(FC.days.map(function (d) { return d.tmin; }).filter(function (v) { return v !== null; }));
   var wkHi = maxOf(FC.days.map(function (d) { return d.tmax; }).filter(function (v) { return v !== null; }));
   var wkSpan = Math.max(1, (wkHi || 0) - (wkLo || 0));
-  $('fcDays').innerHTML = FC.days.map(function (d) {
+  var sicher = FC.days.filter(function (d) { return !isTendenz(d); }), tend = FC.days.filter(isTendenz);
+  $('fcDays').innerHTML = sicher.map(function (d) {
     var l = d.tmin !== null ? ((d.tmin - wkLo) / wkSpan * 100) : 0, w = (d.tmax !== null && d.tmin !== null) ? Math.max(6, (d.tmax - d.tmin) / wkSpan * 100) : 0;
     var bar = '<span class="trange"><i style="left:' + l.toFixed(1) + '%;width:' + Math.min(w, 100 - l).toFixed(1) + '%;--c1:' + tColor(d.tmin) + ';--c2:' + tColor(d.tmax) + '"></i></span>';
     var aria = longDate(d.date) + ': ' + (ICON_TXT[d.icon] || '') + ', ' + nf(d.tmin, 0) + ' bis ' + nf(d.tmax, 0) + ' Grad';
@@ -3160,9 +3167,25 @@ function renderFcTab() {
       '<span class="r">' + nf(d.rain || 0, 1) + ' mm</span>' +
       (d.tmin !== null && d.tmin < 1 ? '<span class="fx">' + frostIcons().flakeSm + 'Frost</span>' : '') +
       (d.conf ? '<span class="conf conf-' + d.conf + '" title="Wie einig sich die Wettermodelle sind">' + (d.conf === 'hoch' ? '● sicher' : d.conf === 'mittel' ? '◐ ziemlich sicher' : '○ unsicher') + '</span>' : '') + '</button>';
-  }).join('');
+  }).join('') + tendCard(tend, sicher[sicher.length - 1]);
   var keep = FC.days.some(function (d) { return d.date === FC.sel; });
   selectFcDay(keep ? FC.sel : (FC.days[0] && FC.days[0].date));
+}
+/* Nach den sicheren Tagen nur noch eine Tendenz in Worten – keine Zahlen, nichts geraten */
+function tendCard(tage, letzter) {
+  if (!tage.length) return '';
+  var tx = avgOf(tage.map(function (d) { return d.tmax; }).filter(function (v) { return v !== null; }));
+  var trend = (letzter && letzter.tmax !== null && tx !== null) ? (tx - letzter.tmax >= 2 ? 'milder' : tx - letzter.tmax <= -2 ? 'kühler' : 'ähnlich temperiert') : '';
+  var nass = tage.some(function (d) { return (d.rain || 0) >= 3 || (d.prob || 0) >= 70; }) ? 'eher nass'
+    : tage.some(function (d) { return (d.rain || 0) >= 0.5 || (d.prob || 0) >= 40; }) ? 'Regen möglich' : 'eher trocken';
+  var frost = tage.some(function (d) { return d.tmin !== null && d.tmin <= 0; });
+  var lab = tage.length === 1 ? dayLabel(tage[0].date) : dayLabel(tage[0].date) + '–' + dayLabel(tage[tage.length - 1].date);
+  return '<div class="fday ftend" title="So weit im Voraus gibt es nur eine grobe Richtung">' +
+    '<span class="d">Tendenz</span><span class="tl">' + esc(lab) + '</span>' +
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 16l5-5 4 3 7-7"/><path d="M15 7h5v5"/></svg>' +
+    (trend ? '<span class="tw">' + trend + '</span>' : '') + '<span class="tw">' + nass + '</span>' +
+    (frost ? '<span class="fx">' + frostIcons().flakeSm + 'Frost möglich</span>' : '') +
+    '<span class="tn">nur grobe Richtung</span></div>';
 }
 function selectFcDay(ds) {
   var d = FC.days.filter(function (x) { return x.date === ds; })[0];
