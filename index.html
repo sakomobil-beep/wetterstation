@@ -628,6 +628,14 @@ button { font: inherit; color: inherit; }
 .rrow .t span { font-weight: 400; opacity: .6; }
 .rrow .r { display: block; font-size: 12px; font-weight: 400; color: var(--accent); }
 .rrow.home { outline: 2px solid #12252E; outline-offset: -2px; }
+.kreis3 { margin-top: 18px; }
+.kreis3 h3 { margin: 0 0 8px; font: 600 1.1rem/1.3 var(--font-display); }
+.kgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.kday { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 10px; align-items: start; padding: 10px 12px; border-radius: 14px;
+  background: linear-gradient(135deg, var(--g1, #F4F7FA), var(--g2, #E6ECF1)); border: 1px solid rgba(18,37,46,.06); }
+.kday svg { width: 44px; height: 44px; display: block; }
+.kday .kd { font-weight: 600; margin-bottom: 2px; }
+.kday p { margin: 0; font-size: 13.5px; line-height: 1.45; }
 @media (max-width: 760px) { .region { grid-template-columns: 1fr; } .rmap { max-width: 380px; margin: 0 auto; width: 100%; } }
 /* ---------- Saison-Deko: Halloween (24.–31.10.), Herbstlaub (1.–22.11.) und Weihnachten (23.11.–28.12.) ---------- */
 .deko { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
@@ -1174,8 +1182,8 @@ button { font: inherit; color: inherit; }
   <section class="chart" aria-label="Wettervorhersage">
     <div class="hist-head">
       <div>
-        <div class="label">Deutscher Wetterdienst · ICON-D2 + MOSMIX · an die Station angepasst</div>
-        <h2 class="fc-h2">Vorhersage für <span class="place">Bad König</span> und den Odenwaldkreis</h2>
+        <div class="label">Station Bad König · Präzisions-Vorhersage · an die Station angepasst</div>
+        <h2 class="fc-h2">Vorhersage für die Station <span class="place">Bad König</span> und den Odenwaldkreis</h2>
       </div>
       <div class="stamp num" id="fcStamp"></div>
     </div>
@@ -3242,15 +3250,43 @@ function drawFc() {
   fcChart.draw(pts, s, { t0: t0, t1: t1, ticks: ticks, gap: 2 * 3600000, restAt: restAt, rest: isToday ? 'Jetzt' : null, label: s.label + ' am ' + longDate(FC.sel) });
 }
 
-/* ===== Regionalvorhersage Odenwaldkreis (Bright Sky / DWD je Ort) ===== */
+/* ===== Regionalvorhersage Odenwaldkreis: Mehrmodell-Mischung (ICON-D2, AROME, ECMWF, ICON-EU) je Ort mit seiner Höhe ===== */
 var RG_TOWNS = [
-  { id: 'breuberg', n: 'Breuberg', lat: 49.818, lon: 9.040, dx: 10, dy: -34, alt: 0 },
-  { id: 'hoechst', n: 'Höchst i. Odw.', lat: 49.799, lon: 8.994, dx: -122, dy: -20, alt: 0 },
-  { id: 'badkoenig', n: 'Bad König', lat: 49.743, lon: 9.006, dx: 10, dy: -16, home: true },
-  { id: 'michelstadt', n: 'Michelstadt', lat: 49.678, lon: 9.004, dx: 10, dy: -16, alt: 0 },
-  { id: 'mossautal', n: 'Mossautal', lat: 49.667, lon: 8.937, dx: -78, dy: 4, alt: -1.5 },
-  { id: 'oberzent', n: 'Oberzent', lat: 49.567, lon: 8.976, dx: 10, dy: -16, alt: -2.5 }
+  { id: 'breuberg', n: 'Breuberg', lat: 49.818, lon: 9.040, el: 160, dx: 10, dy: -34, alt: 0 },
+  { id: 'hoechst', n: 'Höchst i. Odw.', lat: 49.799, lon: 8.994, el: 170, dx: -122, dy: -20, alt: 0 },
+  { id: 'badkoenig', n: 'Station Bad König', lat: 49.743, lon: 9.006, el: 185, dx: 10, dy: -16, home: true },
+  { id: 'michelstadt', n: 'Michelstadt', lat: 49.678, lon: 9.004, el: 208, dx: 10, dy: -16, alt: 0 },
+  { id: 'mossautal', n: 'Mossautal', lat: 49.667, lon: 8.937, el: 380, dx: -78, dy: 4, alt: -1.5 },
+  { id: 'oberzent', n: 'Oberzent', lat: 49.567, lon: 8.976, el: 430, dx: 10, dy: -16, alt: -2.5 }
 ];
+function rgUrl(t) {
+  return 'https://api.open-meteo.com/v1/forecast?latitude=' + t.lat + '&longitude=' + t.lon + '&elevation=' + t.el +
+    '&models=' + PX_MODELS.join(',') + '&hourly=temperature_2m,precipitation,wind_speed_10m,wind_gusts_10m,cloud_cover,weather_code' +
+    '&forecast_days=4&timezone=Europe%2FBerlin';
+}
+/* Stundenwerte eines Ortes aus der Modellmischung – gleiche Gewichte wie die Präzisions-Vorhersage, aber ohne Stationskorrektur */
+function rgHours(om) {
+  var H = om && om.hourly; if (!H || !H.time) return [];
+  var now = Date.now(), av = PX_MODELS.filter(function (m) { return pxSer(H, 'temperature_2m', m); });
+  return H.time.map(function (ts, i) {
+    var t = new Date(ts), lead = (t.getTime() - now) / 3600000, mem = [];
+    av.forEach(function (m) {
+      var v = pxSer(H, 'temperature_2m', m)[i], w = pxBaseW(m, Math.max(0, lead));
+      if (v === null || v === undefined || !w) return;
+      var g = function (k) { var a = pxSer(H, k, m); return a && a[i] !== undefined ? a[i] : null; };
+      mem.push({ m: m, w: w, t: v, p: g('precipitation'), ws: g('wind_speed_10m'), gu: g('wind_gusts_10m'), c: g('cloud_cover'), k: g('weather_code') });
+    });
+    function bl(k) { var sw = 0, sv = 0; mem.forEach(function (x) { if (x[k] !== null) { sw += x.w; sv += x.w * x[k]; } }); return sw ? sv / sw : null; }
+    var pw = 0, ps = 0, kw = 0, wet = 0, sh = 0, sn = 0, th = 0;
+    mem.forEach(function (x) {
+      if (x.p !== null) { pw += x.w; if (x.p >= 0.1) ps += x.w; }
+      if (x.k !== null) { kw += x.w; if (x.k >= 51) { wet += x.w; if (x.k >= 80) sh += x.w; if ((x.k >= 71 && x.k <= 77) || x.k === 85 || x.k === 86) sn += x.w; if (x.k >= 95) th += x.w; } }
+    });
+    var cond = !kw ? null : th / kw >= 0.5 ? 'thunderstorm' : (wet && sn / wet >= 0.5 && wet / kw >= 0.3) ? 'snow' : wet / kw >= 0.3 ? 'rain' : 'dry';
+    return { t: t, day: ts.slice(0, 10), temp: bl('t'), rain: bl('p'), prob: pw ? ps / pw * 100 : null, wind: bl('ws'), gust: bl('gu'), dir: null,
+             cloud: bl('c'), sun: null, icon: null, cond: cond, conv: wet ? (sh - sn) / wet : null, spread: null, pdis: null };
+  }).filter(function (h) { return h.temp !== null && !isNaN(h.t); });
+}
 var RG = { data: {}, at: 0, busy: false };
 var RG_OUTLINE = [[9.02,49.855],[9.08,49.84],[9.13,49.805],[9.15,49.77],[9.12,49.73],[9.135,49.69],[9.10,49.64],[9.11,49.58],[9.08,49.535],[9.03,49.505],[8.97,49.49],[8.92,49.51],[8.89,49.55],[8.88,49.60],[8.86,49.645],[8.87,49.69],[8.83,49.72],[8.83,49.765],[8.86,49.80],[8.92,49.825],[8.97,49.84]];
 function rgXY(lon, lat) { return [20 + (lon - 8.80) / 0.38 * 300, 15 + (49.87 - lat) * 1222]; }
@@ -3259,10 +3295,43 @@ function loadRegion() {
   RG.busy = true; RG.at = Date.now();
   var today = todayStr();
   Promise.all(RG_TOWNS.filter(function (t) { return !t.home; }).map(function (t) {
-    return fetchJson(bsUrl('/weather', { lat: t.lat, lon: t.lon, date: today, last_date: addDays(today, 9), tz: 'Europe/Berlin' }))
-      .then(function (j) { RG.data[t.id] = rgDays(fcHours(j)); })
+    return fetchJson(rgUrl(t))
+      .then(function (j) { RG.data[t.id] = rgDays(rgHours(j)); })
       .catch(function () { RG.data[t.id] = null; });
   })).then(function () { RG.busy = false; if (!$('panel-vorhersage').hidden) renderRegion(); });
+}
+/* 3-Tage-Vorhersage für den ganzen Odenwaldkreis (Täler und Höhen zusammengefasst) */
+function rgKreisTag(ds) {
+  var tage = RG_TOWNS.map(function (t) { return { t: t, d: rgDay(t, ds) }; }).filter(function (x) { return x.d; });
+  if (tage.length < 3) return null;
+  var tal = tage.filter(function (x) { return x.t.el < 300; }), hoch = tage.filter(function (x) { return x.t.el >= 300; });
+  var mx = function (a, k, f) { var v = a.map(function (x) { return x.d[k]; }).filter(function (v) { return v !== null && v !== undefined; }); return v.length ? f.apply(null, v) : null; };
+  var cnt = {}, best = null;
+  tage.forEach(function (x) { cnt[x.d.icon] = (cnt[x.d.icon] || 0) + 1; if (!best || cnt[x.d.icon] > cnt[best]) best = x.d.icon; });
+  var sky = (SKY_DAY[best] || 'Wechselnd bewölkt').replace(', zwischendurch Sonne', '');
+  var out = [sky + '.'];
+  var tx = mx(tal, 'tmax', Math.max), hx = mx(hoch, 'tmax', Math.max), tn = mx(tage, 'tmin', Math.min);
+  if (tx !== null) out.push('Höchstwerte in den Tälern um ' + nf(tx, 0) + ' °C' + (hx !== null ? ', auf den Höhen um ' + nf(hx, 0) + ' °C' : '') + '.');
+  if (tn !== null) out.push('Nachts ' + (tn <= 0 ? 'Frost bis ' : 'um ') + nf(tn, 0) + ' °C' + (tn <= 0 ? ', Glätte möglich' : '') + '.');
+  var pmax = mx(tage, 'prob', Math.max);
+  var schneeH = hoch.some(function (x) { return x.d.icon === 'snow' || x.d.icon === 'sleet'; }), schneeT = tal.some(function (x) { return x.d.icon === 'snow' || x.d.icon === 'sleet'; });
+  if (schneeT) out.push('Schneefall bis in die Täler möglich.');
+  else if (schneeH) out.push('Auf den Höhen Schnee oder Schneeregen möglich.');
+  else if (pmax !== null) out.push(pmax >= 70 ? 'Verbreitet Regen.' : pmax >= 40 ? 'Zeitweise Regen möglich.' : 'Überwiegend trocken.');
+  var gx = mx(tage, 'gust', Math.max);
+  if (gx !== null && gx >= 50) out.push('Windig, auf den Höhen Böen bis ' + nf(gx, 0) + ' km/h.');
+  return { icon: best, tmax: tx !== null ? tx : hx, tmin: tn, text: out.join(' ') };
+}
+function rgKreis3() {
+  var today = todayStr(), html = '';
+  [0, 1, 2].forEach(function (n) {
+    var ds = addDays(today, n), k = rgKreisTag(ds);
+    if (!k) return;
+    html += '<div class="kday ' + wxClass(k.icon) + '">' + wxIcon(k.icon) + '<div><div class="kd">' + (n === 0 ? 'Heute' : n === 1 ? 'Morgen' : esc(dayLabel(ds))) + '</div>' +
+      '<p>' + esc(k.text) + '</p></div></div>';
+  });
+  return html ? '<div class="kreis3"><h3>Odenwaldkreis · 3-Tage-Vorhersage</h3><div class="kgrid">' + html + '</div>' +
+    '<p class="rsub" style="margin:6px 0 0">Mischung aus ICON-D2, AROME, ECMWF und ICON-EU, für jeden Ort mit seiner Höhe berechnet (Täler 160–210 m, Höhen 380–430 m).</p></div>' : '';
 }
 function rgDays(hours) {
   var g = {}, out = {};
@@ -3291,7 +3360,7 @@ function renderRegion() {
       '<g class="lbl' + (t.home ? ' home' : '') + '" transform="translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ')">' +
       '<rect width="112" height="40" rx="10"/>' +
       (d ? '<svg x="4" y="4" width="32" height="32" viewBox="0 0 48 48">' + wxIcon(d.icon).replace(/^<svg[^>]*>|<\/svg>$/g, '') + '</svg>' : '') +
-      '<text class="tn" x="40" y="16">' + esc(t.n.replace(' i. Odw.', '')) + '</text>' +
+      '<text class="tn" x="40" y="16">' + esc(t.n.replace(' i. Odw.', '').replace('Station ', '')) + '</text>' +
       '<text class="tt" x="40" y="33" style="fill:' + (t.home ? '#fff' : tColor(d && d.tmax, true)) + '">' + tt + '<tspan class="tl">' + tl + '</tspan></text></g>';
     rows += '<div class="rrow ' + (d ? wxClass(d.icon) : '') + (t.home ? ' home' : '') + '">' + (d ? wxIcon(d.icon) : '<span></span>') +
       '<div><div class="n">' + esc(t.n) + '</div><div class="c">' + (d ? (ICON_TXT[d.icon] || '') : 'keine Daten') + '</div></div>' +
@@ -3300,7 +3369,7 @@ function renderRegion() {
   box.innerHTML = '<div class="region"><div><h3>Odenwaldkreis · ' + esc(dayLabel(ds)) + '</h3><p class="rsub">Höchst- und Tiefstwerte für ' + esc(longDate(ds)) + '</p>' +
     '<div class="rmap"><svg viewBox="0 0 340 500" role="img" aria-label="Karte des Odenwaldkreises mit Vorhersage">' +
     '<polygon class="kreis" points="' + poly + '"/>' + marks + '</svg></div></div>' +
-    '<div class="rlist" style="align-self:end">' + rows + '<p class="rsub" style="margin:4px 0 0">Bad König: an die Station angepasste Präzisions-Vorhersage · übrige Orte: DWD-Vorhersage (MOSMIX) über Bright Sky. Karte schematisch.</p></div></div>';
+    '<div class="rlist" style="align-self:end">' + rows + '<p class="rsub" style="margin:4px 0 0">Station Bad König: an die Station angepasste Präzisions-Vorhersage · übrige Orte: Mischung aus ICON-D2, AROME, ECMWF und ICON-EU für die Höhe des Ortes. Karte schematisch.</p></div></div>' + rgKreis3();
 }
 /* Anzeige: amtliche Warnungen */
 var SEV = {
