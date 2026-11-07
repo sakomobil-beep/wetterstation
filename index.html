@@ -532,6 +532,68 @@ button { font: inherit; color: inherit; }
 .app-install[hidden] { display: none; }
 .radar-src { margin: 0; font-size: 13px; color: var(--muted); }
 .radar-src a, .radar-consent a { color: inherit; text-underline-offset: 3px; }
+
+/* ---------- Vorhersage-Tab: grafische Aufwertung (07.11.2026) ---------- */
+.fdays { grid-auto-columns: minmax(118px, 1fr); gap: 10px; padding: 6px 4px 16px; }
+.fday { position: relative; gap: 6px; padding: 14px 10px 12px; border: 1px solid rgba(18,37,46,.08); border-radius: 16px;
+  background: linear-gradient(170deg, var(--g1, #F4F7FA) 0%, var(--g2, #E6ECF1) 100%); box-shadow: 0 1px 2px rgba(18,37,46,.06);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; overflow: hidden; }
+.fday:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(18,37,46,.12); border-color: rgba(18,37,46,.18); }
+.fday svg { width: 52px; height: 52px; filter: drop-shadow(0 2px 3px rgba(18,37,46,.12)); }
+.fday .t { font-size: 17px; }
+.fday[aria-pressed="true"] { background: linear-gradient(170deg, #1B3A4B 0%, #12252E 100%); border-color: #12252E; color: #fff;
+  box-shadow: 0 8px 22px rgba(18,37,46,.28); transform: translateY(-2px); }
+.fday[aria-pressed="true"]::after { content: ''; position: absolute; left: 50%; bottom: 5px; width: 26px; height: 3px; margin-left: -13px; border-radius: 3px; background: #F2B233; }
+.wx-sun   { --g1: #FFF6DA; --g2: #FFE6A8; }
+.wx-part  { --g1: #FFF8E8; --g2: #E3ECF3; }
+.wx-cloud { --g1: #F1F4F7; --g2: #DCE3E9; }
+.wx-rain  { --g1: #E8F2FB; --g2: #C9DEF1; }
+.wx-snow  { --g1: #F7FBFF; --g2: #DDEBF7; }
+.wx-storm { --g1: #ECE8F4; --g2: #CFC6E2; }
+.wx-fog   { --g1: #F2F2EF; --g2: #DEDDD7; }
+.wx-night { --g1: #E7EAF3; --g2: #CBD2E4; }
+.fday.frost { border-color: #9CC3E6; }
+.trange { display: block; position: relative; width: 84%; height: 6px; border-radius: 6px; background: rgba(18,37,46,.1); margin: 2px 0; }
+.trange i { position: absolute; top: 0; bottom: 0; border-radius: 6px; background: linear-gradient(90deg, var(--c1), var(--c2)); }
+.fday[aria-pressed="true"] .trange { background: rgba(255,255,255,.16); }
+.pbar { display: flex; align-items: center; gap: 5px; justify-content: center; }
+.pbar b { display: block; width: 34px; height: 4px; border-radius: 4px; background: rgba(26,107,166,.15); overflow: hidden; }
+.pbar b i { display: block; height: 100%; background: #2F7FC1; border-radius: 4px; }
+.fday[aria-pressed="true"] .pbar b { background: rgba(255,255,255,.18); }
+.fday[aria-pressed="true"] .pbar b i { background: #9CCBF0; }
+/* Tageskopf */
+.fchero { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 22px; align-items: center; padding: 20px 22px; border-radius: 18px;
+  background: linear-gradient(135deg, var(--g1, #F4F7FA) 0%, var(--g2, #E2E9EF) 100%); border: 1px solid rgba(18,37,46,.07); position: relative; overflow: hidden; }
+.fchero::before { content: ''; position: absolute; right: -60px; top: -60px; width: 220px; height: 220px; border-radius: 50%; background: rgba(255,255,255,.45); }
+.fchero > * { position: relative; }
+.fchero .bigic svg { width: 108px; height: 108px; display: block; filter: drop-shadow(0 4px 8px rgba(18,37,46,.15)); }
+.fchero .histday { font-size: 1.25rem; }
+.fchero .cond { font-size: 14px; color: var(--muted); margin-top: 2px; }
+.fchero .temps { font: 600 2.6rem/1 var(--font-display); font-variant-numeric: tabular-nums; margin-top: 8px; letter-spacing: -.02em; }
+.fchero .temps span { font-size: 1.5rem; font-weight: 400; opacity: .6; }
+.fchero .fc-daytext { grid-column: 1 / -1; margin-top: 6px; }
+.fchips { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.fchip { display: inline-flex; align-items: center; gap: 7px; padding: 7px 12px; border-radius: 999px; background: rgba(255,255,255,.72); font-size: 13.5px; backdrop-filter: blur(4px); }
+.fchip svg { width: 17px; height: 17px; flex: none; }
+.fchip b { font-weight: 600; font-variant-numeric: tabular-nums; }
+@media (max-width: 560px) { .fchero { padding: 16px; gap: 6px 14px; } .fchero .bigic svg { width: 72px; height: 72px; } .fchero .temps { font-size: 2.1rem; } .fchero .histday { font-size: 1.05rem; } .fchip { padding: 6px 10px; font-size: 12.5px; } }
+/* Stunden */
+.hours { gap: 8px; padding: 4px 2px 8px; }
+.hr { flex: 0 0 70px; gap: 4px; padding: 10px 4px 8px; border-radius: 14px; background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%); border: 1px solid rgba(18,37,46,.07); position: relative; }
+.hr.now { background: linear-gradient(180deg, #1B3A4B 0%, #12252E 100%); color: #fff; border-color: #12252E; }
+.hr.now .h { color: #F2B233; font-weight: 600; }
+.hr.now .p { color: #9CCBF0; }
+.hr svg { width: 34px; height: 34px; }
+.hr .t { font-size: 15px; color: var(--tc, inherit); }
+.hr.now .t { color: #fff; }
+.hr .rb { width: 70%; height: 4px; border-radius: 4px; background: rgba(26,107,166,.12); overflow: hidden; }
+.hr .rb i { display: block; height: 100%; background: #2F7FC1; }
+/* dezente Animation des großen Symbols */
+@media (prefers-reduced-motion: no-preference) {
+  .fchero .bigic svg { animation: fcFloat 5s ease-in-out infinite; }
+  .fday[aria-pressed="true"] svg { animation: fcFloat 4s ease-in-out infinite; }
+}
+@keyframes fcFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 /* ---------- Saison-Deko: Halloween (24.–31.10.), Herbstlaub (1.–22.11.) und Weihnachten (23.11.–28.12.) ---------- */
 .deko { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
 .deko[hidden] { display: none; }
@@ -1087,8 +1149,16 @@ button { font: inherit; color: inherit; }
     <p id="fcMsg" class="note" hidden></p>
     <div class="fdays" id="fcDays"></div>
     <div id="fcBody" class="histbody" hidden>
-      <div class="histday" id="fcDayTitle"></div>
-      <p class="fc-daytext" id="fcDayText"></p>
+      <div class="fchero" id="fcHero">
+        <div class="bigic" id="fcBigIc"></div>
+        <div>
+          <div class="histday" id="fcDayTitle"></div>
+          <div class="cond" id="fcCond"></div>
+          <div class="temps" id="fcTemps"></div>
+        </div>
+        <div class="fchips" id="fcChips"></div>
+        <p class="fc-daytext" id="fcDayText"></p>
+      </div>
       <div class="hours" id="fcHours"></div>
       <div class="chart-head">
         <div class="label">Stundenverlauf</div>
@@ -2891,6 +2961,18 @@ function renderOutlook() {
     : '<p>Für die nächsten Stunden liegen gerade keine Vorhersagedaten vor.</p>';
 }
 
+/* Farb- und Klassenhelfer für den Vorhersage-Tab */
+function wxClass(ic) {
+  return ({ 'clear-day': 'wx-sun', 'partly-cloudy-day': 'wx-part', 'cloudy': 'wx-cloud', 'rain': 'wx-rain', 'sleet': 'wx-snow', 'snow': 'wx-snow',
+    'hail': 'wx-storm', 'thunderstorm': 'wx-storm', 'fog': 'wx-fog', 'wind': 'wx-cloud', 'clear-night': 'wx-night', 'partly-cloudy-night': 'wx-night' })[ic] || 'wx-cloud';
+}
+function tColor(t, dark) {
+  if (t === null || t === undefined) return 'inherit';
+  var st = [[-10, '#3B4FB0'], [0, '#2F7FC1'], [8, '#2E9A8E'], [15, '#8DB33A'], [22, '#E8A21A'], [30, '#D2461B']];
+  if (dark) st = [[-10, '#2B3C8F'], [0, '#1E5E99'], [8, '#1D7268'], [15, '#5E7F1F'], [22, '#A86A00'], [30, '#B0300F']];
+  for (var i = 1; i < st.length; i++) if (t <= st[i][0]) return t - st[i - 1][0] < st[i][0] - t ? st[i - 1][1] : st[i][1];
+  return st[st.length - 1][1];
+}
 /* Anzeige: Tab „Vorhersage“ */
 function dayLabel(ds) {
   var t = todayStr();
@@ -2910,13 +2992,18 @@ function renderFcTab() {
     return;
   }
   $('fcMsg').hidden = true;
+  var wkLo = minOf(FC.days.map(function (d) { return d.tmin; }).filter(function (v) { return v !== null; }));
+  var wkHi = maxOf(FC.days.map(function (d) { return d.tmax; }).filter(function (v) { return v !== null; }));
+  var wkSpan = Math.max(1, (wkHi || 0) - (wkLo || 0));
   $('fcDays').innerHTML = FC.days.map(function (d) {
+    var l = d.tmin !== null ? ((d.tmin - wkLo) / wkSpan * 100) : 0, w = (d.tmax !== null && d.tmin !== null) ? Math.max(6, (d.tmax - d.tmin) / wkSpan * 100) : 0;
+    var bar = '<span class="trange"><i style="left:' + l.toFixed(1) + '%;width:' + Math.min(w, 100 - l).toFixed(1) + '%;--c1:' + tColor(d.tmin) + ';--c2:' + tColor(d.tmax) + '"></i></span>';
     var aria = longDate(d.date) + ': ' + (ICON_TXT[d.icon] || '') + ', ' + nf(d.tmin, 0) + ' bis ' + nf(d.tmax, 0) + ' Grad';
     if (d.tmin !== null && d.tmin < 1) aria += ', Frost möglich';
-    return '<button class="fday' + (d.tmin !== null && d.tmin < 1 ? ' frost' : '') + '" type="button" data-date="' + d.date + '" aria-pressed="false" aria-label="' + esc(aria) + '">' +
+    return '<button class="fday ' + wxClass(d.icon) + (d.tmin !== null && d.tmin < 1 ? ' frost' : '') + '" type="button" data-date="' + d.date + '" aria-pressed="false" aria-label="' + esc(aria) + '">' +
       '<span class="d">' + dayLabel(d.date) + '</span>' + wxIcon(d.icon) +
-      '<span class="t">' + nf(d.tmax, 0) + '° <span>/ ' + nf(d.tmin, 0) + '°</span></span>' +
-      '<span class="p">' + (d.prob !== null ? nf(d.prob, 0) + ' % Regen' : '&nbsp;') + '</span>' +
+      '<span class="t">' + nf(d.tmax, 0) + '° <span>/ ' + nf(d.tmin, 0) + '°</span></span>' + bar +
+      '<span class="p pbar">' + (d.prob !== null ? '<b><i style="width:' + Math.round(d.prob) + '%"></i></b>' + nf(d.prob, 0) + ' %' : '&nbsp;') + '</span>' +
       '<span class="r">' + nf(d.rain || 0, 1) + ' mm</span>' +
       (d.tmin !== null && d.tmin < 1 ? '<span class="fx">' + frostIcons().flakeSm + 'Frost</span>' : '') + '</button>';
   }).join('');
@@ -2933,11 +3020,31 @@ function selectFcDay(ds) {
   });
   $('fcDayTitle').textContent = longDate(ds);
   $('fcDayText').textContent = dayText(d);
+  $('fcHero').className = 'fchero ' + wxClass(d.icon);
+  $('fcBigIc').innerHTML = wxIcon(d.icon);
+  $('fcCond').textContent = (ICON_TXT[d.icon] || '') + (ds === todayStr() ? ' · heute' : ds === addDays(todayStr(), 1) ? ' · morgen' : '');
+  $('fcTemps').innerHTML = nf(d.tmax, 0) + '° <span>/ ' + nf(d.tmin, 0) + '°</span>';
+  var ci = {
+    drop: '<svg viewBox="0 0 24 24"><path fill="#2F7FC1" d="M12 3c3.5 4.6 6 8 6 11a6 6 0 0 1-12 0c0-3 2.5-6.4 6-11z"/></svg>',
+    umb: '<svg viewBox="0 0 24 24" fill="none" stroke="#1A6BA6" stroke-width="2" stroke-linecap="round"><path d="M3 12a9 9 0 0 1 18 0z" fill="#CFE2F3"/><path d="M12 12v6a2 2 0 0 0 4 0"/></svg>',
+    wind: '<svg viewBox="0 0 24 24" fill="none" stroke="#12808C" stroke-width="2" stroke-linecap="round"><path d="M3 9h12a3 3 0 1 0-3-3"/><path d="M3 14h16a3 3 0 1 1-3 3"/></svg>',
+    sun: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="#F2B233"/><g stroke="#EFA21F" stroke-width="2" stroke-linecap="round"><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></g></svg>'
+  };
+  var chips = [];
+  if (d.prob !== null) chips.push(ci.umb + 'Regenrisiko <b>' + nf(d.prob, 0) + ' %</b>');
+  chips.push(ci.drop + 'Menge <b>' + nf(d.rain || 0, 1) + ' mm</b>');
+  if (d.wind !== null) chips.push(ci.wind + 'Wind <b>' + nf(d.wind, 0) + ' km/h</b>' + (d.gust !== null ? ' · Böen <b>' + nf(d.gust, 0) + '</b>' : ''));
+  if (d.sun !== null && d.sun > 0) chips.push(ci.sun + 'Sonne <b>' + nf(d.sun / 60, 1) + ' h</b>');
+  $('fcChips').innerHTML = chips.map(function (c) { return '<span class="fchip">' + c + '</span>'; }).join('');
   var from = Date.now() - 3600000;
   var hs = d.hours.filter(function (h) { return ds !== todayStr() || h.t.getTime() >= from; });
+  var nowT = Date.now();
   $('fcHours').innerHTML = hs.map(function (h) {
-    return '<div class="hr"><span class="h">' + pad2(h.t.getHours()) + ' Uhr</span>' + wxIcon(h.icon || 'cloudy') +
-      '<span class="t">' + nf(h.temp, 0) + '°</span><span class="p">' + (h.prob !== null ? nf(h.prob, 0) + ' %' : '') + '</span></div>';
+    var isNow = Math.abs(h.t.getTime() + 1800000 - nowT) <= 1800000;
+    return '<div class="hr' + (isNow ? ' now' : '') + '"><span class="h">' + (isNow ? 'Jetzt' : pad2(h.t.getHours()) + ' Uhr') + '</span>' + wxIcon(h.icon || 'cloudy') +
+      '<span class="t" style="--tc:' + tColor(h.temp, true) + '">' + nf(h.temp, 0) + '°</span>' +
+      '<span class="rb"><i style="width:' + (h.prob !== null ? Math.round(h.prob) : 0) + '%"></i></span>' +
+      '<span class="p">' + (h.prob !== null ? nf(h.prob, 0) + ' %' : '') + '</span></div>';
   }).join('');
   $('fcHours').scrollLeft = 0;
   drawFc();
