@@ -3165,8 +3165,7 @@ function renderFcTab() {
       '<span class="t">' + nf(d.tmax, 0) + '° <span>/ ' + nf(d.tmin, 0) + '°</span></span>' + bar +
       '<span class="p pbar">' + (d.prob !== null ? '<b><i style="width:' + Math.round(d.prob) + '%"></i></b>' + nf(d.prob, 0) + ' %' : '&nbsp;') + '</span>' +
       '<span class="r">' + nf(d.rain || 0, 1) + ' mm</span>' +
-      (d.tmin !== null && d.tmin < 1 ? '<span class="fx">' + frostIcons().flakeSm + 'Frost</span>' : '') +
-      (d.conf ? '<span class="conf conf-' + d.conf + '" title="Wie einig sich die Wettermodelle sind">' + (d.conf === 'hoch' ? '● sicher' : d.conf === 'mittel' ? '◐ ziemlich sicher' : '○ unsicher') + '</span>' : '') + '</button>';
+      (d.tmin !== null && d.tmin < 1 ? '<span class="fx">' + frostIcons().flakeSm + 'Frost</span>' : '') + '</button>';
   }).join('') + tendCard(tend, sicher[sicher.length - 1]);
   var keep = FC.days.some(function (d) { return d.date === FC.sel; });
   selectFcDay(keep ? FC.sel : (FC.days[0] && FC.days[0].date));
