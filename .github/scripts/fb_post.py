@@ -12,6 +12,10 @@ STATION, WU_KEY = 'IBADKN33', '43a8f308d89b471ba8f308d89b671b69'
 TZ = ZoneInfo('Europe/Berlin')
 OUT = os.path.join(os.path.dirname(__file__), '..', '..', 'fb')
 DEMO = '--demo' in sys.argv
+# Odenwaldkreis: Täler = Station Bad König (an die Messwerte angepasst), Höhen = Mischung der Modelle für die Höhe des Ortes
+HOEHEN = [('Oberzent', 49.567, 8.976, 430), ('Mossautal', 49.667, 8.937, 380)]
+KREIS_PUNKTE = [(LAT, LON), (49.567, 8.976), (49.678, 9.004)]   # Bad König, Oberzent, Michelstadt
+MODELLE = ('icon_d2', 'meteofrance_arome_france_hd', 'ecmwf_ifs025', 'icon_eu')
 TAGE = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
 MONATE = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']
 
@@ -50,10 +54,11 @@ def load():
     stunden = korrigierte_stunden(om, st, nah)
     warn = []
     try:
-        al = get('https://api.brightsky.dev/alerts?lat=%s&lon=%s' % (LAT, LON)).get('alerts') or []
-        for a in al:
-            if a.get('severity') in ('moderate', 'severe', 'extreme') or a.get('event_de'):
-                warn.append(a.get('headline_de') or a.get('event_de'))
+        for la, lo in KREIS_PUNKTE:   # Warnungen für den ganzen Odenwaldkreis (Tal und Höhen)
+            for a in get('https://api.brightsky.dev/alerts?lat=%s&lon=%s' % (la, lo)).get('alerts') or []:
+                if a.get('severity') in ('moderate', 'severe', 'extreme') or a.get('event_de'):
+                    w_ = a.get('headline_de') or a.get('event_de')
+                    if w_ not in warn: warn.append(w_)
     except Exception as e:
         print('Warnungen nicht abrufbar:', e)
     today = dt.datetime.now(TZ).date().isoformat()
@@ -79,7 +84,46 @@ def load():
         if t_['code'] in (51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82) and t_['regen'] < 0.3 and t_['rp'] < 30:
             t_['code'] = 1 if t_['sonne'] >= 7 else 2 if t_['sonne'] >= 4 else 3
     sicherheit(days)
+    hoehen(days)
     return days, warn
+
+
+def gewicht(m, n):
+    """Grundgewicht je Modell nach Vorhersagetag (wie auf der Website)."""
+    if n < 2: return {'icon_d2': 0.40, 'meteofrance_arome_france_hd': 0.30, 'ecmwf_ifs025': 0.15, 'icon_eu': 0.15}[m]
+    if n < 5: return {'ecmwf_ifs025': 0.55, 'icon_eu': 0.45}.get(m, 0)
+    return {'ecmwf_ifs025': 0.65, 'icon_eu': 0.35}.get(m, 0)
+
+
+def hoehen(days):
+    """Höhenlagen des Odenwaldkreises (Oberzent, Mossautal): Mischung aus ICON-D2, AROME, ECMWF, ICON-EU
+    für die Höhe des Ortes -> d['hoch'] = {tmax, tmin, code, schnee}."""
+    orte = []
+    for name, la, lo, el in HOEHEN:
+        try:
+            orte.append(get('https://api.open-meteo.com/v1/forecast?latitude=%s&longitude=%s&elevation=%s&models=%s'
+                            '&daily=temperature_2m_max,temperature_2m_min,weather_code,snowfall_sum&forecast_days=8&timezone=Europe%%2FBerlin'
+                            % (la, lo, el, ','.join(MODELLE)))['daily'])
+        except Exception as e:
+            print('Höhenvorhersage %s nicht abrufbar:' % name, e)
+    if not orte: return
+    for n, d in enumerate(days):
+        tag = d['datum'].isoformat(); tx, tn, sn, stim = [], [], [], {}
+        for D in orte:
+            if tag not in D['time']: continue
+            i = D['time'].index(tag); sw = vx = vn = vs = 0.0
+            for m in MODELLE:
+                w = gewicht(m, n)
+                a = (D.get('temperature_2m_max_' + m) or [None] * (i + 1))[i]; b = (D.get('temperature_2m_min_' + m) or [None] * (i + 1))[i]
+                if not w or a is None or b is None: continue
+                c = (D.get('weather_code_' + m) or [None] * (i + 1))[i]; f = (D.get('snowfall_sum_' + m) or [None] * (i + 1))[i]
+                sw += w; vx += w * a; vn += w * b; vs += w * (f or 0)
+                if c is not None and m != 'meteofrance_arome_france_hd': stim[c] = stim.get(c, 0) + w
+            if sw: tx.append(vx / sw); tn.append(vn / sw); sn.append(vs / sw)
+        if not tx: continue
+        code = max(stim, key=stim.get) if stim else d['code']
+        schnee = max(sn) >= 0.5 or 71 <= code <= 77 or code in (85, 86)
+        d['hoch'] = dict(tmax=round(sum(tx) / len(tx)), tmin=round(min(tn)), code=code, schnee=bool(schnee))
 
 
 def sicherheit(days):
@@ -231,19 +275,30 @@ def hinweise(d):
     if d['boe'] >= 60: h.append('Sturmböen bis %d km/h' % round(d['boe']))
     elif d['boe'] >= 45: h.append('Windböen bis %d km/h' % round(d['boe']))
     if d['regen'] >= 10: h.append('viel Regen (%.0f l/m²)' % d['regen'])
+    H = d.get('hoch')
+    if H and H['schnee']: h.insert(0, 'Schnee auf den Höhen – Glätte möglich')
+    elif H and H['tmin'] <= 0 < d['tmin']: h.append('Frost auf den Höhen bis %d °C' % H['tmin'])
     return h
+
+
+def hoehe_txt(d):
+    H = d.get('hoch')
+    if not H: return ''
+    return ' Höhen (z. B. Oberzent): %d bis %d °C%s.' % (H['tmin'], H['tmax'], ', Schnee möglich ❄️' if H['schnee'] else '')
 
 
 def text(days, warn):
     a, b = days[:2]
-    gruss = 'Guten Morgen Bad König! %s' % emoji(a['code'])
+    gruss = 'Guten Morgen Odenwald! %s' % emoji(a['code'])
     zeilen = [gruss, '',
-              'Heute (%s): %s, %d bis %d °C%s.' % (TAGE[a['datum'].weekday()], wort(a['code']), a['tmin'], a['tmax'],
-                                                    ', Regenrisiko %d %%' % a['rp'] if a['rp'] >= 30 else ', meist trocken')]
+              'Heute (%s): %s, in den Tälern %d bis %d °C%s.%s' % (TAGE[a['datum'].weekday()], wort(a['code']), a['tmin'], a['tmax'],
+                                                    ', Regenrisiko %d %%' % a['rp'] if a['rp'] >= 30 else ', meist trocken', hoehe_txt(a))]
     for x in hinweise(a): zeilen.append('⚠️ ' + x)
-    zeilen.append('Morgen (%s): %s %s, %d bis %d °C.' % (TAGE[b['datum'].weekday()], emoji(b['code']), wort(b['code']), b['tmin'], b['tmax']))
+    zeilen.append('Morgen (%s): %s %s, Täler %d bis %d °C%s' % (TAGE[b['datum'].weekday()], emoji(b['code']), wort(b['code']), b['tmin'], b['tmax'],
+                  (', Höhen um %d °C.' % b['hoch']['tmax']) if b.get('hoch') else '.'))
     for w in warn[:3]: zeilen.append('🚨 DWD: ' + w)
-    zeilen += ['', 'Live-Werte & Vorhersage 👉 https://wetter-badkoenig.de', '#BadKönig #Odenwald #Wetter']
+    zeilen += ['', '📍 Talwerte an unsere Messwerte der Station Bad König angepasst, Höhen per Modellmischung für Oberzent und Mossautal.',
+               'Live-Werte & Vorhersage 👉 https://wetter-badkoenig.de', '#Odenwald #Odenwaldkreis #BadKönig #Wetter']
     return '\n'.join(zeilen)
 
 
@@ -318,8 +373,9 @@ def bild(days, warn, path, labels=('HEUTE', 'MORGEN'), kopf=None, nacht=False):
         w = dr.textlength(t, font=f)
         if sh: dr.text(((W - w) / 2 + 2, y + 3), t, font=f, fill=(30, 60, 100))
         dr.text(((W - w) / 2, y), t, font=f, fill=fill)
-    ct('Private Wetterstation Bad König', 50, font(60, True))
-    ct(kopf or dat, 140, font(40))
+    ct('Odenwald-Wetter', 40, font(64, True))
+    ct(kopf or dat, 125, font(38))
+    ct('Private Wetterstation Bad König', 180, font(28), fill=(235, 242, 252))
     # zwei Karten
     for k, d in enumerate(days[:2]):
         x0 = 60 + k * 555; y0 = 230; x1 = x0 + 525; y1 = 870
@@ -335,9 +391,13 @@ def bild(days, warn, path, labels=('HEUTE', 'MORGEN'), kopf=None, nacht=False):
         f = font(34, True); t = wort(d['code']).capitalize(); w = dr.textlength(t, font=f); dr.text((cx - w / 2, y0 + 485), t, font=f, fill=(40, 55, 75))
         f = font(28)
         info = ('Regen %d %%  ·  %.1f l/m²' % (d['rp'], d['regen'])).replace('.', ',')
-        w = dr.textlength(info, font=f); dr.text((cx - w / 2, y0 + 540), info, font=f, fill=(90, 105, 125))
+        w = dr.textlength(info, font=f); dr.text((cx - w / 2, y0 + (525 if d.get('hoch') else 540)), info, font=f, fill=(90, 105, 125))
         info = 'Böen %d km/h  ·  Sonne %.0f h' % (round(d['boe']), d['sonne'])
-        w = dr.textlength(info, font=f); dr.text((cx - w / 2, y0 + 580), info, font=f, fill=(90, 105, 125))
+        w = dr.textlength(info, font=f); dr.text((cx - w / 2, y0 + (562 if d.get('hoch') else 580)), info, font=f, fill=(90, 105, 125))
+        if d.get('hoch'):   # Täler (oben, große Zahlen) und Höhen (Oberzent/Mossautal)
+            f = font(26, True); t = 'TAL'; dr.text((x0 + 40, y0 + 380), t, font=font(22, True), fill=(150, 160, 175))
+            info = 'Höhen: %d° / %d°%s' % (d['hoch']['tmax'], d['hoch']['tmin'], '  ·  Schnee' if d['hoch']['schnee'] else '')
+            w = dr.textlength(info, font=f); dr.text((cx - w / 2, y0 + 598), info, font=f, fill=(57, 73, 171))
     # Hinweisband
     h = (['DWD: ' + w for w in warn[:1]] + hinweise(a))[:2]
     if h:
@@ -369,6 +429,7 @@ def details(d):
 
 def tipp(d):
     w = wort(d['code'])
+    if d.get('hoch') and d['hoch']['schnee'] and d['schnee'] < 1: return 'Auf den Höhen kann es schneien – Richtung Beerfelden und Oberzent vorsichtig fahren! 🚗❄️'
     if d['schnee'] >= 1: return 'Schnee im Odenwald – warm anziehen, auf den Höhen kann es glatt werden. ⛄'
     if w == 'Gewitter': return 'Bei Gewitter Wanderungen lieber verschieben und rechtzeitig Schutz suchen.'
     if d['tmin'] <= 0: return 'Morgens Scheiben kratzen einplanen und auf Glätte achten! 🧊'
@@ -380,11 +441,13 @@ def tipp(d):
 
 def text_abend(paar, wochenende, warn, rest=()):
     a, b = paar
-    zeilen = ['Guten Abend Bad König! 🌙 ' + ('Euer Wochenendwetter für den Odenwald:' if wochenende else 'Hier kommt der Wetterausblick für morgen:'), '']
-    zeilen.append('🌃 Heute Nacht: Tiefstwerte um %d °C%s.' % (a['tmin'], ' – Frost!' if a['tmin'] <= 0 else ', Bodenfrost möglich' if a['tmin'] <= 3 else ''))
+    zeilen = ['Guten Abend Odenwald! 🌙 ' + ('Euer Wochenendwetter für den Odenwald:' if wochenende else 'Hier kommt der Wetterausblick für morgen:'), '']
+    zeilen.append('🌃 Heute Nacht: in den Tälern um %d °C%s%s.' % (a['tmin'], ' – Frost!' if a['tmin'] <= 0 else ', Bodenfrost möglich' if a['tmin'] <= 3 else '',
+                  (', auf den Höhen um %d °C' % a['hoch']['tmin']) if a.get('hoch') else ''))
     zeilen.append('')
     for name, d in ((('Samstag', a), ('Sonntag', b)) if wochenende else (('Morgen', a),)):
-        zeilen.append('📅 %s (%s): %s %s, %d bis %d °C' % (name, TAGE[d['datum'].weekday()], emoji(d['code']), wort(d['code']), d['tmin'], d['tmax']))
+        zeilen.append('📅 %s (%s): %s %s, Täler %d bis %d °C' % (name, TAGE[d['datum'].weekday()], emoji(d['code']), wort(d['code']), d['tmin'], d['tmax']))
+        if d.get('hoch'): zeilen.append('⛰️ Höhen (Oberzent, Mossautal): %d bis %d °C%s' % (d['hoch']['tmin'], d['hoch']['tmax'], ' – Schnee möglich ❄️' if d['hoch']['schnee'] else ''))
         zeilen.append('🕒 ' + tagesablauf(d))
         zeilen += details(d)
         zeilen.append('👉 Tipp: ' + tipp(d))
@@ -396,7 +459,8 @@ def text_abend(paar, wochenende, warn, rest=()):
         zeilen.append('📈 Danach: ' + ' · '.join('%s %s %d°' % (TAGE[d['datum'].weekday()][:2], emoji(d['code']), d['tmax']) for d in rest))
     for w in warn[:3]: zeilen.append('🚨 DWD: ' + w)
     zeilen += ['', 'Gute Nacht und bis morgen früh beim Wettervideo! 🎬',
-               'Live-Werte & Vorhersage 👉 https://wetter-badkoenig.de', '#BadKönig #Odenwald #Wetter #Wetterbericht']
+               '📍 Talwerte an die Messwerte unserer Station in Bad König angepasst.',
+               'Live-Werte & Vorhersage 👉 https://wetter-badkoenig.de', '#Odenwald #Odenwaldkreis #BadKönig #Wetter #Wetterbericht']
     return '\n'.join(zeilen)
 
 

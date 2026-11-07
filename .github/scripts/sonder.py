@@ -30,7 +30,11 @@ def uhr(iso):
 
 
 def laden():
-    alerts = get('https://api.brightsky.dev/alerts?lat=%s&lon=%s' % (LAT, LON)).get('alerts') or []
+    alerts, ids = [], set()
+    for la, lo in ((LAT, LON), (49.567, 8.976), (49.678, 9.004)):   # ganzer Odenwaldkreis: Bad König, Oberzent, Michelstadt
+        for a in get('https://api.brightsky.dev/alerts?lat=%s&lon=%s' % (la, lo)).get('alerts') or []:
+            k = a.get('alert_id') or a.get('id') or (a.get('headline_de'), a.get('onset'))
+            if k not in ids: ids.add(k); alerts.append(a)
     om = get('https://api.open-meteo.com/v1/forecast?latitude=%s&longitude=%s&models=icon_seamless'
              '&hourly=temperature_2m,weather_code,precipitation,snowfall,wind_gusts_10m,visibility'
              '&forecast_days=2&timezone=Europe%%2FBerlin' % (LAT, LON))
@@ -97,13 +101,13 @@ def erkennen(alerts, H):
 
 def text(m):
     titel, emo, _, _, tag, _ = ARTEN[m['typ']]
-    z = ['%s WETTER-SONDERMELDUNG für Bad König: %s %s' % (emo, titel, emo), '']
+    z = ['%s WETTER-SONDERMELDUNG für den Odenwald: %s %s' % (emo, titel, emo), '']
     if m['stufe']: z.append('⚠️ ' + m['stufe'])
     z += ['• ' + d for d in m['details'][:4]]
     if m['zeit']: z.append('🕒 ' + m['zeit'])
     if m['rat']: z += ['', '👉 ' + m['rat']]
     if 'dwd' not in m['quellen']: z += ['', '(Hinweis nach Vorhersagemodell – noch keine amtliche Warnung)']
-    z += ['', 'Live-Werte, Radar & Warnungen 👉 https://wetter-badkoenig.de', '#BadKönig #Odenwald #Wetter %s #Unwetter' % tag]
+    z += ['', 'Live-Werte, Radar & Warnungen 👉 https://wetter-badkoenig.de', '#Odenwald #Odenwaldkreis #BadKönig #Wetter %s #Unwetter' % tag]
     return '\n'.join(z)
 
 
@@ -125,7 +129,7 @@ def bild(m, path):
         w = dr.textlength(t, font=f); dr.text(((W - w) / 2 + 2, y + 3), t, font=f, fill=(20, 20, 30)); dr.text(((W - w) / 2, y), t, font=f, fill=fill)
     dr.rectangle([0, 0, W, 110], fill=(250, 200, 40))
     f = font(52, True); t = 'WETTER-SONDERMELDUNG'; w = dr.textlength(t, font=f); dr.text(((W - w) / 2, 26), t, font=f, fill=(60, 30, 10))
-    ct('Bad König', 140, font(44))
+    ct('Odenwald · Private Wetterstation Bad König', 140, font(38))
     ct(titel, 200, font(84, True))
     dr.rounded_rectangle([W / 2 - 150, 320, W / 2 + 150, 560], radius=40, fill=(255, 255, 255))
     icon(dr, W / 2, 430 if m['typ'] != 'sturm' else 400, 190, code)

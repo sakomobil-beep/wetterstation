@@ -205,6 +205,19 @@ def tagtext(d, wann):
                                 'Nachts geht es runter auf %s Grad. Also: morgens Scheiben kratzen!' % n,
                                 'Und Achtung, in der Nacht gibt es Frost, bis %s Grad.' % n,
                                 'Nachts friert es, mit bis zu %s Grad.' % n])
+    H = d.get('hoch')   # Höhenlagen des Odenwaldkreises (Oberzent, Mossautal)
+    if H:
+        if H['schnee']:
+            s += ' ' + rnd.choice(['Auf den Höhen, etwa rund um Beerfelden, kann es dabei schneien – da wird es glatt.',
+                                    'Oben auf den Höhen, Richtung Oberzent, fällt das Ganze als Schnee. Also vorsichtig fahren!',
+                                    'Und wer hoch hinaus muss: Auf den Odenwaldhöhen ist Schnee drin, bei rund %s Grad.' % zahl(H['tmax'])])
+        elif d['tmax'] - H['tmax'] >= 2:
+            s += ' ' + rnd.choice(['Auf den Höhen, etwa in Oberzent, sind es nur rund %s Grad.' % zahl(H['tmax']),
+                                    'Oben auf den Höhen wird es mit etwa %s Grad deutlich frischer als in den Tälern.' % zahl(H['tmax']),
+                                    'Richtung Beerfelden und Mossautal bleibt es kühler, um %s Grad.' % zahl(H['tmax'])])
+        if H['tmin'] <= 0 < d['tmin']:
+            s += ' ' + rnd.choice(['Nachts friert es auf den Höhen – da kann es glatt werden.',
+                                    'Auf den Höhen gibt es nachts leichten Frost, bis %s Grad.' % zahl(H['tmin'])])
     if d.get('sicher') == 'gering':
         s += ' ' + rnd.choice(['Aber ehrlich gesagt: Da sind sich die Wettermodelle noch uneinig.',
                                 'Kleiner Haken: Die Wettermodelle sind sich da noch nicht einig, also lieber nochmal reinschauen.',
@@ -306,7 +319,7 @@ def skript(days, warn, heute, nur_special=False):
     rnd = random.Random(heute.isoformat())
     a, b = days[0], days[1]
     seg = []
-    gruss = rnd.choice(['Ei gude, Odenwald! Hier ist euer Max.', 'Guten Morgen, Bad König! Euer Max meldet sich vom Wanderweg.',
+    gruss = rnd.choice(['Ei gude, Odenwald! Hier ist euer Max.', 'Guten Morgen, Odenwald! Euer Max meldet sich vom Wanderweg.',
                         'Ei gude wie, Odenwald? Max hier, euer Outdoor-Guide.', 'Moin aus dem Mümlingtal – euer Max ist schon draußen!'])
     sp = special_grund(days, warn)
     if nur_special:   # eigenes Special-Video (mittags/nachmittags bei neuer Warnung)
@@ -338,7 +351,7 @@ def skript(days, warn, heute, nur_special=False):
                 nass = (51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 71, 73, 75, 77, 80, 81, 82, 85, 86, 95, 96, 99)
                 gut = [n for n, d in (('Samstag', sa), ('Sonntag', so)) if d['rp'] < 40 and d['code'] not in nass]
                 grau = any(d['code'] in (45, 48) or d['code'] == 3 for d in (sa, so))
-                t = '%s Samstag %s bei %s Grad, Sonntag %s bei %s Grad.' % (rnd.choice(['Ein Blick aufs Wochenende:', 'Und das Wochenende?', 'Kurz noch zum Wochenende:']), wort(sa['code']), zahl(sa['tmax']), wort(so['code']), zahl(so['tmax']))
+                t = '%s Im Odenwald Samstag %s bei %s Grad, Sonntag %s bei %s Grad.' % (rnd.choice(['Ein Blick aufs Wochenende:', 'Und das Wochenende?', 'Kurz noch zum Wochenende:']), wort(sa['code']), zahl(sa['tmax']), wort(so['code']), zahl(so['tmax']))
                 t += (' Trockener bleibt es am %s.' % gut[0]) if len(gut) == 1 else ((' Beide Tage bleiben wohl trocken – zieht euch aber warm an.' if grau else ' Beide Tage sehen gut aus für draußen!') if gut else ' Plant lieber etwas für drinnen ein.')
                 seg.append(dict(art='wochenende', tage=[sa, so], bg='wald', text=t))
     seg.append(dict(art='outro', bg='schloss', text=rnd.choice(['Alle Live-Werte findet ihr auf wetter-badkoenig.de.', 'Mehr gibt es live auf wetter-badkoenig.de.',
@@ -797,7 +810,7 @@ def schatten_text(d, xy, t, f, fill=(255, 255, 255), anchor='la'):
 
 
 def tafel_tag(titel, d):
-    w, h = 400, 520
+    w, h = 400, (565 if d.get('hoch') else 520)
     im = Image.new('RGBA', (w, h), (0, 0, 0, 0)); dr = ImageDraw.Draw(im)
     dr.rounded_rectangle([0, 0, w, h], radius=28, fill=(255, 255, 255, 238))
     dr.rounded_rectangle([0, 0, w, 74], radius=28, fill=(25, 85, 160, 255)); dr.rectangle([0, 46, w, 74], fill=(25, 85, 160, 255))
@@ -809,6 +822,9 @@ def tafel_tag(titel, d):
     dr.text((w / 2 + 20, 352), '%d°' % d['tmin'], font=F(58), fill=(60, 120, 200), anchor='lm')
     dr.text((w / 2, 425), wort(d['code']).capitalize(), font=F(32), fill=(35, 50, 70), anchor='mm')
     dr.text((w / 2, 470), ('Regen %d %%  ·  Böen %d km/h' % (d['rp'], round(d['boe']))), font=F(22, False), fill=(90, 105, 125), anchor='mm')
+    if d.get('hoch'):
+        H = d['hoch']
+        dr.text((w / 2, 515), 'Höhen: %d° / %d°%s' % (H['tmax'], H['tmin'], '  ·  Schnee' if H['schnee'] else ''), font=F(26), fill=(57, 73, 171), anchor='mm')
     return im
 
 
@@ -862,7 +878,7 @@ def tafel_fuer(s, special):
         return tafel_text('MAX\' FREIZEIT-TIPP', [kurz(t_.split('. ')[0].rstrip('.!') + ('' if t_.split('. ')[0][-1:] in '.!' else '.'), 110)], (230, 130, 30))
     if s['art'] == 'special': return tafel_text('⚠ WETTER-SPECIAL'.replace('⚠ ', ''), [kurz(s.get('karte', s['text']), 120)], (200, 40, 40))
     if s['art'] == 'cta': return tafel_text('MACH MIT!', ['❤ Liken', '+ Folgen', '↻ Teilen', '✎ Kommentieren'], (254, 44, 85))
-    if s['art'] == 'outro': return tafel_text('LIVE IM NETZ', ['wetter-badkoenig.de', 'Station Bad König · 184,5 m'], (25, 85, 160))
+    if s['art'] == 'outro': return tafel_text('LIVE IM NETZ', ['wetter-badkoenig.de', 'Station Bad König · 184,5 m', 'Wetter für den ganzen Odenwald'], (25, 85, 160))
     return None
 
 
