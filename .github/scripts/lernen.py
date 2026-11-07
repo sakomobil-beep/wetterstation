@@ -2,7 +2,10 @@
 """Lernende Stationskorrektur für die Vorhersage (läuft stündlich).
 Speichert Stunde für Stunde: Messwert IBADKN33 + DWD ICON-D2 (Temperatur, Bewölkung, Wind) -> data/lernen/JJJJ-MM.json
 Berechnet daraus die Korrektur je Wetterlage und Tageszeit -> data/lernen-bias.json
-und prüft die Treffsicherheit der korrigierten 12-Stunden-Vorhersage."""
+und prüft die Treffsicherheit der korrigierten 12-Stunden-Vorhersage.
+Präzision 2.0: zusätzlich Temperatur und Regen von ICON-D2, AROME, ECMWF und ICON-EU je Stunde speichern
+und daraus die Trefferquote je Modell (Temperatur-Fehler, Regen ja/nein) berechnen -> lernen-bias.json „modelle“.
+Die Website gewichtet die Modelle danach."""
 import json, os, math, urllib.request, datetime as dt
 from zoneinfo import ZoneInfo
 
@@ -15,6 +18,9 @@ TAGE_HALTEN = 365
 HALBWERT = 21.0            # Tage: jüngere Daten zählen mehr
 LAGEN = ('klar', 'wolkig', 'windig')
 GRENZE = {'tag': 4.0, 'nacht': 7.0}
+MODELLE = ('icon_d2', 'meteofrance_arome_france_hd', 'ecmwf_ifs025', 'icon_eu')
+GUETE_TAGE = 14            # Trefferquote der Modelle über die letzten 14 Tage
+NASS = 0.1                 # mm pro Stunde: ab hier zählt eine Stunde als nass
 
 
 def get(url):
@@ -70,6 +76,35 @@ def main():
         r = rows.get(k, {})
         r.update({'st': round(m['tempAvg'], 1), 'md': md[0], 'cc': md[1], 'wm': md[2], 'ws': m.get('windspeedAvg')})
         rows[k] = r
+
+    # Regen der Station je Stunde (precipTotal ist die Tagessumme -> Differenz zur Vorstunde)
+    letzt = {}
+    for o in sorted(st, key=lambda o: o['epoch']):
+        m = o.get('metric') or {}
+        tot = m.get('precipTotal')
+        if tot is None: continue
+        t = dt.datetime.fromtimestamp(o['epoch'], TZ); k = stundenkey(t); tag = k[:10]
+        vor = letzt.get(tag, 0.0)
+        if k in rows and 'st' in rows[k]: rows[k]['sr'] = round(max(0.0, tot - vor), 2)
+        letzt[tag] = tot
+
+    # Mehrere Modelle je Stunde merken (für die Gewichtung nach Trefferquote)
+    try:
+        mm = get('https://api.open-meteo.com/v1/forecast?latitude=%s&longitude=%s&models=%s'
+                 '&hourly=temperature_2m,precipitation&past_days=7&forecast_days=1&timezone=Europe%%2FBerlin'
+                 % (LAT, LON, ','.join(MODELLE)))['hourly']
+        for i, t in enumerate(mm['time']):
+            r = rows.get(t[:13])
+            if not r or 'st' not in r: continue
+            mt, mp = {}, {}
+            for m in MODELLE:
+                a = mm.get('temperature_2m_' + m) or []; b = mm.get('precipitation_' + m) or []
+                if i < len(a) and a[i] is not None: mt[m] = round(a[i], 1)
+                if i < len(b) and b[i] is not None: mp[m] = round(b[i], 2)
+            if mt: r['mt'] = mt
+            if mp: r['mp'] = mp
+    except Exception as e:
+        print('Mehrmodell-Daten nicht abrufbar:', e)
 
     # Treffsicherheit: korrigierte Vorhersage für in 12 h festhalten (einmal je Zielstunde)
     bias_alt = None
@@ -130,7 +165,31 @@ def main():
         if k >= seit and 'p12' in r and 'st' in r:
             fk += abs(r['st'] - r['p12']); fr += abs(r['st'] - r['r12']); n += 1
     tage = len({k[:10] for k, r in rows.items() if 'st' in r})
+
+    # Trefferquote je Modell: mittlerer Temperaturfehler (nach Abzug der eigenen Tageszeit-Abweichung) und Regen-Treffer
+    seit_g = (jetzt - dt.timedelta(days=GUETE_TAGE)).strftime('%Y-%m-%dT%H')
+    modelle = {}
+    for m in MODELLE:
+        bl = [[] for _ in range(6)]
+        for k, r in rows.items():
+            if k >= seit_g and 'st' in r and m in (r.get('mt') or {}):
+                bl[int(k[11:13]) // 4].append(r['st'] - r['mt'][m])
+        korr = [sorted(x)[len(x) // 2] if len(x) >= 4 else 0.0 for x in bl]
+        fe, n, tr, fa, fl = 0.0, 0, 0, 0, 0
+        for k, r in rows.items():
+            if k < seit_g or 'st' not in r: continue
+            if m in (r.get('mt') or {}):
+                fe += abs(r['st'] - (r['mt'][m] + korr[int(k[11:13]) // 4])); n += 1
+            if 'sr' in r and m in (r.get('mp') or {}):
+                sn, mn = r['sr'] >= NASS, r['mp'][m] >= NASS
+                if sn and mn: tr += 1
+                elif sn: fa += 1
+                elif mn: fl += 1
+        nr = tr + fa + fl
+        modelle[m] = {'n': n, 'mae': round(fe / n, 2) if n else None,
+                      'nr': nr, 'rtreff': round(tr / nr, 2) if nr else None}
     out = {'erstellt': jetzt.isoformat(timespec='minutes'), 'tage': tage, 'bias': bias, 'anzahl': anzahl,
+           'modelle': modelle,
            'treff': {'n': n, 'mae': round(fk / n, 2) if n else None, 'mae_roh': round(fr / n, 2) if n else None}}
     json.dump(out, open(os.path.join(DATA, 'lernen-bias.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     print(json.dumps(out, ensure_ascii=False))

@@ -517,6 +517,8 @@ button { font: inherit; color: inherit; }
 .fday.frost { border-color: #9CC3E6; background: #E3EFF9; }
 .fday .fx { display: inline-flex; align-items: center; gap: 3px; font: 600 11px/1.3 var(--font-data); color: #1E6FB0; white-space: nowrap; }
 .fday .fx svg { width: 12px; height: 12px; }
+.fday .conf { font: 600 10.5px/1.3 var(--font-data); white-space: nowrap; }
+.fday .conf-hoch { color: #2E8A4E; } .fday .conf-mittel { color: #B07A10; } .fday .conf-gering { color: #C0462B; }
 .fday[aria-pressed="true"] .fx { color: #9CCBF0; }
 .fr-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
 .fr-kpi { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: grid; gap: 2px; align-content: start; }
@@ -1195,7 +1197,7 @@ button { font: inherit; color: inherit; }
       <div class="readout num" id="fcReadout"></div>
       <div class="plot" id="fcPlot"></div>
     </div>
-    <p class="src">Quelle: Deutscher Wetterdienst (Vorhersagemodelle ICON-D2 über <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> und MOSMIX, Radar RADOLAN, amtliche Warnungen), korrigiert mit den Messwerten der Station IBADKN33, abgerufen über <a href="https://brightsky.dev/" target="_blank" rel="noopener">Bright Sky</a>. Die Texte werden automatisch aus den Vorhersagedaten erstellt.</p>
+    <p class="src">Quelle: Vorhersagemodelle DWD ICON-D2 und ICON-EU, Météo-France AROME und ECMWF IFS (gemischt und nach eigener Trefferquote gewichtet) über <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> sowie Deutscher Wetterdienst (MOSMIX, Radar RADOLAN, amtliche Warnungen), korrigiert mit den Messwerten der Station IBADKN33, abgerufen über <a href="https://brightsky.dev/" target="_blank" rel="noopener">Bright Sky</a>. Die Texte werden automatisch aus den Vorhersagedaten erstellt.</p>
   </section>
   </div>
 
@@ -2553,7 +2555,8 @@ function dirLong(deg) { return DIR8[Math.round((((deg % 360) + 360) % 360) / 45)
 /* Wettersymbole */
 var ICON_TXT = {
   'clear-day': 'Sonnig', 'clear-night': 'Klar', 'partly-cloudy-day': 'Wechselnd bewölkt', 'partly-cloudy-night': 'Wechselnd bewölkt',
-  'cloudy': 'Bedeckt', 'fog': 'Nebel', 'wind': 'Windig', 'rain': 'Regen', 'sleet': 'Schneeregen', 'snow': 'Schnee', 'hail': 'Hagel', 'thunderstorm': 'Gewitter'
+  'cloudy': 'Bedeckt', 'fog': 'Nebel', 'wind': 'Windig', 'rain': 'Regen', 'sleet': 'Schneeregen', 'snow': 'Schnee', 'hail': 'Hagel', 'thunderstorm': 'Gewitter',
+  'showers-day': 'Schauer', 'showers-night': 'Schauer'
 };
 function icSun(cx, cy, r) {
   var g = '<g stroke="#EFA21F" stroke-width="2.4" stroke-linecap="round">';
@@ -2579,6 +2582,8 @@ function wxIcon(name) {
     case 'partly-cloudy-night': b = icMoon(-2, -3, 0.72) + icCloud(6, 13, 0.86, '#B2C0C9'); break;
     case 'fog': b = icCloud(2, -2, 0.92, '#B2C0C9') + '<g stroke="#9AAAB5" stroke-width="2.6" stroke-linecap="round"><line x1="9" y1="33" x2="39" y2="33"/><line x1="13" y1="38.5" x2="35" y2="38.5"/><line x1="9" y1="44" x2="31" y2="44"/></g>'; break;
     case 'rain': b = top + '<g stroke="#2F7FC1" stroke-width="2.6" stroke-linecap="round"><line x1="17" y1="32" x2="14.5" y2="40"/><line x1="25" y1="32" x2="22.5" y2="40"/><line x1="33" y1="32" x2="30.5" y2="40"/><line x1="21" y1="40.5" x2="19.5" y2="45"/><line x1="29" y1="40.5" x2="27.5" y2="45"/></g>'; break;
+    case 'showers-day': b = icSun(15, 13, 6) + icCloud(4, 4, 0.92, '#97A8B3') + '<g stroke="#2F7FC1" stroke-width="2.6" stroke-linecap="round"><line x1="19" y1="35" x2="16.5" y2="42"/><line x1="28" y1="35" x2="25.5" y2="42"/></g>'; break;
+    case 'showers-night': b = icMoon(-2, -4, 0.66) + icCloud(4, 4, 0.92, '#97A8B3') + '<g stroke="#2F7FC1" stroke-width="2.6" stroke-linecap="round"><line x1="19" y1="35" x2="16.5" y2="42"/><line x1="28" y1="35" x2="25.5" y2="42"/></g>'; break;
     case 'sleet': b = top + '<g stroke="#2F7FC1" stroke-width="2.6" stroke-linecap="round"><line x1="17" y1="32" x2="14.5" y2="40"/><line x1="31" y1="32" x2="28.5" y2="40"/></g><g fill="#7FA7C9"><circle cx="24" cy="36" r="2.4"/><circle cx="22" cy="43.5" r="2.4"/></g>'; break;
     case 'snow': b = top + '<g fill="#7FA7C9"><circle cx="16" cy="35" r="2.5"/><circle cx="24" cy="38" r="2.5"/><circle cx="32" cy="35" r="2.5"/><circle cx="20" cy="43.5" r="2.5"/><circle cx="28" cy="43.5" r="2.5"/></g>'; break;
     case 'hail': b = top + '<g fill="#FFFFFF" stroke="#7FA7C9" stroke-width="2"><circle cx="17" cy="36" r="2.8"/><circle cx="25" cy="41" r="2.8"/><circle cx="33" cy="36" r="2.8"/></g>'; break;
@@ -2599,7 +2604,8 @@ function fcHours(j) {
       t: t, day: /^\d{4}-\d{2}-\d{2}/.test(r.timestamp) ? r.timestamp.slice(0, 10) : ymd(t),
       temp: num(r.temperature), rain: num(r.precipitation), prob: num(r.precipitation_probability),
       wind: num(r.wind_speed), gust: num(r.wind_gust_speed), dir: num(r.wind_direction),
-      cloud: num(r.cloud_cover), sun: num(r.sunshine), icon: r.icon || null, cond: r.condition || null
+      cloud: num(r.cloud_cover), sun: num(r.sunshine), icon: r.icon || null, cond: r.condition || null,
+      conv: null, spread: null, pdis: null   /* werden von der Mehrmodell-Vorhersage gefüllt */
     };
   }).filter(function (h) { return !isNaN(h.t); }).sort(function (a, b) { return a.t - b.t; });
 }
@@ -2611,7 +2617,9 @@ function pickIcon(part, d) {
   if (has('hail')) return 'hail';
   if (has('snow') && rain >= 0.3) return 'snow';
   if (has('sleet') && rain >= 0.3) return 'sleet';
-  if (rain >= 1 || (rain >= 0.3 && d.prob !== null && d.prob >= 50)) return 'rain';
+  /* Schauer (Quellwolken) oder Landregen – laut Wetter-Code der Modelle */
+  var wetIc = (d.conv !== null && d.conv >= 0.5) ? (d.night ? 'showers-night' : 'showers-day') : 'rain';
+  if (rain >= 1 || (rain >= 0.3 && d.prob !== null && d.prob >= 50)) return wetIc;
   var fog = part.filter(function (h) { return h.cond === 'fog' || h.icon === 'fog'; }).length;
   if (fog && fog >= part.length / 2) return 'fog';
   if (d.gust !== null && d.gust >= 65) return 'wind';
@@ -2641,6 +2649,13 @@ function summarize(date, hs, night) {
     cloud: avgOf(col(part, 'cloud')), sun: sumOf(col(hs, 'sun')),
     dir: meanDir(hs)
   };
+  /* Anteil Schauer an den nassen Stunden, Modell-Streuung, Sicherheit */
+  var cv = hs.filter(function (h) { return h.conv !== null && h.conv !== undefined && (h.rain || 0) >= 0.1; }).map(function (h) { return h.conv; });
+  d.conv = cv.length ? avgOf(cv) : null;
+  var sp = col(hs, 'spread'), pd = col(hs, 'pdis');
+  d.spread = sp.length >= 6 ? avgOf(sp) : null;
+  d.pdis = pd.length >= 6 ? avgOf(pd) : null;
+  d.conf = d.spread === null ? null : (d.spread >= 2.2 || (d.pdis !== null && d.pdis >= 0.45)) ? 'gering' : (d.spread >= 1.2 || (d.pdis !== null && d.pdis >= 0.25)) ? 'mittel' : 'hoch';
   d.icon = pickIcon(part, d);
   return d;
 }
@@ -2649,12 +2664,13 @@ function summarize(date, hs, night) {
 var SKY_DAY = {
   'clear-day': 'Viel Sonnenschein', 'partly-cloudy-day': 'Wechsel aus Sonne und Wolken', 'cloudy': 'Stark bewölkt bis bedeckt',
   'fog': 'Neblig-trüb', 'rain': 'Wechselhaft mit Regen', 'sleet': 'Schneeregen', 'snow': 'Schneefall',
-  'hail': 'Schauer, örtlich mit Hagel', 'thunderstorm': 'Schauer und Gewitter', 'wind': 'Windig'
+  'hail': 'Schauer, örtlich mit Hagel', 'thunderstorm': 'Schauer und Gewitter', 'wind': 'Windig',
+  'showers-day': 'Wechselhaft mit Schauern, zwischendurch Sonne'
 };
 var SKY_NIGHT = {
   'clear-night': 'Klar', 'partly-cloudy-night': 'Teils wolkig', 'cloudy': 'Stark bewölkt', 'fog': 'Gebietsweise Nebel',
   'rain': 'Zeitweise Regen', 'sleet': 'Schneeregen', 'snow': 'Schneefall', 'hail': 'Schauer, örtlich mit Hagel',
-  'thunderstorm': 'Gewitter möglich', 'wind': 'Windig'
+  'thunderstorm': 'Gewitter möglich', 'wind': 'Windig', 'showers-night': 'Einzelne Schauer'
 };
 function windWord(v) {
   if (v < 12) return 'Schwacher Wind';
@@ -2668,7 +2684,9 @@ function rainPhrase(d) {
   var r = d.rain || 0, p = d.prob;
   if (r < 0.1 && (p === null || p < 20)) return 'Niederschlagsfrei.';
   if (r < 0.1) return 'Geringes Schauerrisiko (bis ' + nf(p, 0) + ' %).';
-  var word = (d.icon === 'snow' || d.icon === 'sleet') ? 'Niederschlag' : 'Regen';
+  if (d.icon === 'showers-day' || d.icon === 'showers-night')
+    return 'Schauer, zusammen um ' + nf(r, r < 10 ? 1 : 0) + ' mm' + (p !== null ? ', Wahrscheinlichkeit bis ' + nf(p, 0) + ' %' : '') + ' – nicht überall und nicht durchgehend nass.';
+  var word = (d.icon === 'snow' || d.icon === 'sleet') ? 'Niederschlag' : (d.icon === 'rain' && d.conv !== null && d.conv < 0.3 && r >= 3) ? 'Länger anhaltender Regen' : 'Regen';
   return word + ' um ' + nf(r, r < 10 ? 1 : 0) + ' mm' + (p !== null ? ', Wahrscheinlichkeit bis ' + nf(p, 0) + ' %' : '') + '.';
 }
 function dayText(d) {
@@ -2681,6 +2699,8 @@ function dayText(d) {
   if (d.wind !== null) out.push(windWord(d.wind) + (d.dir !== null ? ' aus ' + dirLong(d.dir) : '') + (d.gust !== null && d.gust >= 40 ? ', Böen bis ' + nf(d.gust, 0) + ' km/h' : '') + '.');
   if (d.tmin !== null && d.tmin <= 0) out.push('Frostgefahr.');
   else if (d.tmin !== null && d.tmin <= 2) out.push('Örtlich Bodenfrost möglich.');
+  if (d.conf === 'gering') out.push('Unsichere Vorhersage – die Wettermodelle sind sich noch uneinig.');
+  else if (d.conf === 'mittel') out.push('Vorhersage mit kleiner Unsicherheit.');
   return out.join(' ');
 }
 
@@ -2711,11 +2731,47 @@ function demoForecastJson() {
 
 /* Abruf */
 
-/* ===== Präzisions-Vorhersage: ICON-D2 + lernende Stationskorrektur + Regen-Nowcast ===== */
+/* ===== Präzisions-Vorhersage 2.0: mehrere Modelle (ICON-D2, AROME, ECMWF, ICON-EU) + MOSMIX
+   + lernende Stationskorrektur + Gewichtung nach Trefferquote + Regen-Nowcast ===== */
 var PX = { info: null };
+var PX_MODELS = ['icon_d2', 'meteofrance_arome_france_hd', 'ecmwf_ifs025', 'icon_eu'];
+var PX_NAME = { icon_d2: 'ICON-D2', meteofrance_arome_france_hd: 'AROME', ecmwf_ifs025: 'ECMWF', icon_eu: 'ICON-EU' };
+var PX_CODES = { icon_d2: 1, ecmwf_ifs025: 1, icon_eu: 1 };   /* Modelle, deren Wetter-Code Schauer und Regen sauber trennt */
 function omUrl() {
   return 'https://api.open-meteo.com/v1/forecast?latitude=' + CONFIG.lat + '&longitude=' + CONFIG.lon +
-    '&models=icon_d2&hourly=temperature_2m,precipitation,wind_speed_10m,wind_gusts_10m,cloud_cover&past_days=7&forecast_days=2&timezone=Europe%2FBerlin';
+    '&models=' + PX_MODELS.join(',') + '&hourly=temperature_2m,precipitation,wind_speed_10m,wind_gusts_10m,cloud_cover,weather_code' +
+    '&past_days=7&forecast_days=10&timezone=Europe%2FBerlin';
+}
+/* Grundgewicht je Modell nach Vorlaufzeit (Stunden) */
+function pxBaseW(m, lead) {
+  if (lead < 48) return { icon_d2: 0.40, meteofrance_arome_france_hd: 0.30, ecmwf_ifs025: 0.15, icon_eu: 0.15 }[m] || 0;
+  if (lead < 120) return { ecmwf_ifs025: 0.55, icon_eu: 0.45 }[m] || 0;
+  return { ecmwf_ifs025: 0.65, icon_eu: 0.35 }[m] || 0;
+}
+/* Faktor aus der eigenen Trefferquote (data/lernen-bias.json → modelle) */
+function pxSkill(BF) {
+  var f = { t: {}, r: {} }, M = BF && BF.modelle;
+  PX_MODELS.forEach(function (m) { f.t[m] = 1; f.r[m] = 1; });
+  if (!M) return f;
+  var ok = PX_MODELS.filter(function (m) { return M[m] && M[m].n >= 24 && M[m].mae; });
+  if (ok.length >= 2) {
+    var ms = ok.map(function (m) { return M[m].mae; }).sort(function (a, b) { return a - b; }), med = ms[Math.floor(ms.length / 2)];
+    ok.forEach(function (m) { f.t[m] = Math.max(0.5, Math.min(2, Math.pow(med / M[m].mae, 2))); });
+  }
+  var okr = PX_MODELS.filter(function (m) { return M[m] && M[m].nr >= 24 && M[m].rtreff !== null && M[m].rtreff !== undefined; });
+  if (okr.length >= 2) {
+    var rs = okr.map(function (m) { return Math.max(0.05, M[m].rtreff); }).sort(function (a, b) { return a - b; }), mr = rs[Math.floor(rs.length / 2)];
+    okr.forEach(function (m) { f.r[m] = Math.max(0.5, Math.min(2, Math.pow(Math.max(0.05, M[m].rtreff) / mr, 2))); });
+  }
+  return f;
+}
+/* Zeitreihe eines Modells aus der Mehrmodell-Antwort (Schlüssel mit Modell-Endung) */
+function pxSer(H, v, m) { return H[v + '_' + m] || (m === 'icon_d2' && H[v]) || null; }
+function pxView(om, m) {
+  var H = om.hourly, t = pxSer(H, 'temperature_2m', m);
+  if (!t) return null;
+  return { hourly: { time: H.time, temperature_2m: t, wind_speed_10m: pxSer(H, 'wind_speed_10m', m) || t.map(function () { return null; }),
+    cloud_cover: pxSer(H, 'cloud_cover', m) || t.map(function () { return null; }) } };
 }
 function stationHourly() {
   var c = lsGet('px-st-' + CONFIG.stationId);
@@ -2768,34 +2824,84 @@ function pxEnhance(hours) {
   return Promise.all([fetchJson(omUrl()).catch(function () { return null; }), stationHourly(), pxBiasFile(), pxStationNow()]).then(function (res) {
     var om = res[0], st = res[1], BF = res[2], NOW = res[3];
     if (!om || !om.hourly) return hours;
-    var L = st.length ? pxLearn(om, st) : { bias: [0, 0, 0, 0, 0, 0], wf: 1, n: 0 };
+    var D2 = pxView(om, 'icon_d2');
+    if (!D2) return hours;
+    var L = st.length ? pxLearn(D2, st) : { bias: [0, 0, 0, 0, 0, 0], wf: 1, n: 0 };
+    /* eigene Standort-Korrektur für jedes weitere Modell (7 Tage, je Tageszeit) */
+    var MB = {}, avail = [];
+    PX_MODELS.forEach(function (m) {
+      var v = pxView(om, m); if (!v) return;
+      avail.push(m);
+      if (m !== 'icon_d2') MB[m] = st.length ? pxLearn(v, st).bias : [0, 0, 0, 0, 0, 0];
+    });
     var lern = BF && BF.bias && BF.tage >= 3;
     var map = {};
     om.hourly.time.forEach(function (ts, i) { map[Math.round(new Date(ts).getTime() / 3600000)] = i; });
-    var now = Date.now(), H = om.hourly, used = 0;
+    var now = Date.now(), H = om.hourly, used = 0, SK = pxSkill(BF), mUsed = {};
+    var S = {};
+    avail.forEach(function (m) {
+      S[m] = { t: pxSer(H, 'temperature_2m', m), p: pxSer(H, 'precipitation', m), w: pxSer(H, 'wind_speed_10m', m),
+               g: pxSer(H, 'wind_gusts_10m', m), c: pxSer(H, 'cloud_cover', m), k: pxSer(H, 'weather_code', m) };
+    });
+    function at(arr, i) { return arr && arr[i] !== undefined ? arr[i] : null; }
     hours.forEach(function (h) {
       var blk = Math.floor(h.t.getHours() / 4), i = map[Math.round(h.t.getTime() / 3600000)];
-      var near = i !== undefined && h.t.getTime() >= now - 3600000 && H.temperature_2m[i] !== null;
-      /* Korrektur nach Wetterlage (klar & ruhig / wolkig / windig) aus dem Langzeit-Lernen, sonst 7-Tage-Mittel */
+      var lead = (h.t.getTime() - now) / 3600000;
+      /* ICON-D2-Korrektur nach Wetterlage (klar & ruhig / wolkig / windig) aus dem Langzeit-Lernen, sonst 7-Tage-Mittel */
       var bi = L.bias[blk];
-      if (lern) {
-        var lg = near ? pxLage(H.cloud_cover[i], H.wind_speed_10m[i]) : pxLage(h.cloud, h.wind);
+      if (lern && i !== undefined) {
+        var lg = at(S.icon_d2 && S.icon_d2.t, i) !== null ? pxLage(at(S.icon_d2.c, i), at(S.icon_d2.w, i)) : pxLage(h.cloud, h.wind);
         bi = BF.bias[lg][blk];
       }
-      if (near) {
-        /* 0–48 h: ICON-D2 (korrigiert) 70 % + MOSMIX 30 % */
-        var it = H.temperature_2m[i] + bi;
-        h.temp = h.temp === null ? it : 0.7 * it + 0.3 * h.temp;
-        if (H.precipitation[i] !== null) h.rain = h.rain === null ? H.precipitation[i] : 0.6 * H.precipitation[i] + 0.4 * h.rain;
-        if (H.wind_speed_10m[i] !== null) { var iw = H.wind_speed_10m[i] * L.wf; h.wind = h.wind === null ? iw : 0.7 * iw + 0.3 * h.wind; }
-        if (H.wind_gusts_10m[i] !== null) { var ig = H.wind_gusts_10m[i] * L.wf; h.gust = h.gust === null ? ig : 0.7 * ig + 0.3 * h.gust; }
-        if (H.cloud_cover[i] !== null) h.cloud = h.cloud === null ? H.cloud_cover[i] : 0.5 * H.cloud_cover[i] + 0.5 * h.cloud;
-        used++;
-      } else if (h.temp !== null && L.n) {
-        h.temp += bi * 0.6;                                    /* spätere Tage: Standorteffekt abgeschwächt */
-        if (h.wind !== null) h.wind *= (1 + (L.wf - 1) * 0.6);
-        if (h.gust !== null) h.gust *= (1 + (L.wf - 1) * 0.6);
+      if (i === undefined || lead < -1) return;
+      /* Mitglieder: jedes Modell mit eigenem Gewicht (Vorlaufzeit × Trefferquote) und eigener Standort-Korrektur */
+      var mem = [];
+      avail.forEach(function (m) {
+        var t = at(S[m].t, i); if (t === null) return;
+        var w0 = pxBaseW(m, lead); if (!w0) return;
+        mem.push({ m: m, wt: w0 * SK.t[m], wr: w0 * SK.r[m], t: t + (m === 'icon_d2' ? bi : MB[m][blk] * (lead < 48 ? 1 : 0.6)),
+                   p: at(S[m].p, i), w: at(S[m].w, i), g: at(S[m].g, i), c: at(S[m].c, i), k: at(S[m].k, i) });
+      });
+      if (!mem.length) {
+        if (h.temp !== null && L.n) h.temp += bi * 0.6;
+        return;
       }
+      function blend(key, wk) {
+        var sw = 0, sv = 0;
+        mem.forEach(function (x) { if (x[key] !== null) { sw += x[wk]; sv += x[wk] * x[key]; } });
+        return sw ? sv / sw : null;
+      }
+      var mt = blend('t', 'wt'), swt = 0, var_ = 0;
+      mem.forEach(function (x) { swt += x.wt; var_ += x.wt * (x.t - mt) * (x.t - mt); });
+      h.spread = mem.length >= 2 ? Math.sqrt(var_ / swt) : null;
+      var near = lead < 48, mos = near ? 0.3 : 0.5;
+      h.temp = h.temp === null ? mt : (1 - mos) * mt + mos * h.temp;
+      var mr = blend('p', 'wr');
+      if (mr !== null) h.rain = h.rain === null ? mr : (near ? 0.6 : 0.5) * mr + (near ? 0.4 : 0.5) * h.rain;
+      var mw = blend('w', 'wt'), mg = blend('g', 'wt'), mc = blend('c', 'wt');
+      var wfx = near ? L.wf : 1 + (L.wf - 1) * 0.6;
+      if (mw !== null) { mw *= wfx; h.wind = h.wind === null ? mw : 0.7 * mw + 0.3 * h.wind; }
+      if (mg !== null) { mg *= wfx; h.gust = h.gust === null ? mg : 0.7 * mg + 0.3 * h.gust; }
+      if (mc !== null) h.cloud = h.cloud === null ? mc : 0.5 * mc + 0.5 * h.cloud;
+      /* Regenwahrscheinlichkeit: gewichteter Anteil der Modelle mit Regen (≥ 0,1 mm), gemischt mit MOSMIX */
+      var pw = 0, ps = 0;
+      mem.forEach(function (x) { if (x.p !== null) { pw += x.wr; if (x.p >= 0.1) ps += x.wr; } });
+      if (pw) {
+        var pm = ps / pw;
+        h.prob = h.prob === null ? pm * 100 : 0.5 * h.prob + 0.5 * pm * 100;
+        h.pdis = mem.length >= 2 ? 4 * pm * (1 - pm) : null;
+      }
+      /* Schauer oder Landregen: Wetter-Codes der Modelle (80–86 Schauer, 95–99 Gewitter, 51–67 Regen/Niesel) */
+      var cw = 0, cs = 0, gw = 0, kw = 0;
+      mem.forEach(function (x) {
+        if (!PX_CODES[x.m] || x.k === null) return;
+        kw += x.wt;
+        if (x.k >= 51) { cw += x.wt; if (x.k >= 80) cs += x.wt; if (x.k >= 95) gw += x.wt; }
+      });
+      h.conv = cw ? cs / cw : null;
+      if (kw && gw / kw >= 0.5 && h.cond !== 'thunderstorm' && near) h.cond = 'thunderstorm';
+      mem.forEach(function (x) { mUsed[x.m] = 1; });
+      if (near) used++;
     });
     /* Anker: die nächsten Stunden starten beim aktuellen Messwert, die Differenz klingt über ca. 5 h ab */
     var anker = null;
@@ -2820,7 +2926,7 @@ function pxEnhance(hours) {
       }
     }
     var avg = L.bias.reduce(function (a, x) { return a + x; }, 0) / 6;
-    PX.info = { n: L.n, used: used, night: (L.bias[0] + L.bias[5]) / 2, day: (L.bias[3] + L.bias[2]) / 2, avg: avg, wf: L.wf,
+    PX.info = { models: PX_MODELS.filter(function (m) { return mUsed[m]; }), skill: SK, n: L.n, used: used, night: (L.bias[0] + L.bias[5]) / 2, day: (L.bias[3] + L.bias[2]) / 2, avg: avg, wf: L.wf,
                 lern: lern ? BF : null, anker: anker };
     if (lern) {
       var nb = function (l) { return (BF.bias[l][0] + BF.bias[l][5]) / 2; };
@@ -2832,7 +2938,12 @@ function pxEnhance(hours) {
 function pxNote() {
   var I = PX.info;
   if (!I || !I.used) return '';
-  var s = 'Präzisions-Vorhersage: DWD ICON-D2 (2,2 km) + MOSMIX';
+  var s = 'Präzisions-Vorhersage 2.0: ' + ((I.models && I.models.length) ? I.models.map(function (m) { return PX_NAME[m]; }).join(', ') : 'DWD ICON-D2') + ' + MOSMIX';
+  if (I.lern && I.lern.modelle) {
+    var tops = PX_MODELS.filter(function (m) { var x = I.lern.modelle[m]; return x && x.n >= 24 && x.mae; })
+      .sort(function (a, b) { return I.lern.modelle[a].mae - I.lern.modelle[b].mae; });
+    if (tops.length >= 2) s += ', gewichtet nach Trefferquote (zuletzt am genauesten: ' + PX_NAME[tops[0]] + ' ±' + nf(I.lern.modelle[tops[0]].mae, 1) + ' °C)';
+  }
   var f = function (v) { return (v > 0 ? '+' : '') + nf(v, 1) + ' °C'; };
   if (I.lern) {
     s += ', angepasst an IBADKN33 nach Wetterlage (' + I.lern.tage + ' Tage gelernt: klare Nächte ' + f(I.nightKlar) + ', bewölkte Nächte ' + f(I.nightWolkig) + ')';
@@ -2992,7 +3103,7 @@ function renderOutlook() {
 /* Farb- und Klassenhelfer für den Vorhersage-Tab */
 function wxClass(ic) {
   return ({ 'clear-day': 'wx-sun', 'partly-cloudy-day': 'wx-part', 'cloudy': 'wx-cloud', 'rain': 'wx-rain', 'sleet': 'wx-snow', 'snow': 'wx-snow',
-    'hail': 'wx-storm', 'thunderstorm': 'wx-storm', 'fog': 'wx-fog', 'wind': 'wx-cloud', 'clear-night': 'wx-night', 'partly-cloudy-night': 'wx-night' })[ic] || 'wx-cloud';
+    'hail': 'wx-storm', 'thunderstorm': 'wx-storm', 'showers-day': 'wx-rain', 'showers-night': 'wx-rain', 'fog': 'wx-fog', 'wind': 'wx-cloud', 'clear-night': 'wx-night', 'partly-cloudy-night': 'wx-night' })[ic] || 'wx-cloud';
 }
 function tColor(t, dark) {
   if (t === null || t === undefined) return 'inherit';
@@ -3033,7 +3144,8 @@ function renderFcTab() {
       '<span class="t">' + nf(d.tmax, 0) + '° <span>/ ' + nf(d.tmin, 0) + '°</span></span>' + bar +
       '<span class="p pbar">' + (d.prob !== null ? '<b><i style="width:' + Math.round(d.prob) + '%"></i></b>' + nf(d.prob, 0) + ' %' : '&nbsp;') + '</span>' +
       '<span class="r">' + nf(d.rain || 0, 1) + ' mm</span>' +
-      (d.tmin !== null && d.tmin < 1 ? '<span class="fx">' + frostIcons().flakeSm + 'Frost</span>' : '') + '</button>';
+      (d.tmin !== null && d.tmin < 1 ? '<span class="fx">' + frostIcons().flakeSm + 'Frost</span>' : '') +
+      (d.conf ? '<span class="conf conf-' + d.conf + '" title="Wie einig sich die Wettermodelle sind">' + (d.conf === 'hoch' ? '● sicher' : d.conf === 'mittel' ? '◐ ziemlich sicher' : '○ unsicher') + '</span>' : '') + '</button>';
   }).join('');
   var keep = FC.days.some(function (d) { return d.date === FC.sel; });
   selectFcDay(keep ? FC.sel : (FC.days[0] && FC.days[0].date));

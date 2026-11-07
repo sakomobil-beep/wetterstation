@@ -78,7 +78,34 @@ def load():
         t_ = days[-1]
         if t_['code'] in (51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82) and t_['regen'] < 0.3 and t_['rp'] < 30:
             t_['code'] = 1 if t_['sonne'] >= 7 else 2 if t_['sonne'] >= 4 else 3
+    sicherheit(days)
     return days, warn
+
+
+def sicherheit(days):
+    """Präzision 2.0: Wie einig sind sich ICON-D2, AROME, ECMWF und ICON-EU? -> d['sicher'] = hoch / mittel / gering,
+    d['modelle_nass'] = Anteil der Modelle mit Regen (>= 1 mm). Gleiche Schwellen wie auf der Website."""
+    try:
+        mm = get('https://api.open-meteo.com/v1/forecast?latitude=%s&longitude=%s&models=icon_d2,meteofrance_arome_france_hd,ecmwf_ifs025,icon_eu'
+                 '&daily=temperature_2m_max,precipitation_sum&forecast_days=8&timezone=Europe%%2FBerlin' % (LAT, LON))['daily']
+    except Exception as e:
+        print('Modellvergleich nicht möglich:', e); return
+    for d in days:
+        tag = d['datum'].isoformat()
+        if tag not in mm['time']: continue
+        i = mm['time'].index(tag)
+        tx, rr = [], []
+        for m in ('icon_d2', 'meteofrance_arome_france_hd', 'ecmwf_ifs025', 'icon_eu'):
+            a = (mm.get('temperature_2m_max_' + m) or [None] * (i + 1))[i]
+            b = (mm.get('precipitation_sum_' + m) or [None] * (i + 1))[i]
+            if a is not None: tx.append(a)
+            if b is not None: rr.append(b)
+        if len(tx) < 2: continue
+        streu = statistics.pstdev(tx)
+        p = sum(1 for x in rr if x >= 1) / len(rr) if rr else 0
+        dis = 4 * p * (1 - p)
+        d['sicher'] = 'gering' if streu >= 2.2 or dis >= 0.95 else 'mittel' if streu >= 1.2 or dis >= 0.7 else 'hoch'
+        d['modelle_nass'] = round(p, 2)
 
 
 def praezision(om, st):

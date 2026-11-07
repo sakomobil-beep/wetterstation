@@ -205,6 +205,10 @@ def tagtext(d, wann):
                                 'Nachts geht es runter auf %s Grad. Also: morgens Scheiben kratzen!' % n,
                                 'Und Achtung, in der Nacht gibt es Frost, bis %s Grad.' % n,
                                 'Nachts friert es, mit bis zu %s Grad.' % n])
+    if d.get('sicher') == 'gering':
+        s += ' ' + rnd.choice(['Aber ehrlich gesagt: Da sind sich die Wettermodelle noch uneinig.',
+                                'Kleiner Haken: Die Wettermodelle sind sich da noch nicht einig, also lieber nochmal reinschauen.',
+                                'Noch ist das aber unsicher, die Modelle rechnen ziemlich unterschiedlich.'])
     if d['boe'] >= 60: s += ' Vorsicht, Sturmböen bis %d Kilometer pro Stunde!' % round(d['boe'])
     elif d['boe'] >= 45: s += ' ' + rnd.choice(['Dazu frischer Wind mit Böen um %d.' % round(d['boe']),
                                                  'Und der Wind frischt auf, Böen um %d Kilometer pro Stunde.' % round(d['boe'])])
