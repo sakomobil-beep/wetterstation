@@ -228,6 +228,49 @@ def tagtext(d, wann):
     return s
 
 
+def komma(v):
+    v = round(v, 1)
+    return ('minus ' if v < 0 else '') + ('%.1f' % abs(v)).replace('.', ',').replace(',0', '')
+
+
+def gestern_txt(g, rnd):
+    """Rückblick: gestern an der Station Bad König gemessen."""
+    s = rnd.choice(['Kurzer Blick zurück: An unserer Station in Bad König haben wir gestern höchstens %s Grad gemessen, nachts ging es runter auf %s Grad.',
+                    'Gestern an der Station in Bad König gemessen: %s Grad am Tag und %s Grad als Tiefstwert.',
+                    'Ein Blick auf die Messwerte von gestern aus Bad König: maximal %s, minimal %s Grad.']) % (komma(g['tmax']), komma(g['tmin']))
+    if g['regen'] >= 0.5: s += ' Dazu %s Liter Regen pro Quadratmeter.' % komma(g['regen'])
+    elif g['regen'] == 0: s += ' Und es blieb trocken.'
+    r = g.get('rekord')
+    if r:
+        if r['seit']:
+            d = dt.date.fromisoformat(r['seit'])
+            s += ' Und die Nacht heute war mit %s Grad die kälteste seit dem %d. %s!' % (komma(r['wert']), d.day, MONATE[d.month - 1])
+        else:
+            s += ' Und die Nacht heute war mit %s Grad die kälteste seit Beginn unserer Aufzeichnungen!' % komma(r['wert'])
+    return s
+
+
+def fenster_txt(d, rnd):
+    f = d.get('fenster')
+    if not f: return ''
+    son = ' Sonne inklusive.' if f['sonnig'] and d['sonne'] >= 1 else ''
+    s = rnd.choice([' Das beste Fenster für draußen: zwischen %d und %d Uhr.', ' Am besten raus geht es zwischen %d und %d Uhr.',
+                    ' Mein Tipp für eure Runde: zwischen %d und %d Uhr.']) % (f['von'], f['bis'])
+    if d['sonne'] >= 2: s += ' Insgesamt gibt es heute etwa %d Stunden Sonne.' % round(d['sonne'])
+    return s + (son if d['sonne'] < 2 else '')
+
+
+def himmel_txt(d, rnd):
+    h = d.get('himmel')
+    if not h: return ''
+    if h['kp'] >= 7 and h['klar']: return 'Und jetzt aufgepasst: Heute Nacht sind sogar Polarlichter bei uns im Odenwald möglich! Schaut mal Richtung Norden. '
+    if h['kp'] >= 7: return 'Spannend: Ein Sonnensturm könnte heute Nacht Polarlichter bringen – leider ist es bei uns wohl zu bewölkt. '
+    if h['vollmond'] and h['klar']: return 'Heute Abend lohnt der Blick nach oben: Vollmond bei klarem Himmel. '
+    if h['vollmond']: return 'Heute ist übrigens Vollmond – mal sehen, ob er sich zwischen den Wolken zeigt. '
+    if h['klar']: return rnd.choice(['Heute Abend wird es klar – perfekt für einen Blick auf die Sterne. ', 'Der Himmel klart heute Abend auf, ideal zum Sterne gucken. ']) + ''
+    return ''
+
+
 def special_grund(days, warn):
     a = days[0]; g = []
     if warn: g.append('warn')
@@ -337,7 +380,9 @@ def skript(days, warn, heute, nur_special=False):
     else:
         hinweis = (' Kurz vorweg: Vom Deutschen Wetterdienst gilt %s. Passt auf euch auf!' % ' und '.join(('eine ' + w[0].lower() + w[1:]) if w.lower().startswith('amtliche') else w for w in warn[:2])) if warn else ''
         seg.append(dict(art='intro', bg='schloss', text=gruss + (' Für alle, die neu dabei sind: Ich bin Max, Wanderführer aus Vielbrunn.' if heute.weekday() == 0 else '') + ' Das ist euer Odenwald-Wetter für %s.' % TAGE[heute.weekday()] + hinweis))
-    seg.append(dict(art='tag', tag=a, titel='HEUTE', bg='auto', text=tagtext(a, 'Heute')))
+    if not nur_special and a.get('gestern'):
+        seg[-1]['text'] += ' ' + gestern_txt(a['gestern'], rnd)
+    seg.append(dict(art='tag', tag=a, titel='HEUTE', bg='auto', text=tagtext(a, 'Heute') + fenster_txt(a, rnd)))
     seg.append(dict(art='tipp', tag=a, bg='wald' if a['rp'] < 40 else 'schloss', text=rnd.choice(['Mein Outdoor-Tipp für heute: ', 'Max-Tipp des Tages: ', 'Und jetzt mein Tipp: ', 'Übrigens, mein Tipp für heute: ',
                                                                                'Was könnt ihr heute machen? ', 'Und wenn ihr noch nichts vorhabt: ']) + tipp(a, rnd, heute) + max_privat(a, rnd, heute)))
     if not nur_special:
@@ -354,7 +399,8 @@ def skript(days, warn, heute, nur_special=False):
                 t = '%s Im Odenwald Samstag %s bei %s Grad, Sonntag %s bei %s Grad.' % (rnd.choice(['Ein Blick aufs Wochenende:', 'Und das Wochenende?', 'Kurz noch zum Wochenende:']), wort(sa['code']), zahl(sa['tmax']), wort(so['code']), zahl(so['tmax']))
                 t += (' Trockener bleibt es am %s.' % gut[0]) if len(gut) == 1 else ((' Beide Tage bleiben wohl trocken – zieht euch aber warm an.' if grau else ' Beide Tage sehen gut aus für draußen!') if gut else ' Plant lieber etwas für drinnen ein.')
                 seg.append(dict(art='wochenende', tage=[sa, so], bg='wald', text=t))
-    seg.append(dict(art='outro', bg='schloss', text=rnd.choice(['Alle Live-Werte findet ihr auf wetter-badkoenig.de.', 'Mehr gibt es live auf wetter-badkoenig.de.',
+    hm = himmel_txt(a, rnd) if not nur_special else ''
+    seg.append(dict(art='outro', bg='schloss', text=hm + rnd.choice(['Alle Live-Werte findet ihr auf wetter-badkoenig.de.', 'Mehr gibt es live auf wetter-badkoenig.de.',
                                                        'Die aktuellen Werte von meiner Station gibt es jederzeit auf wetter-badkoenig.de.', 'Schaut gern mal rein auf wetter-badkoenig.de.'])
                        + ' ' + abschied(a, rnd)))
     # Wetter-Effekte: Tages-Tafeln zeigen das Wetter ihres Tages, im Special das ganze Video

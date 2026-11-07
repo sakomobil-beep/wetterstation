@@ -85,7 +85,83 @@ def load():
             t_['code'] = 1 if t_['sonne'] >= 7 else 2 if t_['sonne'] >= 4 else 3
     sicherheit(days)
     hoehen(days)
+    try: days[0]['gestern'] = rueckblick(st)
+    except Exception as e: print('Rückblick nicht möglich:', e)
+    for d in days[:2]:
+        try: d['fenster'] = fenster(om, d)
+        except Exception as e: print('Zeitfenster nicht möglich:', e)
+    try: days[0]['himmel'] = himmel(om)
+    except Exception as e: print('Himmel nicht möglich:', e)
     return days, warn
+
+
+def rueckblick(st):
+    """Gestern an der Station Bad König gemessen (Höchst, Tiefst, Regen) + kälteste/wärmste Nacht seit … aus dem Lern-Archiv."""
+    gestern = (dt.datetime.now(TZ) - dt.timedelta(days=1)).date().isoformat()
+    hi, lo, regen = [], [], 0.0
+    for o in st:
+        if dt.datetime.fromtimestamp(o['epoch'], TZ).date().isoformat() != gestern: continue
+        m = o.get('metric') or {}
+        if m.get('tempHigh') is not None: hi.append(m['tempHigh'])
+        if m.get('tempLow') is not None: lo.append(m['tempLow'])
+        if m.get('precipTotal') is not None: regen = max(regen, m['precipTotal'])
+    if not hi or not lo: return None
+    out = dict(tmax=round(max(hi), 1), tmin=round(min(lo), 1), regen=round(regen, 1), rekord=None)
+    # Nacht-Tiefstwerte (0–9 Uhr) aus data/lernen/*.json, um „kälteste Nacht seit …“ zu finden
+    heute = dt.datetime.now(TZ).date().isoformat()
+    LD = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'lernen'); nacht = {}
+    for f in sorted(os.listdir(LD)) if os.path.isdir(LD) else []:
+        if not f.endswith('.json'): continue
+        for k, r in json.load(open(os.path.join(LD, f), encoding='utf-8')).items():
+            if 'st' in r and int(k[11:13]) <= 9: nacht[k[:10]] = min(nacht.get(k[:10], 99), r['st'])
+    for o in st:
+        t = dt.datetime.fromtimestamp(o['epoch'], TZ); v = (o.get('metric') or {}).get('tempLow')
+        if v is not None and t.hour <= 9: nacht[t.date().isoformat()] = min(nacht.get(t.date().isoformat(), 99), v)
+    if heute in nacht and len(nacht) >= 10:
+        jetzt_n = nacht[heute]; frueher = sorted(d for d in nacht if d < heute)
+        kaelter = [d for d in frueher if nacht[d] <= jetzt_n]
+        seit = kaelter[-1] if kaelter else None
+        tage = (dt.date.fromisoformat(heute) - dt.date.fromisoformat(seit or frueher[0])).days
+        if tage >= 10:
+            out['rekord'] = dict(wert=round(jetzt_n, 1), seit=seit, beginn=frueher[0], tage=tage)
+    return out
+
+
+def fenster(om, d):
+    """Bestes 2-Stunden-Fenster für draußen (9–17 Uhr): wenig Regen, wenig Wolken, eher warm."""
+    H = om['hourly']; tag = d['datum'].isoformat(); kand = []
+    for i, t in enumerate(H['time']):
+        if t[:10] != tag or not 9 <= int(t[11:13]) <= 15: continue
+        if i + 1 >= len(H['time']): continue
+        p = max(H['precipitation_probability'][i] or 0, H['precipitation_probability'][i + 1] or 0)
+        c = ((H['cloud_cover'][i] or 0) + (H['cloud_cover'][i + 1] or 0)) / 2
+        T = ((H['temperature_2m'][i] or 0) + (H['temperature_2m'][i + 1] or 0)) / 2
+        kand.append((p * 2 + c * 0.5 - T, int(t[11:13]), p, c))
+    if not kand: return None
+    sc, h, p, c = min(kand)
+    if p >= 50: return None
+    if dt.datetime.now(TZ).date().isoformat() == tag and h + 2 <= dt.datetime.now(TZ).hour: return None
+    return dict(von=h, bis=h + 2, sonnig=c < 50)
+
+
+def himmel(om):
+    """Besonderes am Himmel heute Nacht: Polarlicht-Chance (NOAA Kp), Vollmond, klare Sternennacht."""
+    H = om['hourly']; heute = dt.datetime.now(TZ).date().isoformat()
+    wolken = [H['cloud_cover'][i] for i, t in enumerate(H['time']) if t[:10] == heute and int(t[11:13]) >= 20 and H['cloud_cover'][i] is not None]
+    klar = bool(wolken) and sum(wolken) / len(wolken) < 30
+    ref = dt.datetime(2000, 1, 6, 18, 14, tzinfo=dt.timezone.utc)   # Neumond als Bezug
+    alter = ((dt.datetime.now(dt.timezone.utc).replace(hour=21) - ref).total_seconds() / 86400) % 29.530589
+    vollmond = abs(alter - 14.77) < 1.0
+    kp = 0
+    try:
+        rows = get('https://services.swpc.noaa.gov/products/noaa-planetary-k-index-forecast.json')
+        bis = (dt.datetime.now(dt.timezone.utc) + dt.timedelta(hours=18)).strftime('%Y-%m-%d %H')
+        for r in rows[1:]:
+            if r[0][:13] <= bis and r[0][:13] >= dt.datetime.now(dt.timezone.utc).strftime('%Y-%m-%d %H'):
+                kp = max(kp, float(r[1]))
+    except Exception as e:
+        print('Kp-Vorhersage nicht abrufbar:', e)
+    return dict(klar=klar, vollmond=vollmond, kp=kp)
 
 
 def gewicht(m, n):
