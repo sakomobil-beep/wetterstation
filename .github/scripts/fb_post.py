@@ -296,7 +296,9 @@ def text(days, warn):
                   (', Regen vor allem ' + ' und '.join(rest)) if rest else ', meist trocken',
                   (' Auf den Höhen um %d °C%s.' % (a['hoch']['tmax'], ', Schnee möglich ❄️' if a['hoch']['schnee'] else '')) if a.get('hoch') else ''),
               '🌃 Heute Nacht: Täler um %d °C%s.' % (b['tmin'], (', Höhen um %d °C' % b['hoch']['tmin']) if b.get('hoch') else '')]
-    for x in hinweise(a): zeilen.append('⚠️ ' + x)
+    # mittags zählt der Frost der kommenden Nacht (Tiefstwert von morgen früh), nicht der von heute früh
+    nacht = dict(a, tmin=b['tmin'], hoch=(dict(a['hoch'], tmin=b['hoch']['tmin']) if a.get('hoch') and b.get('hoch') else a.get('hoch')))
+    for x in hinweise(nacht): zeilen.append('⚠️ ' + x.replace('Frost bis', 'Heute Nacht Frost bis'))
     zeilen.append('Morgen (%s): %s %s, Täler %d bis %d °C%s' % (TAGE[b['datum'].weekday()], emoji(b['code']), wort(b['code']), b['tmin'], b['tmax'],
                   (', Höhen um %d °C.' % b['hoch']['tmax']) if b.get('hoch') else '.'))
     for w in warn[:3]: zeilen.append('🚨 DWD: ' + w)
@@ -402,7 +404,10 @@ def bild(days, warn, path, labels=('HEUTE', 'MORGEN'), kopf=None, nacht=False):
             info = 'Höhen: %d° / %d°%s' % (d['hoch']['tmax'], d['hoch']['tmin'], '  ·  Schnee' if d['hoch']['schnee'] else '')
             w = dr.textlength(info, font=f); dr.text((cx - w / 2, y0 + 598), info, font=f, fill=(57, 73, 171))
     # Hinweisband
-    h = (['DWD: ' + w for w in warn[:1]] + hinweise(a))[:2]
+    ah = a
+    if not nacht and kopf is None and len(days) > 1:   # Mittagsbeitrag: Frost der kommenden Nacht
+        b_ = days[1]; ah = dict(a, tmin=b_['tmin'], hoch=(dict(a['hoch'], tmin=b_['hoch']['tmin']) if a.get('hoch') and b_.get('hoch') else a.get('hoch')))
+    h = (['DWD: ' + w for w in warn[:1]] + [x.replace('Frost bis', 'Nachts Frost bis') if ah is not a else x for x in hinweise(ah)])[:2]
     if h:
         dr.rounded_rectangle([60, 900, W - 60, 1020], radius=28, fill=(255, 243, 205) if not warn else (255, 222, 210))
         f = font(36, True); t = '⚠  ' if False else ''
