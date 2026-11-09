@@ -37,7 +37,7 @@ jobs:
           cp fb/post.jpg fb/post.txt fb/post.json /tmp/ 2>/dev/null || true
           python .github/scripts/fb_post.py
           cp /tmp/post.jpg /tmp/post.txt /tmp/post.json fb/ 2>/dev/null || true
-          if [ "${{ inputs.art }}" = "thema" ]; then python .github/scripts/themen_video.py; elif [ "${{ inputs.art }}" = "woche" ]; then python .github/scripts/wetter_video.py --woche; elif [ "${{ inputs.art }}" = "abend" ]; then python .github/scripts/wetter_video.py --abend; else python .github/scripts/wetter_video.py; fi
+          if [ "${{ inputs.art }}" = "thema" ]; then python .github/scripts/themen_video.py; elif [ "${{ inputs.art }}" = "woche" ]; then python .github/scripts/wetter_video.py --woche; elif [ "${{ inputs.art }}" = "abend" ]; then python .github/scripts/fb_post.py --abend && python .github/scripts/wetter_video.py --abend; else python .github/scripts/wetter_video.py; fi
       - name: Speichern
         run: |
           git config user.name "wetter-bot"

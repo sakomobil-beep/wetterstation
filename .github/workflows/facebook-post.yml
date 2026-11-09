@@ -10,8 +10,8 @@ on:
     - cron: '0 6 * * 1-5'   # 7 Uhr Winterzeit (Mo–Fr)
     - cron: '0 6 * * 0,6'   # 8 Uhr Sommerzeit (Sa/So): Wettervideo auf Facebook
     - cron: '0 7 * * 0,6'   # 8 Uhr Winterzeit (Sa/So)
-    - cron: '0 16 * * *'    # 18 Uhr Sommerzeit: Abendbeitrag (morgen/übermorgen, freitags Wochenende)
-    - cron: '0 17 * * *'    # 18 Uhr Winterzeit: Abendbeitrag
+    - cron: '0 17 * * 1-6'  # 19 Uhr Sommerzeit (Mo–Sa): Abendvideo aus dem Studio + Abend-Story
+    - cron: '0 18 * * 1-6'  # 19 Uhr Winterzeit (Mo–Sa)
     - cron: '0 18 * * 0'    # Sonntag 20 Uhr Sommerzeit: Wochenausblick-Video
     - cron: '0 19 * * 0'    # Sonntag 20 Uhr Winterzeit
     - cron: '5,20,35,50 * * * *' # alle 15 Minuten, rund um die Uhr: Sondermeldungen / DWD-Warnungen prüfen
@@ -37,7 +37,7 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
       - uses: FedericoCarboni/setup-ffmpeg@v3
-        if: github.event_name != 'schedule' || contains(fromJSON('["30 4 * * *","30 5 * * *","0 11 * * *","0 15 * * *","0 16 * * *","0 17 * * *","0 5 * * 1-5","0 6 * * 1-5","0 6 * * 0,6","0 7 * * 0,6","0 18 * * 0","0 19 * * 0"]'), github.event.schedule)
+        if: github.event_name != 'schedule' || contains(fromJSON('["30 4 * * *","30 5 * * *","0 11 * * *","0 15 * * *","0 17 * * 1-6","0 18 * * 1-6","0 5 * * 1-5","0 6 * * 1-5","0 6 * * 0,6","0 7 * * 0,6","0 18 * * 0","0 19 * * 0"]'), github.event.schedule)
         timeout-minutes: 5
       - run: pip install pillow numpy edge-tts
       - name: Morgens – Bild, Text und Wettervideo
@@ -78,10 +78,14 @@ jobs:
           python .github/scripts/fb_post.py
           cp /tmp/post.jpg /tmp/post.txt /tmp/post.json fb/
           python .github/scripts/wetter_video.py --special
-      - name: Abends – Ausblick auf morgen (freitags Wochenende)
-        if: github.event.schedule == '0 16 * * *' || github.event.schedule == '0 17 * * *'
+      - name: Abends – Abendvideo aus dem Studio, Text und Abend-Story (freitags Wochenende)
+        if: github.event.schedule == '0 17 * * 1-6' || github.event.schedule == '0 18 * * 1-6'
         run: |
+          H=$(TZ=Europe/Berlin date +%-H); HEUTE=$(TZ=Europe/Berlin date +%F)
+          if [ "$H" -lt 19 ]; then echo "Noch nicht 19 Uhr ($H Uhr)."; exit 0; fi
+          if grep -q "\"abend\": \"$HEUTE\"" fb/gepostet.json 2>/dev/null; then echo "Abendvideo heute schon gepostet."; exit 0; fi
           python .github/scripts/fb_post.py --abend --nur-abends
+          python .github/scripts/wetter_video.py --abend
       - name: Abendbeitrag (bei manuellem Start / Änderungen)
         if: github.event_name != 'schedule'
         run: python .github/scripts/fb_post.py --abend
@@ -117,7 +121,8 @@ jobs:
           # fb_senden.py postet beides höchstens 1x pro Tag (falls GitHub den festen Termin verspätet oder auslässt)
           python .github/scripts/fb_senden.py video || echo "Video nicht gepostet"
           python .github/scripts/fb_senden.py story || echo "Story nicht gepostet"
-          python .github/scripts/fb_senden.py abend || echo "Abendbeitrag nicht gepostet"
+          python .github/scripts/fb_senden.py abend || echo "Abendvideo nicht gepostet"
+          python .github/scripts/fb_senden.py abendstory || echo "Abend-Story nicht gepostet"
           python .github/scripts/fb_senden.py woche || echo "Wochenausblick nicht gepostet"
           python .github/scripts/fb_senden.py jahr || echo "Jahresrückblick nicht gepostet"
           python .github/scripts/fb_senden.py sonder || echo "Sondermeldung nicht gepostet"

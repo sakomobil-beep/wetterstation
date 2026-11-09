@@ -679,7 +679,7 @@ def tipp(d):
     if d.get('hoch') and d['hoch']['schnee'] and d['schnee'] < 1: return 'Auf den Höhen kann es schneien – Richtung Beerfelden und Oberzent vorsichtig fahren! 🚗❄️'
     if d['schnee'] >= 1: return 'Schnee im Odenwald – warm anziehen, auf den Höhen kann es glatt werden. ⛄'
     if w == 'Gewitter': return 'Bei Gewitter Wanderungen lieber verschieben und rechtzeitig Schutz suchen.'
-    if d['tmin'] <= 0: return 'Morgens Scheiben kratzen einplanen und auf Glätte achten! 🧊'
+    if d.get('frost_min', d['tmin']) <= 0: return 'Morgens Scheiben kratzen einplanen und auf Glätte achten! 🧊'
     if d['rp'] >= 70: return 'Ein guter Tag für drinnen – oder mit Regenjacke raus. ☔'
     if d['sonne'] >= 5 and d['rp'] < 30: return 'Ideales Wetter für eine Runde im Odenwald – raus an die frische Luft! 🥾'
     if d['rp'] < 40: return 'Für einen Spaziergang passt es, eine Jacke sollte aber mit.'
@@ -735,16 +735,20 @@ def treffer_merken(days, now):
         print('Trefferquote nicht gespeichert:', e)
 
 
-def story(days, warn, path):
-    """Instagram-Story (1080x1920) für morgens: Odenwald-Wetter heute auf einen Blick -> fb/story.jpg"""
-    d = days[0]; W, H = 1080, 1920
+def story(days, warn, path, abends=False):
+    """Instagram-Story (1080x1920). morgens: das Wetter von heute (fb/story.jpg),
+    abends: der Ausblick auf morgen in Abendfarben (fb/abendstory.jpg)."""
+    d = days[1] if abends else days[0]
+    W, H = 1080, 1920
     im = Image.new('RGB', (W, H)); dr = ImageDraw.Draw(im)
-    for y in range(H):   # Verlauf Morgenhimmel
-        t = y / H; dr.line([0, y, W, y], fill=(int(40 + 90 * t), int(110 + 80 * t), int(200 + 30 * t)))
+    for y in range(H):   # Verlauf: morgens Morgenhimmel, abends Abendhimmel
+        t = y / H
+        dr.line([0, y, W, y], fill=(int(30 + 60 * t), int(35 + 55 * t), int(90 + 60 * t)) if abends
+                else (int(40 + 90 * t), int(110 + 80 * t), int(200 + 30 * t)))
     def mitte(y, txt, f, col=(255, 255, 255)):
         w = dr.textlength(txt, font=f); dr.text(((W - w) / 2, y), txt, font=f, fill=col)
     mitte(150, 'ODENWALD-WETTER', font(64, True), (255, 230, 150))
-    mitte(235, '%s, %d. %s' % (TAGE[d['datum'].weekday()], d['datum'].day, MONATE[d['datum'].month - 1]), font(52))
+    mitte(235, ('Morgen, ' if abends else '') + '%s, %d. %s' % (TAGE[d['datum'].weekday()], d['datum'].day, MONATE[d['datum'].month - 1]), font(52))
     icon(dr, W / 2, 560, 380, d['code'])
     mitte(830, wort(d['code']).capitalize() if wort(d['code'])[:1].islower() else wort(d['code']), font(64, True))
     mitte(940, '%d° / %d°' % (d['tmax'], d['tmin']), font(170, True))
@@ -758,7 +762,7 @@ def story(days, warn, path):
     for i, z in enumerate(zeilen):
         z = z.replace('☔ ', '').replace('☀ ', '').replace('💨 ', '').replace('⛰ ', '')
         mitte(y + 40 + i * 95, z, font(56, True), (30, 60, 110))
-    if d['tmin'] <= 0: mitte(1610, 'Morgens Scheiben kratzen!', font(54, True), (255, 245, 200))
+    if d.get('frost_min', d['tmin']) <= 0: mitte(1610, 'Morgens Scheiben kratzen!', font(54, True), (255, 245, 200))
     elif warn: mitte(1610, 'DWD-Warnung beachten!', font(54, True), (255, 220, 200))
     mitte(1730, 'Live-Werte & Vorhersage', font(42), (230, 240, 255))
     mitte(1790, 'wetter-badkoenig.de', font(58, True))
@@ -766,13 +770,14 @@ def story(days, warn, path):
 
 
 def abend(now):
-    """Abendbeitrag (ca. 18 Uhr): Ausblick auf morgen/übermorgen, freitags aufs Wochenende -> fb/abend.jpg + fb/abend.json"""
+    """Abendlauf (19 Uhr): Text und Bild für den Ausblick auf morgen/übermorgen (freitags Wochenende)
+    -> fb/abend.jpg + fb/abend.json (Text ist die Beschreibung des Abendvideos) sowie die Abend-Story fb/abendstory.jpg."""
     if '--nur-abends' in sys.argv:
-        if now.hour < 18:
-            print('Noch vor 18 Uhr Ortszeit (%s) – übersprungen.' % now.strftime('%H:%M')); return
+        if now.hour < 19:
+            print('Noch vor 19 Uhr Ortszeit (%s) – übersprungen.' % now.strftime('%H:%M')); return
         try:
             alt = dt.datetime.fromisoformat(json.load(open(os.path.join(OUT, 'abend.json'), encoding='utf-8'))['erstellt']).astimezone(TZ)
-            if alt.date() == now.date() and alt.hour >= 18: print('Abendbeitrag heute schon erstellt – übersprungen.'); return
+            if alt.date() == now.date() and alt.hour >= 19: print('Abendbeitrag heute schon erstellt – übersprungen.'); return
         except Exception:
             pass
     days, warn = demo() if DEMO else load()
@@ -786,6 +791,11 @@ def abend(now):
     txt = text_abend(paar, wochenende, warn, days[3:6])
     open(os.path.join(OUT, 'abend.txt'), 'w', encoding='utf-8').write(txt)
     json.dump({'erstellt': now.isoformat(timespec='minutes'), 'text': txt}, open(os.path.join(OUT, 'abend.json'), 'w', encoding='utf-8'), ensure_ascii=False)
+    try:   # Abend-Story für Instagram: das Wetter von morgen
+        story(days, warn, os.path.join(OUT, 'abendstory.jpg'), abends=True)
+        json.dump({'erstellt': now.isoformat(timespec='minutes'), 'datum': days[0]['datum'].isoformat()},
+                  open(os.path.join(OUT, 'abendstory.json'), 'w', encoding='utf-8'))
+    except Exception as e: print('Abend-Story nicht erstellt:', e)
     print(txt)
 
 

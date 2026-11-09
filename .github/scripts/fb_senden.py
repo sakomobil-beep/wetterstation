@@ -7,7 +7,8 @@ Fehlen die Secrets, wird nichts gepostet (Beiträge bleiben zum Teilen von Hand 
 
 Aufruf:  fb_senden.py video  -> Video-Wetterbericht (fb/wetter.mp4) ab 7 Uhr, 1x pro Tag
          fb_senden.py tag      -> Tagesbeitrag (fb/post.jpg + fb/post.json), höchstens 1x pro Tag (wird nicht mehr automatisch gepostet)
-         fb_senden.py abend    -> Abendbeitrag ab 18 Uhr (fb/abend.jpg + fb/abend.json): morgen/übermorgen, freitags Wochenende
+         fb_senden.py abend    -> Abendvideo aus dem Studio ab 19 Uhr (fb/abendvideo.mp4), Text aus fb/abend.json; sonntags nicht
+         fb_senden.py abendstory -> Instagram-Story mit dem Wetter für morgen (fb/abendstory.jpg), ab 19 Uhr
          fb_senden.py woche    -> Wochenausblick-Video (fb/woche.mp4), sonntags ab 20 Uhr, 1x pro Woche
          fb_senden.py sonder   -> neue Sondermeldungen aus fb/sonder.json, je Lage 1x pro Tag; standardmäßig nur amtliche DWD-Warnungen
                           (Variable FB_SONDER_AUTO: amtlich | alle | aus)
@@ -162,16 +163,21 @@ def main():
         time.sleep(int(os.environ.get('FB_WARTEN', '90')))
         if frisch_gepostet('tag', heute): return
         if senden('post.jpg', j['text'], 'tag'): M['tag'] = heute
-    elif modus == 'abend':
+    elif modus == 'abend':   # Abendvideo aus dem Studio, Mo–Sa ab 19 Uhr; der ausführliche Abendtext ist die Beschreibung
+        jetzt = dt.datetime.now(TZ)
+        if jetzt.weekday() == 6: print('Sonntags kommt der Wochenausblick – kein Abendvideo.'); return
+        if jetzt.hour < 19: print('Abendvideo erst ab 19 Uhr.'); return
         j = json.load(open(os.path.join(FB, 'abend.json'), encoding='utf-8'))
-        if not j.get('erstellt', '').startswith(heute): print('Abendbeitrag ist nicht von heute – übersprungen.'); return
-        if M.get('abend') == heute: print('Abendbeitrag heute schon gepostet.'); return
-        if dt.datetime.now(TZ).hour < 18 or int(j['erstellt'][11:13]) < 18:   # nur der echte Abendbeitrag ab 18 Uhr (nicht Test-Erstellungen tagsüber)
-            print('Abendbeitrag erst ab 18 Uhr.'); return
+        if not j.get('erstellt', '').startswith(heute): print('Abendtext ist nicht von heute – übersprungen.'); return
+        try: v = json.load(open(os.path.join(FB, 'abendvideo.json'), encoding='utf-8'))
+        except Exception: print('Kein Abendvideo vorhanden.'); return
+        if v.get('datum') != heute: print('Abendvideo ist nicht von heute.'); return
+        if M.get('abend') == heute: print('Abendvideo heute schon gepostet.'); return
         time.sleep(int(os.environ.get('FB_WARTEN', '90')))
         if frisch_gepostet('abend', heute): return
-        if senden('abend.jpg', j['text'], 'tag'):
-            M['abend'] = heute; M['abend_zeit'] = dt.datetime.now(TZ).isoformat(timespec='minutes'); push('Abendbeitrag gepostet', 'Der Abendbeitrag ist jetzt auf Facebook online.', tags='crescent_moon,white_check_mark')
+        if video_senden('abendvideo.mp4', j['text'].rstrip() + ' #Wettervideo'):
+            M['abend'] = heute; M['abend_zeit'] = jetzt.isoformat(timespec='minutes')
+            push('Abendvideo gepostet', 'Max aus dem Studio ist jetzt auf Facebook und Instagram online.', tags='crescent_moon,movie_camera')
     elif modus == 'video':
         jetzt = dt.datetime.now(TZ)
         ab = 8 if jetzt.weekday() >= 5 else 7   # Wochenende erst ab 8 Uhr
@@ -201,6 +207,18 @@ def main():
         if instagram('story.jpg', '', story=True):
             M['story'] = heute; M['story_zeit'] = jetzt.isoformat(timespec='minutes')
             push('Instagram-Story gepostet', 'Die Morgen-Story mit dem Wetter von heute ist jetzt auf Instagram online.', tags='camera,white_check_mark')
+    elif modus == 'abendstory':   # nur Instagram: Story mit dem Wetter von morgen, zusammen mit dem Abendvideo
+        jetzt = dt.datetime.now(TZ)
+        if jetzt.hour < 19: print('Vor 19 Uhr – Abend-Story kommt später.'); return
+        try: j = json.load(open(os.path.join(FB, 'abendstory.json'), encoding='utf-8'))
+        except Exception: print('Keine Abend-Story vorhanden.'); return
+        if j.get('datum') != heute: print('Abend-Story ist nicht von heute.'); return
+        if M.get('abendstory') == heute: print('Abend-Story heute schon gepostet.'); return
+        time.sleep(int(os.environ.get('FB_WARTEN', '90')))
+        if frisch_gepostet('abendstory', heute): return
+        if instagram('abendstory.jpg', '', story=True):
+            M['abendstory'] = heute; M['abendstory_zeit'] = jetzt.isoformat(timespec='minutes')
+            push('Abend-Story gepostet', 'Die Story mit dem Wetter für morgen ist jetzt auf Instagram online.', tags='camera,crescent_moon')
     elif modus == 'jahr':   # Jahresrückblick: am 30.12. ab 18 Uhr, einmal
         jetzt = dt.datetime.now(TZ)
         if not (jetzt.month == 12 and jetzt.day >= 30 and jetzt.hour >= 18): print('Jahresrückblick nur am 30.12. ab 18 Uhr.'); return
