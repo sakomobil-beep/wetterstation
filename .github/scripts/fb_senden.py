@@ -130,6 +130,22 @@ def seiten_token():
         print('Seiten-Token nicht ermittelt (nutze Token wie hinterlegt):', e)
 
 
+def frisch_gepostet(schluessel, heute):
+    """Prüft direkt vor dem Posten den aktuellen Stand von fb/gepostet.json bei GitHub.
+    Verhindert Doppelposts, wenn zwei Läufe (Zeitplan + cron-job.org-Weckruf) fast gleichzeitig starten:
+    ein wartender Lauf arbeitet sonst mit dem alten Stand vom Startzeitpunkt."""
+    import subprocess
+    try:
+        subprocess.run(['git', 'fetch', '-q', 'origin'], timeout=60, check=True)
+        ref = subprocess.run(['git', 'rev-parse', '--abbrev-ref', 'origin/HEAD'], capture_output=True, text=True).stdout.strip() or 'origin/main'
+        aktuell = json.loads(subprocess.run(['git', 'show', ref + ':fb/gepostet.json'], capture_output=True, text=True, timeout=30).stdout or '{}')
+        if aktuell.get(schluessel) == heute:
+            print('Schon von einem anderen Lauf gepostet (%s) – übersprungen.' % schluessel); return True
+    except Exception as e:
+        print('Frischer Stand nicht prüfbar:', e)
+    return False
+
+
 def main():
     seiten_token()
     modus = sys.argv[1] if len(sys.argv) > 1 else 'tag'
@@ -144,6 +160,7 @@ def main():
         if M.get('tag') == heute: print('Tagesbeitrag heute schon gepostet.'); return
         # warten, bis GitHub Pages das neue Bild ausliefert (sonst holt Facebook das alte)
         time.sleep(int(os.environ.get('FB_WARTEN', '90')))
+        if frisch_gepostet('tag', heute): return
         if senden('post.jpg', j['text'], 'tag'): M['tag'] = heute
     elif modus == 'abend':
         j = json.load(open(os.path.join(FB, 'abend.json'), encoding='utf-8'))
@@ -152,6 +169,7 @@ def main():
         if dt.datetime.now(TZ).hour < 18 or int(j['erstellt'][11:13]) < 18:   # nur der echte Abendbeitrag ab 18 Uhr (nicht Test-Erstellungen tagsüber)
             print('Abendbeitrag erst ab 18 Uhr.'); return
         time.sleep(int(os.environ.get('FB_WARTEN', '90')))
+        if frisch_gepostet('abend', heute): return
         if senden('abend.jpg', j['text'], 'tag'):
             M['abend'] = heute; M['abend_zeit'] = dt.datetime.now(TZ).isoformat(timespec='minutes'); push('Abendbeitrag gepostet', 'Der Abendbeitrag ist jetzt auf Facebook online.', tags='crescent_moon,white_check_mark')
     elif modus == 'video':
@@ -164,6 +182,7 @@ def main():
         try: zeilen = json.load(open(os.path.join(FB, 'post.json'), encoding='utf-8'))['text'].split('\n')[1:]
         except Exception: zeilen = ['', 'Live-Werte & Vorhersage 👉 https://wetter-badkoenig.de', '#BadKönig #Odenwald #Wetter']
         time.sleep(int(os.environ.get('FB_WARTEN', '90')))   # warten, bis GitHub Pages das frisch erstellte Video ausliefert
+        if frisch_gepostet('video', heute): return
         d = dt.date.fromisoformat(heute)
         tage = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
         kopf = ('⚠️ Wetter-Special' if j.get('special') else '🎬 Euer Odenwald-Wetter') + ' für %s, %d.%d. – mit dem Odenwälder Outdoor-Guide!' % (tage[d.weekday()], d.day, d.month)
@@ -178,6 +197,7 @@ def main():
         if j.get('datum') != heute: print('Story ist nicht von heute.'); return
         if M.get('story') == heute: print('Story heute schon gepostet.'); return
         time.sleep(int(os.environ.get('FB_WARTEN', '90')))
+        if frisch_gepostet('story', heute): return
         if instagram('story.jpg', '', story=True):
             M['story'] = heute; M['story_zeit'] = jetzt.isoformat(timespec='minutes')
             push('Instagram-Story gepostet', 'Die Morgen-Story mit dem Wetter von heute ist jetzt auf Instagram online.', tags='camera,white_check_mark')
@@ -189,6 +209,7 @@ def main():
         if j.get('jahr') != jetzt.year or not j.get('datum', '').startswith(str(jetzt.year) + '-12-3'): print('Jahresrückblick ist nicht aktuell.'); return
         if M.get('jahr') == heute: print('Jahresrückblick schon gepostet.'); return
         time.sleep(int(os.environ.get('FB_WARTEN', '90')))
+        if frisch_gepostet('jahr', heute): return
         if video_senden('jahr.mp4', j['text']):
             M['jahr'] = heute; M['jahr_zeit'] = jetzt.isoformat(timespec='minutes'); push('Jahresrückblick gepostet', 'Max mit dem Wetterjahr %d ist jetzt auf Facebook und Instagram online.' % j['jahr'], tags='fireworks,white_check_mark')
     elif modus == 'woche':
@@ -198,6 +219,7 @@ def main():
         if j.get('datum') != heute: print('Wochenausblick ist nicht von heute.'); return
         if M.get('woche') == heute: print('Wochenausblick heute schon gepostet.'); return
         time.sleep(int(os.environ.get('FB_WARTEN', '90')))
+        if frisch_gepostet('woche', heute): return
         txt = '\n'.join(['📅 Euer Wochenausblick für den Odenwald – mit Max, dem Odenwälder Outdoor-Guide!', ''] +
                         ['• ' + z for z in j.get('zeilen', [])] +
                         ['', '📍 Vorhersage für den Odenwaldkreis aus vier Wettermodellen – Messwerte von unserer Station in Bad König.',
@@ -211,6 +233,7 @@ def main():
         except Exception: return
         neu = [m for m in j.get('meldungen', []) if M.get('sonder-' + m['typ']) != heute and (m.get('amtlich') or modus_s == 'alle')]
         if neu: time.sleep(int(os.environ.get('FB_WARTEN', '90')))
+        neu = [m for m in neu if not frisch_gepostet('sonder-' + m['typ'], heute)]
         for m in neu:
             if senden(m['bild'], m['text'], 'sonder'):
                 M['sonder-' + m['typ']] = heute; M['sonder_zeit'] = dt.datetime.now(TZ).isoformat(timespec='minutes')

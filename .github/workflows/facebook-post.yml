@@ -112,6 +112,7 @@ jobs:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
         run: |
           if [ -z "$FB_PAGE_TOKEN" ]; then echo "Kein Auto-Posting eingerichtet."; exit 0; fi
+          git pull --rebase -X theirs -q || true   # neuesten Merkzettel holen (gegen Doppelposts)
           # Video (ab 7 Uhr, Sa/So ab 8 Uhr) und Abendbeitrag (ab 18 Uhr) – jeder Lauf versucht es,
           # fb_senden.py postet beides höchstens 1x pro Tag (falls GitHub den festen Termin verspätet oder auslässt)
           python .github/scripts/fb_senden.py video || echo "Video nicht gepostet"
