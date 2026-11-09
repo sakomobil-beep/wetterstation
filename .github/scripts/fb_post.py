@@ -3,7 +3,7 @@
 Ausgabe: fb/post.jpg, fb/post.txt, fb/post.json
 Quellen: Präzisions-Vorhersage wie auf der Website (0–48 h DWD ICON-D2 + MOSMIX, lernende Korrektur mit Messwerten der Station IBADKN33), danach DWD ICON (Open-Meteo),
 amtliche Warnungen des DWD (Bright Sky)."""
-import json, os, sys, math, statistics, urllib.request, datetime as dt
+import json, os, sys, math, statistics, time, urllib.request, datetime as dt
 from zoneinfo import ZoneInfo
 from PIL import Image, ImageDraw, ImageFont
 
@@ -255,12 +255,16 @@ KREIS_OM = None
 def ort_daten(name, la, lo, el):
     """Tages- und Stundenwerte eines Ortes für alle vier Modelle (einmal je Lauf abgerufen)."""
     if name not in ORT_CACHE:
-        try:
-            ORT_CACHE[name] = get('https://api.open-meteo.com/v1/forecast?latitude=%s&longitude=%s&elevation=%s&models=%s'
-                                  '&daily=temperature_2m_max,temperature_2m_min,weather_code,snowfall_sum,precipitation_sum,wind_gusts_10m_max,sunshine_duration'
-                                  '&hourly=precipitation,cloud_cover,temperature_2m&forecast_days=8&timezone=Europe%%2FBerlin' % (la, lo, el, ','.join(MODELLE)))
-        except Exception as e:
-            print('Vorhersage %s nicht abrufbar:' % name, e); ORT_CACHE[name] = None
+        url = ('https://api.open-meteo.com/v1/forecast?latitude=%s&longitude=%s&elevation=%s&models=%s'
+               '&daily=temperature_2m_max,temperature_2m_min,weather_code,snowfall_sum,precipitation_sum,wind_gusts_10m_max,sunshine_duration'
+               '&hourly=precipitation,cloud_cover,temperature_2m&forecast_days=8&timezone=Europe%%2FBerlin' % (la, lo, el, ','.join(MODELLE)))
+        ORT_CACHE[name] = None
+        for v in range(3):   # kurze Aussetzer (Zeitüberschreitung) nicht gleich den ganzen Ort kosten
+            try:
+                ORT_CACHE[name] = get(url); break
+            except Exception as e:
+                print('Vorhersage %s nicht abrufbar (Versuch %d):' % (name, v + 1), e)
+                if v < 2: time.sleep(4)
     return ORT_CACHE[name]
 
 
