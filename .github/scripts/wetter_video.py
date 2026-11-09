@@ -1505,6 +1505,7 @@ def main():
     name = 'abendvideo' if abends else 'special' if nur_special else 'woche' if wochen else 'wetter'
     ziel = os.path.join(FB, name + '.mp4')
     gesamt, echt = baue(segs, heute, ziel, special, titel='WOCHENAUSBLICK' if wochen else 'ODENWALD AM ABEND' if abends else None)
+    if abends: feed_fassung(ziel)
     text = ' '.join(s['text'] for s in segs)
     tipps_speichern()
     json.dump({'erstellt': dt.datetime.now().astimezone().isoformat(timespec='minutes'), 'datum': heute.isoformat(),
@@ -1513,6 +1514,19 @@ def main():
               open(os.path.join(FB, name + '.json'), 'w', encoding='utf-8'), ensure_ascii=False)
     if not abends: archiv(name, heute, special, warn, gesamt)
     print('Video fertig: %s (%.0f s)\n%s' % (ziel, gesamt, text))
+
+
+def feed_fassung(quelle):
+    """Zweite Fassung im Format 4:5 (1080x1350) für den Instagram-Feed: das Hochkant-Video mittig,
+    links und rechts Holzfarbe wie der Studiotisch. Hochkant (9:16) nimmt Instagram nur als Reel an."""
+    ziel = quelle.replace('.mp4', '-feed.mp4')
+    try:
+        subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', quelle,
+                        '-vf', 'scale=760:1350,pad=1080:1350:160:0:color=0x4A3422', '-c:v', 'libx264', '-preset', 'veryfast',
+                        '-crf', '27', '-pix_fmt', 'yuv420p', '-c:a', 'copy', '-movflags', '+faststart', ziel], check=True)
+        print('Feed-Fassung (4:5): %s' % ziel)
+    except Exception as e:
+        print('Feed-Fassung nicht möglich:', e)
 
 
 def archiv(name, heute, special, warn, gesamt, tage=7):
