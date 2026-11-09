@@ -80,6 +80,12 @@ def load():
             boe=tagwert(nah, D['time'][i], 'boe', max, D['wind_gusts_10m_max'][i] or 0, wf),
             sonne=(D['sunshine_duration'][i] or 0) / 3600,
             schnee=D['snowfall_sum'][i] or 0, rp_vm=teil(6, 12), rp_nm=teil(12, 18), rp_ab=teil(18, 24)))
+        # Nacht vor diesem Tag (Vortag 20 Uhr bis 8 Uhr): Wolken und Wind – Bodenfrost nur bei klar + windstill
+        _vt = (dt.date.fromisoformat(D['time'][i]) - dt.timedelta(days=1)).isoformat()
+        _nk = [k for k, t in enumerate(Hh['time']) if (t[:10] == _vt and int(t[11:13]) >= 20) or (t[:10] == D['time'][i] and int(t[11:13]) < 8)]
+        _c = [Hh['cloud_cover'][k] for k in _nk if Hh['cloud_cover'][k] is not None]
+        _w = [Hh['wind_speed_10m'][k] for k in _nk if Hh['wind_speed_10m'][k] is not None]
+        days[-1]['nacht_klar'] = bool(_c) and sum(_c) / len(_c) <= 30 and (not _w or sum(_w) / len(_w) <= 10)
         # Abgleich: Wettersymbol „Regen/Niesel/Schauer“, aber laut Präzisions-Vorhersage kaum Regen → kein Regen
         t_ = days[-1]
         if t_['code'] in (51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82) and t_['regen'] < 0.3 and t_['rp'] < 30:
@@ -486,7 +492,7 @@ def hinweise(d):
     h = []
     fm = d.get('frost_min', d['tmin'])   # Frost: vorsichtig nach dem kältesten Talort
     if fm <= 0: h.append('Frost bis %d °C – Scheiben kratzen!' % fm)
-    elif fm <= 3: h.append('Bodenfrost möglich')
+    elif fm <= 3 and d.get('nacht_klar'): h.append('Bodenfrost möglich')   # nur klare, windstille Nacht
     if d['boe'] >= 60: h.append('Sturmböen bis %d km/h' % round(d['boe']))
     elif d['boe'] >= 45: h.append('Windböen bis %d km/h' % round(d['boe']))
     if d['regen'] >= 10: h.append('viel Regen (%.0f l/m²)' % d['regen'])
@@ -665,7 +671,7 @@ def tipp(d):
 def text_abend(paar, wochenende, warn, rest=()):
     a, b = paar
     zeilen = ['Guten Abend Odenwald! 🌙 ' + ('Euer Wochenendwetter für den Odenwald:' if wochenende else 'Hier kommt der Wetterausblick für morgen:'), '']
-    zeilen.append('🌃 Heute Nacht: in den Tälern um %d °C%s%s.' % (a['tmin'], ' – Frost!' if a['tmin'] <= 0 else ', Bodenfrost möglich' if a['tmin'] <= 3 else '',
+    zeilen.append('🌃 Heute Nacht: in den Tälern um %d °C%s%s.' % (a['tmin'], ' – Frost!' if a['tmin'] <= 0 else ', Bodenfrost möglich' if a['tmin'] <= 3 and a.get('nacht_klar') else '',
                   (', auf den Höhen um %d °C' % a['hoch']['tmin']) if a.get('hoch') else ''))
     zeilen.append('')
     for name, d in ((('Samstag', a), ('Sonntag', b)) if wochenende else (('Morgen', a),)):

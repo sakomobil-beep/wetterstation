@@ -2799,7 +2799,7 @@ function dayText(d) {
   if (!d.night && sh >= 1 && d.icon !== 'clear-day') out.push(sh === 1 ? 'Etwa eine Sonnenstunde.' : 'Etwa ' + sh + ' Sonnenstunden.');
   if (d.wind !== null) out.push(windWord(d.wind) + (d.dir !== null ? ' aus ' + dirLong(d.dir) : '') + (d.gust !== null && d.gust >= 40 ? ', Böen bis ' + nf(d.gust, 0) + ' km/h' : '') + '.');
   if (d.tmin !== null && d.tmin <= 0) out.push('Frostgefahr.');
-  else if (d.tmin !== null && d.tmin <= 2) out.push('Örtlich Bodenfrost möglich.');
+  else if (d.tmin !== null && d.tmin <= 2 && d.cloud !== null && d.cloud <= 30 && (d.wind === null || d.wind <= 10)) out.push('Örtlich Bodenfrost möglich.');   // nur klar + windstill
   if (d.conf === 'gering') out.push('Unsichere Vorhersage – die Wettermodelle sind sich noch uneinig.');
   else if (d.conf === 'mittel') out.push('Vorhersage mit kleiner Unsicherheit.');
   return out.join(' ');
