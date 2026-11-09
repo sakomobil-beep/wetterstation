@@ -44,6 +44,10 @@ jobs:
       - name: Morgens – Bild, Text und Wettervideo
         if: github.event.schedule == '30 4 * * *' || github.event.schedule == '30 5 * * *' || github.event_name != 'schedule'
         run: |
+          H=$(TZ=Europe/Berlin date +%-H)
+          # Weckrufe für Mittag und Abend starten den Ablauf auch von Hand – dann baut der jeweilige
+          # Schritt selbst. Hier also nur morgens bauen, sonst liefe alles doppelt.
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "$H" -ge 11 ]; then echo "Kein Morgenlauf um $H Uhr."; exit 0; fi
           if [ "${{ github.event_name }}" = "schedule" ]; then ARG=--nur-um-6; fi
           python .github/scripts/fb_post.py $ARG
           if git status --porcelain fb | grep -q daten.json; then python .github/scripts/wetter_video.py; fi
