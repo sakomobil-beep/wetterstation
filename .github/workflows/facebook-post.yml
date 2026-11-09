@@ -57,7 +57,7 @@ jobs:
           python .github/scripts/fb_post.py
           python .github/scripts/wetter_video.py
       - name: Mittag – Karte des Kreises (Rest des Tages) + Special-Video bei neuer Unwetterwarnung
-        if: github.event.schedule == '0 10 * * *' || github.event.schedule == '0 11 * * *'
+        if: github.event.schedule == '0 10 * * *' || github.event.schedule == '0 11 * * *' || github.event_name == 'workflow_dispatch'
         run: |
           H=$(TZ=Europe/Berlin date +%-H); HEUTE=$(TZ=Europe/Berlin date +%F)
           if [ "$H" -lt 12 ] || [ "$H" -ge 16 ]; then echo "Nicht die Mittagszeit ($H Uhr)."; exit 0; fi
@@ -83,15 +83,16 @@ jobs:
           cp /tmp/post.jpg /tmp/post.txt /tmp/post.json fb/
           python .github/scripts/wetter_video.py --special
       - name: Abends – Abendvideo aus dem Studio, Text und Abend-Story (freitags Wochenende)
-        if: github.event.schedule == '0 17 * * 1-6' || github.event.schedule == '0 18 * * 1-6'
+        if: github.event.schedule == '0 17 * * 1-6' || github.event.schedule == '0 18 * * 1-6' || github.event_name == 'workflow_dispatch'
         run: |
           H=$(TZ=Europe/Berlin date +%-H); HEUTE=$(TZ=Europe/Berlin date +%F)
+          if [ "$(TZ=Europe/Berlin date +%u)" = "7" ]; then echo "Sonntags kommt der Wochenausblick."; exit 0; fi
           if [ "$H" -lt 19 ]; then echo "Noch nicht 19 Uhr ($H Uhr)."; exit 0; fi
           if grep -q "\"abend\": \"$HEUTE\"" fb/gepostet.json 2>/dev/null; then echo "Abendvideo heute schon gepostet."; exit 0; fi
           python .github/scripts/fb_post.py --abend --nur-abends
           python .github/scripts/wetter_video.py --abend
-      - name: Abendbeitrag (bei manuellem Start / Änderungen)
-        if: github.event_name != 'schedule'
+      - name: Abendtext und Abend-Story neu (nur bei Code-Änderungen)
+        if: github.event_name == 'push'
         run: python .github/scripts/fb_post.py --abend
       - name: Sondermeldungen prüfen
         run: python .github/scripts/sonder.py || echo "Sondermeldung nicht möglich"

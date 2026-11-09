@@ -1143,6 +1143,22 @@ def schatten_text(d, xy, t, f, fill=(255, 255, 255), anchor='la'):
 ORTE_KARTE = [('Breuberg', 49.818, 9.040, 'r'), ('Höchst', 49.799, 8.994, 'l'), ('Bad König', 49.743, 9.006, 'r'),
               ('Mossautal', 49.667, 8.937, 'l'), ('Michelstadt', 49.678, 9.004, 'r'), ('Oberzent', 49.567, 8.976, 'r')]
 RELIEF = os.path.join(ROOT, 'data', 'odenwald-relief.png')
+GRENZE = os.path.join(ROOT, 'data', 'odenwald-grenze.json')
+
+
+def relief_ausschnitt(breite, hoehe, blau=False):
+    """Reliefkarte auf die echte Kreisgrenze zugeschnitten (kein Rechteck) – gibt Bild und Grenzlinie zurück."""
+    G = json.load(open(os.path.join(ROOT, 'data', 'odenwald-relief.json'), encoding='utf-8'))
+    (lo0, lo1), (la0, la1) = G['lo'], G['la']
+    pts = json.load(open(GRENZE, encoding='utf-8'))['punkte']
+    xy = [((lo - lo0) / (lo1 - lo0) * breite, (la1 - la) / (la1 - la0) * hoehe) for lo, la in pts]
+    rel = Image.open(RELIEF).convert('RGB').resize((breite, hoehe), Image.LANCZOS)
+    if blau:
+        rel = Image.alpha_composite(rel.convert('RGBA'), Image.new('RGBA', rel.size, (40, 60, 120, 90))).convert('RGB')
+    maske = Image.new('L', (breite, hoehe), 0)
+    ImageDraw.Draw(maske).polygon(xy, fill=255)
+    aus = rel.convert('RGBA'); aus.putalpha(maske)
+    return aus, xy
 
 
 def kreiskarte(orte, tag, nacht=False, bis=None):
@@ -1158,12 +1174,12 @@ def kreiskarte(orte, tag, nacht=False, bis=None):
     dr.rounded_rectangle([0, 0, w, kopf], radius=28, fill=farbe + (255,)); dr.rectangle([0, 46, w, kopf], fill=farbe + (255,))
     dr.text((w / 2, 37), 'HEUTE NACHT' if nacht else 'MORGEN IM KREIS', font=F(34), fill=(255, 255, 255), anchor='mm')
     try:
-        rel = Image.open(RELIEF).convert('RGBA').resize((KW, KH), Image.LANCZOS)
-        if nacht:   # abends bläulich eingefärbt
-            bl = Image.new('RGBA', rel.size, (40, 60, 120, 90)); rel = Image.alpha_composite(rel, bl)
+        rel, rand = relief_ausschnitt(KW, KH, blau=nacht)
         im.alpha_composite(rel, (KX, kopf + 6))
+        dr.line([(KX + x, kopf + 6 + y) for x, y in rand] + [(KX + rand[0][0], kopf + 6 + rand[0][1])],
+                fill=(70, 85, 105, 255), width=3, joint='curve')
     except Exception as e:
-        print('Reliefkarte nicht gefunden:', e)
+        print('Reliefkarte nicht gezeichnet:', e)
     G = json.load(open(os.path.join(ROOT, 'data', 'odenwald-relief.json'), encoding='utf-8'))
     (lo0, lo1), (la0, la1) = G['lo'], G['la']
     f, fk = F(27), F(20, False)

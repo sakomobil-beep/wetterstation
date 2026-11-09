@@ -794,14 +794,20 @@ def mittagskarte(days, warn, path):
     # Reliefkarte mittig
     KW, KH = 520, 841
     KX, KY = 410, 215
-    try:
-        rel = Image.open(os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'odenwald-relief.png')).convert('RGB').resize((KW, KH), Image.LANCZOS)
-        im.paste(rel, (KX, KY))
-        dr.rectangle([KX - 2, KY - 2, KX + KW + 2, KY + KH + 2], outline=(150, 165, 185), width=3)
-    except Exception as e:
-        print('Reliefkarte nicht gefunden:', e)
-    G = json.load(open(os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'odenwald-relief.json'), encoding='utf-8'))
+    DAT = os.path.join(os.path.dirname(__file__), '..', '..', 'data')
+    G = json.load(open(os.path.join(DAT, 'odenwald-relief.json'), encoding='utf-8'))
     (lo0, lo1), (la0, la1) = G['lo'], G['la']
+    try:   # Relief auf die echte Kreisgrenze zuschneiden (kein Rechteck)
+        grenze = json.load(open(os.path.join(DAT, 'odenwald-grenze.json'), encoding='utf-8'))['punkte']
+        rand = [((lo - lo0) / (lo1 - lo0) * KW, (la1 - la) / (la1 - la0) * KH) for lo, la in grenze]
+        rel = Image.open(os.path.join(DAT, 'odenwald-relief.png')).convert('RGBA').resize((KW, KH), Image.LANCZOS)
+        maske = Image.new('L', (KW, KH), 0); ImageDraw.Draw(maske).polygon(rand, fill=255)
+        rel.putalpha(maske)
+        im.paste(rel, (KX, KY), rel)
+        dr.line([(KX + x, KY + y) for x, y in rand] + [(KX + rand[0][0], KY + rand[0][1])],
+                fill=(70, 85, 105), width=4, joint='curve')
+    except Exception as e:
+        print('Reliefkarte nicht gezeichnet:', e)
     fn, fw = font(26), font(40, True)
     for name, la, lo, seite in ORTE_KARTE:
         r = rest.get(name)

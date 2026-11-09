@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Einmalig: Reliefkarte (Höhen + Schummerung) des Odenwaldkreises aus Open-Meteo-Höhendaten -> data/odenwald-relief.png
-Ausschnitt passend zur Karte auf der Website: Länge 8,80–9,18°, Breite 49,473–49,857°."""
+Ausschnitt etwas größer als der Kreis; die Kreisgrenze liegt in data/odenwald-grenze.json."""
 import json, os, time, urllib.request
 import numpy as np
 from PIL import Image
 
-LO0, LO1, LA0, LA1 = 8.80, 9.18, 49.473, 49.857
+LO0, LO1, LA0, LA1 = 8.78, 9.18, 49.468, 49.872   # etwas weiter als der Kreis, damit die Grenze ganz hineinpasst
 NX, NY = 64, 81          # Gitterpunkte (ca. 450 m Abstand)
 pts = [(LA1 - (LA1 - LA0) * j / (NY - 1), LO0 + (LO1 - LO0) * i / (NX - 1)) for j in range(NY) for i in range(NX)]
 el = []
