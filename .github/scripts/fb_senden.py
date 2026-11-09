@@ -7,6 +7,7 @@ Fehlen die Secrets, wird nichts gepostet (Beiträge bleiben zum Teilen von Hand 
 
 Aufruf:  fb_senden.py video  -> Video-Wetterbericht (fb/wetter.mp4) ab 7 Uhr, 1x pro Tag
          fb_senden.py tag      -> Tagesbeitrag (fb/post.jpg + fb/post.json), höchstens 1x pro Tag (wird nicht mehr automatisch gepostet)
+         fb_senden.py mittag   -> Mittagsbeitrag ab 12 Uhr (fb/mittag.jpg): Karte des Kreises mit dem Rest des Tages
          fb_senden.py abend    -> Abendvideo aus dem Studio ab 19 Uhr (fb/abendvideo.mp4), Text aus fb/abend.json; sonntags nicht
          fb_senden.py abendstory -> Instagram-Story mit dem Wetter für morgen (fb/abendstory.jpg), ab 19 Uhr
          fb_senden.py woche    -> Wochenausblick-Video (fb/woche.mp4), sonntags ab 20 Uhr, 1x pro Woche
@@ -207,6 +208,19 @@ def main():
         if instagram('story.jpg', '', story=True):
             M['story'] = heute; M['story_zeit'] = jetzt.isoformat(timespec='minutes')
             push('Instagram-Story gepostet', 'Die Morgen-Story mit dem Wetter von heute ist jetzt auf Instagram online.', tags='camera,white_check_mark')
+    elif modus == 'mittag':   # Mittagsbeitrag: Karte des Kreises mit dem Rest des Tages
+        jetzt = dt.datetime.now(TZ)
+        if jetzt.hour < 12: print('Mittagsbeitrag erst ab 12 Uhr.'); return
+        if jetzt.hour >= 16: print('Zu spät für den Mittagsbeitrag.'); return
+        try: j = json.load(open(os.path.join(FB, 'mittag.json'), encoding='utf-8'))
+        except Exception: print('Kein Mittagsbeitrag vorhanden.'); return
+        if j.get('datum') != heute: print('Mittagsbeitrag ist nicht von heute.'); return
+        if M.get('mittag') == heute: print('Mittagsbeitrag heute schon gepostet.'); return
+        time.sleep(int(os.environ.get('FB_WARTEN', '90')))
+        if frisch_gepostet('mittag', heute): return
+        if senden('mittag.jpg', j['text'], 'mittag'):
+            M['mittag'] = heute; M['mittag_zeit'] = jetzt.isoformat(timespec='minutes')
+            push('Mittagsbeitrag gepostet', 'Die Karte mit dem Rest des Tages ist jetzt auf Facebook und Instagram online.', tags='map,white_check_mark')
     elif modus == 'abendstory':   # nur Instagram: Story mit dem Wetter von morgen, zusammen mit dem Abendvideo
         jetzt = dt.datetime.now(TZ)
         if jetzt.hour < 19: print('Vor 19 Uhr – Abend-Story kommt später.'); return

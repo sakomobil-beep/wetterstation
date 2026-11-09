@@ -325,6 +325,45 @@ def orte_einzeln(days):
     return out
 
 
+def orte_rest(heute, ab=None, bis=19):
+    """Werte je Ort für den Rest des Tages (Mittagskarte): höchste Stundentemperatur von jetzt bis `bis` Uhr
+    und der Anteil der Modelle mit Regen in dem Fenster. Nutzt die schon abgerufenen Stundenwerte."""
+    jetzt = dt.datetime.now(TZ)
+    ab = ab if ab is not None else max(12, jetzt.hour)
+    tag = heute.isoformat()
+    out = {}
+    for name, la, lo, el in TAELER + HOEHEN:
+        O = ort_daten(name, la, lo, el)
+        if not O or not O.get('hourly'): continue
+        H = O['hourly']; idx = [k for k, t in enumerate(H['time']) if t[:10] == tag and ab <= int(t[11:13]) <= bis]
+        if not idx: continue
+        sw = tmax = 0.0; nass = [0.0, 0.0]; warm = None
+        for m in MODELLE:
+            w = gewicht(m, 0)
+            T = H.get('temperature_2m_' + m); P = H.get('precipitation_' + m)
+            if not w or not T: continue
+            vals = [T[k] for k in idx if k < len(T) and T[k] is not None]
+            if not vals: continue
+            sw += w; tmax += w * max(vals)
+            if P:
+                ps = [P[k] for k in idx if k < len(P) and P[k] is not None]
+                if ps: nass[0] += w; nass[1] += w if max(ps) >= 0.1 else 0
+        if sw: out[name] = dict(tmax=round(tmax / sw), rp=round(100 * nass[1] / nass[0]) if nass[0] else 0, von=ab, bis=bis)
+    return out
+
+
+def live_station():
+    """Aktueller Messwert der eigenen Station aus data/live.json (vom Widget-Lauf gefüllt)."""
+    try:
+        o = json.load(open(os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'live.json'), encoding='utf-8'))['cur']['observations'][0]
+        t = dt.datetime.fromisoformat(o['obsTimeUtc'].replace('Z', '+00:00')).astimezone(TZ)
+        if (dt.datetime.now(TZ) - t).total_seconds() > 3600: print('Messwert ist älter als eine Stunde – wird nicht gezeigt.'); return None
+        return dict(temp=o['metric']['temp'], feuchte=o.get('humidity'), wind=o['metric'].get('windSpeed'),
+                    boe=o['metric'].get('windGust'), zeit=t.strftime('%H:%M'))
+    except Exception as e:
+        print('Live-Messwert nicht verfügbar:', e); return None
+
+
 def kreis_stunden(liste):
     """Stundenwerte der Talorte gemittelt (für das beste Zeitfenster): Regen-Anteil in %, Wolken, Temperatur."""
     orte = [x for x in (ort_daten(*o) for o in liste) if x and x.get('hourly')]
@@ -735,6 +774,94 @@ def treffer_merken(days, now):
         print('Trefferquote nicht gespeichert:', e)
 
 
+ORTE_KARTE = [('Breuberg', 49.818, 9.040, 'r'), ('Höchst', 49.799, 8.994, 'l'), ('Bad König', 49.743, 9.006, 'r'),
+              ('Mossautal', 49.667, 8.937, 'l'), ('Michelstadt', 49.678, 9.004, 'r'), ('Oberzent', 49.567, 8.976, 'r')]
+
+
+def mittagskarte(days, warn, path):
+    """Mittagsbeitrag (1200x1200): Reliefkarte des Odenwaldkreises mit den Werten für den Rest des Tages,
+    dazu der aktuelle Messwert der eigenen Station in Bad König."""
+    W = H = 1200
+    d = days[0]
+    rest = orte_rest(d['datum'])
+    live = live_station()
+    im = Image.new('RGB', (W, H), (238, 242, 247)); dr = ImageDraw.Draw(im)
+    for y in range(170):   # Kopfband
+        dr.line([0, y, W, y], fill=(int(22 + 16 * y / 170), int(70 + 22 * y / 170), int(130 + 30 * y / 170)))
+    dr.rectangle([0, 170, W, 178], fill=(245, 175, 40))
+    dr.text((40, 58), 'NACHMITTAG IM ODENWALDKREIS', font=font(52, True), fill=(255, 255, 255))
+    dr.text((40, 118), '%s, %d. %s' % (TAGE[d['datum'].weekday()], d['datum'].day, MONATE[d['datum'].month - 1]), font=font(36), fill=(205, 222, 245))
+    # Reliefkarte mittig
+    KW, KH = 520, 841
+    KX, KY = 410, 215
+    try:
+        rel = Image.open(os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'odenwald-relief.png')).convert('RGB').resize((KW, KH), Image.LANCZOS)
+        im.paste(rel, (KX, KY))
+        dr.rectangle([KX - 2, KY - 2, KX + KW + 2, KY + KH + 2], outline=(150, 165, 185), width=3)
+    except Exception as e:
+        print('Reliefkarte nicht gefunden:', e)
+    G = json.load(open(os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'odenwald-relief.json'), encoding='utf-8'))
+    (lo0, lo1), (la0, la1) = G['lo'], G['la']
+    fn, fw = font(26), font(40, True)
+    for name, la, lo, seite in ORTE_KARTE:
+        r = rest.get(name)
+        if not r: continue
+        x = KX + (lo - lo0) / (lo1 - lo0) * KW
+        y = KY + (la1 - la) / (la1 - la0) * KH
+        txt = '%d°' % r['tmax']
+        bw = max(dr.textlength(name, font=fn), dr.textlength(txt, font=fw)) + 36
+        bx = x + 22 if seite == 'r' else x - 22 - bw
+        bx = max(8, min(bx, W - bw - 8)); by = max(190, min(y - 44, H - 260))
+        dr.rounded_rectangle([bx, by, bx + bw, by + 88], radius=18, fill=(214, 88, 36))
+        dr.text((bx + bw / 2, by + 24), name, font=fn, fill=(255, 232, 220), anchor='mm')
+        dr.text((bx + bw / 2, by + 62), txt, font=fw, fill=(255, 255, 255), anchor='mm')
+        dr.ellipse([x - 10, y - 10, x + 10, y + 10], fill=(255, 255, 255), outline=(40, 50, 70), width=4)
+    # Messwert der eigenen Station
+    if live:
+        dr.rounded_rectangle([40, 230, 380, 520], radius=28, fill=(255, 255, 255))
+        dr.text((210, 272), 'JETZT GEMESSEN', font=font(28, True), fill=(120, 135, 155), anchor='mm')
+        dr.text((210, 350), ('%.1f°' % live['temp']).replace('.', ','), font=font(104, True), fill=(214, 88, 36), anchor='mm')
+        dr.text((210, 428), 'Station Bad König', font=font(30, True), fill=(35, 55, 85), anchor='mm')
+        dr.text((210, 470), '%s Uhr · 184,5 m' % live['zeit'], font=font(26), fill=(110, 125, 145), anchor='mm')
+    y0 = 560 if live else 240
+    dr.rounded_rectangle([40, y0, 380, y0 + 250], radius=28, fill=(255, 255, 255))
+    dr.text((210, y0 + 40), 'REST DES TAGES', font=font(28, True), fill=(120, 135, 155), anchor='mm')
+    zz = [wort(d['code']).capitalize(), 'Regen %d %%' % d['rp'] if d['rp'] >= 20 else 'meist trocken']
+    if d.get('hoch'): zz.append('Höhen bis %d°' % d['hoch']['tmax'])
+    for i, z in enumerate(zz[:3]):
+        dr.text((210, y0 + 100 + i * 52), z, font=font(32, True), fill=(35, 55, 85), anchor='mm')
+    if warn:
+        fz = font(24); zl, cur = [], ''
+        for wd in warn[0].split():
+            if dr.textlength((cur + ' ' + wd).strip(), font=fz) > 290: zl.append(cur); cur = wd
+            else: cur = (cur + ' ' + wd).strip()
+        zl.append(cur)
+        dr.rounded_rectangle([40, 860, 380, 860 + 80 + len(zl[:3]) * 34], radius=28, fill=(200, 45, 45))
+        dr.text((210, 900), 'DWD-WARNUNG', font=font(30, True), fill=(255, 255, 255), anchor='mm')
+        for i, z in enumerate(zl[:3]):
+            dr.text((210, 945 + i * 34), z, font=fz, fill=(255, 230, 230), anchor='mm')
+    dr.text((W / 2, H - 92), 'Messwert aus Bad König · übrige Orte aus der Modellmischung', font=font(26), fill=(95, 110, 130), anchor='mm')
+    dr.text((W / 2, H - 52), 'Live-Werte & Vorhersage: wetter-badkoenig.de', font=font(34, True), fill=(25, 85, 160), anchor='mm')
+    im.save(path, quality=90)
+    return rest, live
+
+
+def text_mittag(days, rest, live, warn):
+    d = days[0]
+    z = ['🗺️ Nachmittag im Odenwaldkreis – so geht der Tag weiter:', '']
+    if live: z += ['🌡️ Jetzt an unserer Station in Bad König: %s °C (%s Uhr)' % (('%.1f' % live['temp']).replace('.', ','), live['zeit']), '']
+    teile = ['%s %d°' % (n, rest[n]['tmax']) for n, *_ in ORTE_KARTE if rest.get(n)]
+    if teile: z += ['📍 Höchstwerte bis zum Abend: ' + ' · '.join(teile), '']
+    z.append('%s %s%s.' % (emoji(d['code']), wort(d['code']).capitalize(),
+                           ', Regenrisiko %d %%' % d['rp'] if d['rp'] >= 30 else ', meist trocken'))
+    if d.get('hoch'): z.append('⛰️ Auf den Höhen (Oberzent, Mossautal) bis %d °C.' % d['hoch']['tmax'])
+    for w in warn[:2]: z.append('🚨 DWD: ' + w)
+    z += ['', 'Gemessen wird in Bad König, die übrigen Orte kommen aus unserer Modellmischung (ICON-D2, AROME, ECMWF, ICON-EU) – je Ort mit seiner Höhe.',
+          'Live-Werte, Radar & Vorhersage 👉 https://wetter-badkoenig.de',
+          '#Odenwald #Odenwaldkreis #BadKönig #Wetter #Michelstadt #Erbach #Höchst #Breuberg']
+    return '\n'.join(z)
+
+
 def story(days, warn, path, abends=False):
     """Instagram-Story (1080x1920). morgens: das Wetter von heute (fb/story.jpg),
     abends: der Ausblick auf morgen in Abendfarben (fb/abendstory.jpg)."""
@@ -825,6 +952,16 @@ def main():
                'orte': {} if DEMO else orte_einzeln(days)},
               open(os.path.join(OUT, 'daten.json'), 'w', encoding='utf-8'), ensure_ascii=False)
     json.dump({'erstellt': now.isoformat(timespec='minutes'), 'text': txt}, open(os.path.join(OUT, 'post.json'), 'w', encoding='utf-8'), ensure_ascii=False)
+    if '--mittag' in sys.argv:   # Mittagsbeitrag: Reliefkarte des Kreises mit dem Rest des Tages
+        try:
+            rest, live = mittagskarte(days, warn, os.path.join(OUT, 'mittag.jpg'))
+            mtxt = text_mittag(days, rest, live, warn)
+            open(os.path.join(OUT, 'mittag.txt'), 'w', encoding='utf-8').write(mtxt)
+            json.dump({'erstellt': now.isoformat(timespec='minutes'), 'datum': days[0]['datum'].isoformat(), 'text': mtxt},
+                      open(os.path.join(OUT, 'mittag.json'), 'w', encoding='utf-8'), ensure_ascii=False)
+            print(mtxt)
+        except Exception as e:
+            print('Mittagskarte nicht erstellt:', e)
     print(txt)
 
 
