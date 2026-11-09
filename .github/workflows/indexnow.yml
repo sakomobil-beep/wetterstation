@@ -1,0 +1,32 @@
+name: Suchmaschinen melden (IndexNow)
+on:
+  push:
+    branches: [main]
+    paths: ['*.html']
+  schedule:
+    - cron: '17 3 * * 1'   # montags: alle Seiten erneut melden
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: repo-schreiben
+  cancel-in-progress: false
+jobs:
+  melden:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 2 }
+      - name: Geänderte Seiten melden
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            python3 .github/scripts/indexnow.py $(git diff --name-only HEAD~1 HEAD)
+          else
+            python3 .github/scripts/indexnow.py --alle
+          fi
+      - name: Sitemap speichern
+        run: |
+          git config user.name "wetter-bot"; git config user.email "actions@users.noreply.github.com"
+          git add sitemap.xml; git diff --cached --quiet && exit 0
+          git commit -m "Sitemap: lastmod aktualisiert"
+          for i in 1 2 3; do git pull --rebase -X theirs -q && git push && break; git rebase --abort 2>/dev/null; sleep 5; done

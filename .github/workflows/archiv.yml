@@ -1,0 +1,27 @@
+name: Wetterarchiv (Tages- und Stundenwerte sichern)
+on:
+  schedule:
+    - cron: '25 23 * * *'   # 0:25 Uhr Winterzeit (Reserve, Hauptauslöser: cron-job.org 0:15 Uhr)
+    - cron: '25 22 * * *'   # 0:25 Uhr Sommerzeit
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: repo-schreiben
+  cancel-in-progress: false
+jobs:
+  archiv:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Archiv ergänzen
+        run: python .github/scripts/archiv.py
+      - name: Speichern
+        run: |
+          git config user.name "wetter-bot"; git config user.email "actions@users.noreply.github.com"
+          git add data/archiv; git diff --cached --quiet && exit 0
+          git commit -m "Wetterarchiv bis $(TZ=Europe/Berlin date -d yesterday +'%d.%m.%Y')"
+          for i in 1 2 3; do git pull --rebase -X theirs -q && git push && break; git rebase --abort 2>/dev/null; sleep 5; done

@@ -1,0 +1,27 @@
+name: Solarwetter-Check
+on:
+  schedule:
+    - cron: '17 */6 * * *'   # alle 6 Stunden
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: solar-check
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Datenquellen prüfen
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: python .github/scripts/solar_check.py
+      - name: Speichern
+        run: |
+          git config user.name "wetter-bot"; git config user.email "actions@users.noreply.github.com"
+          git add fb/solar_check.json; git diff --cached --quiet && exit 0
+          git commit -m "Solarwetter-Check $(TZ=Europe/Berlin date +'%d.%m. %H:%M') [skip ci]"
+          for i in 1 2 3; do git pull --rebase -X theirs -q && git push && break; sleep 5; done

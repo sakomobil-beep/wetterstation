@@ -1,0 +1,45 @@
+name: Historie aufräumen (alte Videos dauerhaft löschen)
+
+# Die Skripte löschen Videos älter als 7 Tage bereits aus dem Ordner.
+# Git behält sie aber in der Historie. Dieser Job ersetzt einmal pro Woche
+# die komplette Historie durch einen einzigen Commit mit dem aktuellen Stand.
+# Danach sind gelöschte Videos (und alte Code-Stände) endgültig weg.
+
+on:
+  schedule:
+    - cron: '47 1 * * 1'   # Montag ca. 2:47 Uhr (Winterzeit) / 3:47 Uhr (Sommerzeit)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: historie-aufraeumen
+  cancel-in-progress: false
+
+jobs:
+  aufraeumen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Historie auf einen Commit reduzieren
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          for versuch in 1 2 3 4 5; do
+            git fetch -q --depth 1 origin main
+            git reset -q --hard origin/main
+            ALT=$(git rev-parse HEAD)
+            git checkout -q --orphan neu
+            git commit -q -m "Stand vom $(date -u +%Y-%m-%d) (Historie aufgeräumt)"
+            if git push --force-with-lease=main:$ALT origin HEAD:main; then
+              echo "Fertig – Historie aufgeräumt."; exit 0
+            fi
+            echo "Zwischendurch kam ein anderer Push – neuer Versuch in 20 s"
+            git checkout -q -B main origin/main; git branch -D neu
+            sleep 20
+          done
+          echo "Aufräumen nicht möglich"; exit 1

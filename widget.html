@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wetter-Widget für Ihre Website – Private Wetterstation Bad König</title>
+<meta name="description" content="Kostenloses Wetter-Widget mit Live-Werten der Privaten Wetterstation Bad König (Odenwald) für Ihre Website – Temperatur, Wind, Regen, 3-Tage-Vorhersage und DWD-Warnungen. Einfach Code kopieren.">
+<link rel="canonical" href="https://wetter-badkoenig.de/widget.html">
+<link rel="icon" href="favicon-32.png">
+<style>
+  :root { --ink:#1d2b3f; --mut:#5c6c82; --line:#dde5ef; --acc:#2a6db5; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; color:var(--ink); background:#f4f1ea; line-height:1.55; }
+  main { max-width:860px; margin:0 auto; padding:28px 16px 48px; }
+  .zur { font-size:14px; color:var(--acc); text-decoration:none; }
+  h1 { font-size:1.9rem; margin:10px 0 4px; } .lead { color:var(--mut); margin:0 0 22px; }
+  .karte { background:#fff; border-radius:16px; padding:20px; margin-bottom:16px; }
+  h2 { font-size:1.1rem; margin:0 0 12px; }
+  .wahl { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+  .wahl span { font-size:13px; color:var(--mut); width:100%; }
+  .wahl button { border:1px solid var(--line); background:#fff; border-radius:999px; padding:7px 14px; font:inherit; font-size:14px; cursor:pointer; }
+  .wahl button[aria-pressed="true"] { background:var(--ink); color:#fff; border-color:var(--ink); }
+  .vorschau { padding:18px; border-radius:12px; background:repeating-conic-gradient(#eef1f5 0 25%, #f8f9fb 0 50%) 0 0/20px 20px; display:flex; justify-content:center; }
+  .vorschau.dunkel { background:#0d1520; }
+  .vorschau iframe { border:0; max-width:100%; }
+  textarea { width:100%; height:92px; font:13px/1.45 ui-monospace,Consolas,monospace; border:1px solid var(--line); border-radius:10px; padding:10px; resize:vertical; }
+  .knopf { margin-top:10px; border:0; background:var(--acc); color:#fff; font:inherit; font-weight:600; padding:10px 18px; border-radius:10px; cursor:pointer; }
+  ul { padding-left:20px; margin:0; } li { margin:4px 0; }
+  .klein { font-size:13px; color:var(--mut); }
+  footer { text-align:center; font-size:13px; color:var(--mut); margin-top:24px; } footer a { color:inherit; }
+</style>
+</head>
+<body>
+<main>
+  <a class="zur" href="./">← zurück zur Privaten Wetterstation Bad König</a>
+  <h1>Wetter-Widget für Ihre Website</h1>
+  <p class="lead">Zeigen Sie das aktuelle Wetter aus Bad König auf Ihrer eigenen Seite – kostenlos, ohne Anmeldung und ohne Cookies. Ideal für Vereine, Gastgeber, Veranstalter und Betriebe aus dem Odenwald.</p>
+
+  <section class="karte">
+    <h2>1. Aussehen wählen</h2>
+    <div class="wahl" id="wg"><span>Größe</span>
+      <button data-v="klein" aria-pressed="false">Klein</button>
+      <button data-v="mittel" aria-pressed="true">Mittel</button>
+      <button data-v="breit" aria-pressed="false">Breite Leiste</button>
+    </div>
+    <div class="wahl" id="wt"><span>Farbe</span>
+      <button data-v="hell" aria-pressed="true">Hell</button>
+      <button data-v="dunkel" aria-pressed="false">Dunkel</button>
+    </div>
+    <div class="vorschau" id="vs"><iframe id="fr" title="Wetter Bad König"></iframe></div>
+  </section>
+
+  <section class="karte">
+    <h2>2. Code kopieren und einfügen</h2>
+    <textarea id="code" readonly aria-label="Einbettungscode"></textarea>
+    <button class="knopf" id="kop">📋 Code kopieren</button>
+    <p class="klein">Den Code dort einfügen, wo das Widget erscheinen soll – z. B. in WordPress als Block „Individuelles HTML“, bei Jimdo/Wix als „HTML-Element“ oder „Einbetten“.</p>
+  </section>
+
+  <section class="karte">
+    <h2>Gut zu wissen</h2>
+    <ul>
+      <li>Die Werte kommen von der privaten Bresser-Wetterstation in Bad König (184,5 m) und werden etwa alle 10 Minuten aktualisiert.</li>
+      <li>Vorhersage nach dem ICON-Modell des Deutschen Wetterdienstes, Warnungen amtlich vom DWD.</li>
+      <li>Das Widget setzt keine Cookies und lädt nur von wetter-badkoenig.de. Ein Klick darauf öffnet die vollständige Wetterseite.</li>
+      <li>Fragen oder Wünsche? Kontakt über das <a href="impressum.html">Impressum</a>.</li>
+    </ul>
+  </section>
+  <footer><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a></footer>
+</main>
+<script>
+(function () {
+  var g = 'mittel', t = 'hell', H = { klein: [260, 165], mittel: [320, 350], breit: [700, 66] };
+  function upd() {
+    var src = 'https://wetter-badkoenig.de/w.html?g=' + g + (t === 'dunkel' ? '&t=dunkel' : '');
+    var fr = document.getElementById('fr'); fr.src = 'w.html?g=' + g + (t === 'dunkel' ? '&t=dunkel' : '');
+    fr.width = H[g][0]; fr.height = H[g][1]; fr.style.width = g === 'breit' ? '100%' : H[g][0] + 'px';
+    document.getElementById('vs').className = 'vorschau' + (t === 'dunkel' ? ' dunkel' : '');
+    document.getElementById('code').value = '<iframe src="' + src + '" width="' + (g === 'breit' ? '100%' : H[g][0]) + '" height="' + H[g][1] +
+      '" style="border:0;max-width:100%" loading="lazy" title="Wetter Bad König"></iframe>';
+  }
+  function wahl(id, set) {
+    var box = document.getElementById(id);
+    box.addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      box.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+      set(b.dataset.v); upd();
+    });
+  }
+  wahl('wg', function (v) { g = v; }); wahl('wt', function (v) { t = v; });
+  document.getElementById('kop').onclick = function () {
+    var ta = document.getElementById('code'), b = this;
+    (navigator.clipboard ? navigator.clipboard.writeText(ta.value) : Promise.reject()).catch(function () { ta.select(); document.execCommand('copy'); })
+      .then(function () { b.textContent = '✓ Kopiert'; setTimeout(function () { b.textContent = '📋 Code kopieren'; }, 1800); });
+  };
+  upd();
+})();
+</script>
+<script data-goatcounter="https://wetter-badkoenig.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+</body>
+</html>

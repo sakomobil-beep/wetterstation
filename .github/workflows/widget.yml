@@ -1,0 +1,34 @@
+name: Widget-Daten
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'   # alle 10 Minuten (GitHub startet manchmal etwas später)
+  workflow_dispatch:
+  push:
+    paths: ['.github/scripts/widget_daten.py', '.github/workflows/widget.yml']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: widget-daten
+  cancel-in-progress: false
+
+jobs:
+  daten:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install pillow
+      - run: python .github/scripts/widget_daten.py
+      - name: Speichern
+        run: |
+          git config user.name "wetter-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/widget.json data/live.json
+          git diff --cached --quiet && exit 0
+          git commit -q -m "Widget-Daten $(TZ=Europe/Berlin date +'%d.%m.%Y %H:%M')"
+          for i in 1 2 3 4; do git pull --rebase -q && git push -q && break; sleep 7; done

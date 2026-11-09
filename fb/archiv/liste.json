@@ -1,0 +1,62 @@
+[
+ {
+  "datum": "2026-11-08",
+  "datei": "2026-11-08.mp4",
+  "special": false,
+  "warn": [],
+  "dauer": 59.6
+ },
+ {
+  "datum": "2026-11-08",
+  "datei": "2026-11-08-woche.mp4",
+  "special": false,
+  "warn": [],
+  "dauer": 57.4
+ },
+ {
+  "datum": "2026-11-07",
+  "datei": "2026-11-07.mp4",
+  "special": false,
+  "warn": [],
+  "dauer": 67.8
+ },
+ {
+  "datum": "2026-11-07",
+  "datei": "2026-11-07-woche.mp4",
+  "special": false,
+  "warn": [],
+  "dauer": 49.3
+ },
+ {
+  "datum": "2026-11-06",
+  "datei": "2026-11-06.mp4",
+  "special": false,
+  "warn": [
+   "Amtliche Warnung vor Frost"
+  ],
+  "dauer": 69.8
+ },
+ {
+  "datum": "2026-11-06",
+  "datei": "2026-11-06-special.mp4",
+  "special": true,
+  "warn": [
+   "Amtliche Warnung vor Frost"
+  ],
+  "dauer": 33.9
+ },
+ {
+  "datum": "2026-11-05",
+  "datei": "2026-11-05.mp4",
+  "special": false,
+  "warn": [],
+  "dauer": 54.0
+ },
+ {
+  "datum": "2026-11-04",
+  "datei": "2026-11-04.mp4",
+  "special": false,
+  "warn": [],
+  "dauer": 41.3
+ }
+]

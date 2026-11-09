@@ -1,0 +1,22 @@
+{
+ "hinweis": "Termine für Max. Ferien Hessen laut Hessischem Kultusministerium. Eigene Termine über die Zentrale (Tab „📈 Website“ → „🎪 Termine für Max“).",
+ "ferien": [
+  {"name": "Weihnachtsferien", "von": "2026-12-23", "bis": "2027-01-12"},
+  {"name": "Osterferien", "von": "2027-03-22", "bis": "2027-04-02"},
+  {"name": "Sommerferien", "von": "2027-06-28", "bis": "2027-08-06"},
+  {"name": "Herbstferien", "von": "2027-10-04", "bis": "2027-10-16"},
+  {"name": "Weihnachtsferien", "von": "2027-12-23", "bis": "2028-01-11"},
+  {"name": "Osterferien", "von": "2028-04-03", "bis": "2028-04-14"},
+  {"name": "Sommerferien", "von": "2028-07-03", "bis": "2028-08-11"},
+  {"name": "Herbstferien", "von": "2028-10-09", "bis": "2028-10-20"},
+  {"name": "Weihnachtsferien", "von": "2028-12-27", "bis": "2029-01-12"}
+ ],
+ "termine": [
+  {"id": "badkoenig-nikolausmarkt-2026", "name": "Bad Königer Nikolausmarkt", "ort": "in der Innenstadt am Schloss in Bad König",
+   "daten": {"2026-12-11": "ab 17 Uhr", "2026-12-12": "ab 16 Uhr", "2026-12-13": "ab 14 Uhr"}, "quelle": "Kingman"},
+  {"id": "michelstadt-weihnachtsmarkt-2026", "name": "Michelstädter Weihnachtsmarkt", "ort": "in der Michelstädter Altstadt rund ums Rathaus",
+   "von": "2026-11-27", "bis": "2026-12-20", "wochentage": [2, 3, 4, 5, 6], "zeit": "", "info": "mittwochs bis sonntags", "quelle": "Recherche"},
+  {"id": "erbach-schlossweihnacht-2026", "name": "Erbacher Schlossweihnacht", "ort": "rund ums Schloss in Erbach",
+   "von": "2026-11-27", "bis": "2026-12-20", "wochentage": [4, 5, 6], "zeit": "", "info": "an den Adventswochenenden freitags bis sonntags", "quelle": "Recherche"}
+ ]
+}
