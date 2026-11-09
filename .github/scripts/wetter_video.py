@@ -338,7 +338,32 @@ def skript_woche(days, warn, heute):
     return seg
 
 
-def skript_abend(days, warn, heute):
+def karten_txt(orte, tag, rnd, nacht=False):
+    """Satz zur Reliefkarte: wärmster und kühlster Ort (abends: kälteste Nacht)."""
+    W = []
+    for name, la, lo, seite in ORTE_KARTE:
+        d = (orte.get(name) or [None] * (tag + 1))[tag] if orte.get(name) and tag < len(orte[name]) else None
+        if d: W.append((name, d.get('tmin_kalt', d['tmin']) if nacht else d['tmax'], d))
+    if len(W) < 3: return None
+    warm, kalt = max(W, key=lambda x: x[1]), min(W, key=lambda x: x[1])
+    if nacht:
+        frost = [x for x in W if x[1] <= 0]
+        s_ = rnd.choice(['Und so wird die Nacht bei euch im Kreis: ', 'Schauen wir auf die Nacht im Odenwaldkreis: ', 'Die kommende Nacht im Kreis: '])
+        if frost:
+            orte_ = ', '.join(x[0] for x in frost[:3])
+            s_ += 'Frost gibt es vor allem in %s. Am kältesten wird es in %s mit %s Grad.' % (orte_, kalt[0], zahl(kalt[1]))
+        else:
+            s_ += 'Am kältesten wird es in %s mit %s Grad, am mildesten bleibt es in %s mit %s Grad.' % (kalt[0], zahl(kalt[1]), warm[0], zahl(warm[1]))
+        return s_
+    if warm[1] == kalt[1]:
+        return rnd.choice(['Und das gilt ziemlich genau für den ganzen Kreis – überall um die %s Grad.',
+                           'Im ganzen Odenwaldkreis sieht es ähnlich aus: überall rund %s Grad.']) % zahl(warm[1])
+    return rnd.choice(['Und so verteilt sich das über den Kreis: Am mildesten wird es in %s mit %s Grad, am kühlsten oben in %s mit %s Grad.',
+                       'Schauen wir in den ganzen Kreis: %s liegt mit %s Grad vorn, %s bleibt mit %s Grad am kühlsten.',
+                       'Im Kreis verteilt sich das so: In %s sind %s Grad drin, in %s nur %s Grad.']) % (warm[0], zahl(warm[1]), kalt[0], zahl(kalt[1]))
+
+
+def skript_abend(days, warn, heute, orte=None):
     """Abendvideo (Studio): Rückblick auf heute, Ausblick auf morgen/übermorgen (freitags aufs Wochenende)."""
     rnd = random.Random('abend' + heute.isoformat())
     a = days[0]
@@ -367,8 +392,16 @@ def skript_abend(days, warn, heute):
     else:
         seg.append(dict(art='tag', bg='studio', titel='MORGEN', tag=paar[0],
                         tafel_img=tafel_tag('MORGEN', paar[0]), text=tagtext(paar[0], 'Morgen')))
+        kt = karten_txt(orte or {}, 1, rnd)
+        if kt:   # Reliefkarte des Kreises: die Orte erscheinen nacheinander, während Max spricht
+            seg.append(dict(art='tag', bg='studio', titel='MORGEN IM KREIS',
+                            tafel_seq=karten_folge(orte, 1), text=kt))
         seg.append(dict(art='tag', bg='studio', titel='ÜBERMORGEN', tag=paar[1],
                         tafel_img=tafel_tag('ÜBERMORGEN', paar[1]), text='Und übermorgen: ' + tagtext(paar[1], 'Dann')))
+    nacht_frost = any((orte or {}).get(n) and len((orte or {})[n]) > 1 and ((orte or {})[n][1] or {}).get('tmin_kalt', 99) <= 0 for n, *_ in ORTE_KARTE)
+    if nacht_frost:   # Nachtkarte nur, wenn irgendwo im Kreis Frost ansteht
+        nt = karten_txt(orte or {}, 1, rnd, nacht=True)
+        if nt: seg.append(dict(art='tag', bg='studio', titel='HEUTE NACHT', tafel_seq=karten_folge(orte, 1, nacht=True), text=nt))
     seg.append(dict(art='outro', bg='studio', text=rnd.choice(['Das war euer Odenwald-Wetter am Abend.', 'So viel für heute aus dem Studio.', 'Das war es für heute von mir.'])
                     + ' Kommt gut durch die Nacht – bis morgen früh beim Wettervideo! Alle Live-Werte gibt es auf wetter-badkoenig.de.'))
     return seg
@@ -1106,6 +1139,62 @@ def schatten_text(d, xy, t, f, fill=(255, 255, 255), anchor='la'):
     d.text(xy, t, font=f, fill=fill, anchor=anchor)
 
 
+# --- Reliefkarte des Odenwaldkreises (Bildschirm im Studio) ---
+ORTE_KARTE = [('Breuberg', 49.818, 9.040, 'r'), ('Höchst', 49.799, 8.994, 'l'), ('Bad König', 49.743, 9.006, 'r'),
+              ('Mossautal', 49.667, 8.937, 'l'), ('Michelstadt', 49.678, 9.004, 'r'), ('Oberzent', 49.567, 8.976, 'r')]
+RELIEF = os.path.join(ROOT, 'data', 'odenwald-relief.png')
+
+
+def kreiskarte(orte, tag, nacht=False, bis=None):
+    """Karte des Odenwaldkreises mit den Werten je Ort. nacht=True: Tiefstwerte, Frost blau hervorgehoben.
+    bis = wie viele Orte schon eingeblendet sind (für das Nacheinander-Erscheinen)."""
+    KW, KH = 332, 537
+    kopf = 74
+    w, h = 452, kopf + KH + 36
+    KX = (w - KW) // 2
+    im = Image.new('RGBA', (w, h), (0, 0, 0, 0)); dr = ImageDraw.Draw(im)
+    farbe = (35, 70, 140) if nacht else (25, 85, 160)
+    dr.rounded_rectangle([0, 0, w, h], radius=28, fill=(255, 255, 255, 238))
+    dr.rounded_rectangle([0, 0, w, kopf], radius=28, fill=farbe + (255,)); dr.rectangle([0, 46, w, kopf], fill=farbe + (255,))
+    dr.text((w / 2, 37), 'HEUTE NACHT' if nacht else 'MORGEN IM KREIS', font=F(34), fill=(255, 255, 255), anchor='mm')
+    try:
+        rel = Image.open(RELIEF).convert('RGBA').resize((KW, KH), Image.LANCZOS)
+        if nacht:   # abends bläulich eingefärbt
+            bl = Image.new('RGBA', rel.size, (40, 60, 120, 90)); rel = Image.alpha_composite(rel, bl)
+        im.alpha_composite(rel, (KX, kopf + 6))
+    except Exception as e:
+        print('Reliefkarte nicht gefunden:', e)
+    G = json.load(open(os.path.join(ROOT, 'data', 'odenwald-relief.json'), encoding='utf-8'))
+    (lo0, lo1), (la0, la1) = G['lo'], G['la']
+    f, fk = F(27), F(20, False)
+    for n, (name, la, lo, seite) in enumerate(ORTE_KARTE):
+        if bis is not None and n >= bis: continue
+        d = (orte.get(name) or [None])[tag] if orte.get(name) and tag < len(orte[name]) else None
+        if not d: continue
+        x = KX + (lo - lo0) / (lo1 - lo0) * KW
+        y = kopf + 6 + (la1 - la) / (la1 - la0) * KH
+        wert = d.get('tmin_kalt', d['tmin']) if nacht else d['tmax']
+        frost = nacht and wert <= 0
+        bg = (40, 90, 190) if frost else (25, 45, 85) if nacht else (210, 85, 35)
+        txt = '%d°' % wert
+        bw_ = max(dr.textlength(name, font=fk), dr.textlength(txt, font=f)) + 24
+        bx = x + 14 if seite == 'r' else x - 14 - bw_
+        bx = max(3, min(bx, w - bw_ - 3))
+        by = max(kopf + 4, min(y - 28, h - 92))
+        dr.rounded_rectangle([bx, by, bx + bw_, by + 58], radius=13, fill=bg + (245,))
+        dr.text((bx + bw_ / 2, by + 16), name, font=fk, fill=(235, 240, 250), anchor='mm')
+        dr.text((bx + bw_ / 2, by + 40), txt, font=f, fill=(255, 255, 255), anchor='mm')
+        dr.ellipse([x - 7, y - 7, x + 7, y + 7], fill=(255, 255, 255), outline=(30, 40, 60), width=3)
+        if frost: dr.text((bx + bw_ - 7, by + 5), '*', font=F(28), fill=(190, 225, 255), anchor='mm')
+    dr.text((w / 2, h - 19), '* Frost  ·  Tiefstwerte' if nacht else 'Höchstwerte im Odenwaldkreis', font=F(20, False), fill=(105, 120, 142), anchor='mm')
+    return im
+
+
+def karten_folge(orte, tag, nacht=False):
+    """Bildfolge: die Orte erscheinen nacheinander."""
+    return [kreiskarte(orte, tag, nacht, bis=k) for k in range(1, len(ORTE_KARTE) + 1)]
+
+
 def tafel_tag(titel, d):
     w, h = 400, (565 if d.get('hoch') else 520)
     im = Image.new('RGBA', (w, h), (0, 0, 0, 0)); dr = ImageDraw.Draw(im)
@@ -1348,7 +1437,7 @@ def baue(segmente, heute, ziel, special, titel=None):
         s['bgimg'] = bgs[bg]
         s['bg_key'] = bg
         if bg == 'studio': s['look'], s['prop'] = 'normal', None   # drinnen: Softshell, keine Mütze, kein Schirm
-        s['tafel'] = tafel_fuer(s, special)
+        s['tafel'] = s['tafel_seq'][-1] if s.get('tafel_seq') else tafel_fuer(s, special)
         # Untertitel: Sätze, Zeit nach Zeichenanzahl verteilt
         saetze, cur = [], ''
         for teil in s['text'].replace('! ', '!|').replace('. ', '.|').replace('? ', '?|').split('|'):
@@ -1432,6 +1521,10 @@ def baue(segmente, heute, ziel, special, titel=None):
         # Tafel: im Studio auf dem Bildschirm an der Wand, sonst rechts oben, schiebt sich herein
         if s['tafel'] is not None and studio:
             tf = s['tafel']
+            sq = s.get('tafel_seq')
+            if sq:   # die Orte erscheinen nacheinander
+                schritt = max(0.55, (s['dauer'] - 1.4) / len(sq))
+                tf = sq[min(len(sq) - 1, int(lt / schritt))]
             scl = W / cw
             rx0, ry0, rx1, ry1 = STUDIO_SCREEN
             rfx0, rfy0 = (rx0 - x0) * scl, (ry0 - y0) * scl
@@ -1500,7 +1593,7 @@ def main():
             print('Keine neue Warnung – kein Special.'); return
     wochen = '--woche' in sys.argv
     abends = '--abend' in sys.argv   # Abendvideo aus dem Studio (eigene Datei, nicht in der Videothek der Website)
-    segs = skript_abend(days, warn, heute) if abends else skript_woche(days, warn, heute) if wochen else skript(days, warn, heute, nur_special)
+    segs = skript_abend(days, warn, heute, daten.get('orte') or {}) if abends else skript_woche(days, warn, heute) if wochen else skript(days, warn, heute, nur_special)
     special = nur_special   # das Morgenvideo ist immer das normale Video
     name = 'abendvideo' if abends else 'special' if nur_special else 'woche' if wochen else 'wetter'
     ziel = os.path.join(FB, name + '.mp4')

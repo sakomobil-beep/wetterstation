@@ -307,6 +307,20 @@ def orte_mix(liste, days):
     return out
 
 
+def orte_einzeln(days):
+    """Werte je Ort des Odenwaldkreises (für die Reliefkarte im Abendvideo) – gleiche Modellmischung
+    und gelernte Korrektur wie die Odenwald-Vorhersage, nur ohne Mittelung über die Orte.
+    Die Abrufe liegen schon im Cache (orte_mix), kostet also keine zusätzlichen Anfragen."""
+    out = {}
+    for o in TAELER + HOEHEN:
+        try:
+            w = orte_mix([o], days)
+            out[o[0]] = [None if x is None else {k: x[k] for k in ('tmax', 'tmin', 'tmin_kalt', 'code', 'schnee')} for x in w]
+        except Exception as e:
+            print('Ortswerte %s nicht möglich:' % o[0], e)
+    return out
+
+
 def kreis_stunden(liste):
     """Stundenwerte der Talorte gemittelt (für das beste Zeitfenster): Regen-Anteil in %, Wolken, Temperatur."""
     orte = [x for x in (ort_daten(*o) for o in liste) if x and x.get('hourly')]
@@ -793,7 +807,8 @@ def main():
     except Exception as e: print('Story nicht erstellt:', e)
     txt = text(days, warn)
     open(os.path.join(OUT, 'post.txt'), 'w', encoding='utf-8').write(txt)
-    json.dump({'erstellt': now.isoformat(timespec='minutes'), 'warn': warn, 'tage': [dict(d, datum=d['datum'].isoformat()) for d in days]},
+    json.dump({'erstellt': now.isoformat(timespec='minutes'), 'warn': warn, 'tage': [dict(d, datum=d['datum'].isoformat()) for d in days],
+               'orte': {} if DEMO else orte_einzeln(days)},
               open(os.path.join(OUT, 'daten.json'), 'w', encoding='utf-8'), ensure_ascii=False)
     json.dump({'erstellt': now.isoformat(timespec='minutes'), 'text': txt}, open(os.path.join(OUT, 'post.json'), 'w', encoding='utf-8'), ensure_ascii=False)
     print(txt)
