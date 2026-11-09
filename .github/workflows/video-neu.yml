@@ -5,10 +5,10 @@ on:
   workflow_dispatch:
     inputs:
       art:
-        description: 'Welches Video? (tag = Morgenvideo, woche = Wochenausblick, thema = Themenvideo Max erklärt)'
+        description: 'Welches Video? (tag = Morgenvideo, woche = Wochenausblick, thema = Themenvideo Max erklärt, mittag = nur Tagesbeitrag Mittagswetter)'
         default: 'tag'
         type: choice
-        options: [tag, woche, thema]
+        options: [tag, woche, thema, mittag]
 
 permissions:
   contents: write
@@ -26,9 +26,14 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
       - uses: FedericoCarboni/setup-ffmpeg@v3
+        if: inputs.art != 'mittag'
         timeout-minutes: 5
       - run: pip install pillow numpy edge-tts
-      - run: |
+      - name: Nur Tagesbeitrag Mittagswetter neu (Bild + Text, ohne Video)
+        if: inputs.art == 'mittag'
+        run: python .github/scripts/fb_post.py
+      - if: inputs.art != 'mittag'
+        run: |
           cp fb/post.jpg fb/post.txt fb/post.json /tmp/ 2>/dev/null || true
           python .github/scripts/fb_post.py
           cp /tmp/post.jpg /tmp/post.txt /tmp/post.json fb/ 2>/dev/null || true
@@ -39,5 +44,5 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add -A fb
           git diff --cached --quiet && exit 0
-          git commit -m "Wettervideo neu erstellt (von Hand) $(TZ=Europe/Berlin date +'%d.%m.%Y %H:%M')"
+          git commit -m "${{ inputs.art == 'mittag' && 'Mittagswetter' || 'Wettervideo' }} neu erstellt (von Hand) $(TZ=Europe/Berlin date +'%d.%m.%Y %H:%M')"
           for i in 1 2 3; do git pull --rebase -X theirs -q && git push && break; git rebase --abort 2>/dev/null; sleep 5; done
