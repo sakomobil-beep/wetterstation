@@ -338,6 +338,42 @@ def skript_woche(days, warn, heute):
     return seg
 
 
+def skript_abend(days, warn, heute):
+    """Abendvideo (Studio): Rückblick auf heute, Ausblick auf morgen/übermorgen (freitags aufs Wochenende)."""
+    rnd = random.Random('abend' + heute.isoformat())
+    a = days[0]
+    wochenende = heute.weekday() == 4   # Freitag
+    paar = days[1:3]
+    seg = [dict(art='intro', bg='studio', tafel_img=tafel_text('GUTEN ABEND', ['%s, %d. %s' % (TAGE[heute.weekday()], heute.day, MONATE[heute.month - 1]), '• Der Tag in Zahlen', '• Das Wochenende' if wochenende else '• Morgen und übermorgen'], (40, 30, 100)), text=rnd.choice(
+        ['Guten Abend, Odenwald! Euer Max meldet sich aus dem Studio.',
+         'Ei gude wie, Odenwald – hier ist euer Abendwetter mit Max.',
+         'Schön, dass ihr einschaltet: Max hier mit dem Odenwald-Wetter am Abend.'])
+        + ((' Vorweg: Vom Deutschen Wetterdienst gilt %s.' % ' und '.join(warn[:2])) if warn else ''))]
+    zahlen = [rnd.choice(['Der Tag bei uns in Zahlen: Heute haben wir in den Tälern rund %s Grad erreicht.',
+                          'Schauen wir noch mal auf den Tag: Bis zu %s Grad waren es heute bei uns im Odenwald.',
+                          'Kurz zu den Zahlen von heute: Rund %s Grad Höchstwert in den Tälern.']) % zahl(a['tmax'])]
+    if a.get('frost_min', a['tmin']) <= 0:
+        zahlen.append('Heute Nacht wird es noch mal frostig, bis %s Grad.' % zahl(a.get('frost_min', a['tmin'])))
+    elif a['tmin'] <= 3:
+        zahlen.append('Heute Nacht kühlt es auf etwa %s Grad ab.' % zahl(a['tmin']))
+    if a.get('regen', 0) >= 1:
+        zahlen.append('Dazu kamen etwa %s Liter Regen pro Quadratmeter zusammen.' % zahl(round(a['regen'])))
+    seg.append(dict(art='tag', bg='studio', titel='DER TAG IN ZAHLEN',
+                    tafel_img=tafel_text('DER TAG IN ZAHLEN', zahlen, (25, 85, 160)),
+                    text=' '.join(zahlen)))
+    if wochenende:
+        seg.append(dict(art='wochenende', bg='studio', tage=paar, tafel_img=tafel_wochenende(paar),
+                        text='Und jetzt der Blick aufs Wochenende: ' + tagtext(paar[0], 'Samstag') + ' ' + tagtext(paar[1], 'Sonntag')))
+    else:
+        seg.append(dict(art='tag', bg='studio', titel='MORGEN', tag=paar[0],
+                        tafel_img=tafel_tag('MORGEN', paar[0]), text=tagtext(paar[0], 'Morgen')))
+        seg.append(dict(art='tag', bg='studio', titel='ÜBERMORGEN', tag=paar[1],
+                        tafel_img=tafel_tag('ÜBERMORGEN', paar[1]), text='Und übermorgen: ' + tagtext(paar[1], 'Dann')))
+    seg.append(dict(art='outro', bg='studio', text=rnd.choice(['Das war euer Odenwald-Wetter am Abend.', 'So viel für heute aus dem Studio.', 'Das war es für heute von mir.'])
+                    + ' Kommt gut durch die Nacht – bis morgen früh beim Wettervideo! Alle Live-Werte gibt es auf wetter-badkoenig.de.'))
+    return seg
+
+
 def special_grund(days, warn):
     a = days[0]; g = []
     if warn: g.append('warn')
@@ -720,6 +756,65 @@ def bg_land(art_, seed):
 
 LAND_SAISON = {'fruehling': (3, 4, 5), 'sommer': (6, 7, 8), 'herbst': (9, 10, 11), 'dorfwinter': (12, 1, 2), 'abend': tuple(range(1, 13))}
 
+# Studio fürs Abendvideo: Holzvertäfelung, Fenster mit Blick auf Schloss/Wald, Bildschirm für die Vorhersagekarte.
+# Bildraum 1000x1500, Bildschirmfläche fix (siehe STUDIO_SCREEN) – wird beim Rendern auf Bildschirmkoordinaten umgerechnet.
+STUDIO_SCREEN = (530, 190, 890, 700)
+STUDIO_TISCH = 905   # Oberkante des Tisches im fertigen Bild (720x1280)
+
+
+def bg_studio(seed):
+    BW, BH = 1000, 1500
+    r = random.Random(seed * 13 + 7)
+    im = Image.new('RGB', (BW, BH), (107, 78, 52))
+    dr = ImageDraw.Draw(im)
+    for x in range(0, BW, 92):   # Holzvertäfelung
+        dr.line([(x, 0), (x, 1500)], fill=(93, 66, 43), width=4)
+    for y in range(0, 1100, 70):
+        dr.line([(0, y), (BW, y)], fill=(118, 87, 58), width=1)
+    # Fenster mit Blick auf Schloss Bad König und Wald
+    fx0, fy0, fx1, fy1 = 90, 140, 430, 720
+    dr.rectangle([fx0 - 18, fy0 - 18, fx1 + 18, fy1 + 18], fill=(78, 56, 36), outline=(50, 36, 22), width=6)
+    sky = Image.new('RGB', (fx1 - fx0, fy1 - fy0), (160, 195, 220))
+    sd = ImageDraw.Draw(sky)
+    for yy in range(sky.height):
+        t = yy / sky.height
+        sd.line([(0, yy), (sky.width, yy)], fill=(int(140 + 40 * t), int(170 + 50 * t), int(205 + 30 * t)))
+    for k, (hy, amp, col) in enumerate(((0.52, 22, (90, 110, 80)), (0.62, 28, (62, 86, 55)))):
+        pts = [(x, int(sky.height * hy) + int(amp * math.sin(x / 55 + k))) for x in range(0, sky.width + 10, 10)]
+        sd.polygon([(0, sky.height)] + pts + [(sky.width, sky.height)], fill=col)
+    cx = sky.width * 0.46
+    sd.rectangle([cx - 36, sky.height * 0.42, cx + 36, sky.height * 0.66], fill=(150, 140, 120))
+    sd.polygon([(cx - 40, sky.height * 0.42), (cx, sky.height * 0.3), (cx + 40, sky.height * 0.42)], fill=(95, 70, 60))
+    sd.rectangle([cx - 10, sky.height * 0.34, cx + 10, sky.height * 0.42], fill=(50, 38, 32))
+    im.paste(sky, (fx0, fy0))
+    dr.line([(fx0 + (fx1 - fx0) // 2, fy0), (fx0 + (fx1 - fx0) // 2, fy1)], fill=(78, 56, 36), width=10)
+    dr.line([(fx0, fy0 + (fy1 - fy0) // 2), (fx1, fy0 + (fy1 - fy0) // 2)], fill=(78, 56, 36), width=10)
+    # Bildschirm an der Wand (Inhalt kommt beim Rendern dazu)
+    for _ in range(90):   # leichtes Korn, damit die Wand nicht zu glatt wirkt
+        x, y = r.uniform(0, BW), r.uniform(760, 1100)
+        dr.ellipse([x - 2, y - 2, x + 2, y + 2], fill=(130, 98, 66))
+    sx0, sy0, sx1, sy1 = STUDIO_SCREEN
+    dr.rounded_rectangle([sx0 - 14, sy0 - 14, sx1 + 14, sy1 + 14], radius=10, fill=(30, 28, 26))
+    dr.rectangle([sx0, sy0, sx1, sy1], fill=(24, 36, 48))
+    return im.filter(ImageFilter.SMOOTH)
+
+
+def studio_desk_overlay():
+    """Holztisch im Vordergrund (Bildkoordinaten) – verdeckt Max' Beine, sodass er am Tisch zu sitzen scheint."""
+    im = Image.new('RGBA', (W, H), (0, 0, 0, 0))
+    dr = ImageDraw.Draw(im)
+    top = STUDIO_TISCH
+    dr.rectangle([0, top, W, top + 46], fill=(150, 108, 68, 255))                    # Tischplatte
+    dr.rectangle([0, top + 46, W, top + 58], fill=(110, 78, 48, 255))                # Kante
+    dr.rectangle([0, top + 58, W, H], fill=(74, 52, 34, 255))                        # Front
+    for y in range(top + 90, H, 34):
+        dr.line([(0, y), (W, y)], fill=(62, 44, 28, 255), width=2)
+    dr.rounded_rectangle([430, top - 34, 500, top + 20], radius=8, fill=(240, 240, 235, 255), outline=(25, 30, 40, 255), width=4)   # Kaffeetasse
+    dr.arc([488, top - 22, 522, top + 10], 270, 90, fill=(25, 30, 40, 255), width=5)
+    dr.rounded_rectangle([560, top + 4, 690, top + 24], radius=4, fill=(235, 235, 240, 255), outline=(25, 30, 40, 255), width=3)    # Notizen
+    dr.text((W / 2, top + 150), 'ODENWALD-WETTER', font=F(34), fill=(215, 180, 130, 255), anchor='mm')
+    return im
+
 
 # Eigene Bilder: Dateiname = Ort, optional _saison (_sommer, _herbst, _winter, _fruehling, _advent)
 EIGEN_NAME = {}
@@ -775,6 +870,7 @@ def hintergruende(seed):
         bgs[k] = bg_landschaft(k, seed)
     for k in ('fruehling', 'sommer', 'herbst', 'abend', 'nebel', 'dorfwinter'):
         bgs['land_' + k] = bg_land(k, seed)
+    bgs['studio'] = bg_studio(seed)
     if WEIHNACHT[0]:
         bgs['advent'] = lichterkette(bg_landschaft('frost', seed), seed)
         bgs['advent_schnee'] = lichterkette(bg_landschaft('winter', seed), seed + 1)
@@ -829,7 +925,7 @@ def schirm(d, P, L):
     for x in (32, 77, 127, 172, 217): d.line(P(127, 6, x, 88), fill=(150, 25, 35), width=3 * 2)
 
 
-def moderator(mund, blinzeln, zeigen, wink=0, look='normal', prop=None):
+def moderator(mund, blinzeln, zeigen, wink=0, look='normal', prop=None, studio=False):
     """zeigen: 0 = Arm hängt, 1 = zeigt zur Tafel, 2 = Daumen hoch, 3 = winkt"""
     S = 2  # doppelt zeichnen, dann verkleinern = glatte Linien
     w, h = 380 * S, 760 * S
@@ -850,8 +946,9 @@ def moderator(mund, blinzeln, zeigen, wink=0, look='normal', prop=None):
         d.line([x0, y0, xm, ym], fill=LINIE, width=50 * S)
         d.line([x0, y0, xm, ym], fill=JACKE, width=40 * S)
     # Rucksack (schaut hinter den Schultern hervor)
-    d.rounded_rectangle(P(92, 262, 288, 500), radius=40 * S, fill=(150, 45, 40), outline=LINIE, width=L)
-    d.rounded_rectangle(P(150, 236, 230, 280), radius=18 * S, fill=(150, 45, 40), outline=LINIE, width=L)
+    if not studio:   # im Studio sitzt Max ohne Rucksack am Tisch
+        d.rounded_rectangle(P(92, 262, 288, 500), radius=40 * S, fill=(150, 45, 40), outline=LINIE, width=L)
+        d.rounded_rectangle(P(150, 236, 230, 280), radius=18 * S, fill=(150, 45, 40), outline=LINIE, width=L)
     # Beine + Wanderschuhe
     d.rounded_rectangle(P(130, 520, 182, 720), radius=20 * S, fill=HOSE, outline=LINIE, width=L)
     d.rounded_rectangle(P(198, 520, 250, 720), radius=20 * S, fill=HOSE, outline=LINIE, width=L)
@@ -875,10 +972,10 @@ def moderator(mund, blinzeln, zeigen, wink=0, look='normal', prop=None):
     else:
         d.polygon(P(148, 278, 190, 330, 232, 278, 224, 300, 190, 345, 156, 300), fill=JACKE, outline=LINIE)  # Stehkragen
         d.polygon(P(166, 284, 190, 318, 214, 284), fill=(245, 245, 245), outline=LINIE)
-    for x0, x1 in ((132, 146), (248, 234)):                                                   # Rucksackgurte
+    for x0, x1 in (() if studio else ((132, 146), (248, 234))):                               # Rucksackgurte
         d.line(P(x0, 296, x1, 470), fill=LINIE, width=15 * S)
         d.line(P(x0, 296, x1, 470), fill=(60, 60, 70), width=10 * S)
-    d.rounded_rectangle(P(150, 452, 230, 464), radius=4 * S, fill=(60, 60, 70), outline=LINIE, width=2 * S)  # Brustgurt
+    if not studio: d.rounded_rectangle(P(150, 452, 230, 464), radius=4 * S, fill=(60, 60, 70), outline=LINIE, width=2 * S)  # Brustgurt
     d.rounded_rectangle(P(203, 336, 263, 360), radius=6 * S, fill=(255, 255, 255), outline=LINIE, width=3 * S)  # Namensschild
     d.text(P(233, 348), 'MAX', font=ImageFont.truetype(B, 13 * S), fill=(30, 130, 120), anchor='mm')
     d.ellipse(P(150, 334, 176, 360), fill=(250, 210, 60), outline=LINIE, width=3 * S)          # Kompass-Anstecker
@@ -1211,18 +1308,19 @@ def baue(segmente, heute, ziel, special, titel=None):
     # vorbereiten
     MODS = {}
     lk0 = next((look_fuer(s['tag']) for s in segmente if s.get('tag')), 'kuehl' if heute.month in (11, 12, 1, 2, 3) else 'normal')   # ohne Tageswerte (z. B. Jahresrückblick): nach Jahreszeit
-    def mods_fuer(look, prop):
-        if (look, prop) not in MODS:
+    def mods_fuer(look, prop, st=False):
+        if (look, prop, st) not in MODS:
             mm_ = {}
             for m in range(4):
                 for b_ in (0, 1):
                     for z, wk in ((0, 0), (1, 0), (2, 0), (3, 0), (3, 1)):
-                        im_ = moderator(m, b_, z, wk * 22, look, prop); mm_[(m, b_, z, wk)] = im_.resize((int(im_.width * 0.92), int(im_.height * 0.92)), Image.LANCZOS)
-            MODS[(look, prop)] = mm_
-        return MODS[(look, prop)]
+                        im_ = moderator(m, b_, z, wk * 22, look, prop, st); gr_ = 1.2 if st else 0.92; mm_[(m, b_, z, wk)] = im_.resize((int(im_.width * gr_), int(im_.height * gr_)), Image.LANCZOS)
+            MODS[(look, prop, st)] = mm_
+        return MODS[(look, prop, st)]
     FX_LOOK = {'frost': ('winter', None), 'nebel': ('kuehl', None), 'schnee': ('winter', 'schippe'), 'regen': ('regen', 'schirm'), 'schauer': ('regen', None), 'gewitter': ('regen', None), 'sturm': ('sturm', None)}
     BAEUME = [baum(a_) for a_ in range(-14, 15, 2)]
     KAPPE = kappe()
+    STUDIO_DESK = studio_desk_overlay()
     kopf = kopfband(heute, special, titel)
     zeit = 0.0
     for k, s in enumerate(segmente):
@@ -1230,15 +1328,16 @@ def baue(segmente, heute, ziel, special, titel=None):
         bg = s['bg']
         fx = s.get('fx')
         if bg == 'auto': bg = 'hoehen'
-        if not fx and s['art'] in ('tipp', 'intro', 'outro'):   # passendes eigenes Bild zum genannten Ort / Advent
+        if bg != 'studio' and not fx and s['art'] in ('tipp', 'intro', 'outro'):   # passendes eigenes Bild zum genannten Ort / Advent
             treffer = bild_zum_text(s['text'], eigene, seed + k)
             if not treffer and s['art'] == 'intro': treffer = next((e for e in eigene if EIGEN_NAME[e].endswith('_advent')), None)
             if treffer: bg = treffer
+        if bg == 'studio': fx = None   # im Studio keine Wetter-Effekte
         if fx and bg != 'schloss' or fx and s['art'] in ('tag', 'special'):
             bg = {'schnee': 'winter', 'frost': 'frost', 'nebel': 'land_nebel', 'regen': 'regen', 'schauer': 'hoehen', 'gewitter': 'gewitter', 'sturm': 'sturm'}[fx]
             passend = [e for e in eigene if EIGEN_NAME[e].startswith(fx)]   # eigenes Stimmungsbild (z. B. schnee-…, nebel-…) bevorzugen
             if passend: bg = passend[(seed + k) % len(passend)]
-        elif s['art'] == 'tag' and s.get('tag') and s['tag']['code'] in (45, 48) and any(EIGEN_NAME[e].startswith('nebel') for e in eigene):
+        elif bg != 'studio' and s['art'] == 'tag' and s.get('tag') and s['tag']['code'] in (45, 48) and any(EIGEN_NAME[e].startswith('nebel') for e in eigene):
             nb = [e for e in eigene if EIGEN_NAME[e].startswith('nebel')]; bg = nb[(seed + k) % len(nb)]   # Nebeltag
         elif WEIHNACHT[0] and bg in ('wald', 'hoehen'):   # Adventszeit: eigene Advents-Bilder oder Lichterketten-Landschaft
             adv = [e for e in eigene if EIGEN_NAME.get(e, '').endswith('_advent')]
@@ -1247,6 +1346,8 @@ def baue(segmente, heute, ziel, special, titel=None):
         s['look'], s['prop'] = FX_LOOK.get(fx, (lk0, None))
         if s['look'] == 'regen' and s['prop'] is None and fx == 'regen': s['prop'] = 'schirm'
         s['bgimg'] = bgs[bg]
+        s['bg_key'] = bg
+        if bg == 'studio': s['look'], s['prop'] = 'normal', None   # drinnen: Softshell, keine Mütze, kein Schirm
         s['tafel'] = tafel_fuer(s, special)
         # Untertitel: Sätze, Zeit nach Zeichenanzahl verteilt
         saetze, cur = [], ''
@@ -1276,12 +1377,13 @@ def baue(segmente, heute, ziel, special, titel=None):
         s = next((x for x in segmente if x['t0'] <= t < x['t0'] + x['dauer']), segmente[-1])
         lt = t - s['t0']; p = min(1, lt / max(1, s['dauer']))
         # Hintergrund mit langsamer Kamerafahrt
+        studio = s.get('bg_key') == 'studio'
         bgi = s['bgimg']; bw, bh = bgi.size
-        sc = 1.0 + 0.06 * p
+        sc = 1.0 if studio else 1.0 + 0.06 * p
         cw, ch = int(W * bh / H / sc * (H / bh) * (bh / H)), 0
         cw = int(min(bw, bh * W / H) / sc); ch = int(cw * H / W)
-        x0 = int((bw - cw) * (0.15 + 0.7 * p)) if bw > cw + 10 else (bw - cw) // 2
-        y0 = int((bh - ch) * 0.4)
+        x0 = (bw - cw) // 2 if studio else int((bw - cw) * (0.15 + 0.7 * p)) if bw > cw + 10 else (bw - cw) // 2
+        y0 = int((bh - ch) * 0.4) if not studio else 0
         fr = bgi.crop((x0, y0, x0 + cw, y0 + ch)).resize((W, H), Image.BILINEAR).convert('RGBA')
         # Übergang: kurzes Einblenden aus Weiß
         if lt < 0.3 and i > 0:
@@ -1327,8 +1429,20 @@ def baue(segmente, heute, ziel, special, titel=None):
             for (x, y, r_, ph) in flocken:
                 yy = (y + t * 60 * r_) % H; xx = (x + 20 * math.sin(t + ph)) % W
                 dr.ellipse([xx - r_, yy - r_, xx + r_, yy + r_], fill=(255, 255, 255, 230))
-        # Tafel (rechts oben, schiebt sich herein)
-        if s['tafel'] is not None:
+        # Tafel: im Studio auf dem Bildschirm an der Wand, sonst rechts oben, schiebt sich herein
+        if s['tafel'] is not None and studio:
+            tf = s['tafel']
+            scl = W / cw
+            rx0, ry0, rx1, ry1 = STUDIO_SCREEN
+            rfx0, rfy0 = (rx0 - x0) * scl, (ry0 - y0) * scl
+            rfw, rfh = (rx1 - rx0) * scl, (ry1 - ry0) * scl
+            fit = min(rfw / tf.width, rfh / tf.height) * 0.92
+            tfr = tf.resize((max(1, int(tf.width * fit)), max(1, int(tf.height * fit))), Image.LANCZOS)
+            ein = min(1, lt / 0.5)
+            if ein < 1: tfr = Image.blend(Image.new('RGBA', tfr.size, (0, 0, 0, 0)), tfr, ein)
+            tx = int(rfx0 + (rfw - tfr.width) / 2); ty = int(rfy0 + (rfh - tfr.height) / 2)
+            fr.alpha_composite(tfr, (tx, ty))
+        elif s['tafel'] is not None:
             tf = s['tafel']; ein = min(1, lt / 0.45); ein = 1 - (1 - ein) ** 3
             tx = int(W - tf.width - 24 + (1 - ein) * (tf.width + 40)); ty = 215
             fr.alpha_composite(tf, (tx, ty))
@@ -1341,11 +1455,14 @@ def baue(segmente, heute, ziel, special, titel=None):
         elif s['art'] == 'cta' and (lt < 1.5 or lt > s['dauer'] - 2.5): zeigt = 3
         elif s['art'] == 'tipp' and 0.6 < lt < 2.6: zeigt = 2
         wk = 1 if zeigt == 3 and int(t * 5) % 2 else 0
-        mm = mods_fuer(s['look'], s['prop'])[(m, blink, zeigt, wk)]
+        mm = mods_fuer(s['look'], s['prop'], studio)[(m, blink, zeigt, wk)]
         bob = int(4 * math.sin(t * 2.2))
         if pk == 'sturm': bob += int(5 * math.sin(t * 9))   # Max wackelt im Wind
         mx, my = -20, H - mm.height - 150 + bob
+        if studio: mx, my = 10, STUDIO_TISCH - int(mm.height * 0.70) + bob // 2   # Hüfte auf Tischhöhe: Max sitzt
         fr.alpha_composite(mm, (mx, my))
+        if studio:
+            fr.alpha_composite(STUDIO_DESK, (0, 0))
         if pk == 'sturm' and lt < 2.4:   # die Kappe fliegt ihm vom Kopf davon
             q = lt / 2.4
             kp = KAPPE.rotate(-q * 540, expand=True)
@@ -1382,18 +1499,19 @@ def main():
         if not neu:
             print('Keine neue Warnung – kein Special.'); return
     wochen = '--woche' in sys.argv
-    segs = skript_woche(days, warn, heute) if wochen else skript(days, warn, heute, nur_special)
+    abends = '--abend' in sys.argv   # Abendvideo aus dem Studio (eigene Datei, nicht in der Videothek der Website)
+    segs = skript_abend(days, warn, heute) if abends else skript_woche(days, warn, heute) if wochen else skript(days, warn, heute, nur_special)
     special = nur_special   # das Morgenvideo ist immer das normale Video
-    name = 'special' if nur_special else 'woche' if wochen else 'wetter'
+    name = 'abendvideo' if abends else 'special' if nur_special else 'woche' if wochen else 'wetter'
     ziel = os.path.join(FB, name + '.mp4')
-    gesamt, echt = baue(segs, heute, ziel, special, titel='WOCHENAUSBLICK' if wochen else None)
+    gesamt, echt = baue(segs, heute, ziel, special, titel='WOCHENAUSBLICK' if wochen else 'ODENWALD AM ABEND' if abends else None)
     text = ' '.join(s['text'] for s in segs)
     tipps_speichern()
     json.dump({'erstellt': dt.datetime.now().astimezone().isoformat(timespec='minutes'), 'datum': heute.isoformat(),
                'special': special, 'warn': warn, 'dauer': round(gesamt, 1), 'stimme': echt, 'skript': text,
                **({'zeilen': next((x['zeilen'] for x in segs if x['art'] == 'woche'), [])} if wochen else {})},
               open(os.path.join(FB, name + '.json'), 'w', encoding='utf-8'), ensure_ascii=False)
-    archiv(name, heute, special, warn, gesamt)
+    if not abends: archiv(name, heute, special, warn, gesamt)
     print('Video fertig: %s (%.0f s)\n%s' % (ziel, gesamt, text))
 
 
