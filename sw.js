@@ -1,8 +1,8 @@
 /* Service Worker der Privaten Wetterstation Bad König.
    Lädt die Seite immer frisch aus dem Netz und nutzt den Zwischenspeicher nur,
    wenn keine Verbindung besteht. Wetterdaten von fremden Servern werden nie zwischengespeichert. */
-var CACHE = 'wetter-bk-v44';
-var SHELL = ['/', '/config.js', '/impressum.html', '/manifest.webmanifest', '/icon-192.png', '/icon-512.png'];
+var CACHE = 'wetter-bk-v45';
+var SHELL = ['/', '/config.js', '/theme.js', '/impressum.html', '/manifest.webmanifest', '/icon-192.png', '/icon-512.png'];
 
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(SHELL); }).then(function () { return self.skipWaiting(); }));
