@@ -43,6 +43,7 @@
     '--mut:' + DARK.muted + ';--acc:#6fb1e6}' +
     'html[data-theme="dark"],html[data-theme="dark"][data-sky]{--sky1:#1c2b42;--sky2:#18222f}' +
     'html[data-theme="dark"] .sky .cloud{filter:brightness(.38) saturate(.5)!important}' +
+    'html[data-theme="dark"] .fchero::before{background:rgba(255,255,255,.04)}' +
     'html[data-theme="dark"] body{background-color:' + DARK.bg + ';color:' + DARK.ink + '}' +
     'html[data-theme="dark"] img:not(.dm-keep){filter:brightness(.82)}' +
     'html[data-theme="dark"] input,html[data-theme="dark"] select,html[data-theme="dark"] textarea{background-color:' + DARK.surface + ';color:' + DARK.ink + ';border-color:' + DARK.line + '}' +
@@ -70,8 +71,14 @@
     el.style.setProperty(prop, val, 'important');
   }
   var SKIP = { IMG: 1, VIDEO: 1, IFRAME: 1, CANVAS: 1, PICTURE: 1, SOURCE: 1, SCRIPT: 1, STYLE: 1, BR: 1, OPTION: 1 };
+  function stops(img) {
+    if (!img || img === 'none' || /url\(/.test(img) || !/gradient/.test(img)) return null;
+    var m = img.match(/rgba?\([^)]+\)/g); if (!m) return null;
+    return m.map(parse).filter(function (c) { return c && c.a > .3; });
+  }
+  function darkTint(c) { var h = hsl(c); return lum(c) > .93 ? DARK.surface : hslStr(h[0], Math.min(h[1], .45), .2); }
   function effBg(el) {
-    while (el && el.nodeType === 1) { var c = parse(getComputedStyle(el).backgroundColor); if (c && c.a > .3) return c; el = el.parentElement; }
+    while (el && el.nodeType === 1) { var ecs = getComputedStyle(el), gs = stops(ecs.backgroundImage); if (gs && gs.length) return gs[0]; var c = parse(ecs.backgroundColor); if (c && c.a > .3) return c; el = el.parentElement; }
     return parse(DARK.bg.replace(/#(..)(..)(..)/, function (_, a, b, d) { return 'rgb(' + parseInt(a, 16) + ',' + parseInt(b, 16) + ',' + parseInt(d, 16) + ')'; }));
   }
   function fixEl(el) {
@@ -95,10 +102,14 @@
       if (lum(bg) > .93) set(el, 'background-color', DARK.surface);
       else { var hb = hsl(bg); set(el, 'background-color', hslStr(hb[0], Math.min(hb[1], .45), .2)); }
     }
+    var gst = stops(cs.backgroundImage);
+    if (gst && gst.length && gst.every(function (c) { return lum(c) > .72; })) {
+      set(el, 'background-image', 'linear-gradient(135deg,' + darkTint(gst[0]) + ',' + darkTint(gst[gst.length - 1]) + ')');
+    }
     var col = parse(cs.color);
-    if (col && lum(col) < .4 && el.childNodes.length) {
+    if (col && (lum(col) < .4 || (lum(col) < .6 && hsl(col)[1] < .2)) && el.childNodes.length) {
       var eb = effBg(el);
-      if (eb && lum(eb) < .32) { var hc = hsl(col); set(el, 'color', hc[1] < .15 ? DARK.ink : hslStr(hc[0], Math.min(hc[1], .75), .75)); }
+      if (eb && lum(eb) < .32) { var hc = hsl(col); set(el, 'color', hc[1] < .15 ? (lum(col) > .3 ? DARK.muted : DARK.ink) : hslStr(hc[0], Math.min(hc[1], .75), .75)); }
     }
     var bc = parse(cs.borderTopColor);
     if (cs.borderTopStyle !== 'none' && parseFloat(cs.borderTopWidth) > 0 && bc && lum(bc) > .8) set(el, 'border-color', DARK.line);
