@@ -934,7 +934,7 @@ def look_fuer(d):
 OUTFIT = {'winter': ((200, 45, 50), None, False),          # dicke rote Daunenjacke
           'regen': ((250, 200, 30), None, False),          # gelbe Regenjacke (Friesennerz)
           'kuehl': ((30, 130, 120), (60, 70, 85), False),  # Softshell mit dunkler Weste
-          'normal': ((30, 130, 120), (240, 140, 40), False),
+          'normal': ((30, 130, 120), (60, 70, 85), False),     # Wettersprecher: Jacke mit dunkler Weste
           'sturm': ((30, 130, 120), (60, 70, 85), False),   # Softshell, Mütze ist weggeflogen
           'warm': ((70, 140, 200), None, True),            # blaues Funktions-Shirt
           'sonne': ((240, 140, 40), None, True)}           # oranges T-Shirt
@@ -1000,13 +1000,11 @@ def max_koerper(pose, look='normal', studio=False):
         xm, ym = x0 + (x1 - x0) * 0.45, y0 + (y1 - y0) * 0.45
         d.line([x0, y0, xm, ym], fill=LINIE, width=50 * S)
         d.line([x0, y0, xm, ym], fill=JACKE_, width=40 * S)
-    if not studio:
-        d.rounded_rectangle(P(92, 262, 288, 500), radius=40 * S, fill=(150, 45, 40), outline=LINIE, width=L)
-        d.rounded_rectangle(P(150, 236, 230, 280), radius=18 * S, fill=(150, 45, 40), outline=LINIE, width=L)
-    d.rounded_rectangle(P(130, 520, 182, 720), radius=20 * S, fill=HOSE, outline=LINIE, width=L)
-    d.rounded_rectangle(P(198, 520, 250, 720), radius=20 * S, fill=HOSE, outline=LINIE, width=L)
-    d.rounded_rectangle(P(115, 700, 188, 745), radius=16 * S, fill=(120, 75, 45), outline=LINIE, width=L)
-    d.rounded_rectangle(P(192, 700, 265, 745), radius=16 * S, fill=(120, 75, 45), outline=LINIE, width=L)
+    # Wettersprecher: kein Rucksack, Halbschuhe statt Wanderschuhe
+    d.rounded_rectangle(P(130, 520, 182, 725), radius=20 * S, fill=HOSE, outline=LINIE, width=L)
+    d.rounded_rectangle(P(198, 520, 250, 725), radius=20 * S, fill=HOSE, outline=LINIE, width=L)
+    d.rounded_rectangle(P(120, 712, 188, 744), radius=13 * S, fill=(50, 38, 32), outline=LINIE, width=L)
+    d.rounded_rectangle(P(192, 712, 260, 744), radius=13 * S, fill=(50, 38, 32), outline=LINIE, width=L)
     aermel(P(118, 330, 92, 450, 120, 530))
     d.ellipse(P(100, 512, 142, 554), fill=HAUT, outline=LINIE, width=L)
     d.rounded_rectangle(P(108, 290, 272, 560), radius=46 * S, fill=JACKE_, outline=LINIE, width=L)
@@ -1016,21 +1014,20 @@ def max_koerper(pose, look='normal', studio=False):
     if look == 'winter':
         for y in (360, 410, 460, 510): d.line(P(116, y, 264, y), fill=(160, 30, 40), width=4 * S)
     if not KURZ: d.line(P(190, 300, 190, 560), fill=(220, 220, 225), width=4 * S)
-    d.rounded_rectangle(P(156, 400, 184, 430), radius=5 * S, fill=(205, 110, 30), outline=LINIE, width=3 * S)
-    d.rounded_rectangle(P(196, 400, 224, 430), radius=5 * S, fill=(205, 110, 30), outline=LINIE, width=3 * S)
+    dunkel = tuple(int(v * 0.72) for v in (WESTE or JACKE_))   # schlichte Taschen in Jackenfarbe
+    d.line(P(150, 470, 178, 470), fill=dunkel, width=5 * S)
+    d.line(P(202, 470, 230, 470), fill=dunkel, width=5 * S)
     if KURZ:
         d.chord(P(160, 270, 220, 320), 0, 180, fill=HAUT, outline=LINIE, width=L)
     else:
         d.polygon(P(148, 278, 190, 330, 232, 278, 224, 300, 190, 345, 156, 300), fill=JACKE_, outline=LINIE)
         d.polygon(P(166, 284, 190, 318, 214, 284), fill=(245, 245, 245), outline=LINIE)
-    for x0, x1 in (() if studio else ((132, 146), (248, 234))):
-        d.line(P(x0, 296, x1, 470), fill=LINIE, width=15 * S)
-        d.line(P(x0, 296, x1, 470), fill=(60, 60, 70), width=10 * S)
-    if not studio: d.rounded_rectangle(P(150, 452, 230, 464), radius=4 * S, fill=(60, 60, 70), outline=LINIE, width=2 * S)
     d.rounded_rectangle(P(203, 336, 263, 360), radius=6 * S, fill=(255, 255, 255), outline=LINIE, width=3 * S)
     d.text(P(233, 348), 'MAX', font=ImageFont.truetype(B, 13 * S), fill=(30, 130, 120), anchor='mm')
-    d.ellipse(P(150, 334, 176, 360), fill=(250, 210, 60), outline=LINIE, width=3 * S)
-    d.polygon(P(163, 338, 167, 347, 163, 356, 159, 347), fill=(200, 40, 40))
+    # Ansteckmikrofon am Kragen (statt Kompass)
+    d.rounded_rectangle(P(158, 338, 170, 352), radius=2 * S, fill=(70, 70, 78), outline=LINIE, width=2 * S)
+    d.ellipse(P(156, 324, 172, 340), fill=(35, 35, 40), outline=LINIE, width=2 * S)
+    d.line(P(164, 352, 160, 380), fill=(35, 35, 40), width=2 * S)
     # rechter Arm in beliebiger Stellung
     ex, ey, hx, hy = pose
     typ = _hand_typ(pose)
