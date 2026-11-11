@@ -130,6 +130,7 @@ jobs:
           # fb_senden.py postet beides höchstens 1x pro Tag (falls GitHub den festen Termin verspätet oder auslässt)
           python .github/scripts/fb_senden.py video || echo "Video nicht gepostet"
           python .github/scripts/fb_senden.py mittag || echo "Mittagsbeitrag nicht gepostet"
+          python .github/scripts/fb_senden.py mittagstory || echo "Mittags-Story nicht gepostet"
           python .github/scripts/fb_senden.py story || echo "Story nicht gepostet"
           python .github/scripts/fb_senden.py abend || echo "Abendvideo nicht gepostet"
           python .github/scripts/fb_senden.py abendstory || echo "Abend-Story nicht gepostet"

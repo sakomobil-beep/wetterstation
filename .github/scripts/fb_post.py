@@ -902,6 +902,26 @@ def story(days, warn, path, abends=False):
     im.save(path, quality=90)
 
 
+def mittagstory(src, path):
+    """Mittags-Story (1080x1920) für Facebook + Instagram: die quadratische Mittagskarte im Hochformat,
+    oben und unten Rahmen, damit in der Story nichts abgeschnitten wird."""
+    W, H = 1080, 1920
+    im = Image.new('RGB', (W, H)); dr = ImageDraw.Draw(im)
+    for y in range(H):
+        t = y / H
+        dr.line([0, y, W, y], fill=(int(22 + 30 * t), int(70 + 50 * t), int(130 + 60 * t)))
+    def mitte(y, txt, f, col=(255, 255, 255)):
+        w = dr.textlength(txt, font=f); dr.text(((W - w) / 2, y), txt, font=f, fill=col)
+    mitte(190, 'ODENWALD-WETTER', font(64, True), (255, 230, 150))
+    mitte(275, 'Mittags-Update', font(52))
+    karte = Image.open(src).convert('RGB').resize((W - 60, W - 60))
+    im.paste(karte, (30, 420))
+    mitte(1530, 'So geht der Tag weiter', font(54, True))
+    mitte(1730, 'Live-Werte & Vorhersage', font(42), (230, 240, 255))
+    mitte(1790, 'wetter-badkoenig.de', font(58, True))
+    im.save(path, quality=90)
+
+
 def abend(now):
     """Abendlauf (19 Uhr): Text und Bild für den Ausblick auf morgen/übermorgen (freitags Wochenende)
     -> fb/abend.jpg + fb/abend.json (Text ist die Beschreibung des Abendvideos) sowie die Abend-Story fb/abendstory.jpg."""
@@ -966,6 +986,11 @@ def main():
             json.dump({'erstellt': now.isoformat(timespec='minutes'), 'datum': days[0]['datum'].isoformat(), 'text': mtxt},
                       open(os.path.join(OUT, 'mittag.json'), 'w', encoding='utf-8'), ensure_ascii=False)
             print(mtxt)
+            try:   # Mittags-Story (Hochformat) für Facebook + Instagram
+                mittagstory(os.path.join(OUT, 'mittag.jpg'), os.path.join(OUT, 'mittagstory.jpg'))
+                json.dump({'erstellt': now.isoformat(timespec='minutes'), 'datum': days[0]['datum'].isoformat()},
+                          open(os.path.join(OUT, 'mittagstory.json'), 'w', encoding='utf-8'))
+            except Exception as e: print('Mittags-Story nicht erstellt:', e)
         except Exception as e:
             print('Mittagskarte nicht erstellt:', e)
     print(txt)
