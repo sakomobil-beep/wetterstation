@@ -1115,7 +1115,7 @@ button { font: inherit; color: inherit; }
       <div id="ncHome" class="nowcast" hidden></div>
       <a class="fc-link" href="#vorhersage" data-tab="vorhersage">Zur ausführlichen Vorhersage →</a>
     </article>
-    <a class="tvbtn tvbig" id="tvBtn" href="#video" data-tab="video"><span class="tvbtn-ic">▶</span><span><b id="tvBtnT">Video-Wetterbericht</b><small id="tvBtnS">Heute mit Max, eurem Outdoor-Guide</small></span></a>
+    <a class="tvbtn tvbig" id="tvBtn" href="#video" data-tab="video"><span class="tvbtn-ic">▶</span><span><b id="tvBtnT">Video-Wetterbericht</b><small id="tvBtnS">Heute mit Max, eurem Wettersprecher</small></span></a>
     <a class="fbfollow" href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="#fff" d="M14 8V6.2c0-.8.2-1.2 1.4-1.2H17V2h-2.6C11.3 2 10.5 3.6 10.5 6v2H8v3h2.5v11h3.5V11h2.6l.4-3z"/></svg><span><b>Folge uns auf Facebook</b><small>Max' Wettervideo jeden Morgen &amp; Unwetterwarnungen sofort</small></span></a>
     <a class="fbfollow igfollow" href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="#fff" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="#fff" stroke-width="2"/><circle cx="17.3" cy="6.7" r="1.2" fill="#fff"/></svg><span><b>Folge uns auf Instagram</b><small>@wetterstation_badkoenig · Wettervideos &amp; Abendausblick</small></span></a>
   </div>
@@ -1272,7 +1272,7 @@ button { font: inherit; color: inherit; }
   <section class="chart tv" id="tvCard" aria-label="Video-Wetterbericht">
     <div class="hist-head">
       <div>
-        <div class="label" id="tvLabel">Jeden Morgen um 6:30 Uhr neu · mit Max, eurem Odenwälder Outdoor-Guide</div>
+        <div class="label" id="tvLabel">Jeden Morgen um 6:30 Uhr neu · mit Max, eurem Wettersprecher</div>
         <h2 class="fc-h2" id="tvH2">🎬 Odenwald-Wetter im Video</h2>
       </div>
       <div class="stamp num" id="tvStamp"></div>
@@ -6584,7 +6584,7 @@ setInterval(renderSaison, 600000);
     var sp = !!e.special;
     c.classList.toggle('special', sp);
     el('tvH2').textContent = (sp ? '⚠️ Wetter-Special' : '🎬 Odenwald-Wetter') + (e.datum === heute ? ' – heute' : ' vom ' + datumText(e.datum));
-    el('tvLabel').textContent = e.warn && e.warn.length ? 'Amtliche Warnung des DWD · ' + e.warn[0] : 'Jeden Morgen um 6:30 Uhr neu · mit Max, eurem Odenwälder Outdoor-Guide';
+    el('tvLabel').textContent = e.warn && e.warn.length ? 'Amtliche Warnung des DWD · ' + e.warn[0] : 'Jeden Morgen um 6:30 Uhr neu · mit Max, eurem Wettersprecher';
     el('tvStamp').textContent = Math.round(e.dauer || 0) + ' Sek.';
     Array.prototype.forEach.call(document.querySelectorAll('.vt-item'), function (b) { b.classList.toggle('aktiv', b.dataset.datei === e.datei); });
     if (auto) { try { vid.play(); } catch (x) {} }
@@ -6604,7 +6604,7 @@ setInterval(renderSaison, 600000);
     spiele(neu, false);
     if (neu.datum === heute) {
       if (neu.special) { el('tvBtn').classList.add('special'); el('tvBtnT').textContent = '⚠️ Wetter-Special im Video'; el('tvBtnS').textContent = 'Jetzt ansehen – besondere Wetterlage'; }
-      else el('tvBtnS').textContent = 'Heute mit Max, eurem Outdoor-Guide';
+      else el('tvBtnS').textContent = 'Heute mit Max, eurem Wettersprecher';
     } else el('tvBtnS').textContent = 'Der neueste Bericht vom ' + datumText(neu.datum);
   }).catch(function () { el('tvMsg').hidden = false; el('tvBtnS').textContent = 'Jeden Morgen um 6:30 Uhr neu'; });
 })();

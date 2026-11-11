@@ -227,7 +227,7 @@ def main():
         if frisch_gepostet('video', heute): return
         d = dt.date.fromisoformat(heute)
         tage = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
-        kopf = ('⚠️ Wetter-Special' if j.get('special') else '🎬 Euer Odenwald-Wetter') + ' für %s, %d.%d. – mit dem Odenwälder Outdoor-Guide!' % (tage[d.weekday()], d.day, d.month)
+        kopf = ('⚠️ Wetter-Special' if j.get('special') else '🎬 Euer Odenwald-Wetter') + ' für %s, %d.%d. – mit Max, eurem Wettersprecher!' % (tage[d.weekday()], d.day, d.month)
         if video_senden('wetter.mp4', '\n'.join([kopf] + zeilen).strip() + ' #Wettervideo'):
             M['video'] = heute; M['video_zeit'] = jetzt.isoformat(timespec='minutes'); push('Wettervideo gepostet', kopf + '\nMax ist jetzt auf Facebook online.', tags='movie_camera,white_check_mark')
     elif modus == 'story':   # Facebook + Instagram: Story mit dem Wetter von heute, zusammen mit dem Morgenvideo
@@ -290,7 +290,7 @@ def main():
         if M.get('woche') == heute: print('Wochenausblick heute schon gepostet.'); return
         time.sleep(int(os.environ.get('FB_WARTEN', '90')))
         if frisch_gepostet('woche', heute): return
-        txt = '\n'.join(['📅 Euer Wochenausblick für den Odenwald – mit Max, dem Odenwälder Outdoor-Guide!', ''] +
+        txt = '\n'.join(['📅 Euer Wochenausblick für den Odenwald – mit Max, eurem Wettersprecher!', ''] +
                         ['• ' + z for z in j.get('zeilen', [])] +
                         ['', '📍 Vorhersage für den Odenwaldkreis aus vier Wettermodellen – Messwerte von unserer Station in Bad König.',
                          'Live-Werte & Vorhersage 👉 https://wetter-badkoenig.de', '#Odenwald #Odenwaldkreis #BadKönig #Wetter #Wochenausblick #Wettervideo'])

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Täglicher Video-Wetterbericht „Odenwald-Wetter“ mit dem Comic-Moderator (Outdoor-Guide).
+"""Täglicher Video-Wetterbericht „Odenwald-Wetter“ mit dem Comic-Moderator Max (Wettersprecher).
 Liest fb/daten.json (von fb_post.py), schreibt fb/wetter.mp4 (+ wetter.json) bzw. fb/special.mp4 (+ special.json).
 Stimme: Microsoft Neural-Stimme „Conrad“ über edge-tts. Ohne edge-tts (Test) wird eine stumme Spur erzeugt.
 Eigene (KI-)Hintergrundbilder: einfach als .jpg/.png in den Ordner video/hintergruende/ legen – sie werden mitbenutzt."""
@@ -317,7 +317,7 @@ def skript_woche(days, warn, heute):
     woch = days[1:6]
     seg = [dict(art='intro', bg='schloss', text=rnd.choice(['Ei gude, Odenwald! Hier ist euer Max mit dem Wochenausblick.',
                                                           'Guten Abend, Odenwald! Max hier – Zeit für den Blick auf die neue Woche.',
-                                                          'Sonntagabend, und euer Max ist noch mal draußen: Hier kommt der Wochenausblick!'])
+                                                          'Sonntagabend im Odenwald – hier ist Max mit dem Wochenausblick!'])
                 + ((' Vorweg: Vom Deutschen Wetterdienst gilt %s.' % ' und '.join(warn[:2])) if warn else ''))]
     for k, d in enumerate(woch[:3]):
         wann = TAGE[d['datum'].weekday()]
@@ -419,33 +419,31 @@ def special_grund(days, warn):
     return g
 
 
-# --- Max' Persönlichkeit: 34, aus Vielbrunn, Wanderführer und Hobby-Römerforscher,
-#     sein Rucksack ist immer zu schwer, Glühwein mag er lieber als Kälte ---
+# --- Max' Persönlichkeit: Wettersprecher aus dem Odenwald, freundlich und bodenständig,
+#     mag Tee, Therme und Glühwein lieber als Kälte ---
 def max_privat(d, rnd, heute):
     """Kleine persönliche Bemerkung – nur an etwa jedem dritten Tag."""
     if rnd.random() > 0.35: return ''
     w = wort(d['code'])
     nass = w in ('Regen', 'Nieselregen', 'Schauer', 'Gewitter') or d['rp'] >= 60
     if w == 'Schnee' or d['schnee'] >= 1:
-        opt = ['Ich hab meinen Schlitten schon aus dem Keller geholt – unter dem ganzen Zeug im Rucksack.',
-               'Bei uns oben in Vielbrunn liegt immer zuerst Schnee – da freu ich mich jedes Jahr wie ein Kind.']
+        opt = ['Ich geb’s zu: Beim Schnee freu ich mich jedes Jahr wie ein Kind.',
+               'Den Schlitten hab ich schon mal aus dem Keller geholt – man weiß ja nie.']
     elif nass:
-        opt = ['Ich verrate euch was: Bei so einem Wetter sitz ich am liebsten mit einem Buch über die Römer auf dem Sofa.',
-               'Mein Rucksack ist heute übrigens wasserdicht verpackt – na ja, fast. Irgendwas wird immer nass.',
+        opt = ['Ich verrate euch was: Bei so einem Wetter sitz ich am liebsten mit einem guten Buch auf dem Sofa.',
+               'Regenschirm nicht vergessen – ich spreche da aus Erfahrung.',
                'Bei Regen ist mein Lieblingsplatz das warme Becken in der Therme. Vielleicht sieht man sich!']
     elif d['code'] in (45, 48, 3):
-        opt = ['Bei so grauem Wetter hilft nur eins: eine Thermoskanne heißer Tee im Rucksack.',
-               'Ich mag Nebel ja irgendwie. Im Wald am Limes wirkt dann alles, als wären die Römer gleich um die Ecke.',
+        opt = ['Bei so grauem Wetter hilft nur eins: eine Tasse heißer Tee.',
+               'Ich mag Nebel ja irgendwie. Im Wald am Limes wirkt dann alles ein bisschen geheimnisvoll.',
                'Ganz ehrlich: An so einem grauen Tag darf man sich auch mal einfach eine Decke schnappen.']
     elif d['tmax'] <= 4:
-        opt = ['Ganz ehrlich: Bei der Kälte ist mir ein Glühwein lieber als jede Wanderung. Aber erst die Runde, dann der Glühwein!',
-               'Ich hab heute Morgen extra die dicken Socken eingepackt. Mein Rucksack wird dadurch natürlich nicht leichter.']
+        opt = ['Ganz ehrlich: Bei der Kälte ist mir ein heißer Glühwein lieber als alles andere.',
+               'Ich hab heute Morgen extra die dicken Socken rausgeholt.']
     else:
-        opt = ['Wisst ihr, was ich als Wanderführer am meisten höre? „Max, dein Rucksack ist viel zu schwer!“ – Stimmt. Aber man weiß ja nie.',
-               'Bei so einem Wetter jucken mir richtig die Wanderschuhe.',
-               'Als Hobby-Römerforscher sag ich euch: Die Römer haben schon gewusst, warum sie hier oben im Odenwald ihre Grenze gebaut haben – die Aussicht ist einfach top.',
-               'Ich bin ja in Vielbrunn aufgewachsen, direkt am Limes. Als Kind hab ich da im Wald immer nach Römermünzen gesucht – gefunden hab ich nur Tannenzapfen.',
-               'Mein Rucksack ist heute wieder randvoll: Brotzeit, Regenjacke, Fernglas und ein Buch über die Römer. Man muss ja vorbereitet sein!']
+        opt = ['Bei so einem Wetter freu ich mich jetzt schon auf den Feierabend.',
+               'Ich sag’s ja immer: Wetter gibt’s überall – aber so eine Aussicht wie im Odenwald nicht.',
+               'So ein Tag ist doch genau richtig, um den Odenwald einfach mal zu genießen.']
     return ' ' + rnd.choice(opt)
 
 
@@ -475,7 +473,7 @@ def abschied(d, rnd):
         return 'Euer Max sagt: Warm einpacken, vorsichtig fahren – und viel Spaß im Schnee!'
     if w in ('Regen', 'Nieselregen', 'Schauer') or d['rp'] >= 60:
         return rnd.choice(['Euer Max sagt: Macht es euch heute gemütlich – der Odenwald läuft nicht weg!',
-                           'Euer Max sagt: Tee kochen, Füße hoch – das nächste Wanderwetter kommt bestimmt!'])
+                           'Euer Max sagt: Tee kochen, Füße hoch – das nächste schöne Wetter kommt bestimmt!'])
     if d['code'] in (45, 48):
         return rnd.choice(['Euer Max sagt: Licht an im Nebel, fahrt vorsichtig – und macht es euch gemütlich!',
                            'Euer Max sagt: Warm einpacken und vorsichtig fahren – bis morgen!'])
@@ -483,7 +481,7 @@ def abschied(d, rnd):
         return rnd.choice(['Euer Max sagt: Auch ein grauer Tag kann schön werden – macht was draus!', 'Euer Max sagt: Jacke an und los – bis morgen!'])
     if d['tmax'] <= 3:
         return 'Euer Max sagt: Dick einpacken – und dann raus an die frische Luft!'
-    return 'Euer Max sagt: Rucksack auf und raus – der Odenwald wartet!'
+    return rnd.choice(['Euer Max sagt: Genießt den Tag – bis morgen!', 'Euer Max sagt: Macht was draus – bis morgen!'])
 
 
 def lage_fx(d):
@@ -546,8 +544,8 @@ def skript(days, warn, heute, nur_special=False):
     rnd = random.Random(heute.isoformat())
     a, b = days[0], days[1]
     seg = []
-    gruss = rnd.choice(['Ei gude, Odenwald! Hier ist euer Max.', 'Guten Morgen, Odenwald! Euer Max meldet sich vom Wanderweg.',
-                        'Ei gude wie, Odenwald? Max hier, euer Outdoor-Guide.', 'Moin aus dem Mümlingtal – euer Max ist schon draußen!'])
+    gruss = rnd.choice(['Ei gude, Odenwald! Hier ist euer Max.', 'Guten Morgen, Odenwald! Hier ist Max mit eurem Wetter.',
+                        'Ei gude wie, Odenwald? Max hier, mit dem Wetter für heute.', 'Guten Morgen aus dem Mümlingtal – hier ist euer Max.'])
     sp = special_grund(days, warn)
     if nur_special:   # eigenes Special-Video (mittags/nachmittags bei neuer Warnung)
         if warn:
@@ -563,11 +561,11 @@ def skript(days, warn, heute, nur_special=False):
                         text=(gruss + ' ' if not nur_special else '') + t))
     else:
         hinweis = (' Kurz vorweg: Vom Deutschen Wetterdienst gilt %s. Passt auf euch auf!' % ' und '.join(('eine ' + w[0].lower() + w[1:]) if w.lower().startswith('amtliche') else w for w in warn[:2])) if warn else ''
-        seg.append(dict(art='intro', bg='schloss', text=gruss + (' Für alle, die neu dabei sind: Ich bin Max, Wanderführer aus Vielbrunn.' if heute.weekday() == 0 else '') + ' Das ist euer Odenwald-Wetter für %s.' % TAGE[heute.weekday()] + hinweis))
+        seg.append(dict(art='intro', bg='schloss', text=gruss + (' Für alle, die neu dabei sind: Ich bin Max, euer Wettersprecher für den Odenwald.' if heute.weekday() == 0 else '') + ' Das ist euer Odenwald-Wetter für %s.' % TAGE[heute.weekday()] + hinweis))
     if not nur_special and a.get('gestern'):
         seg[-1]['text'] += ' ' + gestern_txt(a['gestern'], rnd)
     seg.append(dict(art='tag', tag=a, titel='HEUTE', bg='auto', text=tagtext(a, 'Heute') + fenster_txt(a, rnd)))
-    seg.append(dict(art='tipp', tag=a, bg='wald' if a['rp'] < 40 else 'schloss', text=rnd.choice(['Mein Outdoor-Tipp für heute: ', 'Max-Tipp des Tages: ', 'Und jetzt mein Tipp: ', 'Übrigens, mein Tipp für heute: ',
+    seg.append(dict(art='tipp', tag=a, bg='wald' if a['rp'] < 40 else 'schloss', text=rnd.choice(['Mein Tipp für heute: ', 'Max-Tipp des Tages: ', 'Und jetzt mein Tipp: ', 'Übrigens, mein Tipp für heute: ',
                                                                                'Was könnt ihr heute machen? ', 'Und wenn ihr noch nichts vorhabt: ']) + tipp(a, rnd, heute) + max_privat(a, rnd, heute)))
     if not nur_special:
         seg.append(dict(art='tag', tag=b, titel='MORGEN', bg='hoehen',
