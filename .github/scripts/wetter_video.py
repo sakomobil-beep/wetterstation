@@ -971,6 +971,7 @@ POSEN = {   # rechter Arm: Ellbogen (x, y), Hand (x, y) in Grundkoordinaten
 POSE_NR = {0: 'haengt', 1: 'zeigt', 2: 'daumen', 3: 'winkt', 4: 'offen'}
 KOPF_DREH = (190, 262)   # Drehpunkt am Hals (Grundkoordinaten)
 KOPF_H = 312             # Kopf-Ebene reicht von y=0 bis hier
+KOPF_Y = 18              # Kopf sitzt so viel tiefer auf dem Hals (kürzerer Hals)
 
 
 def _hand_typ(pose):
@@ -1207,7 +1208,7 @@ class MaxFigur:
         px, py = KOPF_DREH[0] * g, KOPF_DREH[1] * g
         wq = round(winkel * 4) / 4
         if wq: ko = ko.rotate(wq, resample=Image.BICUBIC, center=(px, py))
-        out.alpha_composite(ko, (0, int(round(nick * g - heb))))
+        out.alpha_composite(ko, (0, int(round((nick + KOPF_Y) * g - heb))))
         if self.schal is not None: out.alpha_composite(self.schal, (0, int(round(-heb * 0.5))))
         if self.req is not None: out.alpha_composite(self.req)
         return out
