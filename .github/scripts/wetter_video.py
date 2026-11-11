@@ -1797,7 +1797,12 @@ def sprich(text, pfad, rate='+2%', woerter=None):
                     elif ch['type'] == 'WordBoundary' and woerter is not None:
                         woerter.append((ch['offset'] / 1e7, (ch['offset'] + ch['duration']) / 1e7, ch['text']))
             if not n: raise RuntimeError('keine Audiodaten')
-        asyncio.run(go())
+        try:
+            asyncio.run(go())
+        except Exception as e:   # Rückfall: Stimme ohne Wortzeiten wie früher (Mundbilder dann aus dem Text verteilt)
+            print('Wortzeiten nicht verfügbar (%s) – Stimme ohne Wortzeiten.' % e)
+            if woerter is not None: woerter.clear()
+            asyncio.run(edge_tts.Communicate(text, VOICE, rate=rate).save(pfad))
         return True
     except Exception as e:
         print('Sprachausgabe nicht verfügbar (%s) – stumme Testspur.' % e)
