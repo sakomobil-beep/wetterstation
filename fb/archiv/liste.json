@@ -1,5 +1,12 @@
 [
  {
+  "datum": "2026-11-11",
+  "datei": "2026-11-11.mp4",
+  "special": false,
+  "warn": [],
+  "dauer": 93.8
+ },
+ {
   "datum": "2026-11-10",
   "datei": "2026-11-10.mp4",
   "special": false,
@@ -65,12 +72,5 @@
   "special": false,
   "warn": [],
   "dauer": 54.0
- },
- {
-  "datum": "2026-11-04",
-  "datei": "2026-11-04.mp4",
-  "special": false,
-  "warn": [],
-  "dauer": 41.3
  }
 ]
