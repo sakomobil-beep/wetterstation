@@ -958,116 +958,153 @@ def schirm(d, P, L):
     for x in (32, 77, 127, 172, 217): d.line(P(127, 6, x, 88), fill=(150, 25, 35), width=3 * 2)
 
 
-def moderator(mund, blinzeln, zeigen, wink=0, look='normal', prop=None, studio=False):
-    """zeigen: 0 = Arm hängt, 1 = zeigt zur Tafel, 2 = Daumen hoch, 3 = winkt"""
-    S = 2  # doppelt zeichnen, dann verkleinern = glatte Linien
+# ---------------------------------------------------------------------
+#  Max in Ebenen: Körper (mit Arm-Stellung), Kopf (Mund, Augen, Blick, Brauen),
+#  Hals/Schal und Requisiten – damit Kopf, Arme und Atmung unabhängig animiert werden.
+# ---------------------------------------------------------------------
+SCHULTER = (262, 330)
+POSEN = {   # rechter Arm: Ellbogen (x, y), Hand (x, y) in Grundkoordinaten
+    'haengt': (288, 450, 261, 533),
+    'zeigt': (320, 270, 355, 181),
+    'daumen': (300, 430, 311, 375),
+    'winkt': (318, 300, 331, 185),
+    'offen': (300, 452, 338, 410),
+}
+POSE_NR = {0: 'haengt', 1: 'zeigt', 2: 'daumen', 3: 'winkt', 4: 'offen'}
+KOPF_DREH = (190, 262)   # Drehpunkt am Hals (Grundkoordinaten)
+KOPF_H = 312             # Kopf-Ebene reicht von y=0 bis hier
+
+
+def _hand_typ(pose):
+    """Welche Handform passt zur (Zwischen-)Stellung? Details nur nahe einer Grundstellung."""
+    best, dist = 'haengt', 1e9
+    for k, v in POSEN.items():
+        dd = sum((a - b) ** 2 for a, b in zip(pose, v)) ** 0.5
+        if k == 'winkt': dd = min(dd, sum((a - b) ** 2 for a, b in zip(pose, (v[0], v[1], v[2] + 22, v[3]))) ** 0.5)
+        if dd < dist: best, dist = k, dd
+    return best if dist < 16 else 'haengt'
+
+
+def max_koerper(pose, look='normal', studio=False):
+    """Körper ohne Kopf: Rucksack, Beine, linker Arm, Rumpf, Hals, rechter Arm in beliebiger Stellung."""
+    S = 2
     w, h = 380 * S, 760 * S
-    im = Image.new('RGBA', (w, h), (0, 0, 0, 0))
-    d = ImageDraw.Draw(im)
+    im = Image.new('RGBA', (w, h), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
     L = 5 * S
-    cx = w // 2
     def P(*xy): return [v * S for v in xy]
-    JACKE, WESTE, KURZ = OUTFIT.get(look, OUTFIT['normal'])
+    JACKE_, WESTE, KURZ = OUTFIT.get(look, OUTFIT['normal'])
     def aermel(pts):
-        """Arm zeichnen: lang in Jackenfarbe oder kurz (Haut + kurzer Ärmel)."""
         d.line(pts, fill=LINIE, width=48 * S, joint='curve')
         if not KURZ:
-            d.line(pts, fill=JACKE, width=36 * S, joint='curve'); return
+            d.line(pts, fill=JACKE_, width=36 * S, joint='curve'); return
         d.line(pts, fill=HAUT, width=36 * S, joint='curve')
         x0, y0, x1, y1 = pts[0], pts[1], pts[2], pts[3]
         xm, ym = x0 + (x1 - x0) * 0.45, y0 + (y1 - y0) * 0.45
         d.line([x0, y0, xm, ym], fill=LINIE, width=50 * S)
-        d.line([x0, y0, xm, ym], fill=JACKE, width=40 * S)
-    # Rucksack (schaut hinter den Schultern hervor)
-    if not studio:   # im Studio sitzt Max ohne Rucksack am Tisch
+        d.line([x0, y0, xm, ym], fill=JACKE_, width=40 * S)
+    if not studio:
         d.rounded_rectangle(P(92, 262, 288, 500), radius=40 * S, fill=(150, 45, 40), outline=LINIE, width=L)
         d.rounded_rectangle(P(150, 236, 230, 280), radius=18 * S, fill=(150, 45, 40), outline=LINIE, width=L)
-    # Beine + Wanderschuhe
     d.rounded_rectangle(P(130, 520, 182, 720), radius=20 * S, fill=HOSE, outline=LINIE, width=L)
     d.rounded_rectangle(P(198, 520, 250, 720), radius=20 * S, fill=HOSE, outline=LINIE, width=L)
     d.rounded_rectangle(P(115, 700, 188, 745), radius=16 * S, fill=(120, 75, 45), outline=LINIE, width=L)
     d.rounded_rectangle(P(192, 700, 265, 745), radius=16 * S, fill=(120, 75, 45), outline=LINIE, width=L)
-    # linker Arm (hängt, Hand an der Hüfte)
     aermel(P(118, 330, 92, 450, 120, 530))
     d.ellipse(P(100, 512, 142, 554), fill=HAUT, outline=LINIE, width=L)
-    # Rumpf: Softshelljacke mit Weste
-    d.rounded_rectangle(P(108, 290, 272, 560), radius=46 * S, fill=JACKE, outline=LINIE, width=L)
+    d.rounded_rectangle(P(108, 290, 272, 560), radius=46 * S, fill=JACKE_, outline=LINIE, width=L)
     if WESTE:
-        d.polygon(P(150, 300, 190, 300, 182, 560, 150, 560), fill=WESTE, outline=LINIE)     # Weste links
-        d.polygon(P(230, 300, 190, 300, 198, 560, 230, 560), fill=WESTE, outline=LINIE)     # Weste rechts
-    if look == 'winter':                                                                # Steppnähte der Daunenjacke
+        d.polygon(P(150, 300, 190, 300, 182, 560, 150, 560), fill=WESTE, outline=LINIE)
+        d.polygon(P(230, 300, 190, 300, 198, 560, 230, 560), fill=WESTE, outline=LINIE)
+    if look == 'winter':
         for y in (360, 410, 460, 510): d.line(P(116, y, 264, y), fill=(160, 30, 40), width=4 * S)
-    if not KURZ: d.line(P(190, 300, 190, 560), fill=(220, 220, 225), width=4 * S)       # Reißverschluss
-    d.rounded_rectangle(P(156, 400, 184, 430), radius=5 * S, fill=(205, 110, 30), outline=LINIE, width=3 * S)  # Tasche
+    if not KURZ: d.line(P(190, 300, 190, 560), fill=(220, 220, 225), width=4 * S)
+    d.rounded_rectangle(P(156, 400, 184, 430), radius=5 * S, fill=(205, 110, 30), outline=LINIE, width=3 * S)
     d.rounded_rectangle(P(196, 400, 224, 430), radius=5 * S, fill=(205, 110, 30), outline=LINIE, width=3 * S)
     if KURZ:
-        d.chord(P(160, 270, 220, 320), 0, 180, fill=HAUT, outline=LINIE, width=L)     # Rundhals-Ausschnitt
+        d.chord(P(160, 270, 220, 320), 0, 180, fill=HAUT, outline=LINIE, width=L)
     else:
-        d.polygon(P(148, 278, 190, 330, 232, 278, 224, 300, 190, 345, 156, 300), fill=JACKE, outline=LINIE)  # Stehkragen
+        d.polygon(P(148, 278, 190, 330, 232, 278, 224, 300, 190, 345, 156, 300), fill=JACKE_, outline=LINIE)
         d.polygon(P(166, 284, 190, 318, 214, 284), fill=(245, 245, 245), outline=LINIE)
-    for x0, x1 in (() if studio else ((132, 146), (248, 234))):                               # Rucksackgurte
+    for x0, x1 in (() if studio else ((132, 146), (248, 234))):
         d.line(P(x0, 296, x1, 470), fill=LINIE, width=15 * S)
         d.line(P(x0, 296, x1, 470), fill=(60, 60, 70), width=10 * S)
-    if not studio: d.rounded_rectangle(P(150, 452, 230, 464), radius=4 * S, fill=(60, 60, 70), outline=LINIE, width=2 * S)  # Brustgurt
-    d.rounded_rectangle(P(203, 336, 263, 360), radius=6 * S, fill=(255, 255, 255), outline=LINIE, width=3 * S)  # Namensschild
+    if not studio: d.rounded_rectangle(P(150, 452, 230, 464), radius=4 * S, fill=(60, 60, 70), outline=LINIE, width=2 * S)
+    d.rounded_rectangle(P(203, 336, 263, 360), radius=6 * S, fill=(255, 255, 255), outline=LINIE, width=3 * S)
     d.text(P(233, 348), 'MAX', font=ImageFont.truetype(B, 13 * S), fill=(30, 130, 120), anchor='mm')
-    d.ellipse(P(150, 334, 176, 360), fill=(250, 210, 60), outline=LINIE, width=3 * S)          # Kompass-Anstecker
+    d.ellipse(P(150, 334, 176, 360), fill=(250, 210, 60), outline=LINIE, width=3 * S)
     d.polygon(P(163, 338, 167, 347, 163, 356, 159, 347), fill=(200, 40, 40))
-    # rechter Arm: zeigt nach oben rechts zur Tafel oder hängt
-    if zeigen == 1:
-        arm = P(262, 330, 320, 270 - wink, 352, 190 - wink)
-        hand = P(334, 160 - wink, 376, 202 - wink)
-    elif zeigen == 2:   # Daumen hoch vor der Brust
-        arm = P(262, 330, 300, 430, 310, 380)
-        hand = P(288, 352, 334, 398)
-    elif zeigen == 3:   # Winken
-        arm = P(262, 330, 318, 300, 330 + wink, 200)
-        hand = P(306 + wink, 160, 356 + wink, 210)
-    else:
-        arm = P(262, 330, 288, 450, 260, 530)
-        hand = P(240, 512, 282, 554)
-    aermel(arm)
-    d.ellipse(hand, fill=HAUT, outline=LINIE, width=L)
-    if zeigen == 2:
-        d.rounded_rectangle(P(302, 318, 322, 362), radius=9 * S, fill=HAUT, outline=LINIE, width=4 * S)
-    if zeigen == 3:
+    # rechter Arm in beliebiger Stellung
+    ex, ey, hx, hy = pose
+    typ = _hand_typ(pose)
+    aermel(P(SCHULTER[0], SCHULTER[1], ex, ey, hx, hy))
+    hr = 21
+    if typ == 'winkt':
         for k in range(4):
-            fx = 312 + wink + k * 12
-            d.rounded_rectangle(P(fx, 128 + abs(k - 1.5) * 6, fx + 11, 172), radius=5 * S, fill=HAUT, outline=LINIE, width=3 * S)
-        d.ellipse(P(306 + wink, 160, 356 + wink, 210), fill=HAUT, outline=LINIE, width=L)
-    if zeigen == 1:
-        d.line(P(362, 172 - wink, 378, 140 - wink), fill=LINIE, width=16 * S)
-        d.line(P(362, 172 - wink, 378, 140 - wink), fill=HAUT, width=9 * S)
-    # Hals + Kopf
-    d.rectangle(P(172, 250, 208, 295), fill=HAUT, outline=LINIE, width=L)
+            fx = hx - 19 + k * 12
+            d.rounded_rectangle(P(fx, hy - 57 + abs(k - 1.5) * 6, fx + 11, hy - 13), radius=5 * S, fill=HAUT, outline=LINIE, width=3 * S)
+    elif typ == 'offen':   # offene Hand, Finger leicht gefächert
+        for k in range(4):
+            fx = hx - 14 + k * 10
+            d.rounded_rectangle(P(fx, hy - 44 + abs(k - 1.5) * 5, fx + 9, hy - 10), radius=4 * S, fill=HAUT, outline=LINIE, width=3 * S)
+    d.ellipse(P(hx - hr, hy - hr, hx + hr, hy + hr), fill=HAUT, outline=LINIE, width=L)
+    if typ == 'daumen':
+        d.rounded_rectangle(P(hx - 9, hy - 57, hx + 11, hy - 13), radius=9 * S, fill=HAUT, outline=LINIE, width=4 * S)
+    elif typ == 'zeigt':
+        d.line(P(hx + 7, hy - 9, hx + 23, hy - 41), fill=LINIE, width=16 * S)
+        d.line(P(hx + 7, hy - 9, hx + 23, hy - 41), fill=HAUT, width=9 * S)
+    d.rectangle(P(172, 250, 208, 295), fill=HAUT, outline=LINIE, width=L)   # Hals
+    return im.resize((w // S, h // S), Image.LANCZOS)
+
+
+def max_kopf(mund, auge, blick, braue, look='normal', prop=None):
+    """Kopf-Ebene (y 0..KOPF_H): mund 0..3 / 'o' / 'm', auge 0 offen, 1 halb, 2 zu,
+    blick -1 (links) … 1 (rechts zur Tafel), braue 0 normal, 1 halb hoch, 2 hoch, -1 ernst."""
+    S = 2
+    w, h = 380 * S, KOPF_H * S
+    im = Image.new('RGBA', (w, h), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+    L = 5 * S
+    def P(*xy): return [v * S for v in xy]
     d.ellipse(P(110, 60, 270, 260), fill=HAUT, outline=LINIE, width=L)
-    bart = Image.new('RGBA', im.size, (0, 0, 0, 0)); bd = ImageDraw.Draw(bart)            # Dreitagebart
+    bart = Image.new('RGBA', im.size, (0, 0, 0, 0)); bd = ImageDraw.Draw(bart)
     bd.chord(P(124, 150, 256, 258), 15, 165, fill=HAAR + (38,))
     im.alpha_composite(bart); d = ImageDraw.Draw(im)
-    d.ellipse(P(100, 140, 126, 190), fill=HAUT, outline=LINIE, width=L)                 # Ohren
+    d.ellipse(P(100, 140, 126, 190), fill=HAUT, outline=LINIE, width=L)
     d.ellipse(P(254, 140, 280, 190), fill=HAUT, outline=LINIE, width=L)
-    d.chord(P(108, 52, 272, 176), 180, 360, fill=HAAR, outline=LINIE, width=L)          # Haare
+    d.chord(P(108, 52, 272, 176), 180, 360, fill=HAAR, outline=LINIE, width=L)
     d.pieslice(P(118, 36, 262, 150), 200, 340, fill=HAAR)
-    d.polygon(P(128, 108, 150, 62, 205, 40, 258, 70, 262, 108, 230, 88, 190, 98, 160, 90), fill=HAAR)  # Tolle
+    d.polygon(P(128, 108, 150, 62, 205, 40, 258, 70, 262, 108, 230, 88, 190, 98, 160, 90), fill=HAAR)
     d.line(P(150, 62, 205, 40, 258, 70), fill=LINIE, width=4 * S, joint='curve')
     d.arc(P(160, 60, 240, 110), 200, 300, fill=(70, 42, 22), width=3 * S)
     d.rectangle(P(114, 108, 128, 146), fill=HAAR)
     d.rectangle(P(252, 108, 266, 146), fill=HAAR)
-    # Augen + Brauen
-    for ex in (158, 222):
-        if blinzeln:
+    bx = blick * 5   # Pupillen wandern
+    for n_, ex in enumerate((158, 222)):
+        if auge >= 2:
             d.arc(P(ex - 15, 145, ex + 15, 165), 0, 180, fill=LINIE, width=4 * S)
         else:
             d.ellipse(P(ex - 13, 138, ex + 13, 168), fill=(255, 255, 255), outline=LINIE, width=3 * S)
-            d.ellipse(P(ex - 7, 146, ex + 7, 162), fill=(60, 90, 140))
-            d.ellipse(P(ex - 2, 148, ex + 3, 153), fill=(255, 255, 255))
-        d.line(P(ex - 16, 126, ex + 14, 122), fill=HAAR, width=6 * S)
-    d.line(P(190, 165, 182, 195, 194, 198), fill=(200, 140, 110), width=4 * S)          # Nase
-    d.ellipse(P(130, 185, 156, 203), fill=(250, 170, 150))                                # Wangen
+            d.ellipse(P(ex - 7 + bx, 146, ex + 7 + bx, 162), fill=(60, 90, 140))
+            d.ellipse(P(ex - 2 + bx, 148, ex + 3 + bx, 153), fill=(255, 255, 255))
+            if auge == 1:   # halb geschlossenes Lid
+                d.chord(P(ex - 13, 138, ex + 13, 168), 180, 360, fill=HAUT)
+                d.line(P(ex - 13, 153, ex + 13, 153), fill=LINIE, width=4 * S)
+        hoch = {0: 0, 1: 4, 2: 8, -1: 0}.get(braue, 0)
+        innen = 6 if braue == -1 else 0          # ernst: innere Enden tiefer
+        l_y, r_y = 126 - hoch, 122 - hoch
+        if n_ == 0: r_y += innen                  # linkes Auge: inneres Ende rechts
+        else: l_y += innen
+        d.line(P(ex - 16, l_y, ex + 14, r_y), fill=HAAR, width=6 * S)
+    d.line(P(190, 165, 182, 195, 194, 198), fill=(200, 140, 110), width=4 * S)
+    d.ellipse(P(130, 185, 156, 203), fill=(250, 170, 150))
     d.ellipse(P(224, 185, 250, 203), fill=(250, 170, 150))
-    # Mund (0 = Lächeln zu … 3 = weit offen)
     if mund == 0:
         d.arc(P(160, 190, 220, 228), 10, 170, fill=LINIE, width=5 * S)
+    elif mund == 'm':   # Lippen kurz aufeinander (M, B, P)
+        d.line(P(168, 211, 212, 211), fill=LINIE, width=6 * S)
+        d.arc(P(164, 196, 216, 222), 25, 155, fill=(150, 70, 70), width=3 * S)
+    elif mund == 'o':   # runder Mund (O, U)
+        d.ellipse(P(178, 199, 204, 231), fill=(140, 40, 50), outline=LINIE, width=4 * S)
+        d.ellipse(P(184, 219, 198, 227), fill=(220, 90, 100))
     else:
         o = [0, 10, 18, 26][mund]
         top, bot = 206 - o // 4, 212 + o
@@ -1075,33 +1112,25 @@ def moderator(mund, blinzeln, zeigen, wink=0, look='normal', prop=None, studio=F
         d.chord(P(162, top, 218, bot), 0, 180, fill=(140, 40, 50), outline=LINIE, width=4 * S)
         d.rectangle(P(172, mid + 1, 208, mid + 6), fill=(255, 255, 255))
         if o >= 18: d.ellipse(P(180, bot - 10, 200, bot - 3), fill=(220, 90, 100))
-    if WEIHNACHT[0] and look != 'sturm':   # Weihnachts-Max: Weihnachtsmütze + rot-grüner Schal
+    if WEIHNACHT[0] and look != 'sturm':
         d.polygon(P(108, 112, 272, 112, 250, 50, 300, 20, 214, 34, 150, 52), fill=(200, 35, 45), outline=LINIE)
         d.line(P(108, 112, 150, 52, 214, 34, 300, 20, 250, 50, 272, 112), fill=LINIE, width=L)
         d.ellipse(P(286, 4, 326, 44), fill=(245, 245, 245), outline=LINIE, width=L)
         d.rounded_rectangle(P(98, 94, 282, 130), radius=16 * S, fill=(245, 245, 245), outline=LINIE, width=L)
-        d.rounded_rectangle(P(140, 250, 240, 296), radius=20 * S, fill=(200, 35, 45), outline=LINIE, width=L)
-        for x in (160, 190, 220): d.line(P(x, 254, x, 292), fill=(30, 120, 60), width=8 * S)
-        d.rounded_rectangle(P(150, 280, 186, 400), radius=10 * S, fill=(200, 35, 45), outline=LINIE, width=L)
-        for y in (310, 340, 370): d.line(P(152, y, 184, y), fill=(30, 120, 60), width=8 * S)
-        for x in (156, 168, 180): d.line(P(x, 400, x, 414), fill=(245, 245, 245), width=4 * S)
-    elif look == 'winter':   # Bommelmütze + Schal
+    elif look == 'winter':
         d.chord(P(104, 30, 276, 190), 180, 360, fill=(200, 45, 50), outline=LINIE, width=L)
         d.rounded_rectangle(P(100, 96, 280, 128), radius=14 * S, fill=(240, 240, 240), outline=LINIE, width=L)
         for x in range(120, 270, 22): d.line(P(x, 40 + abs(x - 190) // 3, x, 96), fill=(170, 30, 40), width=4 * S)
         d.ellipse(P(166, 0, 214, 48), fill=(240, 240, 240), outline=LINIE, width=L)
-        d.rounded_rectangle(P(140, 250, 240, 296), radius=20 * S, fill=(200, 45, 50), outline=LINIE, width=L)
-        d.rounded_rectangle(P(150, 280, 186, 400), radius=10 * S, fill=(200, 45, 50), outline=LINIE, width=L)
-        for y in (330, 360): d.line(P(150, y, 186, y), fill=(240, 240, 240), width=6 * S)
-    elif look == 'kuehl':  # grüne Strickmütze
+    elif look == 'kuehl':
         d.chord(P(108, 40, 272, 200), 180, 360, fill=(40, 110, 70), outline=LINIE, width=L)
         d.rounded_rectangle(P(106, 104, 274, 130), radius=10 * S, fill=(30, 90, 55), outline=LINIE, width=L)
         for x in range(128, 262, 18): d.line(P(x, 108, x, 126), fill=(50, 130, 85), width=3 * S)
-    elif look == 'regen' and prop != 'schirm':  # gelber Friesennerz-Hut
+    elif look == 'regen' and prop != 'schirm':
         d.ellipse(P(80, 92, 300, 140), fill=(250, 200, 30), outline=LINIE, width=L)
         d.chord(P(122, 34, 258, 170), 180, 360, fill=(250, 200, 30), outline=LINIE, width=L)
         d.line(P(124, 104, 256, 104), fill=(210, 160, 20), width=6 * S)
-    elif look == 'sonne':  # Cap + Sonnenbrille
+    elif look == 'sonne':
         d.chord(P(112, 40, 268, 180), 180, 360, fill=(30, 130, 120), outline=LINIE, width=L)
         d.pieslice(P(200, 88, 320, 128), 180, 360, fill=(25, 105, 95), outline=LINIE, width=L)
         d.text(P(190, 78), 'ODW', font=ImageFont.truetype(B, 18 * S), fill=(255, 255, 255), anchor='mm')
@@ -1109,11 +1138,191 @@ def moderator(mund, blinzeln, zeigen, wink=0, look='normal', prop=None, studio=F
             d.rounded_rectangle(P(ex - 24, 136, ex + 24, 170), radius=12 * S, fill=(30, 40, 60), outline=LINIE, width=4 * S)
             d.line(P(ex - 14, 142, ex - 4, 142), fill=(120, 150, 200), width=3 * S)
         d.line(P(182, 148, 198, 148), fill=LINIE, width=5 * S)
-    if look == 'sturm':   # Haare zerzaust vom Wind
+    if look == 'sturm':
         for k in range(6): d.line(P(120 + k * 26, 70, 150 + k * 26, 36 + (k % 2) * 10), fill=HAAR, width=9 * S)
-    if prop == 'schippe': schippe(d, P, L)
-    elif prop == 'schirm': schirm(d, P, L)
     return im.resize((w // S, h // S), Image.LANCZOS)
+
+
+def max_schal(look):
+    """Schal (Weihnachten/Winter) – liegt über Hals und Brust, dreht sich nicht mit dem Kopf."""
+    S = 2
+    w, h = 380 * S, 760 * S
+    im = Image.new('RGBA', (w, h), (0, 0, 0, 0)); d = ImageDraw.Draw(im); L = 5 * S
+    def P(*xy): return [v * S for v in xy]
+    if WEIHNACHT[0] and look != 'sturm':
+        d.rounded_rectangle(P(140, 250, 240, 296), radius=20 * S, fill=(200, 35, 45), outline=LINIE, width=L)
+        for x in (160, 190, 220): d.line(P(x, 254, x, 292), fill=(30, 120, 60), width=8 * S)
+        d.rounded_rectangle(P(150, 280, 186, 400), radius=10 * S, fill=(200, 35, 45), outline=LINIE, width=L)
+        for y in (310, 340, 370): d.line(P(152, y, 184, y), fill=(30, 120, 60), width=8 * S)
+        for x in (156, 168, 180): d.line(P(x, 400, x, 414), fill=(245, 245, 245), width=4 * S)
+    elif look == 'winter':
+        d.rounded_rectangle(P(140, 250, 240, 296), radius=20 * S, fill=(200, 45, 50), outline=LINIE, width=L)
+        d.rounded_rectangle(P(150, 280, 186, 400), radius=10 * S, fill=(200, 45, 50), outline=LINIE, width=L)
+        for y in (330, 360): d.line(P(150, y, 186, y), fill=(240, 240, 240), width=6 * S)
+    else:
+        return None
+    return im.resize((w // S, h // S), Image.LANCZOS)
+
+
+def max_prop(prop):
+    S = 2
+    if prop not in ('schippe', 'schirm'): return None
+    im = Image.new('RGBA', (380 * S, 760 * S), (0, 0, 0, 0)); d = ImageDraw.Draw(im); L = 5 * S
+    def P(*xy): return [v * S for v in xy]
+    (schippe if prop == 'schippe' else schirm)(d, P, L)
+    return im.resize((380, 760), Image.LANCZOS)
+
+
+class MaxFigur:
+    """Setzt Max Bild für Bild aus den Ebenen zusammen (mit Zwischenspeicher)."""
+    def __init__(self, look='normal', prop=None, studio=False, gr=1.0):
+        self.look, self.prop, self.studio, self.gr = look, prop, studio, gr
+        self.K, self.KO = {}, {}
+        def sk(im): return None if im is None else im.resize((int(im.width * gr), int(im.height * gr)), Image.LANCZOS)
+        self.schal, self.req = sk(max_schal(look)), sk(max_prop(prop))
+        self.w, self.h = int(380 * gr), int(760 * gr)
+
+    def koerper(self, pose):
+        q = tuple(int(round(v / 3.0)) * 3 for v in pose)
+        if q not in self.K:
+            im = max_koerper(q, self.look, self.studio)
+            self.K[q] = im.resize((self.w, self.h), Image.LANCZOS)
+        return self.K[q]
+
+    def kopf(self, mund, auge, blick, braue):
+        k = (mund, auge, round(blick * 2) / 2, braue)
+        if k not in self.KO:
+            im = max_kopf(mund, auge, k[2], braue, self.look, self.prop)
+            self.KO[k] = im.resize((self.w, int(KOPF_H * self.gr)), Image.LANCZOS)
+        return self.KO[k]
+
+    def bild(self, pose=POSEN['haengt'], mund=0, auge=0, blick=0, braue=0, winkel=0.0, nick=0.0, atem=0.0):
+        """winkel in Grad (+ = nach links geneigt), nick in Grundpixeln (+ = runter), atem 0..1 (Brustkorb hebt sich)."""
+        g = self.gr
+        kb = self.koerper(pose)
+        if atem:   # Einatmen: Oberkörper minimal gestreckt (Füße bleiben stehen)
+            f = 1 + 0.010 * atem
+            kb2 = kb.resize((self.w, int(self.h * f)), Image.BILINEAR)
+            out = Image.new('RGBA', (self.w, self.h), (0, 0, 0, 0))
+            out.alpha_composite(kb2.crop((0, kb2.height - self.h, self.w, kb2.height)))
+            heb = (kb2.height - self.h) * (1 - KOPF_DREH[1] / 760)
+        else:
+            out = kb.copy(); heb = 0
+        ko = self.kopf(mund, auge, blick, braue)
+        px, py = KOPF_DREH[0] * g, KOPF_DREH[1] * g
+        wq = round(winkel * 4) / 4
+        if wq: ko = ko.rotate(wq, resample=Image.BICUBIC, center=(px, py))
+        out.alpha_composite(ko, (0, int(round(nick * g - heb))))
+        if self.schal is not None: out.alpha_composite(self.schal, (0, int(round(-heb * 0.5))))
+        if self.req is not None: out.alpha_composite(self.req)
+        return out
+
+
+def moderator(mund, blinzeln, zeigen, wink=0, look='normal', prop=None, studio=False):
+    """Einzelbild von Max (für Themenvideos): zeigen 0 hängt, 1 zeigt, 2 Daumen, 3 winkt, 4 offene Hand."""
+    pose = list(POSEN[POSE_NR.get(zeigen, 'haengt')])
+    if zeigen == 3: pose[2] += wink
+    return MaxFigur(look, prop, studio, 1.0).bild(tuple(pose), mund, 2 if blinzeln else 0)
+
+
+class MaxAnimation:
+    """Bewegungsablauf von Max: Blinzeln, Blick, Brauen, Kopfneigen/Nicken, fließende Arme, Gesten, Atmung, Mundformen."""
+    def __init__(self, lv, rund, seed=1):
+        self.lv, self.rund = lv, rund
+        self.r = random.Random(seed)
+        n = len(lv)
+        # Blinzeln: zufällige Abstände 2–6 s, manchmal doppelt
+        self.blink = np.zeros(n, dtype=int); i = int(self.r.uniform(1, 3) * FPS)
+        while i < n:
+            folge = [1, 2, 1]
+            if self.r.random() < 0.18: folge += [0, 0, 1, 2, 1]
+            for k, v in enumerate(folge):
+                if i + k < n: self.blink[i + k] = v
+            i += len(folge) + int(self.r.uniform(2.0, 6.0) * FPS)
+        # Betonungen: deutlicher Lautstärke-Anstieg
+        sm = np.convolve(lv, np.ones(3) / 3, mode='same')
+        self.betont = np.zeros(n, dtype=bool)
+        sperre = 0
+        for i in range(4, n):
+            if sm[i] > 0.9 and sm[i] - sm[i - 4] > 0.45 and i > sperre:
+                self.betont[i] = True; sperre = i + int(0.7 * FPS)
+        # Sprechpausen (für M-Lippen bei kurzen Lücken und Atmen bei langen)
+        self.spricht = lv >= 0.15
+        self.pose = list(POSEN['haengt'])
+        self.blick = 0.0; self.braue = 0.0; self.nick = 0.0; self.nv = 0.0
+        self.atem = 0.0; self.geste_bis = -1; self.naechste_geste = int(self.r.uniform(3, 6) * FPS)
+        self.blick_bis = -1; self.blick_ziel = 0.0; self.ruhe = 0
+        self.ph = [self.r.uniform(0, 6.3) for _ in range(4)]
+
+    def mund(self, i):
+        lv = self.lv; v = lv[i] if i < len(lv) else 0
+        if v < 0.15:
+            vor = any(lv[j] >= 0.3 for j in range(max(0, i - 3), i))
+            nach = any(lv[j] >= 0.3 for j in range(i + 1, min(len(lv), i + 4)))
+            return 'm' if vor and nach else 0
+        if v >= 0.45 and i < len(self.rund) and self.rund[i]: return 'o'
+        return 1 if v < 0.45 else 2 if v < 0.8 else 3
+
+    def schritt(self, i, t, s, lt, zeigt_alt, ernst=False):
+        """Liefert alle Parameter für MaxFigur.bild(). zeigt_alt: gewünschte Grundgeste 0..3 aus dem Ablauf."""
+        n = len(self.lv); v = self.lv[i] if i < n else 0
+        # --- Arm: Ziel bestimmen, Gesten beim Reden einstreuen
+        ziel = zeigt_alt
+        if ziel == 0 and self.spricht[i] if i < n else False:
+            if i >= self.naechste_geste and lt > 1.0 and lt < s['dauer'] - 1.5:
+                self.geste_bis = i + int(self.r.uniform(1.0, 1.8) * FPS)
+                self.naechste_geste = i + int(self.r.uniform(4.0, 7.5) * FPS)
+        if ziel == 0 and i < self.geste_bis: ziel = 4
+        zp = list(POSEN[POSE_NR[ziel]])
+        if ziel == 3: zp[2] += 11 + 11 * math.sin(t * 2 * math.pi * 2.4)            # Winken: weich hin und her
+        if ziel == 4: zp[3] += 6 * math.sin(t * 5.5); zp[2] += 3 * math.sin(t * 3.1)   # Hand bewegt sich beim Erklären
+        k = 0.55 if ziel == 3 else 0.28
+        self.pose = [a + (b - a) * k for a, b in zip(self.pose, zp)]
+        # --- Blick: zur Tafel, wenn er darauf zeigt, sonst Kamera; selten kurz zur Seite
+        if zeigt_alt == 1: self.blick_ziel, self.blick_bis = 1.0, i + int(0.4 * FPS)
+        elif i > self.blick_bis:
+            self.blick_ziel = 0.0
+            if self.r.random() < 0.004: self.blick_ziel, self.blick_bis = self.r.choice((-0.5, 0.5)), i + int(0.6 * FPS)
+        self.blick += (self.blick_ziel - self.blick) * 0.35
+        # --- Brauen: bei Betonung hoch, bei Fragen am Satzende hoch, bei Warnungen ernst
+        if i < n and self.betont[i]: self.braue = 2.0
+        txt = s.get('text', '').rstrip()
+        if txt.endswith('?') and lt > s['dauer'] - 1.6: self.braue = max(self.braue, 1.5)
+        self.braue *= 0.88
+        braue = 2 if self.braue > 1.3 else 1 if self.braue > 0.5 else (-1 if ernst else 0)
+        # --- Kopf: Nicken bei Betonung, leichtes Neigen beim Sprechen, Drehung zur Tafel
+        if i < n and self.betont[i]: self.nv += 2.6
+        self.nv += -self.nick * 0.35; self.nv *= 0.70; self.nick += self.nv
+        sp = min(1.0, v)
+        winkel = (1.2 * math.sin(t * 0.6 + self.ph[0]) + 1.6 * sp * math.sin(t * 2.1 + self.ph[1])
+                  + 0.8 * math.sin(t * 1.3 + self.ph[2]) - 2.5 * self.blick * (zeigt_alt == 1))
+        if lt < 0.6: winkel += 1.5 * math.sin(lt / 0.6 * math.pi)   # Satzanfang: kleine Kopfbewegung
+        # --- Atmung: ruhig immer, in Sprechpausen deutlicher
+        self.ruhe = self.ruhe + 1 if not (i < n and self.spricht[i]) else 0
+        tief = 1.0 if self.ruhe > FPS * 0.35 else 0.35
+        self.atem += (tief * (0.5 + 0.5 * math.sin(t * 2 * math.pi / 3.6)) - self.atem) * 0.15
+        auge = int(self.blink[i]) if i < n else 0
+        return dict(pose=tuple(self.pose), mund=self.mund(i), auge=auge, blick=self.blick, braue=braue,
+                    winkel=winkel, nick=self.nick, atem=self.atem)
+
+
+def rundheit(wav, n_frames):
+    """Je Bild: True, wenn der Klang dunkel/rund ist (O/U) – Anteil tiefer Frequenzen hoch."""
+    raw = subprocess.check_output(['ffmpeg', '-loglevel', 'error', '-i', wav, '-f', 's16le', '-ac', '1', '-ar', '16000', '-'])
+    a = np.frombuffer(raw, dtype=np.int16).astype(np.float32)
+    per = 16000 // FPS
+    fr = np.fft.rfftfreq(per, 1 / 16000)
+    tief, hoch = (fr >= 150) & (fr < 700), (fr >= 700) & (fr < 3500)
+    q = []
+    for i in range(n_frames):
+        c = a[i * per:(i + 1) * per]
+        if len(c) < per: q.append(0.0); continue
+        sp = np.abs(np.fft.rfft(c * np.hanning(per)))
+        q.append(float(sp[tief].sum() / (sp[hoch].sum() + 1e-6)))
+    q = np.array(q)
+    stimme = q[q > 0]
+    if len(stimme) < 10: return np.zeros(n_frames, dtype=bool)
+    return q > np.percentile(stimme, 80)
 
 
 def baum(sway):
@@ -1392,8 +1601,10 @@ def baue(segmente, heute, ziel, special, titel=None):
     gesamt = sum(s['dauer'] for s in segmente) + 0.8
     N = int(gesamt * FPS)
     lv = pegel(ton, N)
+    try: rund = rundheit(ton, N)
+    except Exception as e: print('Mundform-Analyse übersprungen:', e); rund = np.zeros(N, dtype=bool)
     if not echt:  # Testmodus: künstliche Sprechbewegung
-        lv = np.array([0.8 + 0.6 * math.sin(i * 1.7) for i in range(N)])
+        lv = np.array([max(0, 0.8 + 0.7 * math.sin(i * 1.7) * math.sin(i * 0.23)) for i in range(N)]); rund = np.array([(i // 7) % 5 == 0 for i in range(N)])
     # Hintergrundmusik (Pixabay, Sonican – lizenzfrei): leise darunter, bei Sprache zusätzlich abgesenkt
     musik = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'video', 'musik', 'hintergrund.mp3')
     if os.path.exists(musik):
@@ -1414,14 +1625,9 @@ def baue(segmente, heute, ziel, special, titel=None):
     MODS = {}
     lk0 = next((look_fuer(s['tag']) for s in segmente if s.get('tag')), 'kuehl' if heute.month in (11, 12, 1, 2, 3) else 'normal')   # ohne Tageswerte (z. B. Jahresrückblick): nach Jahreszeit
     def mods_fuer(look, prop, st=False):
-        if (look, prop, st) not in MODS:
-            mm_ = {}
-            for m in range(4):
-                for b_ in (0, 1):
-                    for z, wk in ((0, 0), (1, 0), (2, 0), (3, 0), (3, 1)):
-                        im_ = moderator(m, b_, z, wk * 22, look, prop, st); gr_ = 1.2 if st else 0.92; mm_[(m, b_, z, wk)] = im_.resize((int(im_.width * gr_), int(im_.height * gr_)), Image.LANCZOS)
-            MODS[(look, prop, st)] = mm_
+        if (look, prop, st) not in MODS: MODS[(look, prop, st)] = MaxFigur(look, prop, st, 1.2 if st else 0.92)
         return MODS[(look, prop, st)]
+    ANIM = MaxAnimation(lv, rund, seed)
     FX_LOOK = {'frost': ('winter', None), 'nebel': ('kuehl', None), 'schnee': ('winter', 'schippe'), 'regen': ('regen', 'schirm'), 'schauer': ('regen', None), 'gewitter': ('regen', None), 'sturm': ('sturm', None)}
     BAEUME = [baum(a_) for a_ in range(-14, 15, 2)]
     KAPPE = kappe()
@@ -1556,15 +1762,12 @@ def baue(segmente, heute, ziel, special, titel=None):
             tx = int(W - tf.width - 24 + (1 - ein) * (tf.width + 40)); ty = 215
             fr.alpha_composite(tf, (tx, ty))
         # Moderator (links unten), Mund nach Lautstärke
-        v = lv[i] if i < len(lv) else 0
-        m = 0 if v < 0.15 else 1 if v < 0.45 else 2 if v < 0.8 else 3
-        blink = 1 if (i % 95) in (0, 1, 2) else 0
         zeigt = 1 if s['tafel'] is not None and s['art'] in ('tag', 'wochenende', 'woche', 'special') and lt < 2.2 else 0
         if s['art'] in ('intro', 'outro') and lt < 2.0: zeigt = 3
         elif s['art'] == 'cta' and (lt < 1.5 or lt > s['dauer'] - 2.5): zeigt = 3
         elif s['art'] == 'tipp' and 0.6 < lt < 2.6: zeigt = 2
-        wk = 1 if zeigt == 3 and int(t * 5) % 2 else 0
-        mm = mods_fuer(s['look'], s['prop'], studio)[(m, blink, zeigt, wk)]
+        zst = ANIM.schritt(i, t, s, lt, zeigt, ernst=bool(special) and s['art'] in ('special', 'tag', 'intro'))
+        mm = mods_fuer(s['look'], s['prop'], studio).bild(**zst)
         bob = int(4 * math.sin(t * 2.2))
         if pk == 'sturm': bob += int(5 * math.sin(t * 9))   # Max wackelt im Wind
         mx, my = -20, H - mm.height - 150 + bob
