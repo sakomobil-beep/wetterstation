@@ -56,8 +56,10 @@ def demo():
 
 def erkennen(alerts, H):
     gefunden = {}
-    def add(typ, quelle, details, zeit=None, stufe=None, rat=None):
-        g = gefunden.setdefault(typ, dict(typ=typ, quellen=[], details=[], zeit=None, stufe=None, rat=None))
+    def add(typ, quelle, details, zeit=None, stufe=None, rat=None, orte=None):
+        g = gefunden.setdefault(typ, dict(typ=typ, quellen=[], details=[], zeit=None, stufe=None, rat=None, orte=[]))
+        for o in orte or []:
+            if o not in g['orte']: g['orte'].append(o)
         if quelle not in g['quellen']: g['quellen'].append(quelle)
         for d in details:
             if d not in g['details']: g['details'].append(d)
@@ -71,7 +73,7 @@ def erkennen(alerts, H):
                 zeit = None
                 if a.get('onset') and a.get('expires'): zeit = 'Gültig von %s bis %s' % (uhr(a['onset']), uhr(a['expires']))
                 add(typ, 'dwd', ['DWD: ' + (a.get('headline_de') or a.get('event_de'))], zeit, DWD_STUFE.get(a.get('severity')),
-                    (a.get('instruction_de') or '').split('\n')[0][:220] or None)
+                    (a.get('instruction_de') or '').split('\n')[0][:220] or None, a.get('orte'))
                 break                                                   # eine Warnung = eine Meldung
     # 2) Vorhersage der nächsten 24 Stunden
     jetzt = dt.datetime.now(TZ).strftime('%Y-%m-%dT%H:00')
@@ -94,13 +96,22 @@ def erkennen(alerts, H):
     if tn <= -8: add('frost', 'modell', ['Strenger Frost bis %.0f °C' % tn])
     nb = [i for i in idx if H['visibility'][i] is not None and H['visibility'][i] < 200]
     if nb: add('nebel', 'modell', ['Sichtweiten unter 200 m %s' % ab(nb[0])])
+    for g in gefunden.values():   # für wen gilt die amtliche Warnung?
+        if g['orte']: g['gebiet'] = 'ganzer Odenwaldkreis' if len(g['orte']) >= len(kreis_gemeinden()) - 1 else ', '.join(g['orte'])
     return list(gefunden.values())
+
+
+def kreis_gemeinden():
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import kreis
+    return kreis.GEMEINDEN
 
 
 def text(m):
     titel, emo, _, _, tag, _ = ARTEN[m['typ']]
     z = ['%s WETTER-SONDERMELDUNG für den Odenwald: %s %s' % (emo, titel, emo), '']
     if m['stufe']: z.append('⚠️ ' + m['stufe'])
+    if m.get('gebiet'): z.append('📍 Gilt für: ' + m['gebiet'])
     z += ['• ' + d for d in m['details'][:4]]
     if m['zeit']: z.append('🕒 ' + m['zeit'])
     if m['rat']: z += ['', '👉 ' + m['rat']]
@@ -142,7 +153,7 @@ def bild(m, path):
         f = font(36, True); w = dr.textlength(st, font=f)
         if zeichnen: dr.text(((W - w) / 2, y), st, font=f, fill=farbe)
         y += 60; f = font(34)
-        for d in m['details'][:4] + ([m['zeit']] if m['zeit'] else []):
+        for d in ([('Gilt für: ' + m['gebiet'])] if m.get('gebiet') else []) + m['details'][:4] + ([m['zeit']] if m['zeit'] else []):
             for z in zeilen(dr, d, f, W - 200)[:2]:
                 if y > 1000: break
                 w = dr.textlength(z, font=f)

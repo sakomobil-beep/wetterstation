@@ -60,6 +60,7 @@ def load():
         for a in kreis.warnungen(get):
             if a.get('severity') in ('moderate', 'severe', 'extreme') or a.get('event_de'):
                 w_ = a.get('headline_de') or a.get('event_de')
+                if a.get('gebiet') and a['gebiet'] != 'ganzer Odenwaldkreis': w_ += ' für ' + a['gebiet']   # für wen sie gilt
                 if w_ not in warn: warn.append(w_)
     except Exception as e:
         print('Warnungen nicht abrufbar:', e)
