@@ -463,6 +463,9 @@ button { font: inherit; color: inherit; }
 .fcard { background: var(--feature); color: var(--feature-ink); border-radius: 16px; padding: 24px 26px; display: grid; gap: 12px; align-content: start; min-width: 0; }
 .fc-kicker { font: 600 13px/1.4 var(--font-body); color: var(--feature-soft); }
 .fc-title { margin: 0; font: 600 clamp(1.4rem, 3vw, 1.85rem)/1.15 var(--font-display); letter-spacing: -.01em; text-wrap: balance; }
+.fc-tog { justify-self: start; display: inline-flex; gap: 4px; padding: 3px; border-radius: 999px; background: rgba(255, 255, 255, .12); }
+.fc-tog button { border: 0; background: transparent; color: inherit; font: 600 13px/1 var(--font-body, inherit); padding: 7px 13px; border-radius: 999px; cursor: pointer; opacity: .8; }
+.fc-tog button[aria-pressed="true"] { background: rgba(255, 255, 255, .92); color: #3a2418; opacity: 1; }
 .fc-chip { justify-self: start; padding: 3px 11px; border-radius: 999px; background: rgba(255, 255, 255, .15); font-size: 13px; }
 .fc-text p { margin: 0 0 8px; font-size: 15.5px; line-height: 1.65; max-width: 70ch; }
 .fc-text p:last-child { margin-bottom: 0; }
@@ -1109,7 +1112,8 @@ button { font: inherit; color: inherit; }
   <div class="outlook2">
     <article class="fcard">
       <div class="fc-kicker" id="fcKicker">DWD-Vorhersage</div>
-      <h2 class="fc-title">Wettervorhersage für <span class="place">Bad König</span></h2>
+      <div class="fc-tog" role="group" aria-label="Vorhersage für"><button type="button" data-ort="bk" aria-pressed="true">Bad König</button><button type="button" data-ort="kreis" aria-pressed="false">Odenwaldkreis</button></div>
+      <h2 class="fc-title" id="fcTitel">Wettervorhersage für <span class="place">Bad König</span></h2>
       <span class="fc-chip" id="fcChip" hidden></span>
       <div class="fc-text" id="fcText"><p>Die Vorhersage wird geladen …</p></div>
       <div id="ncHome" class="nowcast" hidden></div>
@@ -3198,7 +3202,35 @@ function outlookParts() {
   });
   return parts;
 }
+var FC_ORT = 'bk';   // Startseite „Was kommt“: Bad König (vorausgewählt) oder Odenwaldkreis
+document.addEventListener('click', function (e) {
+  var b = e.target.closest && e.target.closest('.fc-tog button'); if (!b) return;
+  FC_ORT = b.getAttribute('data-ort');
+  Array.prototype.forEach.call(document.querySelectorAll('.fc-tog button'), function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+  renderOutlook();
+});
+function renderOutlookKreis() {
+  var chip = $('fcChip');
+  $('fcTitel').innerHTML = 'Wettervorhersage für den Odenwaldkreis';
+  $('fcKicker').textContent = 'Mehrmodell-Vorhersage · Odenwaldkreis · Täler und Höhen';
+  var today = todayStr(), html = '', last = null;
+  [0, 1, 2].forEach(function (n) {
+    var ds = addDays(today, n), k = rgKreisTag(ds);
+    if (!k) return;
+    last = n === 0 ? 'Heute' : n === 1 ? 'Morgen' : WDL[parseYmd(ds).getDay()];
+    html += '<p><b>' + esc(last) + ':</b> ' + esc(k.text) + '</p>';
+  });
+  if (!html) {
+    loadRegion();
+    $('fcText').innerHTML = '<p>Die Vorhersage für den Odenwaldkreis wird geladen …</p>'; chip.hidden = true; return;
+  }
+  chip.textContent = last === 'Morgen' ? 'gültig bis morgen Abend' : last === 'Heute' ? 'gültig bis heute Abend' : 'gültig bis ' + last + 'abend';
+  chip.hidden = false;
+  $('fcText').innerHTML = html;
+}
 function renderOutlook() {
+  if (FC_ORT === 'kreis' && FC.loaded) return renderOutlookKreis();
+  if ($('fcTitel')) $('fcTitel').innerHTML = 'Wettervorhersage für <span class="place">' + esc(CONFIG.placeName) + '</span>';
   var chip = $('fcChip');
   if (!FC.loaded) {
     if (FC.err) $('fcText').innerHTML = '<p>Die Vorhersage konnte gerade nicht geladen werden (' + esc(FC.err) + '). Die Seite versucht es in wenigen Minuten erneut.</p>';
@@ -3410,7 +3442,7 @@ function loadRegion() {
     return fetchJson(rgUrl(t))
       .then(function (j) { RG.data[t.id] = rgDays(rgHours(j, t.id)); })
       .catch(function () { RG.data[t.id] = null; });
-  })); }).then(function () { RG.busy = false; if (!$('panel-vorhersage').hidden) renderRegion(); });
+  })); }).then(function () { RG.busy = false; if (!$('panel-vorhersage').hidden) renderRegion(); if (FC_ORT === 'kreis') renderOutlook(); });
 }
 /* 3-Tage-Vorhersage für den ganzen Odenwaldkreis (Täler und Höhen zusammengefasst) */
 function rgKreisTag(ds) {
