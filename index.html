@@ -238,6 +238,13 @@ button { font: inherit; color: inherit; }
 .ngring span { font: 600 2.1rem/1 var(--font-display); font-variant-numeric: tabular-nums; }
 .ngring span b { font-weight: 600; }
 .ngmini svg { display: block; }
+.ngday { margin: 0; display: grid; gap: 6px; }
+.ngday > div { display: grid; grid-template-columns: 5.2em 1fr; align-items: baseline; gap: 6px; }
+.ngday dt { font-size: 13px; color: var(--muted); }
+.ngday dd { margin: 0; display: flex; align-items: baseline; justify-content: space-between; gap: 6px; flex-wrap: wrap; }
+.ngday b { font: 600 1.25rem/1.15 var(--font-display); font-variant-numeric: tabular-nums; }
+.ngday small { font-size: 12px; color: var(--muted); }
+.ngday .hi dt, .ngday .hi b { color: var(--warm); } .ngday .lo dt, .ngday .lo b { color: var(--accent); }
 .nghl .v { font-size: 1.9rem; }
 .nghl .v:first-child { color: var(--warm); } .nghl .v:last-child { color: var(--accent); }
 .nghl .sl { font-size: 1.4rem; color: var(--muted); }
@@ -1144,9 +1151,12 @@ button { font: inherit; color: inherit; }
     <div class="line" id="rainLine">aktuell <b id="rain" class="num">–</b> mm/h</div>
   </article>
   <article class="tile">
-    <div class="label">Heute</div>
-    <div class="big nghl"><span class="v" id="nowHi">–</span><span class="sl">/</span><span class="v" id="nowLo">–</span></div>
-    <div class="line">Stärkste Böe <b id="nowGu" class="num">–</b> km/h</div>
+    <div class="label">Heute Höchst / Tiefst</div>
+    <dl class="ngday">
+      <div class="hi"><dt>↑ Höchst</dt><dd><b id="nowHi">–</b><small id="nowHiT"></small></dd></div>
+      <div class="lo"><dt>↓ Tiefst</dt><dd><b id="nowLo">–</b><small id="nowLoT"></small></dd></div>
+      <div><dt>💨 Böe</dt><dd><b id="nowGu">–</b><small id="nowGuT"></small></dd></div>
+    </dl>
   </article>
   </div>
 
@@ -1820,7 +1830,7 @@ button { font: inherit; color: inherit; }
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 12.11.2026, 16:50 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 12.11.2026, 17:00 Uhr</span></p>
 
 </div>
 
@@ -1919,7 +1929,7 @@ function adapt(raw) {
     var p = (pMax !== null && pMin !== null) ? (pMax + pMin) / 2 : (pMax !== null ? pMax : pMin);
     fine.push({ t: o.epoch * 1000, temp: num(mm.tempAvg !== undefined ? mm.tempAvg : mm.temp), humidity: num(o.humidityAvg !== undefined ? o.humidityAvg : o.humidity),
       pressure: p !== null ? p : num(mm.pressure), wind: num(mm.windspeedAvg !== undefined ? mm.windspeedAvg : mm.windSpeed), rain: rainCum,
-      hi: hi, lo: lo });
+      hi: hi, lo: lo, g: g });
     var key = Math.floor(o.epoch / 3600);
     if (!(key in buckets)) order.push(key);
     buckets[key] = {
@@ -2104,8 +2114,15 @@ function render() {
 
   $('solar').textContent = nf(d.solar, 0);
   var hiV = d.tempMax != null ? d.tempMax : Math.max.apply(null, temps), loV = d.tempMin != null ? d.tempMin : Math.min.apply(null, temps);
-  $('nowHi').textContent = nf(hiV, 1) + '°'; $('nowLo').textContent = nf(loV, 1) + '°';
-  $('nowGu').textContent = nf(d.gustMax != null ? d.gustMax : d.windGust, 0);
+  var guV = d.gustMax != null ? d.gustMax : d.windGust, tH = '', tL = '', tG = '', t0d = dayStart();
+  (d.fine || []).forEach(function (f) {
+    if (f.t < t0d) return;
+    if (f.hi !== null && f.hi === hiV && !tH) tH = hhmm(new Date(f.t));
+    if (f.lo !== null && f.lo === loV) tL = hhmm(new Date(f.t));
+    if (f.g !== null && f.g === guV && !tG) tG = hhmm(new Date(f.t));
+  });
+  $('nowHi').textContent = nf(hiV, 1) + ' °C'; $('nowLo').textContent = nf(loV, 1) + ' °C'; $('nowGu').textContent = nf(guV, 0) + ' km/h';
+  $('nowHiT').textContent = tH ? 'um ' + tH : ''; $('nowLoT').textContent = tL ? 'um ' + tL : ''; $('nowGuT').textContent = tG ? 'um ' + tG : '';
   $('rainLine').classList.toggle('wet', (d.rainRate || 0) > 0);
   renderHeroA();
 
