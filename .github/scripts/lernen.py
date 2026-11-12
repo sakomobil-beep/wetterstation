@@ -192,6 +192,36 @@ def main():
            'modelle': modelle,
            'treff': {'n': n, 'mae': round(fk / n, 2) if n else None, 'mae_roh': round(fr / n, 2) if n else None}}
     json.dump(out, open(os.path.join(DATA, 'lernen-bias.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
+
+    # Dauerhafter Lernverlauf (data/lernen-verlauf.json): je Tag Fehler + Stand der gelernten Korrektur, wird nie gelöscht
+    vp = os.path.join(DATA, 'lernen-verlauf.json')
+    try: V = json.load(open(vp, encoding='utf-8'))
+    except Exception: V = {'tage': {}}
+    heute = jetzt.strftime('%Y-%m-%d')
+    tagw = {}
+    for k, r in rows.items():
+        if 'st' not in r or r.get('md') is None or k[:10] >= heute: continue
+        e = tagw.setdefault(k[:10], [0.0, 0, 0.0, 0.0, 0])
+        e[0] += abs(r['st'] - r['md']); e[1] += 1
+        if 'p12' in r and r.get('r12') is not None:
+            e[2] += abs(r['st'] - r['p12']); e[3] += abs(r['st'] - r['r12']); e[4] += 1
+    for d, e in tagw.items():
+        if e[1] < 12: continue
+        x = V['tage'].get(d, {})
+        x.update({'n': e[1], 'md': round(e[0] / e[1], 2)})
+        if e[4] >= 6: x.update({'np': e[4], 'p12': round(e[2] / e[4], 2), 'r12': round(e[3] / e[4], 2)})
+        V['tage'][d] = x
+    # Stand der Korrektur am heutigen Tag festhalten (Nacht = 20-8 Uhr, Tag = 8-20 Uhr)
+    def mittel(l, bl): return round(sum(bias[l][b] for b in bl) / len(bl), 2)
+    best = min((m for m in modelle if modelle[m]['mae'] is not None), key=lambda m: modelle[m]['mae'], default=None)
+    V.setdefault('korrektur', {})[heute] = {
+        'klar_nacht': mittel('klar', (0, 1, 5)), 'klar_tag': mittel('klar', (2, 3, 4)),
+        'wolkig_nacht': mittel('wolkig', (0, 1, 5)), 'wolkig_tag': mittel('wolkig', (2, 3, 4)),
+        'stunden': sum(sum(anzahl[l]) for l in LAGEN), 'bestes': best,
+        'best_mae': modelle[best]['mae'] if best else None, 'treff': out['treff']['mae'], 'treff_roh': out['treff']['mae_roh']}
+    V['erstellt'] = out['erstellt']
+    V['tage'] = dict(sorted(V['tage'].items())); V['korrektur'] = dict(sorted(V['korrektur'].items()))
+    json.dump(V, open(vp, 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
     print(json.dumps(out, ensure_ascii=False))
 
 
