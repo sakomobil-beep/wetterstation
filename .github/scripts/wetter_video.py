@@ -163,6 +163,24 @@ def mundart(d, rnd):
     return ' ' + frisch(rnd, 'mundart', opt, tage=21)
 
 
+def frage_fuer(d, heute, rnd):
+    """Frage an die Zuschauer zum Schluss – passend zum Wetter, gleiche Frage frühestens nach 10 Tagen."""
+    w = wort(d['code']); opt = []
+    if d.get('frost_min', d['tmin']) <= 0: opt += ['Wer musste heute früh schon Scheiben kratzen? Schreibt’s in die Kommentare!',
+                                                  'Wie kalt war es heute Morgen bei euch? Schreibt mir eure Temperatur und euren Ort!']
+    if w in ('Regen', 'Schauer', 'Nieselregen', 'Gewitter') or d['rp'] >= 60: opt += ['Regnet es bei euch schon? Schreibt mir euren Ort in die Kommentare!',
+                                                                                     'Was macht ihr an so einem Regentag? Verratet es mir in den Kommentaren!']
+    if w == 'Schnee' or d.get('schnee', 0) >= 1: opt += ['Liegt bei euch schon Schnee? Schreibt mir euren Ort – und gern ein Foto!']
+    if w == 'neblig': opt += ['Wie dicht ist der Nebel bei euch? Schreibt euren Ort in die Kommentare!']
+    if w in ('sonnig', 'heiter bis wolkig') or d.get('sonne', 0) >= 5: opt += ['Was habt ihr bei dem schönen Wetter heute vor? Schreibt’s mir!',
+                                                                             'Scheint bei euch schon die Sonne? Schreibt mir euren Ort!']
+    opt += ['Aus welchem Ort im Odenwald schaut ihr zu? Schreibt’s in die Kommentare!',
+            'Wie sieht’s gerade bei euch draußen aus? Schreibt mir euren Ort!',
+            'Passt meine Vorhersage bei euch? Sagt’s mir in den Kommentaren!']
+    if heute.weekday() == 4: opt += ['Was habt ihr am Wochenende vor? Schreibt’s mir in die Kommentare!']
+    return frisch(rnd, 'frage', opt)
+
+
 def tipps_speichern():
     saetze_speichern()
     grenze = (dt.date.today() - dt.timedelta(days=30)).isoformat()
@@ -581,6 +599,7 @@ def max_privat(d, rnd, heute):
     return ' ' + rnd.choice(opt)
 
 
+FRAGE = ['']        # Frage des Tages an die Zuschauer (geht auch in den Facebook-Text)
 WEIHNACHT = [False]   # wird in baue() für 23.11.–28.12. gesetzt
 
 
@@ -731,6 +750,9 @@ def skript(days, warn, heute, nur_special=False):
             if ww: seg.append(dict(art='wissen', bg='wald', titel_w=ww['t'], text=rnd.choice(['Und jetzt: Wetter-Wissen in 20 Sekunden! ', 'Zum Schluss noch Wetter-Wissen in 20 Sekunden: ', 'Wetter-Wissen in 20 Sekunden: ']) + ww['s']))
         except Exception as e: print('Wetter-Wissen nicht möglich:', e)
     hm = himmel_txt(a, rnd) if not nur_special else ''
+    if not nur_special:   # Frage an die Zuschauer (Interaktion auf Facebook/Instagram)
+        FRAGE[0] = frage_fuer(a, heute, rnd)
+        seg.append(dict(art='frage', bg='schloss', frage=FRAGE[0], text=FRAGE[0]))
     seg.append(dict(art='outro', bg='schloss', text=hm + rnd.choice(['Alle Live-Werte findet ihr auf wetter-badkoenig.de.', 'Mehr gibt es live auf wetter-badkoenig.de.',
                                                        'Die aktuellen Werte von meiner Station gibt es jederzeit auf wetter-badkoenig.de.', 'Schaut gern mal rein auf wetter-badkoenig.de.'])
                        + ' ' + abschied(a, rnd) + advent_gruss(heute, rnd)))
@@ -1609,7 +1631,7 @@ class MaxAnimation:
         txt = s.get('text', '')
         if s.get('art') == 'special' or (special and s.get('art') in ('tag', 'intro')): return 'besorgt'
         if any(w in txt for w in ('Rekord', 'noch nie', 'Wahnsinn', 'unglaublich')) and lt < 2.5: return 'staunen'
-        if s.get('art') in ('tipp', 'intro', 'outro', 'cta'): return 'freude'
+        if s.get('art') in ('tipp', 'intro', 'outro', 'cta', 'frage'): return 'freude'
         if lt < 1.6 and txt.split('.')[0].rstrip().endswith('?'): return 'nachdenklich'
         tg = s.get('tag') or {}
         if tg:
@@ -2036,6 +2058,7 @@ def tafel_fuer(s, special):
         return tafel_text('MAX\' FREIZEIT-TIPP', [kurz(t_.split('. ')[0].rstrip('.!') + ('' if t_.split('. ')[0][-1:] in '.!' else '.'), 110)], (230, 130, 30))
     if s['art'] == 'special': return tafel_text('⚠ WETTER-SPECIAL'.replace('⚠ ', ''), [kurz(s.get('karte', s['text']), 120)], (200, 40, 40))
     if s['art'] == 'wissen': return tafel_text('WETTER-WISSEN', [kurz(s.get('titel_w', ''), 80)], (215, 160, 20))
+    if s['art'] == 'frage': return tafel_text('💬 SCHREIBT UNS!'.replace('💬 ', ''), [kurz(s['frage'], 120)], (254, 44, 85))
     if s['art'] == 'cta': return tafel_text('MACH MIT!', ['❤ Liken', '+ Folgen', '↻ Teilen', '✎ Kommentieren'], (254, 44, 85))
     if s['art'] == 'outro': return tafel_text('LIVE IM NETZ', ['wetter-badkoenig.de', 'Station Bad König · 184,5 m', 'Wetter für den ganzen Odenwald'], (25, 85, 160))
     return None
@@ -2343,7 +2366,7 @@ def baue(segmente, heute, ziel, special, titel=None):
             tx = int(W - tf.width - 24 + (1 - ein) * (tf.width + 40)); ty = 215
             fr.alpha_composite(tf, (tx, ty))
         # Moderator (links unten), Mund nach Lautstärke
-        zeigt = 1 if s['tafel'] is not None and s['art'] in ('tag', 'wochenende', 'woche', 'special', 'rueckblick') and (lt < 2.2 or s.get('tafel_wechsel') and 0.3 < tafel_seit < 1.9) else 0
+        zeigt = 1 if s['tafel'] is not None and s['art'] in ('tag', 'wochenende', 'woche', 'special', 'rueckblick', 'frage') and (lt < 2.2 or s.get('tafel_wechsel') and 0.3 < tafel_seit < 1.9) else 0
         if s['art'] in ('intro', 'outro') and lt < 2.0: zeigt = 3
         elif s['art'] == 'cta' and (lt < 1.5 or lt > s['dauer'] - 2.5): zeigt = 3
         elif s['art'] == 'tipp' and 0.6 < lt < 2.6: zeigt = 2
@@ -2403,7 +2426,7 @@ def main():
     text = ' '.join(s['text'] for s in segs)
     tipps_speichern()
     json.dump({'erstellt': dt.datetime.now().astimezone().isoformat(timespec='minutes'), 'datum': heute.isoformat(),
-               'special': special, 'warn': warn, 'dauer': round(gesamt, 1), 'stimme': echt, 'skript': text,
+               'special': special, 'warn': warn, 'dauer': round(gesamt, 1), 'stimme': echt, 'skript': text, 'frage': FRAGE[0],
                **({'zeilen': next((x['zeilen'] for x in segs if x['art'] == 'woche'), [])} if wochen else {})},
               open(os.path.join(FB, name + '.json'), 'w', encoding='utf-8'), ensure_ascii=False)
     if not abends: archiv(name, heute, special, warn, gesamt)

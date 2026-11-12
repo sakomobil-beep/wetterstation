@@ -228,6 +228,7 @@ def main():
         d = dt.date.fromisoformat(heute)
         tage = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
         kopf = ('⚠️ Wetter-Special' if j.get('special') else '🎬 Euer Odenwald-Wetter') + ' für %s, %d.%d. – mit Max, eurem Wettersprecher!' % (tage[d.weekday()], d.day, d.month)
+        if j.get('frage'): kopf += '\n\n💬 ' + j['frage']   # Frage an die Zuschauer – bringt Kommentare
         if video_senden('wetter.mp4', '\n'.join([kopf] + zeilen).strip() + ' #Wettervideo'):
             M['video'] = heute; M['video_zeit'] = jetzt.isoformat(timespec='minutes'); push('Wettervideo gepostet', kopf + '\nMax ist jetzt auf Facebook online.', tags='movie_camera,white_check_mark')
     elif modus == 'story':   # Facebook + Instagram: Story mit dem Wetter von heute, zusammen mit dem Morgenvideo
