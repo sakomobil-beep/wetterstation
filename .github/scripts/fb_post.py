@@ -296,7 +296,7 @@ def ort_daten(name, la, lo, el):
     if name not in ORT_CACHE:
         url = ('https://api.open-meteo.com/v1/forecast?latitude=%s&longitude=%s&elevation=%s&models=%s'
                '&daily=temperature_2m_max,temperature_2m_min,weather_code,snowfall_sum,precipitation_sum,wind_gusts_10m_max,sunshine_duration'
-               '&hourly=precipitation,cloud_cover,temperature_2m&forecast_days=8&timezone=Europe%%2FBerlin' % (la, lo, el, ','.join(MODELLE)))
+               '&hourly=precipitation,cloud_cover,temperature_2m,snowfall,weather_code&forecast_days=8&timezone=Europe%%2FBerlin' % (la, lo, el, ','.join(MODELLE)))
         ORT_CACHE[name] = None
         for v in range(3):   # kurze Aussetzer (Zeitüberschreitung) nicht gleich den ganzen Ort kosten
             try:
@@ -440,6 +440,85 @@ def hoehen(days):
                  boe=a['boe'], sonne=t['sonne'], schnee=a['schnee_cm'])
     try: KREIS_OM = kreis_stunden(TAELER)
     except Exception as e: print('Kreis-Stundenwerte nicht möglich:', e)
+    try: niederschlag(days)
+    except Exception as e: print('Niederschlags-Einstufung nicht möglich:', e)
+
+
+NASS_CODES = (51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 71, 73, 75, 77, 80, 81, 82, 85, 86, 95, 96, 99)
+STUFEN = ('trocken', 'vereinzelt', 'schauer', 'regen', 'gewitter')
+
+
+def stufe_aus(P, S, G):
+    """Einheitliche Regen-Einstufung aus max. Regen-Anteil P (%), Menge S (l/m²) und Gewitter-Anteil G (%)."""
+    if P < 10 or (P < 20 and S < 0.05): return 'trocken'
+    if G >= 30 and P >= 30: return 'gewitter'
+    if P < 30: return 'vereinzelt'
+    if P >= 60 and S >= 1: return 'regen'
+    return 'schauer'
+
+
+def niederschlag(days):
+    """EINE Grundlage für alles, was über Regen gesagt/gezeigt wird (Max, Facebook, Instagram, Grafiken):
+    Stundenwerte aller sechs Kreis-Orte × Modelle (gewichtet wie die Vorhersage).
+    Je Stunde: p = Anteil mit Niederschlag >= 0,1 l/m², mm = gewichtetes Mittel, Schnee-Anteil Tal/Höhen, Gewitter-Anteil.
+    Ergebnis: d['nied'] (Stufe für Tag, Vormittag, Nachmittag, Abend; Schnee Tal/Höhen) – und rp, rp_vm/nm/ab, regen,
+    code sowie die Stundenwerte der Grafik werden daran angeglichen, damit nichts mehr widersprüchlich ist."""
+    orte = [(o[0] in [h[0] for h in HOEHEN], ort_daten(*o)) for o in TAELER + HOEHEN]
+    orte = [(hoch, x['hourly']) for hoch, x in orte if x and x.get('hourly')]
+    if not orte: return
+    for n, d in enumerate(days):
+        tag = d['datum'].isoformat(); std = {}
+        for hoch, H in orte:
+            T = H.get('time') or []
+            for k, t in enumerate(T):
+                if t[:10] != tag: continue
+                h = int(t[11:13]); e = std.setdefault(h, dict(w=0.0, nw=0.0, mm=0.0, g=0.0, sn_t=[0.0, 0.0], sn_h=[0.0, 0.0]))
+                for m in MODELLE:
+                    w = gewicht(m, n); p = (H.get('precipitation_' + m) or [None] * len(T))[k]
+                    if not w or p is None: continue
+                    sf = (H.get('snowfall_' + m) or [None] * len(T))[k] or 0; c = (H.get('weather_code_' + m) or [None] * len(T))[k] or 0
+                    e['w'] += w; e['mm'] += w * p
+                    if p >= 0.1:
+                        e['nw'] += w; e['g'] += w if c >= 95 else 0
+                        z = e['sn_h'] if hoch else e['sn_t']; z[0] += w; z[1] += w if sf > 0 else 0
+        if not std: continue
+        H_ = {h: dict(p=round(100 * e['nw'] / e['w']), mm=e['mm'] / e['w'], g=100 * e['g'] / e['w'],
+                      sn_t=(e['sn_t'][1] / e['sn_t'][0]) if e['sn_t'][0] else 0, sn_h=(e['sn_h'][1] / e['sn_h'][0]) if e['sn_h'][0] else 0)
+              for h, e in std.items() if e['w']}
+        def teil(a, b):
+            x = [v for h, v in H_.items() if a <= h < b]
+            if not x: return dict(stufe='trocken', p=0, mm=0.0)
+            P = max(v['p'] for v in x); S = sum(v['mm'] for v in x); G = max(v['g'] for v in x)
+            nass = [v for v in x if v['p'] >= 30]
+            return dict(stufe=stufe_aus(P, S, G), p=P, mm=round(S, 1),
+                        schnee_tal=bool(nass) and sum(v['sn_t'] for v in nass) / len(nass) >= 0.5,
+                        schnee_hoch=bool(nass) and sum(v['sn_h'] for v in nass) / len(nass) >= 0.5)
+        N = dict(tag=teil(6, 24), vm=teil(6, 12), nm=teil(12, 18), ab=teil(18, 24), nacht=teil(0, 6))
+        d['nied'] = dict(stufe=N['tag']['stufe'], vm=N['vm']['stufe'], nm=N['nm']['stufe'], ab=N['ab']['stufe'],
+                         p=N['tag']['p'], mm=N['tag']['mm'], schnee_tal=N['tag'].get('schnee_tal', False), schnee_hoch=N['tag'].get('schnee_hoch', False))
+        d['rp'], d['rp_vm'], d['rp_nm'], d['rp_ab'] = N['tag']['p'], N['vm']['p'], N['nm']['p'], N['ab']['p']
+        d['regen'] = round(sum(v['mm'] for v in H_.values()), 1)
+        st_ = d['nied']['stufe']; c = d['code']
+        # Wettersymbol an die Einstufung angleichen: nass nur, wenn es wirklich nach Regen aussieht
+        if st_ in ('trocken', 'vereinzelt') and c in NASS_CODES:
+            if d['nied']['schnee_tal'] and st_ == 'vereinzelt': pass
+            else: c = 1 if d.get('sonne', 0) >= 7 else 2 if d.get('sonne', 0) >= 4 else 3
+        elif st_ == 'gewitter': c = 95
+        elif st_ in ('schauer', 'regen'):
+            if d['nied']['schnee_tal']: c = 73 if st_ == 'regen' else 85
+            elif st_ == 'regen' and (c not in NASS_CODES or c >= 80): c = 63 if d['nied']['mm'] >= 5 else 61
+            elif st_ == 'schauer' and (c not in NASS_CODES or c >= 95 or 71 <= c <= 77 or c in (85, 86)): c = 80
+        if c != d['code']: print('Wettersymbol %s angeglichen: %s -> %s (Regen-Stufe %s, %s %%)' % (tag, d['code'], c, st_, d['rp']))
+        d['code'] = c
+        if d.get('tal'): d['tal']['code'] = c
+        if d.get('hoch') and d['nied']['schnee_hoch']: d['hoch']['schnee'] = True   # im Tal Regen, oben Schnee
+        # Stundenwerte der Grafik: Regenrisiko/-menge aus derselben Grundlage, Symbole passend
+        for x in d.get('stunden') or []:
+            v = H_.get(x['h'])
+            if not v: continue
+            x['rp'] = v['p']; x['mm'] = round(v['mm'], 1)
+            if v['p'] < 30 and x.get('code', 0) in NASS_CODES: x['code'] = 3
+            elif v['p'] >= 30 and x.get('code', 0) not in NASS_CODES: x['code'] = 80
 
 
 def sicherheit(days):
@@ -736,7 +815,7 @@ def bild(days, warn, path, labels=('HEUTE', 'MORGEN'), kopf=None, nacht=False):
 
 
 def regenwort(p):
-    return 'trocken' if p < 20 else 'vereinzelt Schauer möglich' if p < 40 else 'Regen möglich' if p < 70 else 'nass'
+    return 'trocken' if p < 10 else 'vereinzelt Schauer möglich' if p < 30 else 'örtlich Schauer möglich' if p < 60 else 'nass'
 
 
 def tagesablauf(d):
@@ -758,9 +837,9 @@ def tipp(d):
     if d['schnee'] >= 1: return 'Schnee im Odenwald – warm anziehen, auf den Höhen kann es glatt werden. ⛄'
     if w == 'Gewitter': return 'Bei Gewitter Wanderungen lieber verschieben und rechtzeitig Schutz suchen.'
     if d.get('frost_min', d['tmin']) <= 0: return 'Morgens Scheiben kratzen einplanen und auf Glätte achten! 🧊'
-    if d['rp'] >= 70: return 'Ein guter Tag für drinnen – oder mit Regenjacke raus. ☔'
+    if d.get('nied', {}).get('stufe') == 'regen' or d['rp'] >= 70: return 'Ein guter Tag für drinnen – oder mit Regenjacke raus. ☔'
     if d['sonne'] >= 5 and d['rp'] < 30: return 'Ideales Wetter für eine Runde im Odenwald – raus an die frische Luft! 🥾'
-    if d['rp'] < 40: return 'Für einen Spaziergang passt es, eine Jacke sollte aber mit.'
+    if d['rp'] < 30: return 'Für einen Spaziergang passt es, eine Jacke sollte aber mit.'
     return 'Schirm griffbereit halten – Schauer sind möglich.'
 
 

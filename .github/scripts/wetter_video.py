@@ -38,11 +38,26 @@ def art(d):
 
 
 def regenzeit(d):
-    t = [('am Vormittag', d['rp_vm']), ('am Nachmittag', d['rp_nm']), ('am Abend', d['rp_ab'])]
-    nass = [n for n, p in t if p >= 50]
+    """Tageszeiten mit Schauern/Regen – aus derselben Einstufung wie alles andere (d['nied'])."""
+    N = d.get('nied')
+    if N: t = [('am Vormittag', N['vm'] in ('schauer', 'regen', 'gewitter')), ('am Nachmittag', N['nm'] in ('schauer', 'regen', 'gewitter')),
+               ('am Abend', N['ab'] in ('schauer', 'regen', 'gewitter'))]
+    else: t = [('am Vormittag', d['rp_vm'] >= 50), ('am Nachmittag', d['rp_nm'] >= 50), ('am Abend', d['rp_ab'] >= 50)]
+    nass = [n for n, x in t if x]
     if not nass: return None
     if len(nass) == 3: return 'den ganzen Tag über'
     return ' und '.join(nass)
+
+
+def stufe(d):
+    N = d.get('nied')
+    if N: return N['stufe']
+    return 'trocken' if d['rp'] < 10 else 'vereinzelt' if d['rp'] < 30 else 'regen' if d['rp'] >= 60 and d.get('regen', 0) >= 1 else 'schauer'
+
+
+def nass_tag(d):
+    """Wird es nass (Schauer, Regen, Gewitter)? Grundlage für Kleidung, Hintergrund, Tipp, Frage, Bemerkung."""
+    return stufe(d) in ('schauer', 'regen', 'gewitter')
 
 
 # --- Tipp-Gedächtnis: kein Freizeittipp doppelt innerhalb von 14 Tagen (fb/tipps.json) ---
@@ -128,15 +143,15 @@ def vergleich_gestern(d, rnd):
         return ' ' + frisch(rnd, 'gestern_kaelter', ['Das sind rund %d Grad weniger als gestern.' % -dif, 'Deutlich kühler als gestern, um etwa %d Grad.' % -dif,
                                                      'Im Vergleich zu gestern also ein ganzes Stück frischer.'])
     nass_heute = d['rp'] >= 50
-    schauer_code = d.get('code') in (51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 71, 73, 75, 77, 80, 81, 82, 85, 86, 95, 96, 99)
-    if (g.get('regen') or 0) >= 2 and d['rp'] < 10 and not schauer_code:
+    sf = stufe(d)
+    if (g.get('regen') or 0) >= 2 and sf == 'trocken':
         return ' ' + frisch(rnd, 'gestern_trocken', ['Nach dem Regen von gestern bleibt es heute trocken.', 'Endlich mal wieder trocken, nachdem es gestern noch geregnet hat.',
                                                      'Gestern nass, heute trocken – so mag ich das.'])
-    if (g.get('regen') or 0) >= 2 and d['rp'] < 40:
-        return ' ' + frisch(rnd, 'gestern_meist_trocken', ['Nach dem Regen gestern wird es heute meist trocken, ein einzelner Schauer ist aber nicht ganz ausgeschlossen.',
-                                                           'Weniger nass als gestern – ganz ausschließen lässt sich ein kurzer Schauer aber nicht.'])
-    if (g.get('regen') or 0) < 0.2 and nass_heute:
-        return ' ' + frisch(rnd, 'gestern_nass', ['Anders als gestern wird es heute nass.', 'Nach dem trockenen Tag gestern kommt heute wieder Regen.'])
+    if (g.get('regen') or 0) >= 2 and sf == 'vereinzelt':
+        return ' ' + frisch(rnd, 'gestern_meist_trocken', ['Nach dem Regen gestern wird es heute deutlich trockener.', 'Damit wird es heute weniger nass als gestern.'])
+    if (g.get('regen') or 0) < 0.2 and sf in ('schauer', 'regen', 'gewitter'):
+        return ' ' + frisch(rnd, 'gestern_nass', ['Anders als gestern wird es heute nass.', 'Nach dem trockenen Tag gestern kommt heute wieder Regen.']
+                            if sf != 'schauer' else ['Anders als gestern sind heute Schauer möglich.', 'Nach dem trockenen Tag gestern kann es heute örtlich Schauer geben.'])
     if abs(dif) <= 1 and rnd.random() < 0.3:
         return ' ' + frisch(rnd, 'gestern_gleich', ['Temperaturmäßig also ähnlich wie gestern.', 'Kaum anders als gestern.'])
     return ''
@@ -147,8 +162,8 @@ def reaktion(d, rnd):
     if rnd.random() > 0.33: return ''
     w = wort(d['code'])
     if d['tmax'] <= 3 or d.get('frost_min', d['tmin']) <= -3: return frisch(rnd, 'r_kalt', ['Brrr! ', 'Puh, das wird frisch. ', 'Tja, der Winter klopft an. '])
-    if w in ('Regen', 'Gewitter') or d['rp'] >= 80: return frisch(rnd, 'r_nass', ['Puh. ', 'Tja, ', 'Na ja, '])
-    if w == 'sonnig' or (d['sonne'] >= 6 and d['rp'] < 20): return frisch(rnd, 'r_sonne', ['Herrlich! ', 'Na, das kann sich sehen lassen! ', 'Also, '])
+    if w in ('Regen', 'Gewitter') or nass_tag(d): return frisch(rnd, 'r_nass', ['Puh. ', 'Tja, ', 'Na ja, '])
+    if w == 'sonnig' or (d['sonne'] >= 6 and stufe(d) == 'trocken'): return frisch(rnd, 'r_sonne', ['Herrlich! ', 'Na, das kann sich sehen lassen! ', 'Also, '])
     return frisch(rnd, 'r_neutral', ['Also, ', 'So, ', ''])
 
 
@@ -156,7 +171,7 @@ def mundart(d, rnd):
     """Ab und zu ein Odenwälder Satz – sehr sparsam (etwa jedes fünfte Video)."""
     if rnd.random() > 0.2: return ''
     w = wort(d['code'])
-    if w in ('Regen', 'Schauer', 'Nieselregen', 'Gewitter') or d['rp'] >= 60:
+    if w in ('Regen', 'Schauer', 'Nieselregen', 'Gewitter') or nass_tag(d):
         opt = ['Des werd e nass Sach!', 'Do bleibt mer liewer drinne.']
     elif d['tmax'] <= 5:
         opt = ['Do brauchd mer die dick Jack!', 'Des is e kalt Sach heit.']
@@ -172,7 +187,7 @@ def frage_fuer(d, heute, rnd):
     w = wort(d['code']); opt = []
     if d.get('frost_min', d['tmin']) <= 0: opt += ['Wer musste heute früh schon Scheiben kratzen? Schreibt’s in die Kommentare!',
                                                   'Wie kalt war es heute Morgen bei euch? Schreibt mir eure Temperatur und euren Ort!']
-    if w in ('Regen', 'Schauer', 'Nieselregen', 'Gewitter') or d['rp'] >= 60: opt += ['Regnet es bei euch schon? Schreibt mir euren Ort in die Kommentare!',
+    if w in ('Regen', 'Schauer', 'Nieselregen', 'Gewitter') or nass_tag(d): opt += ['Regnet es bei euch schon? Schreibt mir euren Ort in die Kommentare!',
                                                                                      'Was macht ihr an so einem Regentag? Verratet es mir in den Kommentaren!']
     if w == 'Schnee' or d.get('schnee', 0) >= 1: opt += ['Liegt bei euch schon Schnee? Schreibt mir euren Ort – und gern ein Foto!']
     if w == 'neblig': opt += ['Wie dicht ist der Nebel bei euch? Schreibt euren Ort in die Kommentare!']
@@ -231,7 +246,7 @@ def tipp(d, rnd, heute):
     """Freizeittipp für den Odenwald passend zum Wetter und zur Jahreszeit."""
     m, tag = heute.month, heute.day
     w = wort(d['code'])
-    trocken = d['rp'] < 40 and w not in ('Regen', 'Gewitter', 'Schnee')
+    trocken = not nass_tag(d) and w not in ('Regen', 'Gewitter', 'Schnee')
     if w == 'Schnee' or d['schnee'] >= 1:
         return wahl(rnd, ['Erst durch den Schnee stapfen, dann ab ins warme Thermalbad der Odenwald-Therme Bad König – besser geht Winter nicht!',
                            'Holt die Schlitten raus! Auf der Tromm und rund um den Katzenbuckel wird es weiß – aber fahrt vorsichtig, es kann glatt sein.',
@@ -351,10 +366,17 @@ def tagtext(d, wann):
                                 '%s wird es richtig angenehm: %s bei %s Grad.' % (W, art(d), t)]
     s = frisch(rnd, 'tag', opt)
     rz = regenzeit(d)
-    if rz and w not in ('Regen',):
+    sf = stufe(d)
+    if rz and sf == 'schauer':
+        s += ' ' + frisch(rnd, 'schauerzeit', ['Örtlich sind %s Schauer möglich.' % rz, 'Schauer gibt es am ehesten %s – nicht überall, aber hier und da.' % rz,
+                                               'Ein Schirm schadet nicht, %s kann es örtlich schauern.' % rz])
+    elif rz and sf in ('regen', 'gewitter') and w not in ('Regen',):
         s += ' ' + frisch(rnd, 'regenzeit', ['Regen ist vor allem %s wahrscheinlich.' % rz, 'Den Schirm braucht ihr vor allem %s.' % rz,
                                              'Nass werden kann es %s.' % rz, 'Mit Regen müsst ihr vor allem %s rechnen.' % rz,
                                              'Wenn es regnet, dann am ehesten %s.' % rz, 'Schirm einpacken – vor allem %s kann es nass werden.' % rz])
+    elif sf == 'vereinzelt':
+        s += ' ' + frisch(rnd, 'vereinzelt', ['Meist bleibt es trocken, nur vereinzelt ist ein kurzer Schauer möglich.',
+                                              'Ganz ausschließen lässt sich ein einzelner Schauer nicht, meistens bleibt es aber trocken.'])
     if d.get('frost_min', d['tmin']) <= 0:   # Frost nach dem kältesten Talort
         n = zahl(d.get('frost_min', d['tmin']))
         s += ' ' + frisch(rnd, 'frost', ['In der Nacht wird es frostig, bis %s Grad.' % n,
@@ -464,7 +486,7 @@ def woche(tage, rnd):
     lo, hi = min(d['tmax'] for d in vorn), max(d['tmax'] for d in vorn)
     t = rnd.choice(['Und weil Sonntag ist: ein Blick auf die neue Woche.', 'Zum Schluss noch der Ausblick auf die neue Woche.', 'Was bringt die neue Woche?'])
     t += ' Von Montag bis Mittwoch gibt es in den Tälern %s Grad.' % ('um ' + zahl(lo) if lo == hi else 'zwischen ' + zahl(lo) + ' und ' + zahl(hi))
-    nass = [TAGE[d['datum'].weekday()] for d in vorn if d['code'] in NASS or d['rp'] >= 60]
+    nass = [TAGE[d['datum'].weekday()] for d in vorn if d['code'] in NASS or nass_tag(d)]
     frost = [TAGE[d['datum'].weekday()] for d in vorn if d['tmin'] <= 0]
     def liste(x): return x[0] if len(x) == 1 else ', '.join(x[:-1]) + ' und ' + x[-1]
     if not nass: t += ' Dabei bleibt es meist trocken.'
@@ -475,7 +497,7 @@ def woche(tage, rnd):
     if sn: t += ' Auf den Höhen kann es am %s schneien.' % liste([TAGE[d['datum'].weekday()] for d in sn])
     hx = sum(d['tmax'] for d in hinten) / 2
     tr = 'milder' if hx - hi >= 2 else 'kühler' if hx - lo <= -2 else 'ähnlich'
-    hn = sum(1 for d in hinten if d['code'] in NASS or d['rp'] >= 60)
+    hn = sum(1 for d in hinten if d['code'] in NASS or nass_tag(d))
     t += ' Zum Ende der Woche zeigt die Tendenz: %s%s.' % ({'milder': 'eher milder', 'kühler': 'eher kühler', 'ähnlich': 'ähnliche Temperaturen'}[tr],
                                                           ', und eher nass' if hn == 2 else ', mit etwas Regen' if hn == 1 else ', und eher trocken')
     zeilen = ['%s  %s  %d° / %d°' % (KURZ[d['datum'].weekday()], wort(d['code']).replace('heiter bis wolkig', 'heiter'), d['tmax'], d['tmin']) for d in vorn]
@@ -598,7 +620,7 @@ def max_privat(d, rnd, heute):
     """Kleine persönliche Bemerkung – nur an etwa jedem dritten Tag."""
     if rnd.random() > 0.35: return ''
     w = wort(d['code'])
-    nass = w in ('Regen', 'Nieselregen', 'Schauer', 'Gewitter') or d['rp'] >= 60
+    nass = w in ('Regen', 'Nieselregen', 'Schauer', 'Gewitter') or nass_tag(d)
     if w == 'Schnee' or d['schnee'] >= 1:
         opt = ['Ich geb’s zu: Beim Schnee freu ich mich jedes Jahr wie ein Kind.',
                'Den Schlitten hab ich schon mal aus dem Keller geholt – man weiß ja nie.']
@@ -645,7 +667,7 @@ def abschied(d, rnd):
         return 'Heute lieber drinnen bleiben – passt auf euch auf!'
     if w == 'Schnee' or d['schnee'] >= 1:
         return 'Warm einpacken, vorsichtig fahren – und viel Spaß im Schnee!'
-    if w in ('Regen', 'Nieselregen', 'Schauer') or d['rp'] >= 60:
+    if w in ('Regen', 'Nieselregen', 'Schauer') or nass_tag(d):
         return rnd.choice(['Macht es euch heute gemütlich – der Odenwald läuft nicht weg!',
                            'Tee kochen, Füße hoch – das nächste schöne Wetter kommt bestimmt!'])
     if d['code'] in (45, 48):
@@ -666,7 +688,7 @@ def lage_fx(d):
     if w == 'Gewitter': return 'gewitter'
     if d['boe'] >= 55: return 'sturm'
     if w in ('Regen', 'Nieselregen') or d['regen'] >= 5: return 'regen'
-    if w == 'Schauer' or d['rp'] >= 60: return 'schauer'    # nur zeitweise Schauer: Sonne + Schauer in der Ferne
+    if w == 'Schauer' or nass_tag(d): return 'schauer'    # nur zeitweise Schauer: Sonne + Schauer in der Ferne
     return None
 
 
@@ -700,7 +722,7 @@ def wetterwissen(a, heute, rnd):
     if w == 'Gewitter': kat.append('gewitter')
     if a.get('boe', 0) >= 50: kat.append('sturm')
     if a['tmin'] <= 0: kat.append('frost')
-    if w in ('Regen', 'Nieselregen', 'Schauer') or a['rp'] >= 60: kat.append('regen')
+    if w in ('Regen', 'Nieselregen', 'Schauer') or nass_tag(a): kat.append('regen')
     if w in ('sonnig', 'heiter bis wolkig'): kat.append('sonne')
     kat.append({12: 'winter', 1: 'winter', 2: 'winter', 3: 'fruehling', 4: 'fruehling', 5: 'fruehling', 6: 'sommer', 7: 'sommer', 8: 'sommer'}.get(m, 'herbst'))
     kat += ['wolken', 'allgemein']
@@ -742,7 +764,7 @@ def skript(days, warn, heute, nur_special=False):
     seg.append(dict(art='tag', tag=a, titel='HEUTE', bg='auto', grafiken=(['regen'] if a['rp'] >= 30 else []) + (['wind'] if a.get('boe', 0) >= 45 else []),
                     text=reaktion(a, rnd) + frisch(rnd, 'ueberg_heute', ['', '', 'Kommen wir zum Wetter. ', 'So, jetzt zum Wetter. ', 'Und nun zum Tag. '])
                          + tagtext(a, 'Heute') + vergleich_gestern(a, rnd) + einordnung(a, rnd) + mundart(a, rnd) + fenster_txt(a, rnd) + grafik_saetze(a, (['regen'] if a['rp'] >= 30 else []) + (['wind'] if a.get('boe', 0) >= 45 else []), rnd)))
-    seg.append(dict(art='tipp', tag=a, bg='wald' if a['rp'] < 40 else 'schloss', text=frisch(rnd, 'ueberg_tipp', ['Mein Tipp für heute: ', 'Max-Tipp des Tages: ', 'Und jetzt mein Tipp: ', 'Übrigens, mein Tipp für heute: ',
+    seg.append(dict(art='tipp', tag=a, bg='wald' if not nass_tag(a) else 'schloss', text=frisch(rnd, 'ueberg_tipp', ['Mein Tipp für heute: ', 'Max-Tipp des Tages: ', 'Und jetzt mein Tipp: ', 'Übrigens, mein Tipp für heute: ',
                                                                                'Was könnt ihr heute machen? ', 'Und wenn ihr noch nichts vorhabt: ', 'Bevor ich’s vergesse – mein Tipp: ',
                                                                                'Noch was für eure Freizeit: ', 'Ihr sucht noch was für heute? ', 'Kleiner Tipp am Rande: ']) + tipp(a, rnd, heute) + max_privat(a, rnd, heute)))
     if not nur_special:
@@ -755,7 +777,7 @@ def skript(days, warn, heute, nur_special=False):
             so = next(d for d in days if d['datum'].weekday() == 6)
             if sa['datum'] > b['datum'] or so['datum'] > b['datum']:
                 nass = (51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 71, 73, 75, 77, 80, 81, 82, 85, 86, 95, 96, 99)
-                gut = [n for n, d in (('Samstag', sa), ('Sonntag', so)) if d['rp'] < 40 and d['code'] not in nass]
+                gut = [n for n, d in (('Samstag', sa), ('Sonntag', so)) if not nass_tag(d) and d['code'] not in nass]
                 grau = any(d['code'] in (45, 48) or d['code'] == 3 for d in (sa, so))
                 t = '%s Im Odenwald Samstag %s bei %s Grad, Sonntag %s bei %s Grad.' % (rnd.choice(['Ein Blick aufs Wochenende:', 'Und das Wochenende?', 'Kurz noch zum Wochenende:']), wort(sa['code']), zahl(sa['tmax']), wort(so['code']), zahl(so['tmax']))
                 t += (' Trockener bleibt es am %s.' % gut[0]) if len(gut) == 1 else ((' Beide Tage bleiben wohl trocken – zieht euch aber warm an.' if grau else ' Beide Tage sehen gut aus für draußen!') if gut else ' Plant lieber etwas für drinnen ein.')
@@ -1107,7 +1129,7 @@ def look_fuer(d):
     """Kleidung nach Wetterlage: winter, regen, kuehl, normal, warm, sonne."""
     w = wort(d['code'])
     if w == 'Schnee' or d['schnee'] >= 1 or d['tmax'] <= 4: return 'winter'
-    if w in ('Regen', 'Gewitter', 'Nieselregen', 'Schauer') or d['rp'] >= 60: return 'regen'
+    if w in ('Regen', 'Gewitter', 'Nieselregen', 'Schauer') or nass_tag(d): return 'regen'
     if d['tmax'] <= 11: return 'kuehl'
     if d['tmax'] >= 20: return 'sonne' if w in ('sonnig', 'heiter bis wolkig') else 'warm'
     return 'normal'
@@ -2038,11 +2060,11 @@ def grafik_saetze(d, grafiken, rnd, wann='heute'):
                    + 'Am wärmsten wird es %s gegen %d Uhr mit etwa %s Grad, am kühlsten ist es um %d Uhr mit %s Grad.'
                    % (wann, hi['h'], zahl(hi['t']), lo['h'], zahl(lo['t'])))
     if 'regen' in grafiken:
-        nass = [x for x in st if x['rp'] >= 40]
-        if not nass and max(x['rp'] for x in st) < 20:
+        nass = [x for x in st if x['rp'] >= 30]
+        if not nass and max(x['rp'] for x in st) < 10:
             out.append('Bei den Regenbalken sieht es gut aus: Es bleibt trocken.')
         elif nass:
-            out.append('Bei den Regenbalken seht ihr: Am ehesten regnet es zwischen %d und %d Uhr, da liegt das Risiko bei bis zu %d Prozent.'
+            out.append('Bei den Regenbalken seht ihr: Am ehesten gibt es Niederschlag zwischen %d und %d Uhr, da liegt das Risiko bei bis zu %d Prozent.'
                        % (nass[0]['h'], nass[-1]['h'] + 1, max(x['rp'] for x in nass)))
         else:
             out.append('Das Regenrisiko bleibt über den Tag gering, höchstens %d Prozent.' % max(x['rp'] for x in st))
@@ -2442,6 +2464,41 @@ def baue(segmente, heute, ziel, special, titel=None):
     return gesamt, echt
 
 
+NASS_WORTE = ('Schirm', 'nass werden', 'wird es heute nass', 'wieder Regen', 'Regen ist vor allem', 'Mit Regen müsst', 'Wenn es regnet',
+              'regnet es', 'Regnet es', 'kann es nass', 'Regenjacke', 'Schauer gibt es', 'schauern', 'Schauer möglich')
+TROCKEN_WORTE = ('heute trocken', 'wieder trocken', 'Es bleibt trocken', 'bleibt es trocken', 'Dabei bleibt es meist trocken')
+
+
+def pruefen(segs):
+    """Selbstkontrolle vor dem Rendern: Passt jeder Satz über Regen zur Regen-Einstufung des Tages?
+    Widersprüchliche Sätze werden entfernt (Grafik-Sätze bleiben, damit die Tafeln stimmen), dazu eine Push-Nachricht."""
+    import re
+    fehler = []
+    for sg in segs:
+        d = sg.get('tag')
+        if not d or sg.get('art') == 'rueckblick': continue
+        sf = stufe(d); schutz = tuple(a for v in GRAFIK_ANFANG.values() for a in v)
+        saetze = re.split(r'(?<=[.!?])\s+', sg['text']); neu = []
+        for x in saetze:
+            falsch = (sf in ('trocken', 'vereinzelt') and any(w_ in x for w_ in NASS_WORTE) and not ('vereinzelt' in x or 'einzelner Schauer' in x or 'kurzer Schauer' in x)) \
+                     or (sf == 'trocken' and 'Schauer' in x) \
+                     or (sf in ('schauer', 'regen', 'gewitter') and any(w_ in x for w_ in TROCKEN_WORTE))
+            if falsch and not x.startswith(schutz): fehler.append('%s (%s): „%s“' % (d['datum'], sf, x))
+            else: neu.append(x)
+        sg['text'] = ' '.join(neu)
+    if fehler:
+        print('Selbstkontrolle – entfernt:\n  ' + '\n  '.join(fehler))
+        topic = os.environ.get('NTFY_TOPIC')
+        if topic:
+            try:
+                import urllib.request
+                urllib.request.urlopen(urllib.request.Request('https://ntfy.sh/' + topic, data=('Max-Video: %d widersprüchliche(r) Regen-Satz/Sätze entfernt – Video kommt trotzdem.\n' % len(fehler)
+                                                                                            + '\n'.join(fehler))[:3000].encode('utf-8'),
+                                                              headers={'Title': 'Max: Selbstkontrolle', 'Tags': 'umbrella'}), timeout=15)
+            except Exception as e: print('Push nicht möglich:', e)
+    return fehler
+
+
 def main():
     daten = json.load(open(os.path.join(FB, 'daten.json'), encoding='utf-8'))
     days = [dict(d, datum=dt.date.fromisoformat(d['datum'])) for d in daten['tage']]
@@ -2466,6 +2523,7 @@ def main():
     wochen = '--woche' in sys.argv
     abends = '--abend' in sys.argv   # Abendvideo aus dem Studio (eigene Datei, nicht in der Videothek der Website)
     segs = skript_abend(days, warn, heute, daten.get('orte') or {}) if abends else skript_woche(days, warn, heute) if wochen else skript(days, warn, heute, nur_special)
+    pruefen(segs)
     special = nur_special   # das Morgenvideo ist immer das normale Video
     name = 'abendvideo' if abends else 'special' if nur_special else 'woche' if wochen else 'wetter'
     ziel = os.path.join(FB, name + '.mp4')
