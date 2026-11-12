@@ -16,7 +16,8 @@ QUELLEN = [
     ('Kp-Index', B + 'products/noaa-planetary-k-index.json', 8),
     ('Kp-Prognose', B + 'products/noaa-planetary-k-index-forecast.json', None),
     ('Kurzzeit-Kp', B + 'json/planetary_k_index_1m.json', 2),
-    ('Flare-Wahrscheinlichkeiten', B + 'json/solar_probabilities.json', 36),
+    # Tagesausgabe um ca. 22 UTC, in der Datei steht aber nur das Datum (00:00) -> Alter ab 22 UTC rechnen
+    ('Flare-Wahrscheinlichkeiten', B + 'json/solar_probabilities.json', 30, 22),
     ('Röntgenstrahlung GOES', B + 'json/goes/primary/xrays-1-day.json', 2),
     ('Protonen GOES', B + 'json/goes/primary/integral-protons-1-day.json', 2),
     ('Polarlicht OVATION', B + 'json/ovation_aurora_latest.json', 2),
@@ -47,7 +48,7 @@ def neueste_zeit(text):
     return max(zs) if zs else None
 
 
-def pruefe(name, url, max_h):
+def pruefe(name, url, max_h, versatz_h=0):
     try:
         st, roh = laden(url)
     except Exception as e:
@@ -61,6 +62,7 @@ def pruefe(name, url, max_h):
     if max_h:
         z = neueste_zeit(roh.decode('utf-8', 'ignore'))
         if not z: return 'kein Zeitstempel gefunden'
+        if versatz_h: z = min(z + dt.timedelta(hours=versatz_h), dt.datetime.now(dt.timezone.utc))
         alt = (dt.datetime.now(dt.timezone.utc) - z).total_seconds() / 3600
         if alt > max_h: return 'veraltet (letzter Wert vor %.0f Std.)' % alt
     return None
@@ -80,8 +82,8 @@ def main():
     except Exception: alt = {}
     jetzt = dt.datetime.now(TZ); heute = jetzt.date().isoformat()
     ergebnis = {}
-    for name, url, max_h in QUELLEN:
-        f = pruefe(name, url, max_h)
+    for name, url, max_h, *rest in QUELLEN:
+        f = pruefe(name, url, max_h, *rest)
         ergebnis[name] = f or 'ok'
         print('%-28s %s' % (name, f or 'ok'))
     fehler = {k: v for k, v in ergebnis.items() if v != 'ok'}
