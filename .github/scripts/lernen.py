@@ -64,7 +64,7 @@ def main():
     for i, t in enumerate(Hh['time']):
         modell[t[:13]] = (Hh['temperature_2m'][i], Hh['cloud_cover'][i], Hh['wind_speed_10m'][i])
 
-    st = get('https://api.weather.com/v2/pws/observations/hourly/7day?stationId=%s&format=json&units=m&apiKey=%s'
+    st = get('https://api.weather.com/v2/pws/observations/hourly/7day?stationId=%s&format=json&units=m&numericPrecision=decimal&apiKey=%s'
              % (STATION, WU_KEY)).get('observations') or []
     jetzt = dt.datetime.now(TZ)
     for o in st:
