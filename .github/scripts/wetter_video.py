@@ -591,7 +591,7 @@ def skript(days, warn, heute, nur_special=False):
         seg.append(dict(art='tag', tag=b, titel='MORGEN', bg='hoehen', grafiken=['temp'],
                         text=rnd.choice(['', 'So, und jetzt der Blick nach vorn. ', 'Was bringt der nächste Tag? ', 'Schauen wir auf morgen. '])
                              + tagtext(b, rnd.choice(['Morgen, am %s,', 'Am %s']) % TAGE[b['datum'].weekday()])))
-        if heute.weekday() <= 4 and len(days) >= 7:
+        if 3 <= heute.weekday() <= 4 and len(days) >= 7:   # Wochenendwetter erst ab Donnerstag (vorher zu ungenau)
             sa = next(d for d in days if d['datum'].weekday() == 5)
             so = next(d for d in days if d['datum'].weekday() == 6)
             if sa['datum'] > b['datum'] or so['datum'] > b['datum']:
