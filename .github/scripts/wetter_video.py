@@ -237,6 +237,28 @@ def komma(v):
     return ('minus ' if v < 0 else '') + ('%.1f' % abs(v)).replace('.', ',').replace(',0', '')
 
 
+def tafel_gestern(g, datum):
+    """Tafel zum Rückblick: gestern an der Station Bad König gemessen (Höchst, Tiefst, Regen, Böe)."""
+    def k(v): return ('%.1f' % v).replace('.', ',').replace(',0', '')
+    w, h = 420, 470
+    im = Image.new('RGBA', (w, h), (0, 0, 0, 0)); dr = ImageDraw.Draw(im)
+    dr.rounded_rectangle([0, 0, w, h], radius=28, fill=(255, 255, 255, 238))
+    dr.rounded_rectangle([0, 0, w, 74], radius=28, fill=(70, 80, 110, 255)); dr.rectangle([0, 46, w, 74], fill=(70, 80, 110, 255))
+    dr.text((w / 2, 37), 'GESTERN GEMESSEN', font=F(32), fill=(255, 255, 255), anchor='mm')
+    dr.text((w / 2, 102), '%s, %d.%d. · Station Bad König' % (TAGE[datum.weekday()], datum.day, datum.month), font=F(20, False), fill=(100, 115, 135), anchor='mm')
+    rek = {n['art'] for n in (g.get('jahr') or [])}
+    kacheln = [('HÖCHSTWERT', k(g['tmax']) + '°', (230, 100, 40), 'hi'), ('TIEFSTWERT', k(g['tmin']) + '°', (60, 120, 200), 'lo'),
+               ('REGEN', (k(g['regen']) + ' l/m²') if g.get('regen') else 'trocken', (40, 110, 200), 'regen'),
+               ('STÄRKSTE BÖE', '%d km/h' % round(g.get('boe') or 0), (90, 95, 120), 'boe')]
+    for n, (t, v, c, key) in enumerate(kacheln):
+        x0 = 20 + (n % 2) * 195; y0 = 130 + (n // 2) * 160
+        dr.rounded_rectangle([x0, y0, x0 + 185, y0 + 145], radius=20, fill=tuple(int(255 - (255 - c_) * 0.12) for c_ in c), outline=c, width=3)
+        dr.text((x0 + 92, y0 + 28), t, font=F(18), fill=c, anchor='mm')
+        dr.text((x0 + 92, y0 + 85), v, font=F(46 if len(v) < 6 else 34), fill=c, anchor='mm')
+        if key in rek: dr.text((x0 + 92, y0 + 126), 'JAHRESREKORD!', font=F(16), fill=(200, 40, 40), anchor='mm')
+    return im
+
+
 def gestern_txt(g, rnd):
     """Rückblick: gestern an der Station Bad König gemessen."""
     s = rnd.choice(['Kurzer Blick zurück: An unserer Station in Bad König haben wir gestern höchstens %s Grad gemessen, nachts ging es runter auf %s Grad.',
@@ -559,7 +581,8 @@ def skript(days, warn, heute, nur_special=False):
         hinweis = (' Kurz vorweg: Vom Deutschen Wetterdienst gilt %s. Passt auf euch auf!' % ' und '.join(('eine ' + w[0].lower() + w[1:]) if w.lower().startswith('amtliche') else w for w in warn[:2])) if warn else ''
         seg.append(dict(art='intro', bg='schloss', text=gruss + (' Für alle, die neu dabei sind: Ich bin Max, euer Wettersprecher für den Odenwald.' if heute.weekday() == 0 else '') + ' Das ist euer Odenwald-Wetter für %s.' % TAGE[heute.weekday()] + hinweis))
     if not nur_special and a.get('gestern'):
-        seg[-1]['text'] += ' ' + gestern_txt(a['gestern'], rnd)
+        seg.append(dict(art='rueckblick', bg='schloss', tafel_img=tafel_gestern(a['gestern'], heute - dt.timedelta(days=1)),
+                        text=gestern_txt(a['gestern'], rnd)))
     seg.append(dict(art='tag', tag=a, titel='HEUTE', bg='auto', grafiken=['temp', 'regen'] + (['wind'] if a.get('boe', 0) >= 45 else []),
                     text=tagtext(a, 'Heute') + fenster_txt(a, rnd)))
     seg.append(dict(art='tipp', tag=a, bg='wald' if a['rp'] < 40 else 'schloss', text=rnd.choice(['Mein Tipp für heute: ', 'Max-Tipp des Tages: ', 'Und jetzt mein Tipp: ', 'Übrigens, mein Tipp für heute: ',
@@ -1914,7 +1937,7 @@ def sprechtext(t):
     return ' '.join(t.split())
 
 
-TEMPO = {'rueck': '+1%', 'wissen': '+2%', 'special': '-6%', 'tag': '+0%', 'wochenende': '+2%', 'woche': '+2%', 'tipp': '+5%', 'intro': '+4%', 'outro': '+3%'}
+TEMPO = {'rueck': '+1%', 'rueckblick': '+1%', 'wissen': '+2%', 'special': '-6%', 'tag': '+0%', 'wochenende': '+2%', 'woche': '+2%', 'tipp': '+5%', 'intro': '+4%', 'outro': '+3%'}
 
 
 def sprich(text, pfad, rate='+2%', woerter=None):
@@ -2174,7 +2197,7 @@ def baue(segmente, heute, ziel, special, titel=None):
             tx = int(W - tf.width - 24 + (1 - ein) * (tf.width + 40)); ty = 215
             fr.alpha_composite(tf, (tx, ty))
         # Moderator (links unten), Mund nach Lautstärke
-        zeigt = 1 if s['tafel'] is not None and s['art'] in ('tag', 'wochenende', 'woche', 'special') and (lt < 2.2 or s.get('tafel_wechsel') and 0.3 < tafel_seit < 1.9) else 0
+        zeigt = 1 if s['tafel'] is not None and s['art'] in ('tag', 'wochenende', 'woche', 'special', 'rueckblick') and (lt < 2.2 or s.get('tafel_wechsel') and 0.3 < tafel_seit < 1.9) else 0
         if s['art'] in ('intro', 'outro') and lt < 2.0: zeigt = 3
         elif s['art'] == 'cta' and (lt < 1.5 or lt > s['dauer'] - 2.5): zeigt = 3
         elif s['art'] == 'tipp' and 0.6 < lt < 2.6: zeigt = 2
