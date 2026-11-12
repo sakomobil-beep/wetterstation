@@ -418,5 +418,25 @@
 "d": "2026-11-12",
 "g": "folgen",
 "k": "Wer uns folgt, weiß morgens als Erster B"
+},
+{
+"d": "2026-11-12",
+"g": "tag",
+"k": "Morgen zeigt sich das Wetter freundlich "
+},
+{
+"d": "2026-11-12",
+"g": "frost",
+"k": "Nachts friert es, mit bis zu 0 Grad."
+},
+{
+"d": "2026-11-12",
+"g": "tag",
+"k": "Dann wird es richtig sonnig, und mehr al"
+},
+{
+"d": "2026-11-12",
+"g": "frost",
+"k": "Nachts wird es mit minus 1 Grad richtig "
 }
 ]
