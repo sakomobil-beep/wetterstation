@@ -260,13 +260,9 @@ def gestern_txt(g, rnd):
 
 
 def fenster_txt(d, rnd):
-    f = d.get('fenster')
-    if not f: return ''
-    son = ' Sonne inklusive.' if f['sonnig'] and d['sonne'] >= 1 else ''
-    s = rnd.choice([' Das beste Fenster für draußen: zwischen %d und %d Uhr.', ' Am besten raus geht es zwischen %d und %d Uhr.',
-                    ' Mein Tipp für eure Runde: zwischen %d und %d Uhr.']) % (f['von'], f['bis'])
-    if d['sonne'] >= 2: s += ' Insgesamt gibt es heute etwa %d Stunden Sonne.' % round(d['sonne'])
-    return s + (son if d['sonne'] < 2 else '')
+    """Kein Zeitfenster-Tipp mehr (auf Wunsch entfernt) – nur noch die Sonnenstunden."""
+    if d.get('sonne', 0) >= 2: return ' Insgesamt gibt es heute etwa %d Stunden Sonne.' % round(d['sonne'])
+    return ''
 
 
 def himmel_txt(d, rnd):
