@@ -7,6 +7,25 @@ import json, os, sys, math, statistics, time, urllib.request, datetime as dt
 from zoneinfo import ZoneInfo
 from PIL import Image, ImageDraw, ImageFont
 
+
+# --- Sicherung: Texte passen immer ins Bild (gilt für alle Tafeln, Grafiken und Facebook-Bilder) ---
+# Ragt ein Text links oder rechts aus dem Bild, wird die Schrift schrittweise verkleinert, bis er mit Rand hineinpasst.
+_PIL_TEXT = ImageDraw.ImageDraw.text
+def _text_passend(self, xy, text, fill=None, font=None, anchor=None, *a, **k):
+    try:
+        if font is not None and hasattr(font, 'font_variant') and isinstance(text, str) and '\n' not in text:
+            W_ = self.im.size[0]; rand = 6; sw = k.get('stroke_width', 0)
+            bb = self.textbbox(xy, text, font=font, anchor=anchor, stroke_width=sw)
+            n = font.size
+            while (bb[0] < rand or bb[2] > W_ - rand) and n > 10 and bb[2] - bb[0] > 0:
+                n -= 1; font = font.font_variant(size=n)
+                bb = self.textbbox(xy, text, font=font, anchor=anchor, stroke_width=sw)
+                if anchor in (None, 'la', 'ls', 'lt', 'lm', 'lb') and bb[0] < rand: break   # linksbündig: nur rechts kürzen
+    except Exception:
+        pass
+    return _PIL_TEXT(self, xy, text, fill, font, anchor, *a, **k)
+ImageDraw.ImageDraw.text = _text_passend
+
 LAT, LON = 49.750, 9.017
 STATION, WU_KEY = 'IBADKN33', '43a8f308d89b471ba8f308d89b671b69'
 TZ = ZoneInfo('Europe/Berlin')
