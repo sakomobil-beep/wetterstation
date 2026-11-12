@@ -1745,7 +1745,20 @@ button { font: inherit; color: inherit; }
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: …</span></p>
+<script>
+/* Website-Stand: Zeitpunkt der letzten Veröffentlichung (Last-Modified von GitHub Pages) */
+(function () {
+  function zeig(d) {
+    if (!d || isNaN(d)) return;
+    var f = function (n) { return (n < 10 ? '0' : '') + n; };
+    document.getElementById('webStand').textContent = 'Website-Stand: ' + f(d.getDate()) + '.' + f(d.getMonth() + 1) + '.' + d.getFullYear() + ', ' + f(d.getHours()) + ':' + f(d.getMinutes()) + ' Uhr';
+  }
+  fetch('index.html?stand=' + Date.now(), { method: 'HEAD', cache: 'no-store' })
+    .then(function (r) { var lm = r.headers.get('Last-Modified'); zeig(lm ? new Date(lm) : new Date(document.lastModified)); })
+    .catch(function () { zeig(new Date(document.lastModified)); });
+})();
+</script>
 </div>
 
 <script src="config.js"></script>
