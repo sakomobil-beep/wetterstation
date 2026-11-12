@@ -55,11 +55,12 @@ def load():
     stunden = korrigierte_stunden(om, st, nah)
     warn = []
     try:
-        for la, lo in KREIS_PUNKTE:   # Warnungen für den ganzen Odenwaldkreis (Tal und Höhen)
-            for a in get('https://api.brightsky.dev/alerts?lat=%s&lon=%s' % (la, lo)).get('alerts') or []:
-                if a.get('severity') in ('moderate', 'severe', 'extreme') or a.get('event_de'):
-                    w_ = a.get('headline_de') or a.get('event_de')
-                    if w_ not in warn: warn.append(w_)
+        sys.path.insert(0, os.path.dirname(__file__))
+        import kreis   # Warnungen für alle Gemeinden des Odenwaldkreises
+        for a in kreis.warnungen(get):
+            if a.get('severity') in ('moderate', 'severe', 'extreme') or a.get('event_de'):
+                w_ = a.get('headline_de') or a.get('event_de')
+                if w_ not in warn: warn.append(w_)
     except Exception as e:
         print('Warnungen nicht abrufbar:', e)
     today = dt.datetime.now(TZ).date().isoformat()

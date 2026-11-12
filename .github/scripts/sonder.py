@@ -30,11 +30,9 @@ def uhr(iso):
 
 
 def laden():
-    alerts, ids = [], set()
-    for la, lo in ((LAT, LON), (49.567, 8.976), (49.678, 9.004)):   # ganzer Odenwaldkreis: Bad König, Oberzent, Michelstadt
-        for a in get('https://api.brightsky.dev/alerts?lat=%s&lon=%s' % (la, lo)).get('alerts') or []:
-            k = a.get('alert_id') or a.get('id') or (a.get('headline_de'), a.get('onset'))
-            if k not in ids: ids.add(k); alerts.append(a)
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import kreis   # alle Gemeinden des Odenwaldkreises
+    alerts = kreis.warnungen(get)
     om = get('https://api.open-meteo.com/v1/forecast?latitude=%s&longitude=%s&models=icon_seamless'
              '&hourly=temperature_2m,weather_code,precipitation,snowfall,wind_gusts_10m,visibility'
              '&forecast_days=2&timezone=Europe%%2FBerlin' % (LAT, LON))

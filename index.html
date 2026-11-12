@@ -995,7 +995,7 @@ button { font: inherit; color: inherit; }
   <p id="staleNote" class="stalenote" hidden aria-live="polite"></p>
 
     <article class="wcard warntop" aria-live="polite">
-      <div class="w-kicker">Amtliche Warnungen für <span class="wplace">Bad König</span></div>
+      <div class="w-kicker">Amtliche Warnungen für <span class="wplace">Odenwaldkreis</span></div>
       <div class="w-list" id="warnList"><div class="w-none"><span class="w-dot off"></span>Wird geladen …</div></div>
       <div class="w-meta" id="warnMeta"></div>
       <a class="w-link" href="https://www.dwd.de/DE/wetter/warnungen/warnWetter_node.html" target="_blank" rel="noopener">Warnkarte beim DWD →</a>
@@ -1228,7 +1228,7 @@ button { font: inherit; color: inherit; }
 
   <div id="panel-vorhersage" class="panel" hidden>
   <section class="wcard wide" id="warnCard2" hidden aria-live="polite">
-    <div class="w-kicker">Amtliche Warnungen für <span class="wplace">Bad König</span></div>
+    <div class="w-kicker">Amtliche Warnungen für <span class="wplace">Odenwaldkreis</span></div>
     <div class="w-list" id="warnList2"></div>
     <div class="w-meta" id="warnMeta2"></div>
   </section>
@@ -3150,13 +3150,28 @@ function setForecast(hours, demo) {
   renderFrost();
 }
 
+var KREIS_GEMEINDEN = [['Bad König', 49.741, 9.008], ['Breuberg', 49.823, 9.046], ['Brensbach', 49.773, 8.884], ['Brombachtal', 49.733, 8.945],
+  ['Erbach', 49.657, 8.994], ['Fränkisch-Crumbach', 49.746, 8.858], ['Höchst', 49.799, 8.995], ['Lützelbach', 49.786, 9.075],
+  ['Michelstadt', 49.678, 9.004], ['Mossautal', 49.660, 8.930], ['Oberzent', 49.567, 8.976], ['Reichelsheim', 49.713, 8.838]];
 function loadAlerts(force) {
   if (WS.busy) return;
   if (!force && WS.at && Date.now() - WS.at < (WS.err ? 120000 : 300000)) return;
   WS.busy = true; WS.at = Date.now();
-  fetchJson(bsUrl('/alerts', { lat: CONFIG.lat, lon: CONFIG.lon, tz: 'Europe/Berlin' }))
-    .then(function (j) {
-      WS.alerts = (j && j.alerts) || []; WS.loc = (j && j.location) || null;
+  // Amtliche Warnungen für alle 12 Gemeinden des Odenwaldkreises; gleiche Warnungen werden zusammengefasst
+  var ok = 0, alle = {};
+  Promise.all(KREIS_GEMEINDEN.map(function (g) {
+    return fetchJson(bsUrl('/alerts', { lat: g[1], lon: g[2], tz: 'Europe/Berlin' })).then(function (j) {
+      ok++;
+      ((j && j.alerts) || []).forEach(function (a) {
+        var k = [a.event_de, a.headline_de, a.severity, a.onset, a.expires].join('|');
+        if (!alle[k]) { alle[k] = a; a.orte = []; }
+        if (alle[k].orte.indexOf(g[0]) < 0) alle[k].orte.push(g[0]);
+      });
+    }).catch(function () {});
+  }))
+    .then(function () {
+      if (!ok) throw new Error('keine Verbindung zum DWD');
+      WS.alerts = Object.keys(alle).map(function (k) { return alle[k]; }); WS.loc = { name: 'Odenwaldkreis' };
       WS.loaded = true; WS.demo = false; WS.err = null; WS.fetchedAt = new Date();
     })
     .catch(function (err) {
@@ -3658,6 +3673,7 @@ function alertHtml(a) {
     '<div class="lvl">' + sv.label + '</div>' +
     '<div class="ev">' + esc(a.headline_de || a.event_de || 'Amtliche Warnung') + '</div>' +
     '<div class="when">' + rangeTxt(a.onset || a.effective, a.expires) + '</div>' +
+    (a.orte && a.orte.length ? '<div class="when">📍 ' + (a.orte.length >= KREIS_GEMEINDEN.length - 1 ? 'ganzer Odenwaldkreis' : esc(a.orte.join(', '))) + '</div>' : '') +
     (desc || ins ? '<details><summary>Details</summary>' + desc + ins + '</details>' : '') + '</div>';
 }
 function renderWarnings() {
