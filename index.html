@@ -161,6 +161,19 @@ button { font: inherit; color: inherit; }
 .rose-leg i { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
 @media (max-width: 620px) { .rose-wrap { grid-template-columns: minmax(0, 1fr); } .rose-wrap svg { max-width: 340px; margin: 0 auto; } }
 .stamp { font: 400 12px/1.4 var(--font-data); color: var(--muted); }
+/* Newsticker (Text kommt aus data/ticker.json, änderbar in der Zentrale) */
+.ticker { flex: 1 1 260px; min-width: 0; max-width: 100%; contain: inline-size; margin-right: auto; overflow: hidden; position: relative; border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 4px 0; font-size: 13px; line-height: 1.4; -webkit-mask-image: linear-gradient(90deg, transparent, #000 18px, #000 calc(100% - 18px), transparent); mask-image: linear-gradient(90deg, transparent, #000 18px, #000 calc(100% - 18px), transparent); }
+.ticker[hidden] { display: none; }
+.ticker .tk-track { display: inline-flex; white-space: nowrap; animation: tkRun var(--tk-dur, 30s) linear infinite; will-change: transform; }
+.ticker:hover .tk-track, .ticker:focus-within .tk-track { animation-play-state: paused; }
+.ticker .tk-set { display: inline-flex; padding-right: 48px; gap: 0; }
+.ticker a, .ticker span.tk-i { color: var(--ink); text-decoration: none; padding: 0 6px; }
+.ticker a b { color: var(--accent); font-weight: 600; }
+.ticker a:hover { color: var(--accent); text-decoration: underline; }
+.ticker .tk-sep { color: var(--muted); padding: 0 8px; }
+@media (max-width: 620px) { .ticker { flex-basis: 100%; } }
+@keyframes tkRun { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .ticker .tk-track { animation: none; } .ticker { -webkit-mask-image: none; mask-image: none; white-space: normal; } .ticker .tk-set + .tk-set { display: none; } }
 .refresh {
   border: 1px solid var(--line); background: var(--surface); border-radius: 8px;
   padding: 4px 12px; font-size: 13px; cursor: pointer;
@@ -1076,6 +1089,7 @@ button { font: inherit; color: inherit; }
   <div id="panel-aktuell" class="panel">
   <div id="recBanner" hidden></div>
   <div class="status">
+    <div id="ticker" class="ticker" hidden aria-label="Neuigkeiten"><div class="tk-track"></div></div>
     <span id="pill" class="pill demo">Beispieldaten</span>
     <span id="stamp" class="stamp num">Stand –</span>
     <button id="refresh" class="refresh" type="button">Aktualisieren</button>
@@ -1834,7 +1848,7 @@ button { font: inherit; color: inherit; }
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 12.11.2026, 17:25 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 12.11.2026, 20:50 Uhr</span></p>
 
 </div>
 
@@ -7130,6 +7144,24 @@ function tqHtml(T){
  '</div><div class="tq-leg"><span><i style="background:#b5d4f4"></i>vorhergesagt</span><span><i style="background:#185fa5"></i>gemessen</span><span class="tq-ok">✔ / ✘ Regen richtig</span></div></div>';
  h+='<p class="tq-note">Verglichen wird die Präzisions-Vorhersage für die Station Bad König vom Vorabend (ab 18 Uhr, sonst vom frühen Morgen) mit den Messwerten unserer Station IBADKN33. Treffer = Höchst- und Tiefstwert höchstens 2 bzw. 2,5 Grad daneben und Regen ja/nein richtig. Auswertung seit 06.11.2026, es zählen die letzten 14 Tage.</p>';
  return h}
+</script>
+<script>
+/* Newsticker – Inhalt aus data/ticker.json (in der Zentrale änderbar) */
+(function(){
+  const el=document.getElementById('ticker');if(!el)return;
+  const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  fetch('data/ticker.json?'+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(T=>{
+    if(!T||!T.aktiv)return;
+    const E=(T.eintraege||[]).filter(e=>e&&String(e.text||'').trim());if(!E.length)return;
+    const items=E.map(e=>{const t=esc(e.text.trim());const l=String(e.link||'').trim();
+      return (/^(https?:\/\/|[\w.\-\/#]+\.html)/.test(l))?`<a href="${esc(l)}">${t} <b>›</b></a>`:`<span class="tk-i">${t}</span>`});
+    const set='<span class="tk-set">'+items.join('<span class="tk-sep">·</span>')+'</span>';
+    const tr=el.querySelector('.tk-track');tr.innerHTML=set+set.replace('class="tk-set"','class="tk-set" aria-hidden="true"');
+    tr.querySelectorAll('[aria-hidden] a').forEach(a=>a.tabIndex=-1);
+    el.hidden=false;
+    requestAnimationFrame(()=>{const w=tr.scrollWidth/2;el.style.setProperty('--tk-dur',Math.max(14,Math.round(w/45))+'s')});
+  }).catch(()=>{});
+})();
 </script>
 </body>
 
