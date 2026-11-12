@@ -1820,7 +1820,7 @@ button { font: inherit; color: inherit; }
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 12.11.2026, 16:45 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 12.11.2026, 16:50 Uhr</span></p>
 
 </div>
 
@@ -1899,7 +1899,7 @@ function adapt(raw) {
   var m = cur.metric || {};
 
   var obs = ((raw.history && raw.history.observations) || []).slice().sort(function (x, y) { return x.epoch - y.epoch; });
-  var buckets = {}, order = [];
+  var buckets = {}, order = [], fine = [];
   var prevTotal = null, rainCum = 0, tMax = null, tMin = null, gMax = null;
 
   obs.forEach(function (o) {
@@ -1917,6 +1917,9 @@ function adapt(raw) {
 
     var pMax = num(mm.pressureMax), pMin = num(mm.pressureMin);
     var p = (pMax !== null && pMin !== null) ? (pMax + pMin) / 2 : (pMax !== null ? pMax : pMin);
+    fine.push({ t: o.epoch * 1000, temp: num(mm.tempAvg !== undefined ? mm.tempAvg : mm.temp), humidity: num(o.humidityAvg !== undefined ? o.humidityAvg : o.humidity),
+      pressure: p !== null ? p : num(mm.pressure), wind: num(mm.windspeedAvg !== undefined ? mm.windspeedAvg : mm.windSpeed), rain: rainCum,
+      hi: hi, lo: lo });
     var key = Math.floor(o.epoch / 3600);
     if (!(key in buckets)) order.push(key);
     buckets[key] = {
@@ -1952,7 +1955,8 @@ function adapt(raw) {
     tempMax: tMax,
     tempMin: tMin,
     gustMax: gMax,
-    history: history
+    history: history,
+    fine: fine
   };
 }
 
@@ -2327,7 +2331,8 @@ function dayStart() { var n = new Date(); return new Date(n.getFullYear(), n.get
 function todayMeasured(key) {
   var d = state.data, t0 = dayStart();
   if (!d) return [];
-  var pts = d.history.map(function (h) { return { t: new Date(h.t).getTime(), v: h[key] }; })
+  var src = (d.fine && d.fine.length > 2) ? d.fine.map(function (h) { return { t: h.t, v: h[key] }; }) : null;
+  var pts = (src || d.history.map(function (h) { return { t: new Date(h.t).getTime(), v: h[key] }; }))
     .filter(function (p) { return p.t >= t0 && p.v !== null && p.v !== undefined && !isNaN(p.v); });
   var cur = { temp: d.temp, humidity: d.humidity, pressure: d.pressure, wind: d.windSpeed, rain: null }[key];
   if (key === 'rain' && pts.length && d.rainToday != null) { var off = d.rainToday - pts[pts.length - 1].v; pts.forEach(function (p) { p.v = Math.max(0, p.v + off); }); cur = d.rainToday; }
