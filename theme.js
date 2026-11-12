@@ -124,15 +124,28 @@
     for (var i = changed.length - 1; i >= 0; i--) { var c = changed[i]; c[0].style.removeProperty(c[1]); if (c[2]) c[0].style.setProperty(c[1], c[2], c[3]); }
     changed = [];
   }
-  var queue = [], timer = null;
+  function undoFor(node) {   // alte Anpassungen eines Elements (und seiner Kinder) zurücknehmen, bevor es neu bewertet wird
+    var rest = [];
+    for (var i = changed.length - 1; i >= 0; i--) {
+      var c = changed[i];
+      if (node.contains(c[0])) { c[0].style.removeProperty(c[1]); if (c[2]) c[0].style.setProperty(c[1], c[2], c[3]); }
+      else rest.unshift(c);
+    }
+    changed = rest;
+  }
+  var queue = [], timer = null, neu = [];
   var mo = new MutationObserver(function (list) {
     if (root.getAttribute('data-theme') !== 'dark') return;
     for (var i = 0; i < list.length; i++) {
       var m = list[i];
       if (m.type === 'childList') for (var j = 0; j < m.addedNodes.length; j++) queue.push(m.addedNodes[j]);
-      else queue.push(m.target);
+      else { queue.push(m.target); neu.push(m.target); }
     }
-    if (!timer) timer = setTimeout(function () { timer = null; var q = queue; queue = []; q.forEach(function (n) { if (n.isConnected) fixTree(n); }); }, 250);
+    if (!timer) timer = setTimeout(function () {
+      timer = null; var q = queue, nn = neu; queue = []; neu = [];
+      nn.forEach(function (n) { if (n.isConnected) undoFor(n); });   // Zustand geändert (z. B. Tag ausgewählt): frisch bewerten
+      q.forEach(function (n) { if (n.isConnected) fixTree(n); });
+    }, 120);
   });
 
   /* ---------- Anwenden ---------- */
@@ -170,7 +183,7 @@
     root.setAttribute('data-theme', 'light');
     apply(currentMode());
     updateButton();
-    mo.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'hidden'] });
+    mo.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'hidden', 'aria-pressed', 'aria-selected', 'aria-expanded', 'open'] });
     setInterval(function () { apply(currentMode()); }, 60000);
     document.addEventListener('visibilitychange', function () { if (!document.hidden) apply(currentMode()); });
   }
