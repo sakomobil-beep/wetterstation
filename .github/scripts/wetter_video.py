@@ -507,27 +507,31 @@ def woche(tage, rnd):
 
 
 def skript_woche(days, warn, heute):
-    """Sonntagabend-Video: Wochenausblick Montag–Freitag (Mo–Mi mit Werten, Do/Fr Tendenz)."""
+    """Sonntagabend-Video aus dem Studio: Wochenausblick Montag–Freitag (Mo–Mi mit Werten, Do/Fr Tendenz)."""
     rnd = random.Random('woche' + heute.isoformat())
     woch = days[1:6]
-    seg = [dict(art='intro', bg='schloss', text=rnd.choice(['Ei gude, Odenwald! Hier ist euer Max mit dem Wochenausblick.',
-                                                          'Guten Abend, Odenwald! Max hier – Zeit für den Blick auf die neue Woche.',
-                                                          'Sonntagabend im Odenwald – hier ist Max mit dem Wochenausblick!'])
+    m0, f0 = woch[0]['datum'], woch[-1]['datum']
+    seg = [dict(art='intro', bg='studio',
+                tafel_img=tafel_text('DIE NEUE WOCHE', ['%d. %s – %d. %s' % (m0.day, MONATE[m0.month - 1], f0.day, MONATE[f0.month - 1]),
+                                                        '• Montag bis Mittwoch', '• Tendenz bis Freitag'], (40, 130, 80)),
+                text=rnd.choice(['Ei gude, Odenwald! Hier ist euer Max mit dem Wochenausblick aus dem Studio.',
+                                 'Guten Abend, Odenwald! Max hier im Studio – Zeit für den Blick auf die neue Woche.',
+                                 'Sonntagabend im Odenwald – hier ist Max mit dem Wochenausblick!'])
                 + ((' Vorweg: Vom Deutschen Wetterdienst gilt %s.' % ' und '.join(warn[:2])) if warn else ''))]
     for k, d in enumerate(woch[:3]):
         wann = TAGE[d['datum'].weekday()]
-        seg.append(dict(art='tag', tag=d, titel=wann.upper(), bg='auto' if k == 0 else 'hoehen' if k == 1 else 'wald',
+        seg.append(dict(art='tag', tag=d, titel=wann.upper(), bg='studio',
                         text=('Los geht es mit dem %s. ' % wann if k == 0 else '') + tagtext(d, 'Am %s' % wann)))
     wo = woche(woch, rnd)
     if wo:
         t = wo[0].split('Zum Ende der Woche', 1)
         rest = ('Und zum Ende der Woche' + t[1]) if len(t) > 1 else wo[0]
-        seg.append(dict(art='woche', tage=woch, bg='wald', zeilen=wo[1], text=rest + ' Genauer wird es dann im Morgenvideo am jeweiligen Tag.'))
+        seg.append(dict(art='woche', tage=woch, bg='studio', zeilen=wo[1], text=rest + ' Genauer wird es dann im Morgenvideo am jeweiligen Tag.'))
     try:
         tl = TERMINE.woche_liste(heute + dt.timedelta(days=1))
         if tl: seg[-1]['text'] += ' Und im Kalender diese Woche: ' + ', '.join(tl) + '.'
     except Exception as e: print('Termine nicht möglich:', e)
-    seg.append(dict(art='outro', bg='schloss', text=rnd.choice(['Kommt gut in die neue Woche!', 'Ich wünsch euch einen guten Start in die Woche!',
+    seg.append(dict(art='outro', bg='studio', text=rnd.choice(['Kommt gut in die neue Woche!', 'Ich wünsch euch einen guten Start in die Woche!',
                                                               'Habt eine gute Woche, und passt auf euch auf!'])
                     + ' Jeden Morgen gibt es euer Wettervideo, und alle Live-Werte findet ihr auf wetter-badkoenig.de.'))
     return seg
