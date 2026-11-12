@@ -409,7 +409,7 @@ def skript_abend(days, warn, heute, orte=None):
                         text='Und jetzt der Blick aufs Wochenende: ' + tagtext(paar[0], 'Samstag') + ' ' + tagtext(paar[1], 'Sonntag')))
     else:
         seg.append(dict(art='tag', bg='studio', titel='MORGEN', tag=paar[0], grafiken=['temp', 'regen'],
-                        tafel_img=tafel_tag('MORGEN', paar[0]), text=tagtext(paar[0], 'Morgen')))
+                        tafel_img=tafel_tag('MORGEN', paar[0]), text=tagtext(paar[0], 'Morgen') + grafik_saetze(paar[0], ['temp', 'regen'], rnd, 'morgen')))
         kt = karten_txt(orte or {}, 1, rnd)
         if kt:   # Reliefkarte des Kreises: die Orte erscheinen nacheinander, während Max spricht
             seg.append(dict(art='tag', bg='studio', titel='MORGEN IM KREIS',
@@ -584,13 +584,13 @@ def skript(days, warn, heute, nur_special=False):
         seg.append(dict(art='rueckblick', bg='schloss', tafel_img=tafel_gestern(a['gestern'], heute - dt.timedelta(days=1)),
                         text=gestern_txt(a['gestern'], rnd)))
     seg.append(dict(art='tag', tag=a, titel='HEUTE', bg='auto', grafiken=['temp', 'regen'] + (['wind'] if a.get('boe', 0) >= 45 else []),
-                    text=tagtext(a, 'Heute') + fenster_txt(a, rnd)))
+                    text=tagtext(a, 'Heute') + fenster_txt(a, rnd) + grafik_saetze(a, ['temp', 'regen'] + (['wind'] if a.get('boe', 0) >= 45 else []), rnd)))
     seg.append(dict(art='tipp', tag=a, bg='wald' if a['rp'] < 40 else 'schloss', text=rnd.choice(['Mein Tipp für heute: ', 'Max-Tipp des Tages: ', 'Und jetzt mein Tipp: ', 'Übrigens, mein Tipp für heute: ',
                                                                                'Was könnt ihr heute machen? ', 'Und wenn ihr noch nichts vorhabt: ']) + tipp(a, rnd, heute) + max_privat(a, rnd, heute)))
     if not nur_special:
         seg.append(dict(art='tag', tag=b, titel='MORGEN', bg='hoehen', grafiken=['temp'],
                         text=rnd.choice(['', 'So, und jetzt der Blick nach vorn. ', 'Was bringt der nächste Tag? ', 'Schauen wir auf morgen. '])
-                             + tagtext(b, rnd.choice(['Morgen, am %s,', 'Am %s']) % TAGE[b['datum'].weekday()])))
+                             + tagtext(b, rnd.choice(['Morgen, am %s,', 'Am %s']) % TAGE[b['datum'].weekday()]) + grafik_saetze(b, ['temp'], rnd, 'morgen')))
         if 3 <= heute.weekday() <= 4 and len(days) >= 7:   # Wochenendwetter erst ab Donnerstag (vorher zu ungenau)
             sa = next(d for d in days if d['datum'].weekday() == 5)
             so = next(d for d in days if d['datum'].weekday() == 6)
@@ -1864,6 +1864,31 @@ def tafel_wind(d, titel='HEUTE', von=6, bis=23):
     return _fertig(leer, im, x0 - 4, x1 + 4)
 
 
+def grafik_saetze(d, grafiken, rnd, wann='heute'):
+    """Max erklärt die Grafiken – so bleibt jede Tafel lange genug stehen."""
+    st = [x for x in d.get('stunden') or [] if 6 <= x['h'] <= 23]
+    if len(st) < 6: return ''
+    out = []
+    if 'temp' in grafiken:
+        hi = max(st, key=lambda x: x['t']); lo = min(st, key=lambda x: x['t'])
+        out.append(rnd.choice(['Schaut mal auf die Temperaturkurve: ', 'Hier seht ihr den Verlauf über den Tag: ', 'Die Kurve zeigt es: '])
+                   + 'Am wärmsten wird es %s gegen %d Uhr mit etwa %s Grad, am kühlsten ist es um %d Uhr mit %s Grad.'
+                   % (wann, hi['h'], zahl(hi['t']), lo['h'], zahl(lo['t'])))
+    if 'regen' in grafiken:
+        nass = [x for x in st if x['rp'] >= 40]
+        if not nass and max(x['rp'] for x in st) < 20:
+            out.append('Bei den Regenbalken sieht es gut aus: Es bleibt trocken.')
+        elif nass:
+            out.append('Bei den Regenbalken seht ihr: Am ehesten regnet es zwischen %d und %d Uhr, da liegt das Risiko bei bis zu %d Prozent.'
+                       % (nass[0]['h'], nass[-1]['h'] + 1, max(x['rp'] for x in nass)))
+        else:
+            out.append('Das Regenrisiko bleibt über den Tag gering, höchstens %d Prozent.' % max(x['rp'] for x in st))
+    if 'wind' in grafiken:
+        km = max(st, key=lambda x: x['boe'])
+        out.append('Und beim Wind: Die stärksten Böen kommen gegen %d Uhr mit bis zu %d Kilometern pro Stunde.' % (km['h'], km['boe']))
+    return ' ' + ' '.join(out)
+
+
 def grafiken_fuer(s):
     """Tafel-Folge für einen Abschnitt mit s['grafiken'] (erst die normale Tafel, dann die Grafiken)."""
     aus = []
@@ -2163,8 +2188,10 @@ def baue(segmente, heute, ziel, special, titel=None):
         # Tafel: im Studio auf dem Bildschirm an der Wand, sonst rechts oben, schiebt sich herein
         tafel_seit = lt; tf_alt = None
         if s.get('tafel_wechsel'):   # Wettergrafiken: Tafeln wechseln gleichmäßig über den Abschnitt
-            sq_ = s['tafel_seq']; schritt_ = max(1.5, (s['dauer'] - 0.6) / len(sq_))
-            k_ = min(len(sq_) - 1, int(lt / schritt_)); tafel_seit = lt - k_ * schritt_
+            sq_ = s['tafel_seq']; schritt_ = max(4.0, (s['dauer'] - 0.6) / len(sq_))
+            erst_ = max(2.5, (s['dauer'] - 0.6) - schritt_ * (len(sq_) - 1))   # Tageskarte bekommt den Rest
+            if lt < erst_: k_, tafel_seit = 0, lt
+            else: k_ = min(len(sq_) - 1, 1 + int((lt - erst_) / schritt_)); tafel_seit = lt - erst_ - (k_ - 1) * schritt_
             if k_ and tafel_seit < 0.3: tf_alt = sq_[k_ - 1]
             tf_wechsel = tafel_zeigen(sq_[k_], tafel_seit - 0.3 if k_ else tafel_seit)
         if s['tafel'] is not None and studio:
