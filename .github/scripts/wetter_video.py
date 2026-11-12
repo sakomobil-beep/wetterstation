@@ -390,7 +390,7 @@ def skript_abend(days, warn, heute, orte=None):
         seg.append(dict(art='wochenende', bg='studio', tage=paar, tafel_img=tafel_wochenende(paar),
                         text='Und jetzt der Blick aufs Wochenende: ' + tagtext(paar[0], 'Samstag') + ' ' + tagtext(paar[1], 'Sonntag')))
     else:
-        seg.append(dict(art='tag', bg='studio', titel='MORGEN', tag=paar[0],
+        seg.append(dict(art='tag', bg='studio', titel='MORGEN', tag=paar[0], grafiken=['temp', 'regen'],
                         tafel_img=tafel_tag('MORGEN', paar[0]), text=tagtext(paar[0], 'Morgen')))
         kt = karten_txt(orte or {}, 1, rnd)
         if kt:   # Reliefkarte des Kreises: die Orte erscheinen nacheinander, während Max spricht
@@ -564,11 +564,12 @@ def skript(days, warn, heute, nur_special=False):
         seg.append(dict(art='intro', bg='schloss', text=gruss + (' Für alle, die neu dabei sind: Ich bin Max, euer Wettersprecher für den Odenwald.' if heute.weekday() == 0 else '') + ' Das ist euer Odenwald-Wetter für %s.' % TAGE[heute.weekday()] + hinweis))
     if not nur_special and a.get('gestern'):
         seg[-1]['text'] += ' ' + gestern_txt(a['gestern'], rnd)
-    seg.append(dict(art='tag', tag=a, titel='HEUTE', bg='auto', text=tagtext(a, 'Heute') + fenster_txt(a, rnd)))
+    seg.append(dict(art='tag', tag=a, titel='HEUTE', bg='auto', grafiken=['temp', 'regen'] + (['wind'] if a.get('boe', 0) >= 45 else []),
+                    text=tagtext(a, 'Heute') + fenster_txt(a, rnd)))
     seg.append(dict(art='tipp', tag=a, bg='wald' if a['rp'] < 40 else 'schloss', text=rnd.choice(['Mein Tipp für heute: ', 'Max-Tipp des Tages: ', 'Und jetzt mein Tipp: ', 'Übrigens, mein Tipp für heute: ',
                                                                                'Was könnt ihr heute machen? ', 'Und wenn ihr noch nichts vorhabt: ']) + tipp(a, rnd, heute) + max_privat(a, rnd, heute)))
     if not nur_special:
-        seg.append(dict(art='tag', tag=b, titel='MORGEN', bg='hoehen',
+        seg.append(dict(art='tag', tag=b, titel='MORGEN', bg='hoehen', grafiken=['temp'],
                         text=rnd.choice(['', 'So, und jetzt der Blick nach vorn. ', 'Was bringt der nächste Tag? ', 'Schauen wir auf morgen. '])
                              + tagtext(b, rnd.choice(['Morgen, am %s,', 'Am %s']) % TAGE[b['datum'].weekday()])))
         if heute.weekday() <= 4 and len(days) >= 7:
@@ -1720,6 +1721,144 @@ def tafel_text(kopf, zeilen, farbe):
     return im
 
 
+# ---------------------------------------------------------------------
+#  Wettergrafiken für die Tafel: bauen sich von links nach rechts auf
+#  (Bild.info['leer'] = Tafel ohne Inhalt, Bild.info['bereich'] = aufzudeckender Bereich)
+# ---------------------------------------------------------------------
+GW, GH = 440, 540
+
+
+def _grafik_rahmen(kopf, farbe, unter):
+    im = Image.new('RGBA', (GW, GH), (0, 0, 0, 0)); dr = ImageDraw.Draw(im)
+    dr.rounded_rectangle([0, 0, GW, GH], radius=28, fill=(255, 255, 255, 238))
+    dr.rounded_rectangle([0, 0, GW, 74], radius=28, fill=farbe + (255,)); dr.rectangle([0, 46, GW, 74], fill=farbe + (255,))
+    dr.text((GW / 2, 37), kopf, font=F(30), fill=(255, 255, 255), anchor='mm')
+    dr.text((GW / 2, 100), unter, font=F(21, False), fill=(100, 115, 135), anchor='mm')
+    return im, dr
+
+
+def _fertig(leer, voll, x0, x1, y0=118, y1=GH - 8):
+    voll.info['leer'] = leer; voll.info['bereich'] = (x0, y0, x1, y1)
+    return voll
+
+
+def tafel_zeigen(tf, seit, dauer=1.4):
+    """Grafik-Tafel schrittweise aufdecken (seit = Sekunden seit Erscheinen)."""
+    if 'leer' not in tf.info or seit >= dauer: return tf
+    x0, y0, x1, y1 = tf.info['bereich']
+    q = max(0.0, seit / dauer); q = 1 - (1 - q) ** 2
+    xr = int(x0 + (x1 - x0) * q)
+    out = tf.info['leer'].copy()
+    if xr > x0: out.paste(tf.crop((x0, y0, xr, y1)), (x0, y0))
+    return out
+
+
+def _datum_txt(d): return '%s, %d. %s' % (TAGE[d['datum'].weekday()], d['datum'].day, MONATE[d['datum'].month - 1])
+
+
+def tafel_temperatur(d, titel='HEUTE', von=6, bis=23):
+    st = [x for x in d.get('stunden') or [] if von <= x['h'] <= bis]
+    if len(st) < 6: return None
+    im, dr = _grafik_rahmen('TEMPERATUR ' + titel, (230, 100, 40), _datum_txt(d) + ' · Bad König')
+    x0, x1, y0, y1 = 48, GW - 28, 150, 385
+    ts = [x['t'] for x in st]; lo, hi = math.floor(min(ts)) - 1, math.ceil(max(ts)) + 1
+    if hi - lo < 6: m_ = (hi + lo) / 2; lo, hi = math.floor(m_ - 3), math.ceil(m_ + 3)
+    def X(h): return x0 + (x1 - x0) * (h - von) / (bis - von)
+    def Y(t): return y1 - (y1 - y0) * (t - lo) / (hi - lo)
+    schritt = 2 if hi - lo <= 10 else 4
+    for v in range(int(lo), int(hi) + 1):   # Hilfslinien
+        if v % schritt: continue
+        dr.line([x0, Y(v), x1, Y(v)], fill=(225, 230, 238), width=1)
+        dr.text((x0 - 8, Y(v)), '%d°' % v, font=F(16, False), fill=(130, 140, 155), anchor='rm')
+    if lo < 0 < hi: dr.line([x0, Y(0), x1, Y(0)], fill=(120, 170, 230), width=2)   # Frostlinie
+    for x in st:
+        if x['h'] % 3 == 0: dr.text((X(x['h']), 505), '%d' % x['h'], font=F(18, False), fill=(110, 120, 135), anchor='mm')
+    leer = im.copy()
+    pts = [(X(x['h']), Y(x['t'])) for x in st]
+    fl = Image.new('RGBA', im.size, (0, 0, 0, 0)); fd = ImageDraw.Draw(fl)
+    fd.polygon(pts + [(pts[-1][0], y1), (pts[0][0], y1)], fill=(245, 150, 70, 70))
+    im.alpha_composite(fl); dr = ImageDraw.Draw(im)
+    for a, b in zip(pts, pts[1:]):
+        t_ = (a[1] + b[1]) / 2; kalt = Y(0) if lo < 0 < hi else None
+        dr.line([a, b], fill=(60, 120, 200) if kalt and t_ > kalt else (230, 100, 40), width=6)
+    kmax = max(range(len(st)), key=lambda k: st[k]['t']); kmin = min(range(len(st)), key=lambda k: st[k]['t'])
+    for k, x in enumerate(st):
+        px, py = pts[k]
+        if x['h'] % 3 == 0 or k in (kmax, kmin):
+            hv = k == kmax
+            dr.ellipse([px - 7, py - 7, px + 7, py + 7], fill=(255, 255, 255), outline=(230, 100, 40) if hv or k != kmin else (60, 120, 200), width=4)
+        if k in (kmax, kmin):
+            dr.text((px, py - 26 if k == kmax else py + 26), '%d°' % round(x['t']), font=F(24),
+                    fill=(230, 100, 40) if k == kmax else (60, 120, 200), anchor='mm', stroke_width=3, stroke_fill=(255, 255, 255))
+    for x in st:   # Wettersymbole alle 3 Stunden
+        if x['h'] % 3 == 0: icon(dr, X(x['h']), 440, 44, x['code'])
+    return _fertig(leer, im, x0 - 10, x1 + 12)
+
+
+def tafel_regen(d, titel='HEUTE', von=6, bis=23):
+    st = [x for x in d.get('stunden') or [] if von <= x['h'] <= bis]
+    if len(st) < 6: return None
+    summe = sum(x['mm'] for x in st)
+    im, dr = _grafik_rahmen('REGEN ' + titel, (40, 110, 200), _datum_txt(d) + ' · je Stunde')
+    x0, x1, y0, y1 = 48, GW - 24, 150, 420
+    for v in (0, 25, 50, 75, 100):
+        y = y1 - (y1 - y0) * v / 100
+        dr.line([x0, y, x1, y], fill=(225, 230, 238), width=1)
+        dr.text((x0 - 8, y), '%d%%' % v, font=F(15, False), fill=(130, 140, 155), anchor='rm')
+    bw = (x1 - x0) / len(st)
+    for k, x in enumerate(st):
+        if x['h'] % 3 == 0: dr.text((x0 + bw * (k + 0.5), 445), '%d' % x['h'], font=F(18, False), fill=(110, 120, 135), anchor='mm')
+    leer = im.copy()
+    for k, x in enumerate(st):
+        p = x['rp']; xa = x0 + bw * k + 2; xb = xa + bw - 4
+        y = y1 - (y1 - y0) * p / 100
+        c = (150, 190, 235) if p < 30 else (70, 140, 220) if p < 60 else (30, 85, 175)
+        if p > 0: dr.rounded_rectangle([xa, y, xb, y1], radius=4, fill=c)
+        if x['mm'] >= 0.3 and x['h'] % 3 == 0: dr.text(((xa + xb) / 2, y - 12), ('%.1f' % x['mm']).replace('.', ','), font=F(13), fill=(30, 85, 175), anchor='mm')
+    fazit = 'Bleibt trocken' if max(x['rp'] for x in st) < 20 and summe < 0.2 else 'Zusammen ca. %s l/m²' % ('%.1f' % summe).replace('.', ',') if summe >= 0.2 else 'Kaum Regen erwartet'
+    dr.text((GW / 2, 490), fazit, font=F(26), fill=(30, 85, 175), anchor='mm')
+    return _fertig(leer, im, x0 - 4, x1 + 4)
+
+
+def tafel_wind(d, titel='HEUTE', von=6, bis=23):
+    st = [x for x in d.get('stunden') or [] if von <= x['h'] <= bis]
+    if len(st) < 6: return None
+    im, dr = _grafik_rahmen('WINDBÖEN ' + titel, (90, 95, 120), _datum_txt(d) + ' · km/h')
+    x0, x1, y0, y1 = 48, GW - 24, 150, 420
+    top = max(80, (max(x['boe'] for x in st) // 20 + 1) * 20)
+    for v in range(0, top + 1, 20):
+        y = y1 - (y1 - y0) * v / top
+        dr.line([x0, y, x1, y], fill=(225, 230, 238), width=1)
+        dr.text((x0 - 8, y), str(v), font=F(15, False), fill=(130, 140, 155), anchor='rm')
+    y60 = y1 - (y1 - y0) * 60 / top
+    dr.line([x0, y60, x1, y60], fill=(220, 60, 60), width=2); dr.text((x1, y60 - 12), 'Sturmböen', font=F(15), fill=(200, 40, 40), anchor='rm')
+    bw = (x1 - x0) / len(st)
+    for k, x in enumerate(st):
+        if x['h'] % 3 == 0: dr.text((x0 + bw * (k + 0.5), 445), '%d' % x['h'], font=F(18, False), fill=(110, 120, 135), anchor='mm')
+    leer = im.copy()
+    for k, x in enumerate(st):
+        b = x['boe']; xa = x0 + bw * k + 2; xb = xa + bw - 4; y = y1 - (y1 - y0) * b / top
+        c = (120, 190, 140) if b < 40 else (240, 180, 50) if b < 60 else (220, 60, 60)
+        dr.rounded_rectangle([xa, y, xb, y1], radius=4, fill=c)
+    km = max(st, key=lambda x: x['boe'])
+    dr.text((GW / 2, 490), 'Stärkste Böen: %d km/h (%d Uhr)' % (km['boe'], km['h']), font=F(22), fill=(70, 75, 95), anchor='mm')
+    return _fertig(leer, im, x0 - 4, x1 + 4)
+
+
+def grafiken_fuer(s):
+    """Tafel-Folge für einen Abschnitt mit s['grafiken'] (erst die normale Tafel, dann die Grafiken)."""
+    aus = []
+    d = s.get('tag')
+    for g in s.get('grafiken') or []:
+        try:
+            im = (tafel_temperatur(d, s.get('titel', '')) if g == 'temp' else tafel_regen(d, s.get('titel', '')) if g == 'regen'
+                  else tafel_wind(d, s.get('titel', '')) if g == 'wind' else None)
+        except Exception as e:
+            print('Grafik %s nicht möglich: %s' % (g, e)); im = None
+        if im is not None: aus.append(im)
+    return aus
+
+
 def kurz(t, n=95):
     return t if len(t) <= n else t[:n].rsplit(' ', 1)[0] + ' …'
 
@@ -1917,6 +2056,9 @@ def baue(segmente, heute, ziel, special, titel=None):
         s['bg_key'] = bg
         if bg == 'studio': s['look'], s['prop'] = 'normal', None   # drinnen: Softshell, keine Mütze, kein Schirm
         s['tafel'] = s['tafel_seq'][-1] if s.get('tafel_seq') else tafel_fuer(s, special)
+        if s.get('grafiken') and s['tafel'] is not None:   # Wettergrafiken: Tafeln wechseln, während Max spricht
+            gr_ = grafiken_fuer(s)
+            if gr_: s['tafel_seq'] = [s['tafel']] + gr_; s['tafel_wechsel'] = True
         # Untertitel: Sätze, Zeit nach Zeichenanzahl verteilt
         saetze, cur = [], ''
         for teil in s['text'].replace('! ', '!|').replace('. ', '.|').replace('? ', '?|').split('|'):
@@ -2000,10 +2142,18 @@ def baue(segmente, heute, ziel, special, titel=None):
                 yy = (y + t * 60 * r_) % H; xx = (x + 20 * math.sin(t + ph)) % W
                 dr.ellipse([xx - r_, yy - r_, xx + r_, yy + r_], fill=(255, 255, 255, 230))
         # Tafel: im Studio auf dem Bildschirm an der Wand, sonst rechts oben, schiebt sich herein
+        tafel_seit = lt; tf_alt = None
+        if s.get('tafel_wechsel'):   # Wettergrafiken: Tafeln wechseln gleichmäßig über den Abschnitt
+            sq_ = s['tafel_seq']; schritt_ = max(1.5, (s['dauer'] - 0.6) / len(sq_))
+            k_ = min(len(sq_) - 1, int(lt / schritt_)); tafel_seit = lt - k_ * schritt_
+            if k_ and tafel_seit < 0.3: tf_alt = sq_[k_ - 1]
+            tf_wechsel = tafel_zeigen(sq_[k_], tafel_seit - 0.3 if k_ else tafel_seit)
         if s['tafel'] is not None and studio:
             tf = s['tafel']
             sq = s.get('tafel_seq')
-            if sq:   # die Orte erscheinen nacheinander
+            if s.get('tafel_wechsel'):
+                tf = tf_wechsel if tf_alt is None else tf_alt
+            elif sq:   # die Orte erscheinen nacheinander
                 schritt = max(0.55, (s['dauer'] - 1.4) / len(sq))
                 tf = sq[min(len(sq) - 1, int(lt / schritt))]
             scl = W / cw
@@ -2013,15 +2163,22 @@ def baue(segmente, heute, ziel, special, titel=None):
             fit = min(rfw / tf.width, rfh / tf.height) * 0.92
             tfr = tf.resize((max(1, int(tf.width * fit)), max(1, int(tf.height * fit))), Image.LANCZOS)
             ein = min(1, lt / 0.5)
+            if s.get('tafel_wechsel'): ein = 1 - min(1, tafel_seit / 0.3) if tf_alt is not None else min(1, (tafel_seit - (0.3 if lt > 1 else 0)) / 0.3) if lt > 1 else min(1, lt / 0.5)
+            ein = max(0.0, ein)
             if ein < 1: tfr = Image.blend(Image.new('RGBA', tfr.size, (0, 0, 0, 0)), tfr, ein)
             tx = int(rfx0 + (rfw - tfr.width) / 2); ty = int(rfy0 + (rfh - tfr.height) / 2)
             fr.alpha_composite(tfr, (tx, ty))
         elif s['tafel'] is not None:
             tf = s['tafel']; ein = min(1, lt / 0.45); ein = 1 - (1 - ein) ** 3
+            if s.get('tafel_wechsel'):
+                if tf_alt is not None:   # alte Tafel schiebt sich hinaus …
+                    tf = tf_alt; ein = 1 - (tafel_seit / 0.3) ** 2
+                else:                    # … die neue schiebt sich herein und baut sich auf
+                    tf = tf_wechsel; e_ = tafel_seit - (0.3 if lt > 1 else 0); ein = min(1, max(0, e_) / 0.45); ein = 1 - (1 - ein) ** 3
             tx = int(W - tf.width - 24 + (1 - ein) * (tf.width + 40)); ty = 215
             fr.alpha_composite(tf, (tx, ty))
         # Moderator (links unten), Mund nach Lautstärke
-        zeigt = 1 if s['tafel'] is not None and s['art'] in ('tag', 'wochenende', 'woche', 'special') and lt < 2.2 else 0
+        zeigt = 1 if s['tafel'] is not None and s['art'] in ('tag', 'wochenende', 'woche', 'special') and (lt < 2.2 or s.get('tafel_wechsel') and 0.3 < tafel_seit < 1.9) else 0
         if s['art'] in ('intro', 'outro') and lt < 2.0: zeigt = 3
         elif s['art'] == 'cta' and (lt < 1.5 or lt > s['dauer'] - 2.5): zeigt = 3
         elif s['art'] == 'tipp' and 0.6 < lt < 2.6: zeigt = 2

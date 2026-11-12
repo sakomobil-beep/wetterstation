@@ -30,7 +30,7 @@ def get(url):
 # ---------- Daten ----------
 def load():
     om = get('https://api.open-meteo.com/v1/forecast?latitude=%s&longitude=%s&models=icon_seamless'
-             '&hourly=temperature_2m,weather_code,precipitation_probability,cloud_cover,wind_speed_10m&past_days=5&forecast_days=8'
+             '&hourly=temperature_2m,weather_code,precipitation_probability,cloud_cover,wind_speed_10m,precipitation,wind_gusts_10m&past_days=5&forecast_days=8'
              '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,'
              'precipitation_probability_max,wind_gusts_10m_max,sunshine_duration,snowfall_sum&timezone=Europe%%2FBerlin' % (LAT, LON))
     # Stationskorrektur: Median-Abweichung Station – Modell der letzten Tage (Tag/Nacht getrennt)
@@ -90,6 +90,9 @@ def load():
         t_ = days[-1]
         if t_['code'] in (51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82) and t_['regen'] < 0.3 and t_['rp'] < 30:
             t_['code'] = 1 if t_['sonne'] >= 7 else 2 if t_['sonne'] >= 4 else 3
+    for d in days[:3]:   # Stundenwerte für die Wettergrafiken in den Videos (Station Bad König)
+        try: d['stunden'] = stundenwerte(Hh, stunden, d['datum'].isoformat())
+        except Exception as e: print('Stundenwerte nicht möglich:', e)
     sicherheit(days)
     hoehen(days)
     try: days[0]['gestern'] = rueckblick(st)
@@ -100,6 +103,21 @@ def load():
     try: days[0]['himmel'] = himmel(om)
     except Exception as e: print('Himmel nicht möglich:', e)
     return days, warn
+
+
+def stundenwerte(Hh, stunden, tag):
+    """24 Stunden eines Tages: Temperatur (korrigiert bzw. gemessen), Regenrisiko, Regenmenge, Böen, Wettercode."""
+    idx = [k for k, t in enumerate(Hh['time']) if t[:10] == tag]
+    kor = stunden.get(tag) or []
+    out = []
+    for j, k in enumerate(idx):
+        tm = Hh['temperature_2m'][k]
+        if tm is None: continue
+        t = kor[j] if len(kor) == len(idx) else tm
+        out.append(dict(h=int(Hh['time'][k][11:13]), t=round(t, 1), rp=Hh['precipitation_probability'][k] or 0,
+                        mm=round((Hh.get('precipitation') or [0] * len(Hh['time']))[k] or 0, 1),
+                        boe=round((Hh.get('wind_gusts_10m') or [0] * len(Hh['time']))[k] or 0), code=Hh['weather_code'][k] or 0))
+    return out
 
 
 REK_START = '2026-01-20'   # Messbeginn der Station IBADKN33
