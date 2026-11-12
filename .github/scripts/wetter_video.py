@@ -486,20 +486,20 @@ def advent_gruss(heute, rnd):
 def abschied(d, rnd):
     w = wort(d['code'])
     if w == 'Gewitter' or d['boe'] >= 60:
-        return 'Euer Max sagt: Heute lieber drinnen bleiben – passt auf euch auf!'
+        return 'Heute lieber drinnen bleiben – passt auf euch auf!'
     if w == 'Schnee' or d['schnee'] >= 1:
-        return 'Euer Max sagt: Warm einpacken, vorsichtig fahren – und viel Spaß im Schnee!'
+        return 'Warm einpacken, vorsichtig fahren – und viel Spaß im Schnee!'
     if w in ('Regen', 'Nieselregen', 'Schauer') or d['rp'] >= 60:
-        return rnd.choice(['Euer Max sagt: Macht es euch heute gemütlich – der Odenwald läuft nicht weg!',
-                           'Euer Max sagt: Tee kochen, Füße hoch – das nächste schöne Wetter kommt bestimmt!'])
+        return rnd.choice(['Macht es euch heute gemütlich – der Odenwald läuft nicht weg!',
+                           'Tee kochen, Füße hoch – das nächste schöne Wetter kommt bestimmt!'])
     if d['code'] in (45, 48):
-        return rnd.choice(['Euer Max sagt: Licht an im Nebel, fahrt vorsichtig – und macht es euch gemütlich!',
-                           'Euer Max sagt: Warm einpacken und vorsichtig fahren – bis morgen!'])
+        return rnd.choice(['Licht an im Nebel, fahrt vorsichtig – und macht es euch gemütlich!',
+                           'Warm einpacken und vorsichtig fahren – bis morgen!'])
     if d['code'] == 3:
-        return rnd.choice(['Euer Max sagt: Auch ein grauer Tag kann schön werden – macht was draus!', 'Euer Max sagt: Jacke an und los – bis morgen!'])
+        return rnd.choice(['Auch ein grauer Tag kann schön werden – macht was draus!', 'Jacke an und los – bis morgen!'])
     if d['tmax'] <= 3:
-        return 'Euer Max sagt: Dick einpacken – und dann raus an die frische Luft!'
-    return rnd.choice(['Euer Max sagt: Genießt den Tag – bis morgen!', 'Euer Max sagt: Macht was draus – bis morgen!'])
+        return 'Dick einpacken – und dann raus an die frische Luft!'
+    return rnd.choice(['Genießt den Tag – bis morgen!', 'Macht was draus – bis morgen!'])
 
 
 def lage_fx(d):
