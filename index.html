@@ -203,6 +203,80 @@ button { font: inherit; color: inherit; }
 .nowgrid .hero { grid-template-columns: minmax(0, 1fr); }
 .nowgrid .tiles { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
 @media (max-width: 900px) { .nowgrid { grid-template-columns: minmax(0, 1fr); } }
+/* Startseite Version A (12.11.2026) */
+.nowgrid.nga { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.nga .tile { border-radius: 18px; border: 1px solid var(--line); transition: transform .15s, box-shadow .15s; }
+.nga .tile:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(18,37,46,.08); }
+.nga .label { font: 500 11px/1.3 var(--font-data); letter-spacing: .09em; text-transform: uppercase; color: var(--muted); }
+.nga .ngh { text-align: left; align-items: stretch; justify-content: flex-start; grid-column: span 2; grid-row: span 2; display: flex !important; flex-direction: column; gap: 6px; border-radius: 18px; padding: 22px 24px;
+  --hc: #2F7FC1; background: color-mix(in srgb, var(--hc) 13%, var(--surface)); border: 1px solid color-mix(in srgb, var(--hc) 30%, var(--surface)); }
+.ngh .label { color: color-mix(in srgb, var(--hc) 75%, var(--ink)); }
+.ngh-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.ngh-ic svg { width: 56px; height: 56px; display: block; }
+.ngh .temp { margin-top: 0; }
+.ngh .temp .v, .ngh .temp .u { color: color-mix(in srgb, var(--hc) 55%, var(--ink)); }
+.ngh .sub { color: color-mix(in srgb, var(--hc) 45%, var(--muted)); margin-top: 0; }
+.ngh-spark { margin-top: auto; padding-top: 10px; }
+.ngh-cap { font-size: 11.5px; color: color-mix(in srgb, var(--hc) 45%, var(--muted)); }
+.ngsun { grid-column: span 2; }
+.ngsun .astro { margin-top: 0; display: grid; gap: 6px; }
+.sunarc { width: 100%; height: auto; display: block; }
+.sa-bg { fill: none; stroke: var(--line); stroke-width: 2; stroke-dasharray: 4 5; }
+.sa-fg { fill: none; stroke: #EF9F27; stroke-width: 3; stroke-linecap: round; }
+.sa-hz { stroke: var(--line); stroke-width: 1.5; }
+.sa-sun { fill: #F5B638; stroke: color-mix(in srgb, #F5B638 35%, var(--surface)); stroke-width: 5; }
+.sa-sun.down { fill: var(--muted); stroke: var(--line); }
+.sa-len { font: 600 16px var(--font-display); fill: var(--ink); }
+.sa-sub, .sa-t { font: 400 11.5px var(--font-data); fill: var(--muted); }
+.ngsun .arow { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; font-size: 13.5px; }
+.ngsun .astro svg:not(.sunarc) { width: 24px; height: 24px; }
+.ngsun .astro svg.sunarc { width: 100%; height: auto; max-height: 130px; }
+.ngring { display: flex; align-items: center; gap: 12px; }
+.ngring svg { width: 84px; height: 84px; flex: none; }
+.ngring .rbg { fill: none; stroke: var(--line); stroke-width: 8; }
+.ngring .rfg { fill: none; stroke: var(--accent); stroke-width: 8; stroke-linecap: round; transform: rotate(-90deg); transform-origin: 40px 40px; transition: stroke-dasharray .6s; }
+.ngring span { font: 600 2.1rem/1 var(--font-display); font-variant-numeric: tabular-nums; }
+.ngring span b { font-weight: 600; }
+.ngmini svg { display: block; }
+.nghl .v { font-size: 1.9rem; }
+.nghl .v:first-child { color: var(--warm); } .nghl .v:last-child { color: var(--accent); }
+.nghl .sl { font-size: 1.4rem; color: var(--muted); }
+#rainLine.wet b { color: var(--accent); }
+@media (max-width: 1000px) { .nowgrid.nga { grid-template-columns: repeat(2, minmax(0, 1fr)); } .ngh { grid-row: auto; } }
+@media (max-width: 460px) { .nowgrid.nga { gap: 10px; } .nga .tile { padding: 14px; } .ngring svg { width: 64px; height: 64px; } .ngring span { font-size: 1.6rem; } .compass { width: 58px; height: 58px; } .windrow { gap: 8px; } .nga .windrow .big .v { font-size: 1.6rem; } .nga .big .v { font-size: 1.9rem; } }
+/* Heute vor 1 Jahr als Chips */
+.vj .vj-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 4px; }
+.vj .vj-grid > div { display: grid; gap: 4px; align-content: start; justify-content: stretch; border: 0; border-radius: 12px; padding: 10px 12px; background: color-mix(in srgb, var(--muted) 9%, var(--surface)); }
+.vj .vj-grid > div:has(small.up) { background: color-mix(in srgb, var(--warm) 11%, var(--surface)); }
+.vj .vj-grid > div:has(small.down) { background: color-mix(in srgb, var(--accent) 11%, var(--surface)); }
+.vj .vj-grid dt { font-size: 12.5px; }
+.vj .vj-grid dd { display: grid; justify-content: start; text-align: left; gap: 2px; font-size: 14px; }
+.vj .vj-grid dd small { min-width: 0; text-align: left; font-size: 12.5px; }
+.vj .vj-more { display: block; text-align: right; margin-top: 10px; }
+@media (max-width: 760px) { .vj .vj-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* Verlauf heute */
+.ngchart { border: 1px solid var(--line); border-radius: 18px; }
+.ngc-now { margin-top: 2px; display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; }
+.ngc-now b { font: 600 1.6rem/1.1 var(--font-display); font-variant-numeric: tabular-nums; }
+.ngc-now .tr { font-size: 13px; font-weight: 500; } .ngc-now .dn { color: var(--accent); } .ngc-now .up { color: var(--warm); } .ngc-now .eq { color: var(--muted); }
+.ngchart .tab { border-radius: 999px; padding: 6px 14px; }
+.plot .ngc-night { fill: #7F77DD; fill-opacity: .08; }
+.plot .ngc-day { fill: #EF9F27; fill-opacity: .07; }
+.plot .ngc-sun { font: 400 10.5px var(--font-data); fill: #BA7517; }
+.plot .ngc-fc { fill: none; stroke: var(--sc); stroke-width: 2; stroke-dasharray: 5 5; stroke-linecap: round; opacity: .8; }
+.plot .ngc-vj { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-dasharray: 1.5 4; stroke-linecap: round; }
+.plot .ngc-vjl { font: 400 10.5px var(--font-data); fill: var(--muted); }
+.plot .ngc-nowl { stroke: var(--ink); stroke-width: 1; opacity: .5; }
+.plot .ngc-pill { fill: var(--ink); } .plot .ngc-pillt { font: 500 10.5px var(--font-data); fill: var(--surface); }
+.ngc-leg { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: 11.5px; color: var(--muted); margin-top: -4px; }
+.ngc-leg span { display: inline-flex; align-items: center; gap: 6px; }
+.ngc-leg i { display: inline-block; width: 18px; height: 0; border-top: 2.5px solid var(--warm); }
+.ngc-leg .lg-f { border-top-style: dashed; } .ngc-leg .lg-v { border-top: 2px dotted var(--muted); } .ngc-leg .lg-n { height: 10px; border: 0; background: rgba(127,119,221,.18); border-radius: 2px; }
+.ngc-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.ngc-st { background: color-mix(in srgb, var(--muted) 8%, var(--surface)); border-radius: 12px; padding: 9px 12px; display: grid; gap: 2px; }
+.ngc-st span { font-size: 11.5px; color: var(--muted); }
+.ngc-st b { font: 600 15px/1.3 var(--font-data); font-variant-numeric: tabular-nums; }
+@media (max-width: 620px) { .ngc-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .factscard { background: var(--surface); border-radius: 16px; padding: 20px 24px; }
 #vj:not([hidden]) + .factscard { display: none; }
 .wcard.warntop { grid-template-rows: none; padding: 14px 20px; gap: 6px; }
@@ -1007,75 +1081,73 @@ button { font: inherit; color: inherit; }
   <section id="auroraBand" class="frostband aurora" hidden aria-live="polite"></section>
 
   <h2 class="sec">Jetzt</h2>
-  <div class="nowgrid">
-  <section class="hero" aria-label="Aktuelle Temperatur">
-    <div>
+  <div class="nowgrid nga">
+  <section class="hero ngh" id="heroCard" aria-label="Aktuelle Temperatur">
+    <div class="ngh-top">
       <div class="label">Außentemperatur</div>
-      <div class="temp"><span id="temp" class="v num">–</span><span class="u">°C</span></div>
-      <div class="sub">
-        <span>Gefühlt <b id="feels" class="num">–</b> °C</span>
-        <span>Taupunkt <b id="dew" class="num">–</b> °C</span>
-      </div>
-      <div class="astro" id="astro" aria-label="Sonne und Mond heute"></div>
+      <span class="ngh-ic" id="heroIc" aria-hidden="true"></span>
     </div>
+    <div class="temp"><span id="temp" class="v num">–</span><span class="u">°C</span></div>
+    <div class="sub">
+      <span>Gefühlt <b id="feels" class="num">–</b> °C</span>
+      <span>Taupunkt <b id="dew" class="num">–</b> °C</span>
+    </div>
+    <div class="ngh-spark" id="heroSpark" aria-hidden="true"></div>
+    <div class="ngh-cap">Verlauf seit Mitternacht</div>
   </section>
-  <section class="tiles" aria-label="Messwerte">
-    <article class="tile">
-      <div class="label">Luftfeuchte</div>
-      <div class="big"><span id="hum" class="v">–</span><span class="u">%</span></div>
-      <div class="bar" aria-hidden="true"><i id="humBar" style="width:0"></i></div>
-      <div class="line" id="humLine"></div>
-    </article>
-
-    <article class="tile">
-      <div class="label">Wind</div>
-      <div class="windrow">
-        <svg class="compass" viewBox="-50 -50 100 100" role="img" aria-label="Windrichtung">
-          <circle class="ring" r="40"></circle>
-          <line class="tick" x1="0" y1="-40" x2="0" y2="-34"></line>
-          <line class="tick" x1="40" y1="0" x2="34" y2="0"></line>
-          <line class="tick" x1="0" y1="40" x2="0" y2="34"></line>
-          <line class="tick" x1="-40" y1="0" x2="-34" y2="0"></line>
-          <text x="0" y="-26">N</text><text x="26" y="0">O</text><text x="0" y="26">S</text><text x="-26" y="0">W</text>
-          <g id="needle">
-            <line class="needle" x1="0" y1="-40" x2="0" y2="-14"></line>
-            <polygon class="head" points="-5.5,-17 5.5,-17 0,-5"></polygon>
-          </g>
-        </svg>
-        <div>
-          <div class="big"><span id="wind" class="v">–</span><span class="u">km/h</span></div>
-          <div class="line">aus <b id="windDir">–</b></div>
-        </div>
+  <section class="tile ngsun" aria-label="Sonne und Mond heute">
+    <div class="label">Sonne und Mond</div>
+    <div class="astro" id="astro"></div>
+  </section>
+  <article class="tile">
+    <div class="label">Luftfeuchte</div>
+    <div class="ngring"><svg viewBox="0 0 80 80" aria-hidden="true"><circle class="rbg" cx="40" cy="40" r="32"></circle><circle class="rfg" id="humRing" cx="40" cy="40" r="32" stroke-dasharray="0 201"></circle></svg><span><b id="hum" class="num">–</b>%</span></div>
+    <div class="line" id="humLine"></div>
+  </article>
+  <article class="tile">
+    <div class="label">Wind</div>
+    <div class="windrow">
+      <svg class="compass" viewBox="-50 -50 100 100" role="img" aria-label="Windrichtung">
+        <circle class="ring" r="40"></circle>
+        <line class="tick" x1="0" y1="-40" x2="0" y2="-34"></line>
+        <line class="tick" x1="40" y1="0" x2="34" y2="0"></line>
+        <line class="tick" x1="0" y1="40" x2="0" y2="34"></line>
+        <line class="tick" x1="-40" y1="0" x2="-34" y2="0"></line>
+        <text x="0" y="-26">N</text><text x="26" y="0">O</text><text x="0" y="26">S</text><text x="-26" y="0">W</text>
+        <g id="needle">
+          <line class="needle" x1="0" y1="-40" x2="0" y2="-14"></line>
+          <polygon class="head" points="-5.5,-17 5.5,-17 0,-5"></polygon>
+        </g>
+      </svg>
+      <div>
+        <div class="big"><span id="wind" class="v">–</span><span class="u">km/h</span></div>
+        <div class="line">aus <b id="windDir">–</b></div>
       </div>
-      <div class="line">Böen bis <b id="gust" class="num">–</b> km/h</div>
-    </article>
-
-    <article class="tile">
-      <div class="label">Luftdruck</div>
-      <div class="big"><span id="pres" class="v">–</span><span class="u">hPa</span></div>
-      <div class="line" id="presLine"></div>
-    </article>
-
-    <article class="tile">
-      <div class="label">Regen</div>
-      <div class="big"><span id="rain" class="v">–</span><span class="u">mm/h</span></div>
-      <div class="line">Heute: <b id="rain24" class="num">–</b> mm</div>
-    </article>
-
-    <article class="tile">
-      <div class="label">UV-Index</div>
-      <div class="big"><span id="uv" class="v">–</span><span class="u" id="uvCat"></span></div>
-      <div class="bar uvbar" aria-hidden="true"><em id="uvMark" style="left:0"></em></div>
-      <div class="scale" aria-hidden="true"><span>0</span><span>3</span><span>6</span><span>8</span><span>11+</span></div>
-    </article>
-
-    <article class="tile">
-      <div class="label">Sonnenstrahlung</div>
-      <div class="big"><span id="solar" class="v">–</span><span class="u">W/m²</span></div>
-      <div class="bar" aria-hidden="true"><i id="solarBar" style="width:0"></i></div>
-      <div class="line">Skala bis 1000 W/m² (volle Sonne)</div>
-    </article>
-  </section>
+    </div>
+    <div class="line">Böen bis <b id="gust" class="num">–</b> km/h</div>
+  </article>
+  <article class="tile">
+    <div class="label">Luftdruck</div>
+    <div class="big"><span id="pres" class="v">–</span><span class="u">hPa</span></div>
+    <div class="line" id="presLine"></div>
+    <div class="ngmini" id="presSpark" aria-hidden="true"></div>
+  </article>
+  <article class="tile">
+    <div class="label">Sonne</div>
+    <div class="big"><span id="solar" class="v">–</span><span class="u">W/m²</span></div>
+    <div class="line">UV-Index <b id="uv" class="num">–</b> <span id="uvCat"></span></div>
+    <div class="bar uvbar" aria-hidden="true"><em id="uvMark" style="left:0"></em></div>
+  </article>
+  <article class="tile">
+    <div class="label">Regen heute</div>
+    <div class="big"><span id="rain24" class="v">–</span><span class="u">mm</span></div>
+    <div class="line" id="rainLine">aktuell <b id="rain" class="num">–</b> mm/h</div>
+  </article>
+  <article class="tile">
+    <div class="label">Heute</div>
+    <div class="big nghl"><span class="v" id="nowHi">–</span><span class="sl">/</span><span class="v" id="nowLo">–</span></div>
+    <div class="line">Stärkste Böe <b id="nowGu" class="num">–</b> km/h</div>
+  </article>
   </div>
 
   <h2 class="sec">Heute</h2>
@@ -1097,15 +1169,18 @@ button { font: inherit; color: inherit; }
       <div><dt>Niederschlag heute</dt><dd id="r24">–</dd></div>
     </dl>
   </section>
-  <section class="chart" aria-label="Verlauf der letzten 24 Stunden">
+  <section class="chart ngchart" aria-label="Verlauf heute">
     <div class="chart-head">
       <div>
         <div class="label">Verlauf heute</div>
+        <div class="ngc-now" id="ngcNow"></div>
       </div>
       <div class="tabs" id="tabs"></div>
     </div>
     <div class="readout num" id="readout"></div>
     <div class="plot" id="plot"></div>
+    <div class="ngc-leg" id="ngcLeg"></div>
+    <div class="ngc-stats" id="ngcStats"></div>
   </section>
 
   <h2 class="sec">Was kommt</h2>
@@ -1745,7 +1820,7 @@ button { font: inherit; color: inherit; }
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 12.11.2026, 13:36 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 12.11.2026, 16:45 Uhr</span></p>
 
 </div>
 
@@ -2000,7 +2075,7 @@ function render() {
   vjRender();
 
   $('hum').textContent = nf(d.humidity, 0);
-  $('humBar').style.width = clamp(d.humidity, 0, 100) + '%';
+  $('humRing').setAttribute('stroke-dasharray', (clamp(d.humidity === null ? 0 : d.humidity, 0, 100) / 100 * 201).toFixed(1) + ' 201');
   $('humLine').innerHTML = 'Taupunkt <b class="num">' + nf(dew, 1) + ' °C</b>';
 
   $('wind').textContent = nf(d.windSpeed, 0);
@@ -2024,7 +2099,11 @@ function render() {
   $('uvMark').style.left = (clamp(d.uv === null ? 0 : d.uv, 0, 11) / 11 * 100) + '%';
 
   $('solar').textContent = nf(d.solar, 0);
-  $('solarBar').style.width = clamp(d.solar === null ? 0 : d.solar / 10, 0, 100) + '%';
+  var hiV = d.tempMax != null ? d.tempMax : Math.max.apply(null, temps), loV = d.tempMin != null ? d.tempMin : Math.min.apply(null, temps);
+  $('nowHi').textContent = nf(hiV, 1) + '°'; $('nowLo').textContent = nf(loV, 1) + '°';
+  $('nowGu').textContent = nf(d.gustMax != null ? d.gustMax : d.windGust, 0);
+  $('rainLine').classList.toggle('wet', (d.rainRate || 0) > 0);
+  renderHeroA();
 
   var upd = new Date(d.updated);
   $('stamp').textContent = 'Stand ' + (isNaN(upd) ? '–' : hhmm(upd) + ' Uhr');
@@ -2220,13 +2299,233 @@ function buildTabs(el, keys, current, onPick) {
 
 var liveChart = null, histChart = null;
 
+/* ---------- Verlauf heute (0–24 Uhr): gemessen, Vorhersage, vor 1 Jahr, Tag/Nacht ---------- */
+var VJH = { date: null, src: null, pts: null, busy: false };
+function vjhLoad() {
+  var ds = vjDate();
+  if (VJH.busy || VJH.date === ds) return;
+  if (!CONFIG.stationId || needKey()) return;
+  var station = ds < VJ_SWITCH ? VJ_FALLBACK : CONFIG.stationId, key = 'wetter-vjh-' + station + '-' + ds;
+  var cached = lsGet(key);
+  if (cached) { VJH.date = ds; VJH.src = station; VJH.pts = cached; drawLive(); return; }
+  VJH.busy = true;
+  var url = 'https://api.weather.com/v2/pws/history/hourly?stationId=' + encodeURIComponent(station) +
+    '&format=json&units=m&numericPrecision=decimal&date=' + ds.replace(/-/g, '') + '&apiKey=' + encodeURIComponent(CONFIG.apiKey);
+  wuFetch(url).then(function (j) {
+    var out = ((j && j.observations) || []).map(function (o) {
+      var tl = String(o.obsTimeLocal || ''), mm = o.metric || {}, v = num(mm.tempAvg !== undefined ? mm.tempAvg : mm.temp);
+      var hm = tl.match(/ (\d{2}):(\d{2})/);
+      return hm && v !== null ? { m: (+hm[1]) * 60 + (+hm[2]), v: v } : null;
+    }).filter(Boolean).sort(function (x, y) { return x.m - y.m; });
+    if (out.length < 4) throw new Error('zu wenig');
+    VJH.pts = out; VJH.date = ds; VJH.src = station; lsSet(key, out);
+    Object.keys(localStorage).forEach(function (k) { if (k.indexOf('wetter-vjh-') === 0 && k !== key) try { localStorage.removeItem(k); } catch (e) {} });
+    drawLive();
+  }).catch(function () { VJH.date = ds; }).then(function () { VJH.busy = false; });
+}
+function dayStart() { var n = new Date(); return new Date(n.getFullYear(), n.getMonth(), n.getDate()).getTime(); }
+function todayMeasured(key) {
+  var d = state.data, t0 = dayStart();
+  if (!d) return [];
+  var pts = d.history.map(function (h) { return { t: new Date(h.t).getTime(), v: h[key] }; })
+    .filter(function (p) { return p.t >= t0 && p.v !== null && p.v !== undefined && !isNaN(p.v); });
+  var cur = { temp: d.temp, humidity: d.humidity, pressure: d.pressure, wind: d.windSpeed, rain: null }[key];
+  if (key === 'rain' && pts.length && d.rainToday != null) { var off = d.rainToday - pts[pts.length - 1].v; pts.forEach(function (p) { p.v = Math.max(0, p.v + off); }); cur = d.rainToday; }
+  if (key === 'rain' && !pts.length && d.rainToday != null) cur = d.rainToday;
+  var ut = new Date(d.updated).getTime();
+  if (cur !== null && cur !== undefined && !isNaN(ut) && ut >= t0 && (!pts.length || ut > pts[pts.length - 1].t)) pts.push({ t: ut, v: cur });
+  return pts;
+}
+function todayForecast(key, from) {
+  if (!from || !FC.hours || !FC.hours.length) return [];
+  var t1 = dayStart() + DAYMS, out = [from], acc = from.v;
+  FC.hours.forEach(function (h) {
+    var t = h.t.getTime();
+    if (t <= from.t || t > t1) return;
+    if (key === 'temp' && h.temp !== null) out.push({ t: t, v: h.temp });
+    else if (key === 'wind' && h.wind !== null) out.push({ t: t, v: h.wind });
+    else if (key === 'rain' && h.rain !== null) { acc += h.rain; out.push({ t: t, v: Math.round(acc * 10) / 10 }); }
+  });
+  return out.length > 1 ? out : [];
+}
+function smoothPath(P) {
+  /* monotone Kurve (Fritsch-Carlson): weich, aber ohne Überschwinger */
+  var n = P.length;
+  if (n < 3) return P.map(function (p, i) { return (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(' ');
+  var dx = [], m = [], t = [];
+  for (var i = 0; i < n - 1; i++) { dx[i] = P[i + 1][0] - P[i][0]; m[i] = dx[i] ? (P[i + 1][1] - P[i][1]) / dx[i] : 0; }
+  t[0] = m[0]; t[n - 1] = m[n - 2];
+  for (i = 1; i < n - 1; i++) t[i] = m[i - 1] * m[i] <= 0 ? 0 : 3 * (dx[i - 1] + dx[i]) / ((2 * dx[i] + dx[i - 1]) / m[i - 1] + (dx[i] + 2 * dx[i - 1]) / m[i]);
+  var d = 'M' + P[0][0].toFixed(1) + ' ' + P[0][1].toFixed(1);
+  for (i = 0; i < n - 1; i++) {
+    var h3 = dx[i] / 3;
+    d += ' C' + (P[i][0] + h3).toFixed(1) + ' ' + (P[i][1] + t[i] * h3).toFixed(1) + ' ' + (P[i + 1][0] - h3).toFixed(1) + ' ' + (P[i + 1][1] - t[i + 1] * h3).toFixed(1) + ' ' + P[i + 1][0].toFixed(1) + ' ' + P[i + 1][1].toFixed(1);
+  }
+  return d;
+}
+var DAYC = { geo: null };
 function drawLive() {
-  if (!liveChart || !state.data) return;
+  if (!state.data) return;
+  var box = $('plot'), readout = $('readout');
   var key = state.series, s = SERIES[key];
-  var pts = state.data.history.map(function (h) { return { t: new Date(h.t), v: h[key] }; });
-  var ticks = [];
-  for (var i = pts.length - 1; i >= 0; i -= 6) ticks.push({ t: pts[i].t.getTime(), label: hhmm(pts[i].t) });
-  liveChart.draw(pts, s, { ticks: ticks, rest: 'Jetzt', label: s.label + ' der letzten Stunden' });
+  var meas = todayMeasured(key);
+  if (key === 'temp') vjhLoad();
+  if (meas.length < 2) { box.innerHTML = '<p class="empty">Für ein Diagramm liegen noch zu wenige Werte vor.</p>'; readout.innerHTML = ''; $('ngcStats').innerHTML = ''; $('ngcLeg').innerHTML = ''; $('ngcNow').innerHTML = ''; DAYC.geo = null; return; }
+  var t0 = dayStart(), t1 = t0 + DAYMS, now = meas[meas.length - 1].t;
+  var fc = todayForecast(key, meas[meas.length - 1]);
+  var vj = (key === 'temp' && VJH.pts && VJH.date === vjDate()) ? VJH.pts.map(function (p) { return { t: t0 + p.m * 60000, v: p.v }; }) : [];
+  var all = meas.concat(fc).concat(vj).map(function (p) { return p.v; });
+  var lo = Math.min.apply(null, all), hi = Math.max.apply(null, all);
+  if (s.zero) lo = Math.min(0, lo);
+  var sc = niceScale(lo, hi, 4);
+  var w = Math.max(280, box.clientWidth || 640), h = w < 480 ? 230 : 280;
+  var m = { l: 40, r: 14, t: 26, b: 28 }, iw = w - m.l - m.r, ih = h - m.t - m.b;
+  var X = function (t) { return m.l + (t - t0) / (t1 - t0) * iw; };
+  var Y = function (v) { return m.t + ih - (v - sc.lo) / (sc.hi - sc.lo) * ih; };
+  var out = '<svg viewBox="0 0 ' + w + ' ' + h + '" width="' + w + '" height="' + h + '" role="img" aria-label="' + s.label + ' heute" style="--sc:' + s.color + '">';
+  var st = sunTimes(new Date(t0 + DAYMS / 2), CONFIG.lat, CONFIG.lon);
+  if (st.rise && st.set) {
+    var xr = X(st.rise.getTime()), xs = X(st.set.getTime());
+    out += '<rect class="ngc-night" x="' + m.l + '" y="' + m.t + '" width="' + (xr - m.l).toFixed(1) + '" height="' + ih + '"></rect>';
+    out += '<rect class="ngc-day" x="' + xr.toFixed(1) + '" y="' + m.t + '" width="' + (xs - xr).toFixed(1) + '" height="' + ih + '"></rect>';
+    out += '<rect class="ngc-night" x="' + xs.toFixed(1) + '" y="' + m.t + '" width="' + (w - m.r - xs).toFixed(1) + '" height="' + ih + '"></rect>';
+    out += '<text class="ngc-sun" x="' + (xr + 4).toFixed(1) + '" y="' + (m.t + 13) + '">☀ ' + hhmm(st.rise) + '</text>';
+    out += '<text class="ngc-sun" x="' + (xs - 4).toFixed(1) + '" y="' + (m.t + 13) + '" text-anchor="end">' + hhmm(st.set) + '</text>';
+  }
+  var dec = sc.ticks.some(function (t) { return Math.abs(t - Math.round(t)) > 1e-6; }) ? 1 : 0;
+  sc.ticks.forEach(function (t) {
+    var y = Y(t);
+    out += '<line class="grid" x1="' + m.l + '" x2="' + (w - m.r) + '" y1="' + y + '" y2="' + y + '"></line>';
+    out += '<text class="axis" x="' + (m.l - 7) + '" y="' + y + '" text-anchor="end" dominant-baseline="central">' + nf(t, dec) + '</text>';
+  });
+  [0, 6, 12, 18, 24].forEach(function (hh) {
+    var x = X(t0 + hh * 3600000);
+    out += '<text class="axis" x="' + x.toFixed(1) + '" y="' + (h - 8) + '" text-anchor="' + (hh === 0 ? 'start' : hh === 24 ? 'end' : 'middle') + '">' + hh + ' Uhr</text>';
+  });
+  function P(list) { return list.map(function (p) { return [X(p.t), Y(p.v)]; }); }
+  if (vj.length > 1) out += '<path class="ngc-vj" d="' + smoothPath(P(vj)) + '"></path>';
+  var base = Y(sc.lo).toFixed(1), dm = smoothPath(P(meas));
+  out += '<path class="area" d="' + dm + ' L' + X(now).toFixed(1) + ' ' + base + ' L' + X(meas[0].t).toFixed(1) + ' ' + base + ' Z"></path>';
+  out += '<path class="series" d="' + dm + '"></path>';
+  if (fc.length > 1) out += '<path class="ngc-fc" d="' + smoothPath(P(fc)) + '"></path>';
+  var vals = meas.map(function (p) { return p.v; }), vMax = Math.max.apply(null, vals), vMin = Math.min.apply(null, vals);
+  var iMax = vals.lastIndexOf(vMax), iMin = vals.lastIndexOf(vMin);
+  if (!s.noExt && vMax !== vMin) {
+    [[iMax, -9], [iMin, 17]].forEach(function (e) {
+      if (e[0] === meas.length - 1) return;
+      var x = X(meas[e[0]].t), y = Y(vals[e[0]]);
+      if (e[1] > 0 && y + e[1] > m.t + ih - 2) e[1] = -9;
+      var anc = x < m.l + 30 ? 'start' : (x > w - m.r - 30 ? 'end' : 'middle');
+      out += '<circle class="ext" cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="3.5"></circle>';
+      out += '<text class="extlabel" x="' + x.toFixed(1) + '" y="' + (y + e[1]).toFixed(1) + '" text-anchor="' + anc + '">' + nf(vals[e[0]], s.dec) + (s.unit === '°C' ? '°' : '') + '</text>';
+    });
+  }
+  if (vj.length > 1) {
+    var vv = vj.map(function (p) { return p.v; }), vm = Math.max.apply(null, vv), vi = vv.indexOf(vm), vx = X(vj[vi].t), vy = Y(vm);
+    out += '<text class="ngc-vjl" x="' + vx.toFixed(1) + '" y="' + (vy - 7).toFixed(1) + '" text-anchor="' + (vx > w - m.r - 60 ? 'end' : vx < m.l + 60 ? 'start' : 'middle') + '">vor 1 Jahr ' + nf(vm, 1) + '°</text>';
+  }
+  var nx = X(now), ny = Y(meas[meas.length - 1].v);
+  out += '<line class="ngc-nowl" x1="' + nx.toFixed(1) + '" x2="' + nx.toFixed(1) + '" y1="' + m.t + '" y2="' + (m.t + ih) + '"></line>';
+  out += '<circle class="halo" cx="' + nx.toFixed(1) + '" cy="' + ny.toFixed(1) + '" r="9"></circle><circle class="dot" cx="' + nx.toFixed(1) + '" cy="' + ny.toFixed(1) + '" r="4.5"></circle>';
+  var pw = 76, px = Math.min(w - m.r - pw, Math.max(m.l, nx - pw / 2));
+  out += '<rect class="ngc-pill" x="' + px.toFixed(1) + '" y="2" width="' + pw + '" height="18" rx="9"></rect><text class="ngc-pillt" x="' + (px + pw / 2).toFixed(1) + '" y="14.5" text-anchor="middle">jetzt ' + hhmm(new Date(now)) + '</text>';
+  out += '<g class="hov" visibility="hidden"><line class="cross" y1="' + m.t + '" y2="' + (m.t + ih) + '"></line><circle class="dot" r="5"></circle></g></svg>';
+  box.innerHTML = out;
+  DAYC.geo = { X: X, Y: Y, m: m, iw: iw, t0: t0, t1: t1, s: s, key: key, pts: meas.map(function (p) { return { t: p.t, v: p.v, f: false }; }).concat(fc.slice(1).map(function (p) { return { t: p.t, v: p.v, f: true }; })), vj: vj };
+  dayShow(null);
+  /* Kopf: aktueller Wert + Tendenz */
+  var last = meas[meas.length - 1], ref = null;
+  for (var k = meas.length - 1; k >= 0; k--) if (last.t - meas[k].t >= 90 * 60000) { ref = meas[k]; break; }
+  var tr = '';
+  if (ref && key !== 'rain') {
+    var df = last.v - ref.v, thr = { temp: 0.3, humidity: 2, pressure: 0.4, wind: 2 }[key] || 0.3;
+    if (Math.abs(df) < thr) tr = '<span class="tr eq">→ gleichbleibend</span>';
+    else if (df < 0) tr = '<span class="tr dn">↓ fällt' + (iMax < meas.length - 1 && !s.noExt ? ' seit ' + hhmm(new Date(meas[iMax].t)) : '') + '</span>';
+    else tr = '<span class="tr up">↑ steigt' + (iMin < meas.length - 1 && !s.noExt ? ' seit ' + hhmm(new Date(meas[iMin].t)) : '') + '</span>';
+  }
+  $('ngcNow').innerHTML = '<b>' + nf(last.v, s.dec) + ' ' + s.unit + '</b>' + tr;
+  /* Legende */
+  $('ngcLeg').innerHTML = '<span><i class="lg-m"></i>heute gemessen</span>' + (fc.length > 1 ? '<span><i class="lg-f"></i>Vorhersage bis 24 Uhr</span>' : '') +
+    (vj.length > 1 ? '<span><i class="lg-v"></i>heute vor 1 Jahr (' + VJH.src + ')</span>' : '') + '<span><i class="lg-n"></i>Nacht</span>';
+  /* Kennzahlen */
+  var u = s.unit === '°C' ? '°' : ' ' + s.unit, cards;
+  function card(l, v, c) { return '<div class="ngc-st"><span>' + l + '</span><b' + (c ? ' style="color:' + c + '"' : '') + '>' + v + '</b></div>'; }
+  if (key === 'rain') {
+    var hrs = 0; for (k = 1; k < meas.length; k++) if (meas[k].v - meas[k - 1].v > 0.05) hrs++;
+    var fcAdd = fc.length > 1 ? fc[fc.length - 1].v - fc[0].v : null;
+    cards = card('Regen heute', nf(last.v, 1) + ' mm') + card('Stunden mit Regen', hrs) + card('Aktuell', nf(state.data.rainRate, 1) + ' mm/h') +
+      card('Bis 24 Uhr erwartet', fcAdd === null ? '–' : '+' + nf(fcAdd, 1) + ' mm');
+  } else {
+    var avg = avgOf(vals);
+    cards = card('Höchst', nf(vMax, s.dec) + u + ' · ' + hhmm(new Date(meas[iMax].t)), key === 'temp' ? 'var(--warm)' : '') +
+      card('Tiefst', nf(vMin, s.dec) + u + ' · ' + hhmm(new Date(meas[iMin].t)), key === 'temp' ? 'var(--accent)' : '') +
+      card(key === 'wind' ? 'Mittel heute' : 'Mittel heute', nf(avg, s.dec) + u) +
+      (key === 'wind' ? card('Stärkste Böe', nf(state.data.gustMax != null ? state.data.gustMax : state.data.windGust, 0) + ' km/h') : card('Spanne', nf(vMax - vMin, s.dec) + (key === 'temp' ? ' K' : u)));
+  }
+  $('ngcStats').innerHTML = cards;
+}
+function dayShow(i) {
+  var g = DAYC.geo, readout = $('readout'), box = $('plot');
+  if (!g) return;
+  var p = i === null ? null : g.pts[i];
+  if (!p) { readout.innerHTML = '<span>Zum Ablesen über das Diagramm fahren oder tippen</span>'; }
+  else {
+    var txt = '<span>' + hhmm(new Date(p.t)) + ' Uhr' + (p.f ? ' · Vorhersage' : '') + '</span>&nbsp; ' + nf(p.v, g.s.dec) + ' ' + g.s.unit;
+    if (g.vj.length) { var b = null, bd = Infinity; g.vj.forEach(function (q) { var dd = Math.abs(q.t - p.t); if (dd < bd) { bd = dd; b = q; } }); if (b && bd < 5400000) txt += ' <span>· vor 1 Jahr ' + nf(b.v, 1) + ' °C</span>'; }
+    readout.innerHTML = txt;
+  }
+  var hov = box.querySelector('.hov'); if (!hov) return;
+  if (!p) { hov.setAttribute('visibility', 'hidden'); return; }
+  var x = g.X(p.t), y = g.Y(p.v), ln = hov.querySelector('.cross'), dt = hov.querySelector('.dot');
+  ln.setAttribute('x1', x); ln.setAttribute('x2', x); dt.setAttribute('cx', x); dt.setAttribute('cy', y);
+  hov.setAttribute('visibility', 'visible');
+}
+(function () {
+  var box = document.getElementById('plot');
+  if (!box) return;
+  box.addEventListener('pointermove', function (e) {
+    var g = DAYC.geo; if (!g) return;
+    var r = box.getBoundingClientRect(), sx = (g.m.l + g.iw + 14) / r.width;
+    var t = g.t0 + ((e.clientX - r.left) * sx - g.m.l) / g.iw * (g.t1 - g.t0), best = null, bd = Infinity;
+    g.pts.forEach(function (p, k) { var dd = Math.abs(p.t - t); if (dd < bd) { bd = dd; best = k; } });
+    dayShow(best);
+  });
+  box.addEventListener('pointerleave', function () { dayShow(null); });
+})();
+
+/* ---------- Startseite Version A: Hauptkarte, kleine Verläufe ---------- */
+function sparkSvg(pts, wd, ht, color, labels) {
+  if (pts.length < 2) return '';
+  var t0 = pts[0].t, t1 = pts[pts.length - 1].t, vs = pts.map(function (p) { return p.v; });
+  var lo = Math.min.apply(null, vs), hi = Math.max.apply(null, vs); if (hi - lo < 0.2) { hi += 0.1; lo -= 0.1; }
+  var pd = labels ? 14 : 3;
+  var P = pts.map(function (p) { return [4 + (p.t - t0) / Math.max(1, t1 - t0) * (wd - 8), pd + (hi - p.v) / (hi - lo) * (ht - 2 * pd)]; });
+  var o = '<svg viewBox="0 0 ' + wd + ' ' + ht + '" preserveAspectRatio="none" width="100%" height="' + ht + '"><path d="' + smoothPath(P) + '" fill="none" stroke="' + color + '" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/>';
+  if (labels) {
+    var iH = vs.indexOf(Math.max.apply(null, vs)), iL = vs.indexOf(Math.min.apply(null, vs));
+    o += '<circle cx="' + P[iH][0].toFixed(1) + '" cy="' + P[iH][1].toFixed(1) + '" r="3" fill="var(--warm)"/><circle cx="' + P[iL][0].toFixed(1) + '" cy="' + P[iL][1].toFixed(1) + '" r="3" fill="var(--accent)"/>';
+  }
+  return o + '</svg>';
+}
+function renderHeroA() {
+  var d = state.data; if (!d) return;
+  var hero = $('heroCard'), now = new Date(), st = sunTimes(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12), CONFIG.lat, CONFIG.lon);
+  var night = st.rise && st.set ? (now < st.rise || now > st.set) : false;
+  var c = night ? '#534AB7' : tColor(d.temp, false);
+  hero.style.setProperty('--hc', c);
+  hero.classList.toggle('night', night);
+  var ic = '';
+  if (FC.hours && FC.hours.length) {
+    var best = null, bd = Infinity;
+    FC.hours.forEach(function (x) { var dd = Math.abs(x.t - now); if (dd < bd) { bd = dd; best = x; } });
+    if (best && bd < 2 * 3600000 && best.icon) ic = wxIcon(best.icon);
+  }
+  $('heroIc').innerHTML = ic;
+  var tp = todayMeasured('temp');
+  $('heroSpark').innerHTML = sparkSvg(tp, 300, 120, 'var(--hc)', true);
+  var hs = d.history.slice(-4).map(function (x) { return { t: new Date(x.t).getTime(), v: x.pressure }; }).filter(function (x) { return x.v !== null; });
+  $('presSpark').innerHTML = sparkSvg(hs, 120, 22, 'var(--live)', false);
+  renderAstro();
 }
 
 /* ---------- Laden ---------- */
@@ -3187,6 +3486,7 @@ function setForecast(hours, demo) {
     .filter(function (d) { return d.date === today || d.hours.length >= 12; })
     .slice(0, 7);                                             /* 7 Tage – Tag 8 wäre eher geraten */
   renderOutlook();
+  if (state.data) { renderHeroA(); drawLive(); }
   if (!$('panel-vorhersage').hidden) renderFcTab();
   updateSky();
   renderFrost();
@@ -3890,13 +4190,23 @@ function renderAstro() {
     return '<span class="ai" title="' + title + '" aria-label="' + title + ' ' + (t ? hhmm(t) + ' Uhr' : 'heute nicht') + '">' + astroIcon(kind, up) +
       (t ? hhmm(t) : '<span class="na">–</span>') + '</span>';
   }
-  var name = moonPhaseName(il.phase);
-  $('astro').innerHTML =
-    '<span class="arow">' + item('sun', true, st.rise, 'Sonnenaufgang') + item('sun', false, st.set, 'Sonnenuntergang') +
-    (st.rise && st.set ? '<span class="ai daylen" title="Tageslänge">☀️ ' + Math.floor((st.set - st.rise) / 36e5) + ' h ' +
-      String(Math.round((st.set - st.rise) / 6e4) % 60).padStart(2, '0') + ' min</span>' : '') + '</span>' +
-    '<span class="arow">' + item('moon', true, mt.rise, 'Mondaufgang') + item('moon', false, mt.set, 'Monduntergang') + '</span>' +
-    '<span class="arow"><span class="ai moonph" title="Mondphase">' + moonPhaseIcon(il.phase) + '<span><b>' + name + '</b> · ' + nf(il.fraction * 100, 0) + ' %</span></span></span>';
+  var name = moonPhaseName(il.phase), arc = '';
+  if (st.rise && st.set) {
+    var f = (now - st.rise) / (st.set - st.rise), fc = Math.max(0, Math.min(1, f));
+    var sx = 150 - 130 * Math.cos(Math.PI * fc), sy = 74 - 60 * Math.sin(Math.PI * fc);
+    var len = Math.round((st.set - st.rise) / 6e4);
+    arc = '<svg class="sunarc" viewBox="0 0 300 92" role="img" aria-label="Sonnenstand: Aufgang ' + hhmm(st.rise) + ', Untergang ' + hhmm(st.set) + '">' +
+      '<path d="M20 74 A130 60 0 0 1 280 74" class="sa-bg"></path>' +
+      (f > 0 ? '<path d="M20 74 A130 60 0 0 1 ' + sx.toFixed(1) + ' ' + sy.toFixed(1) + '" class="sa-fg"></path>' : '') +
+      '<line x1="8" y1="74" x2="292" y2="74" class="sa-hz"></line>' +
+      '<circle cx="' + sx.toFixed(1) + '" cy="' + sy.toFixed(1) + '" r="7" class="sa-sun' + (f < 0 || f > 1 ? ' down' : '') + '"></circle>' +
+      '<text x="150" y="52" text-anchor="middle" class="sa-len">' + Math.floor(len / 60) + ' h ' + pad2(len % 60) + ' min</text>' +
+      '<text x="150" y="67" text-anchor="middle" class="sa-sub">' + (f < 0 ? 'Sonnenaufgang um ' + hhmm(st.rise) : f > 1 ? 'Sonne untergegangen' : 'Tageslicht noch ' + (st.set - now >= 36e5 ? Math.floor((st.set - now) / 36e5) + ' h ' : '') + (Math.round((st.set - now) / 6e4) % 60) + ' min') + '</text>' +
+      '<text x="8" y="89" class="sa-t">' + hhmm(st.rise) + '</text><text x="292" y="89" text-anchor="end" class="sa-t">' + hhmm(st.set) + '</text></svg>';
+  }
+  $('astro').innerHTML = arc +
+    '<span class="arow">' + item('moon', true, mt.rise, 'Mondaufgang') + item('moon', false, mt.set, 'Monduntergang') +
+    '<span class="ai moonph" title="Mondphase">' + moonPhaseIcon(il.phase) + '<span><b>' + name + '</b> · ' + nf(il.fraction * 100, 0) + ' %</span></span></span>';
 }
 
 /* ---------- Heute vor 1 Jahr ----------
@@ -5538,9 +5848,9 @@ Array.prototype.forEach.call(document.querySelectorAll('.place, .wplace'), funct
 $('histStation').textContent = CONFIG.stationId ? 'Station ' + CONFIG.stationId : 'Beispieldaten';
 $('refreshTxt').textContent = CONFIG.refreshSeconds <= 90 ? 'jede Minute' : 'alle ' + Math.round(CONFIG.refreshSeconds / 60) + ' Minuten';
 
-liveChart = makeChart($('plot'), $('readout'));
 histChart = makeChart($('histPlot'), $('histReadout'));
 buildTabs($('tabs'), LIVE_KEYS, state.series, function (k) { state.series = k; drawLive(); });
+watchSize($('plot'), drawLive);
 buildTabs($('histTabs'), HIST_KEYS, HS.key, function (k) { HS.key = k; drawHist(); });
 watchSize($('plot'), drawLive);
 watchSize($('histPlot'), drawHist);
