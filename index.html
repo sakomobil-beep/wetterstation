@@ -2729,6 +2729,32 @@ function pickIcon(part, d) {
   return c < 25 ? 'clear-day' : (c < 70 ? 'partly-cloudy-day' : 'cloudy');
 }
 
+/* EINE Regen-Einstufung für Website, Max und Facebook/Instagram (fb/daten.json, aus den Stundenwerten des Odenwaldkreises) */
+var NIED = {}, NIED_H = {};
+var NIED_TXT = { vm: 'am Vormittag', nm: 'am Nachmittag', ab: 'am Abend' };
+fetch('fb/daten.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
+  (j.tage || []).forEach(function (t) {
+    if (t.nied) NIED[t.datum] = t.nied;
+    if (t.nied && t.stunden) t.stunden.forEach(function (x) { NIED_H[t.datum + 'T' + (x.h < 10 ? '0' : '') + x.h] = x; });
+  });
+  if (FC.loaded && FC.hours) setForecast(FC.hours, FC.demo);
+}).catch(function () {});
+function niedApply(d) {
+  var n = NIED[d.date];
+  if (!n || d.night) return;
+  (d.hours || []).forEach(function (h) {
+    var x = NIED_H[h.day + 'T' + String(h.t.getHours()).padStart(2, '0')];
+    if (x) { h.prob = x.rp; h.rain = x.mm; }
+  });
+  d.stufe = n.stufe; d.nied = n; d.prob = n.p; d.rain = n.mm;
+  var nassIc = ['rain', 'showers-day', 'showers-night', 'thunderstorm', 'hail', 'sleet', 'snow'].indexOf(d.icon) >= 0;
+  var dry = d.cloud === null ? 'cloudy' : d.cloud < 25 ? 'clear-day' : d.cloud < 70 ? 'partly-cloudy-day' : 'cloudy';
+  if (n.stufe === 'trocken' || n.stufe === 'vereinzelt') { if (nassIc) d.icon = dry; }
+  else if (n.stufe === 'gewitter') d.icon = 'thunderstorm';
+  else if (n.schnee_tal) d.icon = 'snow';
+  else if (n.stufe === 'regen') d.icon = 'rain';
+  else if (n.stufe === 'schauer' && d.icon !== 'showers-day') d.icon = 'showers-day';
+}
 function summarize(date, hs, night) {
   function col(list, k) { return list.map(function (h) { return h[k]; }).filter(function (v) { return v !== null && v !== undefined; }); }
   var part = night ? hs : hs.filter(function (h) { var x = h.t.getHours(); return x >= 7 && x <= 19; });
@@ -2749,6 +2775,7 @@ function summarize(date, hs, night) {
   d.pdis = pd.length >= 6 ? avgOf(pd) : null;
   d.conf = d.spread === null ? null : (d.spread >= 2.2 || (d.pdis !== null && d.pdis >= 0.45)) ? 'gering' : (d.spread >= 1.2 || (d.pdis !== null && d.pdis >= 0.25)) ? 'mittel' : 'hoch';
   d.icon = pickIcon(part, d);
+  niedApply(d);
   return d;
 }
 
@@ -2774,6 +2801,16 @@ function windWord(v) {
 }
 function rainPhrase(d) {
   var r = d.rain || 0, p = d.prob;
+  if (d.stufe) {
+    var zz = ['vm', 'nm', 'ab'].filter(function (k) { return ['schauer', 'regen', 'gewitter'].indexOf(d.nied[k]) >= 0; }).map(function (k) { return NIED_TXT[k]; });
+    var wann = zz.length === 3 ? ' über den ganzen Tag' : zz.length ? ' vor allem ' + zz.join(' und ') : '';
+    var mm = r >= 0.1 ? ', zusammen um ' + nf(r, r < 10 ? 1 : 0) + ' mm' : '';
+    if (d.stufe === 'trocken') return 'Niederschlagsfrei.';
+    if (d.stufe === 'vereinzelt') return 'Meist trocken, vereinzelt ist ein kurzer Schauer möglich (bis ' + nf(p, 0) + ' %).';
+    if (d.stufe === 'schauer') return 'Örtlich Schauer' + wann + mm + ', Wahrscheinlichkeit bis ' + nf(p, 0) + ' % – nicht überall nass.';
+    if (d.stufe === 'gewitter') return 'Schauer und Gewitter' + wann + mm + ', Wahrscheinlichkeit bis ' + nf(p, 0) + ' %.';
+    return (d.nied.schnee_tal ? 'Schnee' : 'Regen') + wann + mm + ', Wahrscheinlichkeit bis ' + nf(p, 0) + ' %.' + (d.nied.schnee_hoch && !d.nied.schnee_tal ? ' Auf den Höhen als Schnee.' : '');
+  }
   if (r < 0.1 && (p === null || p < 20)) return 'Niederschlagsfrei.';
   if (r < 0.1) return 'Geringes Schauerrisiko (bis ' + nf(p, 0) + ' %).';
   if (d.icon === 'showers-day' || d.icon === 'showers-night')
