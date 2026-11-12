@@ -2058,8 +2058,29 @@ def grafiken_fuer(s):
                   else tafel_wind(d, s.get('titel', '')) if g == 'wind' else None)
         except Exception as e:
             print('Grafik %s nicht möglich: %s' % (g, e)); im = None
-        if im is not None: aus.append(im)
+        if im is not None: aus.append(im); s.setdefault('grafik_namen', []).append(g)
     return aus
+
+
+GRAFIK_ANFANG = {'temp': ('Schaut mal auf die Temperaturkurve', 'Hier seht ihr den Verlauf über den Tag', 'Die Kurve zeigt es'),
+                 'regen': ('Bei den Regenbalken', 'Das Regenrisiko bleibt'),
+                 'wind': ('Und beim Wind:',)}
+
+
+def grafik_zeiten(s):
+    """Startzeit (Sek. im Abschnitt) je Grafik = Moment, in dem Max den passenden Satz beginnt.
+    None, wenn ein Satz nicht gefunden wird (dann gleichmäßige Verteilung wie bisher)."""
+    txt = s['text']; w = s.get('woerter') or []; n_txt = max(1, len(txt.split()))
+    zeiten = []
+    for g in s.get('grafik_namen') or []:
+        pos = min([txt.find(a) for a in GRAFIK_ANFANG.get(g, ()) if txt.find(a) >= 0] or [-1])
+        if pos < 0: return None
+        nw = len(txt[:pos].split())
+        if w: t_ = w[min(nw, len(w) - 1)][0] if nw < len(w) else w[-1][0]
+        else: t_ = (s['dauer'] - 0.6) * nw / n_txt
+        zeiten.append(max(1.5, t_ - 0.3))   # kurz bevor er den Satz beginnt
+    if any(b <= a for a, b in zip(zeiten, zeiten[1:])): return None
+    return zeiten
 
 
 def kurz(t, n=95):
@@ -2262,7 +2283,7 @@ def baue(segmente, heute, ziel, special, titel=None):
         s['tafel'] = s['tafel_seq'][-1] if s.get('tafel_seq') else tafel_fuer(s, special)
         if s.get('grafiken') and s['tafel'] is not None:   # Wettergrafiken: Tafeln wechseln, während Max spricht
             gr_ = grafiken_fuer(s)
-            if gr_: s['tafel_seq'] = [s['tafel']] + gr_; s['tafel_wechsel'] = True
+            if gr_: s['tafel_seq'] = [s['tafel']] + gr_; s['tafel_wechsel'] = True; s['grafik_t'] = grafik_zeiten(s)
         # Untertitel: Sätze, Zeit nach Zeichenanzahl verteilt
         saetze, cur = [], ''
         for teil in s['text'].replace('! ', '!|').replace('. ', '.|').replace('? ', '?|').split('|'):
@@ -2348,10 +2369,15 @@ def baue(segmente, heute, ziel, special, titel=None):
         # Tafel: im Studio auf dem Bildschirm an der Wand, sonst rechts oben, schiebt sich herein
         tafel_seit = lt; tf_alt = None
         if s.get('tafel_wechsel'):   # Wettergrafiken: Tafeln wechseln gleichmäßig über den Abschnitt
-            sq_ = s['tafel_seq']; schritt_ = max(4.0, (s['dauer'] - 0.6) / len(sq_))
-            erst_ = max(2.5, (s['dauer'] - 0.6) - schritt_ * (len(sq_) - 1))   # Tageskarte bekommt den Rest
-            if lt < erst_: k_, tafel_seit = 0, lt
-            else: k_ = min(len(sq_) - 1, 1 + int((lt - erst_) / schritt_)); tafel_seit = lt - erst_ - (k_ - 1) * schritt_
+            sq_ = s['tafel_seq']
+            if s.get('grafik_t'):   # synchron: jede Grafik erscheint, wenn Max über sie spricht, und bleibt bis zur nächsten
+                st_ = [0.0] + s['grafik_t']
+                k_ = max(i_ for i_, a_ in enumerate(st_) if lt >= a_); tafel_seit = lt - st_[k_]
+            else:
+                schritt_ = max(4.0, (s['dauer'] - 0.6) / len(sq_))
+                erst_ = max(2.5, (s['dauer'] - 0.6) - schritt_ * (len(sq_) - 1))   # Tageskarte bekommt den Rest
+                if lt < erst_: k_, tafel_seit = 0, lt
+                else: k_ = min(len(sq_) - 1, 1 + int((lt - erst_) / schritt_)); tafel_seit = lt - erst_ - (k_ - 1) * schritt_
             if k_ and tafel_seit < 0.3: tf_alt = sq_[k_ - 1]
             tf_wechsel = tafel_zeigen(sq_[k_], tafel_seit - 0.3 if k_ else tafel_seit)
         if s['tafel'] is not None and studio:
