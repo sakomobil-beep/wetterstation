@@ -181,6 +181,23 @@ def frage_fuer(d, heute, rnd):
     return frisch(rnd, 'frage', opt)
 
 
+def folgen_fuer(heute, rnd, warn=False):
+    """Kurzer, wechselnder Aufruf zum Folgen – neue Follower anlocken."""
+    opt = ['Folgst du uns eigentlich schon? Dann verpasst du kein Wetter mehr – jeden Morgen frisch aus dem Odenwald!',
+           'Noch kein Follower? Ein Klick auf Folgen, und ich bin jeden Morgen pünktlich bei dir.',
+           'Kennst du jemanden im Odenwald, der immer wissen will, wie das Wetter wird? Schick ihm das Video – und folg uns, falls du’s noch nicht tust!',
+           'Damit du die nächste Unwetterwarnung nicht verpasst: Folg uns einfach. Kostet nichts – und ich freu mich!',
+           'Das Wetter kommt hier direkt von unserer eigenen Station in Bad König. Wenn dir das gefällt: Folgen, liken, teilen!',
+           'Hilf mir, den ganzen Odenwald zu erreichen: Folg uns und teil das Video mit deinen Nachbarn!',
+           'Wer uns folgt, weiß morgens als Erster Bescheid – ob Frost, Regen oder Sonne. Bist du schon dabei?',
+           'Ein Daumen hoch und ein Follow – damit hilfst du einem kleinen Wetterprojekt aus dem Odenwald enorm!',
+           'Du schaust gerade zum ersten Mal zu? Dann herzlich willkommen – und gleich auf Folgen drücken!']
+    if heute.weekday() == 0: opt.append('Neue Woche, neue Follower? Wenn du uns noch nicht folgst: Jetzt ist der perfekte Moment!')
+    if heute.weekday() == 4: opt.append('Bevor’s ins Wochenende geht: Folg uns, dann weißt du auch Samstag und Sonntag, was das Wetter macht!')
+    if warn: opt.append('Bei Warnungen melden wir uns sofort – folg uns, damit du nichts verpasst!')
+    return frisch(rnd, 'folgen', opt)
+
+
 def tipps_speichern():
     saetze_speichern()
     grenze = (dt.date.today() - dt.timedelta(days=30)).isoformat()
@@ -753,6 +770,7 @@ def skript(days, warn, heute, nur_special=False):
     if not nur_special:   # Frage an die Zuschauer (Interaktion auf Facebook/Instagram)
         FRAGE[0] = frage_fuer(a, heute, rnd)
         seg.append(dict(art='frage', bg='schloss', frage=FRAGE[0], text=FRAGE[0]))
+        seg.append(dict(art='cta', bg='schloss', text=folgen_fuer(heute, rnd, bool(warn))))   # Aufruf zum Folgen
     seg.append(dict(art='outro', bg='schloss', text=hm + rnd.choice(['Alle Live-Werte findet ihr auf wetter-badkoenig.de.', 'Mehr gibt es live auf wetter-badkoenig.de.',
                                                        'Die aktuellen Werte von meiner Station gibt es jederzeit auf wetter-badkoenig.de.', 'Schaut gern mal rein auf wetter-badkoenig.de.'])
                        + ' ' + abschied(a, rnd) + advent_gruss(heute, rnd)))
@@ -2059,7 +2077,7 @@ def tafel_fuer(s, special):
     if s['art'] == 'special': return tafel_text('⚠ WETTER-SPECIAL'.replace('⚠ ', ''), [kurz(s.get('karte', s['text']), 120)], (200, 40, 40))
     if s['art'] == 'wissen': return tafel_text('WETTER-WISSEN', [kurz(s.get('titel_w', ''), 80)], (215, 160, 20))
     if s['art'] == 'frage': return tafel_text('💬 SCHREIBT UNS!'.replace('💬 ', ''), [kurz(s['frage'], 120)], (254, 44, 85))
-    if s['art'] == 'cta': return tafel_text('MACH MIT!', ['❤ Liken', '+ Folgen', '↻ Teilen', '✎ Kommentieren'], (254, 44, 85))
+    if s['art'] == 'cta': return tafel_text('FOLGST DU UNS?', ['+ Folgen', '❤ Liken', '↻ Teilen', 'auf Facebook & Instagram'], (24, 119, 242))
     if s['art'] == 'outro': return tafel_text('LIVE IM NETZ', ['wetter-badkoenig.de', 'Station Bad König · 184,5 m', 'Wetter für den ganzen Odenwald'], (25, 85, 160))
     return None
 
