@@ -2521,7 +2521,7 @@ def main():
         if not neu:
             print('Keine neue Warnung – kein Special.'); return
     wochen = '--woche' in sys.argv
-    abends = '--abend' in sys.argv   # Abendvideo aus dem Studio (eigene Datei, nicht in der Videothek der Website)
+    abends = '--abend' in sys.argv   # Abendvideo aus dem Studio (eigene Datei, kommt als „abends“ auch in die Videothek)
     segs = skript_abend(days, warn, heute, daten.get('orte') or {}) if abends else skript_woche(days, warn, heute) if wochen else skript(days, warn, heute, nur_special)
     pruefen(segs)
     special = nur_special   # das Morgenvideo ist immer das normale Video
@@ -2535,7 +2535,7 @@ def main():
                'special': special, 'warn': warn, 'dauer': round(gesamt, 1), 'stimme': echt, 'skript': text, 'frage': FRAGE[0],
                **({'zeilen': next((x['zeilen'] for x in segs if x['art'] == 'woche'), [])} if wochen else {})},
               open(os.path.join(FB, name + '.json'), 'w', encoding='utf-8'), ensure_ascii=False)
-    if not abends: archiv(name, heute, special, warn, gesamt)
+    archiv(name, heute, special, warn, gesamt)
     print('Video fertig: %s (%.0f s)\n%s' % (ziel, gesamt, text))
 
 
@@ -2552,11 +2552,25 @@ def feed_fassung(quelle):
         print('Feed-Fassung nicht möglich:', e)
 
 
+ARCHIV_REIHE = {'morgen': '06:30', 'special': '12:00', 'abend': '19:00', 'woche': '20:00'}   # Ersatz-Uhrzeit für ältere Einträge
+
+
+def archiv_art(e):
+    n = e['datei']
+    return e.get('art') or ('special' if '-special' in n else 'woche' if '-woche' in n else 'abend' if '-abend' in n else 'morgen')
+
+
+def archiv_sortierung(e):
+    """Neuestes zuerst: nach Datum, dann nach Erstellzeit (oder Tagesablauf morgens → Special → abends → Wochenausblick)."""
+    return (e['datum'], e.get('erstellt', '')[11:16] or ARCHIV_REIHE.get(archiv_art(e), '06:30'))
+
+
 def archiv(name, heute, special, warn, gesamt, tage=7):
     """Videothek: Kopie + Vorschaubild nach fb/archiv/, alles älter als 7 Tage wird gelöscht."""
     import shutil
     ad = os.path.join(FB, 'archiv'); os.makedirs(ad, exist_ok=True)
-    datei = heute.isoformat() + ('-special' if name == 'special' else '-woche' if name == 'woche' else '') + '.mp4'
+    art_ = {'special': 'special', 'woche': 'woche', 'abendvideo': 'abend'}.get(name, 'morgen')
+    datei = heute.isoformat() + ('' if art_ == 'morgen' else '-' + art_) + '.mp4'
     shutil.copy(os.path.join(FB, name + '.mp4'), os.path.join(ad, datei))
     subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-ss', '3', '-i', os.path.join(ad, datei), '-frames:v', '1', '-vf', 'scale=270:-2', '-q:v', '5',
                     os.path.join(ad, datei.replace('.mp4', '.jpg'))], check=False)
@@ -2564,7 +2578,8 @@ def archiv(name, heute, special, warn, gesamt, tage=7):
     try: liste = json.load(open(lp, encoding='utf-8'))
     except Exception: liste = []
     liste = [e for e in liste if e['datei'] != datei]
-    liste.append({'datum': heute.isoformat(), 'datei': datei, 'special': special, 'warn': warn, 'dauer': round(gesamt, 1)})
+    liste.append({'datum': heute.isoformat(), 'datei': datei, 'art': art_, 'erstellt': dt.datetime.now().astimezone().isoformat(timespec='minutes'),
+                  'special': special, 'warn': warn, 'dauer': round(gesamt, 1)})
     grenze = (heute - dt.timedelta(days=tage - 1)).isoformat()
     for e in [e for e in liste if e['datum'] < grenze]:
         for x in (e['datei'], e['datei'].replace('.mp4', '.jpg')):
@@ -2572,7 +2587,7 @@ def archiv(name, heute, special, warn, gesamt, tage=7):
             except OSError: pass
     for f in glob.glob(os.path.join(ad, '*.mp4')) + glob.glob(os.path.join(ad, '*.jpg')):  # Reste aufräumen
         if os.path.basename(f)[:10] < grenze: os.remove(f)
-    liste = sorted([e for e in liste if e['datum'] >= grenze], key=lambda e: e['datei'], reverse=True)
+    liste = sorted([e for e in liste if e['datum'] >= grenze], key=archiv_sortierung, reverse=True)
     json.dump(liste, open(lp, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
 
 

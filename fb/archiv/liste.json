@@ -1,70 +1,80 @@
 [
  {
   "datum": "2026-11-12",
+  "datei": "2026-11-12-abend.mp4",
+  "art": "abend",
+  "erstellt": "2026-11-12T19:07+01:00",
+  "special": false,
+  "warn": [
+   "Amtliche Warnung vor Frost"
+  ],
+  "dauer": 78.5
+ },
+ {
+  "datum": "2026-11-12",
   "datei": "2026-11-12.mp4",
   "special": false,
   "warn": [
    "Amtliche Warnung vor Frost"
   ],
-  "dauer": 119.7
+  "dauer": 119.7,
+  "art": "morgen"
  },
  {
   "datum": "2026-11-11",
   "datei": "2026-11-11.mp4",
   "special": false,
   "warn": [],
-  "dauer": 96.8
+  "dauer": 96.8,
+  "art": "morgen"
  },
  {
   "datum": "2026-11-10",
   "datei": "2026-11-10.mp4",
   "special": false,
   "warn": [],
-  "dauer": 86.9
+  "dauer": 86.9,
+  "art": "morgen"
  },
  {
   "datum": "2026-11-09",
   "datei": "2026-11-09.mp4",
   "special": false,
   "warn": [],
-  "dauer": 86.0
- },
- {
-  "datum": "2026-11-08",
-  "datei": "2026-11-08.mp4",
-  "special": false,
-  "warn": [],
-  "dauer": 59.6
+  "dauer": 86.0,
+  "art": "morgen"
  },
  {
   "datum": "2026-11-08",
   "datei": "2026-11-08-woche.mp4",
   "special": false,
   "warn": [],
-  "dauer": 57.4
+  "dauer": 57.4,
+  "art": "woche"
  },
  {
-  "datum": "2026-11-07",
-  "datei": "2026-11-07.mp4",
+  "datum": "2026-11-08",
+  "datei": "2026-11-08.mp4",
   "special": false,
   "warn": [],
-  "dauer": 67.8
+  "dauer": 59.6,
+  "art": "morgen"
  },
  {
   "datum": "2026-11-07",
   "datei": "2026-11-07-woche.mp4",
   "special": false,
   "warn": [],
-  "dauer": 49.3
+  "dauer": 49.3,
+  "art": "woche"
  },
  {
-  "datum": "2026-11-06",
-  "datei": "2026-11-06.mp4",
+  "datum": "2026-11-07",
+  "datei": "2026-11-07.mp4",
   "special": false,
-  "warn": [
-   "Amtliche Warnung vor Frost"
-  ],
-  "dauer": 69.8
+  "warn": [],
+  "dauer": 67.8,
+  "art": "morgen"
  },
  {
   "datum": "2026-11-06",
@@ -73,6 +83,17 @@
   "warn": [
    "Amtliche Warnung vor Frost"
   ],
-  "dauer": 33.9
+  "dauer": 33.9,
+  "art": "special"
+ },
+ {
+  "datum": "2026-11-06",
+  "datei": "2026-11-06.mp4",
+  "special": false,
+  "warn": [
+   "Amtliche Warnung vor Frost"
+  ],
+  "dauer": 69.8,
+  "art": "morgen"
  }
 ]
