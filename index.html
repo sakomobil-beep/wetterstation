@@ -216,7 +216,12 @@ button { font: inherit; color: inherit; }
 .ngh .temp { margin-top: 0; }
 .ngh .temp .v, .ngh .temp .u { color: color-mix(in srgb, var(--hc) 55%, var(--ink)); }
 .ngh .sub { color: color-mix(in srgb, var(--hc) 45%, var(--muted)); margin-top: 0; }
-.ngh-spark { margin-top: auto; padding-top: 10px; }
+.ngh-ob { margin-top: auto; padding-top: 12px; border-top: 1px solid color-mix(in srgb, var(--hc) 30%, var(--surface)); display: grid; gap: 8px; }
+.ngh-ob .or { display: grid; grid-template-columns: 8em 3.2em 30px 1fr; align-items: center; gap: 6px; font-size: 15px; color: color-mix(in srgb, var(--hc) 60%, var(--ink)); }
+.ngh-ob .or b { font: 600 1.25rem/1 var(--font-display); font-variant-numeric: tabular-nums; }
+.ngh-ob .or svg { width: 30px; height: 30px; display: block; }
+.ngh-ob .or small { font-size: 12.5px; color: color-mix(in srgb, var(--hc) 45%, var(--muted)); }
+@media (max-width: 460px) { .ngh-ob .or { grid-template-columns: 6.6em 2.8em 26px 1fr; font-size: 14px; } }
 .ngh-cap { font-size: 11.5px; color: color-mix(in srgb, var(--hc) 45%, var(--muted)); }
 .ngsun { grid-column: span 2; }
 .ngsun .astro { margin-top: 0; display: grid; gap: 6px; }
@@ -1099,8 +1104,7 @@ button { font: inherit; color: inherit; }
       <span>Gefühlt <b id="feels" class="num">–</b> °C</span>
       <span>Taupunkt <b id="dew" class="num">–</b> °C</span>
     </div>
-    <div class="ngh-spark" id="heroSpark" aria-hidden="true"></div>
-    <div class="ngh-cap">Verlauf seit Mitternacht</div>
+    <div class="ngh-ob" id="heroOb" aria-label="Ausblick"></div>
   </section>
   <section class="tile ngsun" aria-label="Sonne und Mond heute">
     <div class="label">Sonne und Mond</div>
@@ -1830,7 +1834,7 @@ button { font: inherit; color: inherit; }
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 12.11.2026, 17:00 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 12.11.2026, 17:15 Uhr</span></p>
 
 </div>
 
@@ -2529,6 +2533,38 @@ function sparkSvg(pts, wd, ht, color, labels) {
   }
   return o + '</svg>';
 }
+function heroOutlook() {
+  if (!FC.hours || !FC.hours.length) return '<div class="or"><small>Ausblick wird geladen …</small></div>';
+  var now = new Date(), H = now.getHours(), d0 = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime(), HR = 3600000;
+  function win(a, b) { return FC.hours.filter(function (h) { var t = h.t.getTime(); return t > Math.max(a, now.getTime()) && t <= b && h.temp !== null; }); }
+  function rainTxt(hs) {
+    var sum = 0, pm = 0; hs.forEach(function (h) { sum += h.rain || 0; pm = Math.max(pm, h.prob || 0); });
+    if (sum >= 0.3) return 'Regen, ca. ' + nf(sum, 1) + ' mm';
+    if (pm >= 40) return 'Schauer möglich';
+    return 'trocken';
+  }
+  function pick(hs, fn) { var b = hs[0]; hs.forEach(function (h) { if (fn(h.temp, b.temp)) b = h; }); return b; }
+  function icOf(h) { return h && h.icon ? wxIcon(h.icon) : ''; }
+  var rows = [];
+  function row(label, hs, mode) {
+    if (!hs.length) return;
+    var x = mode === 'min' ? pick(hs, function (a, b) { return a < b; }) : mode === 'max' ? pick(hs, function (a, b) { return a > b; }) : hs[Math.floor(hs.length / 2)];
+    var info = mode === 'min' ? 'Tiefst um ' + x.t.getHours() + ' Uhr' : mode === 'max' ? 'Höchst um ' + x.t.getHours() + ' Uhr' : rainTxt(hs);
+    if (mode !== 'avg') { var r = rainTxt(hs); if (r !== 'trocken') info += ' · ' + r; }
+    rows.push('<div class="or"><span>' + label + '</span><b>' + nf(x.temp, 0) + '°</b>' + icOf(x) + '<small>' + info + '</small></div>');
+  }
+  if (H < 6) {
+    row('Heute Nacht', win(d0, d0 + 8 * HR), 'min');
+    row('Heute', win(d0 + 8 * HR, d0 + 18 * HR), 'max');
+    row('Heute Abend', win(d0 + 18 * HR, d0 + 22 * HR), 'avg');
+  } else {
+    if (H < 22) row('Heute Abend', win(d0 + 17 * HR, d0 + 22 * HR), 'avg');
+    row('Heute Nacht', win(d0 + 22 * HR, d0 + 32 * HR), 'min');
+    row('Morgen', win(d0 + 32 * HR, d0 + 42 * HR), 'max');
+    if (H >= 22) row('Morgen Abend', win(d0 + 41 * HR, d0 + 46 * HR), 'avg');
+  }
+  return rows.join('') || '<div class="or"><small>Kein Ausblick verfügbar</small></div>';
+}
 function renderHeroA() {
   var d = state.data; if (!d) return;
   var hero = $('heroCard'), now = new Date(), st = sunTimes(new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12), CONFIG.lat, CONFIG.lon);
@@ -2544,7 +2580,7 @@ function renderHeroA() {
   }
   $('heroIc').innerHTML = ic;
   var tp = todayMeasured('temp');
-  $('heroSpark').innerHTML = sparkSvg(tp, 300, 120, 'var(--hc)', true);
+  $('heroOb').innerHTML = heroOutlook();
   var hs = d.history.slice(-4).map(function (x) { return { t: new Date(x.t).getTime(), v: x.pressure }; }).filter(function (x) { return x.v !== null; });
   $('presSpark').innerHTML = sparkSvg(hs, 120, 22, 'var(--live)', false);
   renderAstro();
