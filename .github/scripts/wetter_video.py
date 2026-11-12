@@ -2603,12 +2603,12 @@ def feed_fassung(quelle):
         print('Feed-Fassung nicht möglich:', e)
 
 
-ARCHIV_REIHE = {'morgen': '06:30', 'special': '12:00', 'abend': '19:00', 'woche': '20:00'}   # Ersatz-Uhrzeit für ältere Einträge
+ARCHIV_REIHE = {'morgen': '06:30', 'special': '12:00', 'monat': '15:00', 'abend': '19:00', 'woche': '20:00'}   # Ersatz-Uhrzeit für ältere Einträge
 
 
 def archiv_art(e):
     n = e['datei']
-    return e.get('art') or ('special' if '-special' in n else 'woche' if '-woche' in n else 'abend' if '-abend' in n else 'morgen')
+    return e.get('art') or ('special' if '-special' in n else 'woche' if '-woche' in n else 'abend' if '-abend' in n else 'monat' if '-monat' in n else 'morgen')
 
 
 def archiv_sortierung(e):
@@ -2620,7 +2620,7 @@ def archiv(name, heute, special, warn, gesamt, tage=7):
     """Videothek: Kopie + Vorschaubild nach fb/archiv/, alles älter als 7 Tage wird gelöscht."""
     import shutil
     ad = os.path.join(FB, 'archiv'); os.makedirs(ad, exist_ok=True)
-    art_ = {'special': 'special', 'woche': 'woche', 'abendvideo': 'abend'}.get(name, 'morgen')
+    art_ = {'special': 'special', 'woche': 'woche', 'abendvideo': 'abend', 'monat': 'monat'}.get(name, 'morgen')
     datei = heute.isoformat() + ('' if art_ == 'morgen' else '-' + art_) + '.mp4'
     shutil.copy(os.path.join(FB, name + '.mp4'), os.path.join(ad, datei))
     subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-ss', '3', '-i', os.path.join(ad, datei), '-frames:v', '1', '-vf', 'scale=270:-2', '-q:v', '5',

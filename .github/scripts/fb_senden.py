@@ -284,6 +284,18 @@ def main():
         if frisch_gepostet('jahr', heute): return
         if video_senden('jahr.mp4', j['text']):
             M['jahr'] = heute; M['jahr_zeit'] = jetzt.isoformat(timespec='minutes'); push('Jahresrückblick gepostet', 'Max mit dem Wetterjahr %d ist jetzt auf Facebook und Instagram online.' % j['jahr'], tags='fireworks,white_check_mark')
+    elif modus == 'monat':   # Monatsrückblick aus dem Studio: am 1. des Monats ab 15 Uhr, einmal je Monat
+        jetzt = dt.datetime.now(TZ)
+        if jetzt.day != 1 or jetzt.hour < 15: print('Monatsrückblick nur am 1. ab 15 Uhr.'); return
+        try: j = json.load(open(os.path.join(FB, 'monat.json'), encoding='utf-8'))
+        except Exception: print('Kein Monatsrückblick vorhanden.'); return
+        vm = (jetzt.date().replace(day=1) - dt.timedelta(days=1)).strftime('%Y-%m')
+        if j.get('monat') != vm or j.get('datum') != heute: print('Monatsrückblick ist nicht aktuell.'); return
+        if M.get('monat') == vm: print('Monatsrückblick schon gepostet.'); return
+        time.sleep(int(os.environ.get('FB_WARTEN', '90')))
+        if frisch_gepostet('monat', vm): return
+        if video_senden('monat.mp4', j['text']):
+            M['monat'] = vm; M['monat_zeit'] = jetzt.isoformat(timespec='minutes'); push('Monatsrückblick gepostet', 'Max mit dem Rückblick auf %s ist jetzt auf Facebook und Instagram online.' % vm, tags='calendar,white_check_mark')
     elif modus == 'woche':
         jetzt = dt.datetime.now(TZ)
         if jetzt.weekday() != 6 or jetzt.hour < 20: print('Wochenausblick nur sonntags ab 20 Uhr.'); return

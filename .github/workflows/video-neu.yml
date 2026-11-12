@@ -5,10 +5,10 @@ on:
   workflow_dispatch:
     inputs:
       art:
-        description: 'Welches Video? (tag = Morgenvideo, woche = Wochenausblick, thema = Themenvideo Max erklärt, mittag = Mittagsbeitrag mit der Kreiskarte, abend = Abendvideo aus dem Studio)'
+        description: 'Welches Video? (tag = Morgenvideo, woche = Wochenausblick, thema = Themenvideo Max erklärt, mittag = Mittagsbeitrag mit der Kreiskarte, abend = Abendvideo aus dem Studio, monat = Monatsrückblick)'
         default: 'tag'
         type: choice
-        options: [tag, woche, thema, mittag, abend]
+        options: [tag, woche, thema, mittag, abend, monat]
 
 permissions:
   contents: write
@@ -32,7 +32,10 @@ jobs:
       - name: Mittagsbeitrag neu (Karte des Kreises, ohne Video)
         if: inputs.art == 'mittag'
         run: python .github/scripts/fb_post.py --mittag
-      - if: inputs.art != 'mittag'
+      - name: Monatsrückblick neu (Vormonat, ohne Posten)
+        if: inputs.art == 'monat'
+        run: python .github/scripts/monatsrueckblick.py
+      - if: inputs.art != 'mittag' && inputs.art != 'monat'
         run: |
           cp fb/post.jpg fb/post.txt fb/post.json /tmp/ 2>/dev/null || true
           python .github/scripts/fb_post.py

@@ -136,6 +136,7 @@ jobs:
           python .github/scripts/fb_senden.py abendstory || echo "Abend-Story nicht gepostet"
           python .github/scripts/fb_senden.py woche || echo "Wochenausblick nicht gepostet"
           python .github/scripts/fb_senden.py jahr || echo "Jahresrückblick nicht gepostet"
+          python .github/scripts/fb_senden.py monat || echo "Monatsrückblick nicht gepostet"
           python .github/scripts/fb_senden.py sonder || echo "Sondermeldung nicht gepostet"
           git add fb/gepostet.json 2>/dev/null || true
           git diff --cached --quiet && exit 0

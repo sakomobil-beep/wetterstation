@@ -1388,7 +1388,7 @@ button { font: inherit; color: inherit; }
     <p class="note" id="tvMsg" hidden>Das Video wird gerade erstellt – schau gleich nochmal vorbei.</p>
   </section>
   <section class="chart" aria-label="Videothek">
-    <div class="hist-head"><div><div class="label">Alle Wetterberichte der letzten 7 Tage – morgens, abends und der Wochenausblick</div><h2 class="fc-h2">📼 Videothek</h2></div></div>
+    <div class="hist-head"><div><div class="label">Alle Wetterberichte der letzten 7 Tage – morgens, abends, Wochenausblick und Monatsrückblick</div><h2 class="fc-h2">📼 Videothek</h2></div></div>
     <div class="vt-grid" id="vtGrid"></div>
   </section>
   </div>
@@ -1848,7 +1848,7 @@ button { font: inherit; color: inherit; }
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 12.11.2026, 21:25 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 12.11.2026, 23:05 Uhr</span></p>
 
 </div>
 
@@ -7060,12 +7060,13 @@ setInterval(renderSaison, 600000);
   function el(id) { return document.getElementById(id); }
   function datumText(d) { var x = new Date(d + 'T12:00:00'); return TAGE[x.getDay()] + ', ' + x.getDate() + '.' + (x.getMonth() + 1) + '.'; }
   /* Art des Videos: morgens, abends (Studio), Wochenausblick, Special */
-  function artVon(e) { var n = e.datei; return e.art || (n.indexOf('-special') > 0 ? 'special' : n.indexOf('-woche') > 0 ? 'woche' : n.indexOf('-abend') > 0 ? 'abend' : 'morgen'); }
+  function artVon(e) { var n = e.datei; return e.art || (n.indexOf('-special') > 0 ? 'special' : n.indexOf('-woche') > 0 ? 'woche' : n.indexOf('-abend') > 0 ? 'abend' : n.indexOf('-monat') > 0 ? 'monat' : 'morgen'); }
   var ART = { morgen: { kurz: '☀️ Morgens', zeit: 'morgens', label: 'Jeden Morgen neu · mit Max, eurem Wettersprecher' },
               abend: { kurz: '🌙 Abends', zeit: 'abends', label: 'Am Abend aus dem Studio · mit Max, eurem Wettersprecher' },
               woche: { kurz: '🗓️ Wochenausblick', zeit: 'Wochenausblick', label: 'Sonntagabends · die neue Woche mit Max' },
-              special: { kurz: '⚠️ Special', zeit: 'Wetter-Special', label: 'Besondere Wetterlage · mit Max' } };
-  var REIHE = { morgen: '06:30', special: '12:00', abend: '19:00', woche: '20:00' };
+              special: { kurz: '⚠️ Special', zeit: 'Wetter-Special', label: 'Besondere Wetterlage · mit Max' },
+              monat: { kurz: '📅 Monatsrückblick', zeit: 'Monatsrückblick', label: 'Am 1. des Monats aus dem Studio · Max blickt zurück' } };
+  var REIHE = { morgen: '06:30', special: '12:00', monat: '15:00', abend: '19:00', woche: '20:00' };
   function sortKey(e) { return e.datum + ' ' + ((e.erstellt || '').slice(11, 16) || REIHE[artVon(e)] || '06:30'); }
   function spiele(e, auto) {
     var vid = el('tvVid'), c = el('tvCard');
@@ -7073,7 +7074,7 @@ setInterval(renderSaison, 600000);
     var sp = !!e.special;
     c.classList.toggle('special', sp);
     var a = ART[artVon(e)] || ART.morgen;
-    el('tvH2').textContent = (sp ? '⚠️ Wetter-Special' : a === ART.woche ? '🗓️ Wochenausblick' : '🎬 Odenwald-Wetter') + ' – ' + (e.datum === heute ? 'heute, ' : '') + datumText(e.datum) + (a === ART.morgen || a === ART.abend ? ', ' + a.zeit : '');
+    el('tvH2').textContent = (sp ? '⚠️ Wetter-Special' : a === ART.woche ? '🗓️ Wochenausblick' : a === ART.monat ? '📅 Monatsrückblick' : '🎬 Odenwald-Wetter') + ' – ' + (e.datum === heute ? 'heute, ' : '') + datumText(e.datum) + (a === ART.morgen || a === ART.abend ? ', ' + a.zeit : '');
     el('tvLabel').textContent = e.warn && e.warn.length ? 'Amtliche Warnung des DWD · ' + e.warn[0] : a.label;
     el('tvStamp').textContent = Math.round(e.dauer || 0) + ' Sek.';
     Array.prototype.forEach.call(document.querySelectorAll('.vt-item'), function (b) { b.classList.toggle('aktiv', b.dataset.datei === e.datei); });
@@ -7094,7 +7095,7 @@ setInterval(renderSaison, 600000);
     spiele(neu, false);
     if (neu.datum === heute) {
       if (neu.special) { el('tvBtn').classList.add('special'); el('tvBtnT').textContent = '⚠️ Wetter-Special im Video'; el('tvBtnS').textContent = 'Jetzt ansehen – besondere Wetterlage'; }
-      else el('tvBtnS').textContent = (artVon(neu) === 'abend' ? 'Heute Abend' : artVon(neu) === 'woche' ? 'Wochenausblick' : 'Heute') + ' mit Max, eurem Wettersprecher';
+      else el('tvBtnS').textContent = (artVon(neu) === 'abend' ? 'Heute Abend' : artVon(neu) === 'woche' ? 'Wochenausblick' : artVon(neu) === 'monat' ? 'Monatsrückblick' : 'Heute') + ' mit Max, eurem Wettersprecher';
     } else el('tvBtnS').textContent = 'Der neueste Bericht vom ' + datumText(neu.datum);
   }).catch(function () { el('tvMsg').hidden = false; el('tvBtnS').textContent = 'Morgens und abends neu'; });
 })();

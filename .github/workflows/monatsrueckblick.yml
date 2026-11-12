@@ -1,0 +1,41 @@
+name: Monatsrückblick-Video
+# Am 1. des Monats: Max blickt aus dem Studio auf den Vormonat zurück (Daten aus dem eigenen Wetterarchiv).
+# Gebaut wird vor 15 Uhr, gepostet ab 15 Uhr vom 15-Minuten-Lauf in „Facebook-Vorhersage + Video“ (fb_senden.py monat).
+on:
+  schedule:
+    - cron: '30 12 1 * *'   # 13:30 Uhr Winterzeit / 14:30 Uhr Sommerzeit
+    - cron: '15 13 1 * *'   # 14:15 Uhr Winterzeit – zweiter Versuch, falls GitHub den ersten auslässt
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: repo-schreiben
+  cancel-in-progress: false
+jobs:
+  video:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Schon gebaut?
+        id: pruef
+        run: |
+          VM=$(TZ=Europe/Berlin date -d "$(TZ=Europe/Berlin date +%Y-%m-01) -1 day" +%Y-%m); HEUTE=$(TZ=Europe/Berlin date +%F)
+          if [ "${{ github.event_name }}" = "schedule" ] && grep -q "\"monat\": \"$VM\"" fb/monat.json 2>/dev/null && grep -q "\"datum\": \"$HEUTE\"" fb/monat.json; then echo "skip=1" >> $GITHUB_OUTPUT; echo "Schon gebaut."; fi
+      - uses: actions/setup-python@v5
+        if: steps.pruef.outputs.skip != '1'
+        with: { python-version: '3.12' }
+      - uses: FedericoCarboni/setup-ffmpeg@v3
+        if: steps.pruef.outputs.skip != '1'
+        timeout-minutes: 5
+      - if: steps.pruef.outputs.skip != '1'
+        run: pip install pillow numpy edge-tts
+      - if: steps.pruef.outputs.skip != '1'
+        run: python .github/scripts/monatsrueckblick.py
+      - name: Speichern
+        if: steps.pruef.outputs.skip != '1'
+        run: |
+          git config user.name "wetter-bot"; git config user.email "actions@users.noreply.github.com"
+          git add -A fb; git diff --cached --quiet && exit 0
+          git commit -m "Monatsrückblick-Video $(TZ=Europe/Berlin date +'%d.%m.%Y %H:%M')"
+          for i in 1 2 3; do git pull --rebase -X theirs -q && git push && break; git rebase --abort 2>/dev/null; sleep 5; done
