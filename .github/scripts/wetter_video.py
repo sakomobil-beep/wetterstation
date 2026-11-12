@@ -128,9 +128,13 @@ def vergleich_gestern(d, rnd):
         return ' ' + frisch(rnd, 'gestern_kaelter', ['Das sind rund %d Grad weniger als gestern.' % -dif, 'Deutlich kühler als gestern, um etwa %d Grad.' % -dif,
                                                      'Im Vergleich zu gestern also ein ganzes Stück frischer.'])
     nass_heute = d['rp'] >= 50
-    if (g.get('regen') or 0) >= 2 and d['rp'] < 25:
+    schauer_code = d.get('code') in (51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 71, 73, 75, 77, 80, 81, 82, 85, 86, 95, 96, 99)
+    if (g.get('regen') or 0) >= 2 and d['rp'] < 10 and not schauer_code:
         return ' ' + frisch(rnd, 'gestern_trocken', ['Nach dem Regen von gestern bleibt es heute trocken.', 'Endlich mal wieder trocken, nachdem es gestern noch geregnet hat.',
                                                      'Gestern nass, heute trocken – so mag ich das.'])
+    if (g.get('regen') or 0) >= 2 and d['rp'] < 40:
+        return ' ' + frisch(rnd, 'gestern_meist_trocken', ['Nach dem Regen gestern wird es heute meist trocken, ein einzelner Schauer ist aber nicht ganz ausgeschlossen.',
+                                                           'Weniger nass als gestern – ganz ausschließen lässt sich ein kurzer Schauer aber nicht.'])
     if (g.get('regen') or 0) < 0.2 and nass_heute:
         return ' ' + frisch(rnd, 'gestern_nass', ['Anders als gestern wird es heute nass.', 'Nach dem trockenen Tag gestern kommt heute wieder Regen.'])
     if abs(dif) <= 1 and rnd.random() < 0.3:
@@ -559,8 +563,8 @@ def skript_abend(days, warn, heute, orte=None):
         seg.append(dict(art='wochenende', bg='studio', tage=paar, tafel_img=tafel_wochenende(paar),
                         text='Und jetzt der Blick aufs Wochenende: ' + tagtext(paar[0], 'Samstag') + ' ' + tagtext(paar[1], 'Sonntag')))
     else:
-        seg.append(dict(art='tag', bg='studio', titel='MORGEN', tag=paar[0], grafiken=['temp', 'regen'],
-                        tafel_img=tafel_tag('MORGEN', paar[0]), text=tagtext(paar[0], 'Morgen') + grafik_saetze(paar[0], ['temp', 'regen'], rnd, 'morgen')))
+        seg.append(dict(art='tag', bg='studio', titel='MORGEN', tag=paar[0], grafiken=(['regen'] if paar[0]['rp'] >= 30 else []),
+                        tafel_img=tafel_tag('MORGEN', paar[0]), text=tagtext(paar[0], 'Morgen') + grafik_saetze(paar[0], (['regen'] if paar[0]['rp'] >= 30 else []), rnd, 'morgen')))
         kt = karten_txt(orte or {}, 1, rnd)
         if kt:   # Reliefkarte des Kreises: die Orte erscheinen nacheinander, während Max spricht
             seg.append(dict(art='tag', bg='studio', titel='MORGEN IM KREIS',
@@ -735,17 +739,17 @@ def skript(days, warn, heute, nur_special=False):
     if not nur_special and a.get('gestern'):
         seg.append(dict(art='rueckblick', bg='schloss', tafel_img=tafel_gestern(a['gestern'], heute - dt.timedelta(days=1)),
                         text=gestern_txt(a['gestern'], rnd)))
-    seg.append(dict(art='tag', tag=a, titel='HEUTE', bg='auto', grafiken=['temp', 'regen'] + (['wind'] if a.get('boe', 0) >= 45 else []),
+    seg.append(dict(art='tag', tag=a, titel='HEUTE', bg='auto', grafiken=(['regen'] if a['rp'] >= 30 else []) + (['wind'] if a.get('boe', 0) >= 45 else []),
                     text=reaktion(a, rnd) + frisch(rnd, 'ueberg_heute', ['', '', 'Kommen wir zum Wetter. ', 'So, jetzt zum Wetter. ', 'Und nun zum Tag. '])
-                         + tagtext(a, 'Heute') + vergleich_gestern(a, rnd) + einordnung(a, rnd) + mundart(a, rnd) + fenster_txt(a, rnd) + grafik_saetze(a, ['temp', 'regen'] + (['wind'] if a.get('boe', 0) >= 45 else []), rnd)))
+                         + tagtext(a, 'Heute') + vergleich_gestern(a, rnd) + einordnung(a, rnd) + mundart(a, rnd) + fenster_txt(a, rnd) + grafik_saetze(a, (['regen'] if a['rp'] >= 30 else []) + (['wind'] if a.get('boe', 0) >= 45 else []), rnd)))
     seg.append(dict(art='tipp', tag=a, bg='wald' if a['rp'] < 40 else 'schloss', text=frisch(rnd, 'ueberg_tipp', ['Mein Tipp für heute: ', 'Max-Tipp des Tages: ', 'Und jetzt mein Tipp: ', 'Übrigens, mein Tipp für heute: ',
                                                                                'Was könnt ihr heute machen? ', 'Und wenn ihr noch nichts vorhabt: ', 'Bevor ich’s vergesse – mein Tipp: ',
                                                                                'Noch was für eure Freizeit: ', 'Ihr sucht noch was für heute? ', 'Kleiner Tipp am Rande: ']) + tipp(a, rnd, heute) + max_privat(a, rnd, heute)))
     if not nur_special:
-        seg.append(dict(art='tag', tag=b, titel='MORGEN', bg='hoehen', grafiken=['temp'],
+        seg.append(dict(art='tag', tag=b, titel='MORGEN', bg='hoehen', grafiken=[],
                         text=frisch(rnd, 'ueberg_morgen', ['', 'So, und jetzt der Blick nach vorn. ', 'Was bringt der nächste Tag? ', 'Schauen wir auf morgen. ',
                                                            'Und wie geht’s morgen weiter? ', 'Kurzer Blick nach vorn. ', 'Und dann? ', 'Werfen wir noch einen Blick auf morgen. '])
-                             + tagtext(b, rnd.choice(['Morgen, am %s,', 'Am %s']) % TAGE[b['datum'].weekday()]) + grafik_saetze(b, ['temp'], rnd, 'morgen')))
+                             + tagtext(b, rnd.choice(['Morgen, am %s,', 'Am %s']) % TAGE[b['datum'].weekday()]) ))
         if 3 <= heute.weekday() <= 4 and len(days) >= 7:   # Wochenendwetter erst ab Donnerstag (vorher zu ungenau)
             sa = next(d for d in days if d['datum'].weekday() == 5)
             so = next(d for d in days if d['datum'].weekday() == 6)
