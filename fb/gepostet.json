@@ -7,10 +7,14 @@
  "woche_zeit": "2026-11-08T20:21+01:00",
  "story": "2026-11-12",
  "story_zeit": "2026-11-12T07:09+01:00",
- "mittag": "2026-11-11",
- "mittag_zeit": "2026-11-11T12:03+01:00",
+ "mittag": "2026-11-12",
+ "mittag_zeit": "2026-11-12T12:03+01:00",
  "abendstory": "2026-11-11",
  "abendstory_zeit": "2026-11-11T19:05+01:00",
  "fb_story": "2026-11-12",
- "fb_story_zeit": "2026-11-12T07:09+01:00"
+ "fb_story_zeit": "2026-11-12T07:09+01:00",
+ "mittagstory": "2026-11-12",
+ "mittagstory_zeit": "2026-11-12T12:05+01:00",
+ "fb_mittagstory": "2026-11-12",
+ "fb_mittagstory_zeit": "2026-11-12T12:05+01:00"
 }
