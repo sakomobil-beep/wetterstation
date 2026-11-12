@@ -296,7 +296,7 @@ def ort_daten(name, la, lo, el):
     if name not in ORT_CACHE:
         url = ('https://api.open-meteo.com/v1/forecast?latitude=%s&longitude=%s&elevation=%s&models=%s'
                '&daily=temperature_2m_max,temperature_2m_min,weather_code,snowfall_sum,precipitation_sum,wind_gusts_10m_max,sunshine_duration'
-               '&hourly=precipitation,cloud_cover,temperature_2m,snowfall,weather_code&forecast_days=8&timezone=Europe%%2FBerlin' % (la, lo, el, ','.join(MODELLE)))
+               '&hourly=precipitation,cloud_cover,temperature_2m,snowfall,weather_code,relative_humidity_2m,dew_point_2m,wind_speed_10m&forecast_days=8&timezone=Europe%%2FBerlin' % (la, lo, el, ','.join(MODELLE)))
         ORT_CACHE[name] = None
         for v in range(3):   # kurze Aussetzer (Zeitüberschreitung) nicht gleich den ganzen Ort kosten
             try:
@@ -442,6 +442,76 @@ def hoehen(days):
     except Exception as e: print('Kreis-Stundenwerte nicht möglich:', e)
     try: niederschlag(days)
     except Exception as e: print('Niederschlags-Einstufung nicht möglich:', e)
+    try: lage_winter(days)
+    except Exception as e: print('Nebel-/Glätte-Einstufung nicht möglich:', e)
+
+
+GLAETTE_REIHE = ('keine', 'reif', 'naesse', 'schnee', 'glatteis')
+
+
+def lage_winter(days):
+    """EINE Grundlage für Nebel, Kaltluft in den Tälern und Glätte (Max, Facebook, Instagram) – wie die Regen-Einstufung.
+    Stundenwerte der Talorte (Breuberg, Höchst, Bad König, Michelstadt) bzw. der Höhen × Modelle, gewichtet wie die Vorhersage.
+    Zeitraum: die Nacht vor dem Tag und der Vormittag (Vortag 18 Uhr bis 10 Uhr). Je Ort×Modell wird geprüft:
+      Nebel    – Wettercode 45/48 oder Luftfeuchte >= 97 % bei Wind <= 6 km/h (zwischen 4 und 10 Uhr)
+      Glätte   – Glatteis (gefrierender Regen, Code 56/57/66/67) > Schnee (Schneefall bei <= 1 °C)
+                 > überfrierende Nässe (<= 0,5 °C und in den 6 Stunden davor nass) > Reif (<= 0 °C, Taupunkt nah, klar, windstill)
+    Stufe = Anteil der Ort×Modell-Kombinationen (gewichtet): Nebel >= 50 % „wahrscheinlich“, >= 25 % „moeglich“;
+    Glätte: schwerste Art mit >= 30 % Anteil (Glatteis schon ab 20 %).
+    Kaltluft: klare, windstille Nacht und der kälteste Talort ist so kalt wie die Höhen oder kälter (sonst sind die Täler ~1,5 Grad wärmer).
+    Ergebnis: d['lage'] = {nebel, nebel_p, nebel_bis, glaette, glaette_p, glaette_hoch, kaltluft, kalt_diff}."""
+    def auswerten(liste, n, tag, vt):
+        nb = [0.0, 0.0]; bis = []; gl = {k: 0.0 for k in GLAETTE_REIHE}; gsum = 0.0
+        for o in liste:
+            O = ort_daten(*o)
+            if not O or not O.get('hourly'): continue
+            H = O['hourly']; T = H['time']
+            idx = [k for k, t in enumerate(T) if (t[:10] == vt and int(t[11:13]) >= 18) or (t[:10] == tag and int(t[11:13]) <= 10)]
+            if not idx: continue
+            for m in MODELLE:
+                w = gewicht(m, n)
+                tt = H.get('temperature_2m_' + m)
+                if not w or not tt: continue
+                g = lambda k_, key: (H.get(key + '_' + m) or [None] * len(T))[k_]
+                nebel_h = []; art = 'keine'
+                for k in idx:
+                    t_ = tt[k]
+                    if t_ is None: continue
+                    c, rh, wi = g(k, 'weather_code'), g(k, 'relative_humidity_2m'), g(k, 'wind_speed_10m')
+                    stunde = int(T[k][11:13]); morgen = T[k][:10] == tag and 4 <= stunde <= 10
+                    if morgen and (c in (45, 48) or (rh is not None and rh >= 97 and (wi or 0) <= 6)): nebel_h.append(stunde)
+                    pr, sn, td, cc = g(k, 'precipitation') or 0, g(k, 'snowfall') or 0, g(k, 'dew_point_2m'), g(k, 'cloud_cover')
+                    nass_vorher = any((g(j, 'precipitation') or 0) >= 0.1 for j in range(max(0, k - 6), k + 1))
+                    if c in (56, 57, 66, 67): neu = 'glatteis'
+                    elif sn > 0 and t_ <= 1: neu = 'schnee'
+                    elif t_ <= 0.5 and nass_vorher: neu = 'naesse'
+                    elif t_ <= 0 and td is not None and td >= t_ - 1 and (wi or 0) <= 8 and (cc is None or cc <= 40): neu = 'reif'
+                    else: neu = 'keine'
+                    if GLAETTE_REIHE.index(neu) > GLAETTE_REIHE.index(art): art = neu
+                nb[0] += w; gsum += w
+                if nebel_h: nb[1] += w; bis.append(max(nebel_h))
+                gl[art] += w
+        if not gsum: return None
+        p_nebel = round(100 * nb[1] / nb[0])
+        anteil = {k: round(100 * v / gsum) for k, v in gl.items()}
+        glaette = 'keine'
+        for k in reversed(GLAETTE_REIHE[1:]):   # schwerste Art zuerst; Anteil zählt inkl. schwererer Arten
+            ab = sum(anteil[x] for x in GLAETTE_REIHE[GLAETTE_REIHE.index(k):])
+            if ab >= (20 if k == 'glatteis' else 30): glaette = k; break
+        return dict(nebel='wahrscheinlich' if p_nebel >= 50 else 'moeglich' if p_nebel >= 25 else 'keiner', nebel_p=p_nebel,
+                    nebel_bis=(sorted(bis)[len(bis) // 2] + 1) if bis else None,
+                    glaette=glaette, glaette_p=sum(anteil[x] for x in GLAETTE_REIHE[1:]))
+    for n, d in enumerate(days):
+        tag = d['datum'].isoformat(); vt = (d['datum'] - dt.timedelta(days=1)).isoformat()
+        tal = auswerten(TAELER, n, tag, vt)
+        if not tal: continue
+        hoch = auswerten(HOEHEN, n, tag, vt) or {}
+        T_, H_ = d.get('tal'), d.get('hoch')
+        diff = round(H_['tmin'] - T_['tmin_kalt']) if T_ and H_ else 0
+        tal.update(glaette_hoch=hoch.get('glaette', 'keine'), kaltluft=bool(d.get('nacht_klar') and diff >= 0), kalt_diff=diff)
+        d['lage'] = tal
+        print('Lage %s: Nebel %s (%d %%, bis %s Uhr), Glätte Tal %s / Höhen %s, Kaltluft %s (%+d)' % (
+            tag, tal['nebel'], tal['nebel_p'], tal['nebel_bis'], tal['glaette'], tal['glaette_hoch'], tal['kaltluft'], diff))
 
 
 NASS_CODES = (51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 71, 73, 75, 77, 80, 81, 82, 85, 86, 95, 96, 99)
@@ -666,6 +736,10 @@ def emoji(c):
 def hinweise(d):
     h = []
     fm = d.get('frost_min', d['tmin'])   # Frost: vorsichtig nach dem kältesten Talort
+    L = d.get('lage') or {}
+    if L.get('glaette') == 'glatteis': h.insert(0, 'Glatteis möglich')
+    elif L.get('glaette') in ('naesse', 'reif'): h.append('Glätte möglich')
+    if L.get('nebel') == 'wahrscheinlich': h.append('morgens Nebel in den Tälern')
     if fm <= 0: h.append('Frost bis %d °C – Scheiben kratzen!' % fm)
     elif fm <= 3 and d.get('nacht_klar'): h.append('Bodenfrost möglich')   # nur klare, windstille Nacht
     if d['boe'] >= 60: h.append('Sturmböen bis %d km/h' % round(d['boe']))
@@ -673,6 +747,7 @@ def hinweise(d):
     if d['regen'] >= 10: h.append('viel Regen (%.0f l/m²)' % d['regen'])
     H = d.get('hoch')
     if H and H['schnee']: h.insert(0, 'Schnee auf den Höhen – Glätte möglich')
+    elif L.get('glaette_hoch') in ('naesse', 'reif', 'glatteis') and L.get('glaette') == 'keine': h.append('Glätte auf den Höhen möglich')
     elif H and H['tmin'] <= 0 < d['tmin']: h.append('Frost auf den Höhen bis %d °C' % H['tmin'])
     return h
 
@@ -836,7 +911,10 @@ def tipp(d):
     if d.get('hoch') and d['hoch']['schnee'] and d['schnee'] < 1: return 'Auf den Höhen kann es schneien – Richtung Beerfelden und Oberzent vorsichtig fahren! 🚗❄️'
     if d['schnee'] >= 1: return 'Schnee im Odenwald – warm anziehen, auf den Höhen kann es glatt werden. ⛄'
     if w == 'Gewitter': return 'Bei Gewitter Wanderungen lieber verschieben und rechtzeitig Schutz suchen.'
-    if d.get('frost_min', d['tmin']) <= 0: return 'Morgens Scheiben kratzen einplanen und auf Glätte achten! 🧊'
+    gl = (d.get('lage') or {}).get('glaette', 'keine')
+    if gl == 'glatteis': return 'Achtung, Glatteis möglich – morgens langsam fahren und vorsichtig gehen! 🧊'
+    if gl in ('naesse', 'schnee', 'reif'): return 'Morgens Scheiben kratzen einplanen und auf Glätte achten! 🧊'
+    if d.get('frost_min', d['tmin']) <= 0: return 'Morgens Scheiben kratzen einplanen! 🧊'
     if d.get('nied', {}).get('stufe') == 'regen' or d['rp'] >= 70: return 'Ein guter Tag für drinnen – oder mit Regenjacke raus. ☔'
     if d['sonne'] >= 5 and d['rp'] < 30: return 'Ideales Wetter für eine Runde im Odenwald – raus an die frische Luft! 🥾'
     if d['rp'] < 30: return 'Für einen Spaziergang passt es, eine Jacke sollte aber mit.'

@@ -190,7 +190,7 @@ def frage_fuer(d, heute, rnd):
     if w in ('Regen', 'Schauer', 'Nieselregen', 'Gewitter') or nass_tag(d): opt += ['Regnet es bei euch schon? Schreibt mir euren Ort in die Kommentare!',
                                                                                      'Was macht ihr an so einem Regentag? Verratet es mir in den Kommentaren!']
     if w == 'Schnee' or d.get('schnee', 0) >= 1: opt += ['Liegt bei euch schon Schnee? Schreibt mir euren Ort – und gern ein Foto!']
-    if w == 'neblig': opt += ['Wie dicht ist der Nebel bei euch? Schreibt euren Ort in die Kommentare!']
+    if w == 'neblig' or lage(d)['nebel'] == 'wahrscheinlich': opt += ['Wie dicht ist der Nebel bei euch? Schreibt euren Ort in die Kommentare!']
     if w in ('sonnig', 'heiter bis wolkig') or d.get('sonne', 0) >= 5: opt += ['Was habt ihr bei dem schönen Wetter heute vor? Schreibt’s mir!',
                                                                              'Scheint bei euch schon die Sonne? Schreibt mir euren Ort!']
     opt += ['Aus welchem Ort im Odenwald schaut ihr zu? Schreibt’s in die Kommentare!',
@@ -340,6 +340,44 @@ ADJ = {'sonnig': 'richtig sonnig', 'heiter bis wolkig': 'freundlich mit ein paar
        'Schauer': 'wechselhaft mit Schauern', 'Gewitter': 'gewittrig'}
 
 
+def lage(d):
+    """Nebel/Glätte/Kaltluft aus EINER Grundlage (fb_post.lage_winter, d['lage']); ohne Daten: nichts ansagen."""
+    return dict(dict(nebel='keiner', nebel_bis=None, glaette='keine', glaette_hoch='keine', kaltluft=False, kalt_diff=0), **(d.get('lage') or {}))
+
+
+def winter_saetze(d, wann, rnd):
+    """Nebel am Morgen, Kaltluft in den Tälern, Glätte – nur wenn die Einstufung es hergibt."""
+    L = lage(d); out = []
+    morgens = {'Heute': 'heute früh', 'Morgen': 'morgen früh'}.get(wann.rstrip(','), 'morgens')
+    if L['glaette'] == 'glatteis':
+        out.append(frisch(rnd, 'glatteis', ['Achtung, %s droht Glatteis! Gefrierender Regen macht Straßen und Gehwege spiegelglatt – lasst euch Zeit.' % morgens,
+                                            'Ganz wichtig: %s kann es Glatteis geben. Fahrt langsam und passt auch zu Fuß gut auf!' % morgens.capitalize()]))
+    elif L['glaette'] == 'naesse':
+        out.append(frisch(rnd, 'glaette_n', ['Vorsicht %s: Die nassen Straßen können überfrieren, es kann glatt werden.' % morgens,
+                                             '%s heißt es aufpassen – Nässe und Frost, da wird es auf Straßen und Gehwegen schnell rutschig.' % morgens.capitalize()]))
+    elif L['glaette'] == 'reif':
+        out.append(frisch(rnd, 'glaette_r', ['%s kann Reif auf Brücken und Nebenstraßen für Glätte sorgen.' % morgens.capitalize(),
+                                             'Achtet %s auf Reifglätte, vor allem auf Brücken und in schattigen Ecken.' % morgens]))
+    elif L['glaette'] == 'schnee' and not (d.get('hoch') or {}).get('schnee'):
+        out.append(frisch(rnd, 'glaette_s', ['Mit dem Schnee wird es %s auch in den Tälern glatt – lieber etwas früher losfahren.' % morgens]))
+    elif L['glaette_hoch'] in ('naesse', 'reif', 'glatteis') and not (d.get('hoch') or {}).get('schnee'):
+        out.append(frisch(rnd, 'glaette_h', ['Oben auf den Höhen, Richtung Beerfelden, kann es %s glatt sein.' % morgens]))
+    if L['nebel'] == 'wahrscheinlich':
+        bis = (' bis etwa %d Uhr' % L['nebel_bis']) if L['nebel_bis'] and L['nebel_bis'] <= 13 else ''
+        out.append(frisch(rnd, 'nebel_w', ['%s liegt in den Tälern Nebel%s – Licht an beim Autofahren!' % (morgens.capitalize(), bis),
+                                           'Im Mümlingtal hängt %s der Nebel%s. Also: Licht an und mit Abstand fahren.' % (morgens, bis),
+                                           '%s gibt es in den Tälern Nebel%s, oben auf den Höhen ist es oft klarer.' % (morgens.capitalize(), bis)]))
+    elif L['nebel'] == 'moeglich':
+        out.append(frisch(rnd, 'nebel_m', ['%s ist in den Tälern stellenweise Nebel möglich.' % morgens.capitalize(),
+                                           'Hier und da kann sich %s in den Tälern Nebel bilden.' % morgens]))
+    if L['kaltluft'] and d.get('frost_min', d['tmin']) <= 3:
+        out.append(frisch(rnd, 'kaltluft', ['In der klaren Nacht sammelt sich die kalte Luft in den Tälern – im Mümlingtal wird es dann kälter als oben auf den Höhen.',
+                                            'Typisch Odenwald: In der klaren Nacht sackt die Kaltluft in die Täler, da ist es unten frostiger als oben.',
+                                            'Kleine Besonderheit: Nachts ist es diesmal in den Tälern kälter als auf den Höhen, weil sich die kalte Luft unten sammelt.']))
+    out = out[:2]   # höchstens zwei Hinweise: Glätte vor Nebel vor Kaltluft
+    return (' ' + ' '.join(out)) if out else ''
+
+
 def tagtext(d, wann):
     """Tagesvorhersage in wechselnden, gesprochen klingenden Formulierungen (pro Tag fest, damit Tests gleich bleiben)."""
     rnd = random.Random('tag' + str(d['datum']) + wann)
@@ -397,8 +435,9 @@ def tagtext(d, wann):
                                     'Oben auf den Höhen wird es mit etwa %s Grad deutlich frischer als in den Tälern.' % zahl(H['tmax']),
                                     'Richtung Beerfelden und Mossautal bleibt es kühler, um %s Grad.' % zahl(H['tmax'])])
         if H['tmin'] <= 0 < d['tmin']:
-            s += ' ' + rnd.choice(['Nachts friert es auf den Höhen – da kann es glatt werden.',
+            s += ' ' + rnd.choice(['Nachts friert es auf den Höhen, bis %s Grad.' % zahl(H['tmin']),
                                     'Auf den Höhen gibt es nachts leichten Frost, bis %s Grad.' % zahl(H['tmin'])])
+    s += winter_saetze(d, wann, rnd)
     if d.get('sicher') == 'gering':
         s += ' ' + rnd.choice(['Aber ehrlich gesagt: Da sind sich die Wettermodelle noch uneinig.',
                                 'Kleiner Haken: Die Wettermodelle sind sich da noch nicht einig, also lieber nochmal reinschauen.',
@@ -693,6 +732,8 @@ def lage_fx(d):
     if d['boe'] >= 55: return 'sturm'
     if w in ('Regen', 'Nieselregen') or d['regen'] >= 5: return 'regen'
     if w == 'Schauer' or nass_tag(d): return 'schauer'    # nur zeitweise Schauer: Sonne + Schauer in der Ferne
+    L = lage(d)
+    if L['nebel'] == 'wahrscheinlich' and (L['nebel_bis'] or 0) >= 11: return 'nebel'   # Nebel hält sich bis in den Vormittag
     return None
 
 
@@ -2474,7 +2515,7 @@ TROCKEN_WORTE = ('heute trocken', 'wieder trocken', 'Es bleibt trocken', 'bleibt
 
 
 def pruefen(segs):
-    """Selbstkontrolle vor dem Rendern: Passt jeder Satz über Regen zur Regen-Einstufung des Tages?
+    """Selbstkontrolle vor dem Rendern: Passt jeder Satz über Regen, Nebel, Glätte und Kaltluft zur Einstufung des Tages?
     Widersprüchliche Sätze werden entfernt (Grafik-Sätze bleiben, damit die Tafeln stimmen), dazu eine Push-Nachricht."""
     import re
     fehler = []
@@ -2484,6 +2525,12 @@ def pruefen(segs):
         sf = stufe(d); schutz = tuple(a for v in GRAFIK_ANFANG.values() for a in v)
         saetze = re.split(r'(?<=[.!?])\s+', sg['text']); neu = []
         for x in saetze:
+            L = lage(d); schnee_ = (d.get('hoch') or {}).get('schnee') or d.get('schnee', 0) >= 0.5 or wort(d['code']) == 'Schnee'
+            falsch_w = ('Nebel' in x and L['nebel'] == 'keiner' and d['code'] not in (45, 48)) \
+                       or (any(w_ in x for w_ in ('glatt', 'Glätte', 'Glatteis', 'rutschig')) and L['glaette'] == 'keine' and L['glaette_hoch'] == 'keine' and not schnee_) \
+                       or ('Glatteis' in x and L['glaette'] != 'glatteis') \
+                       or ('Tälern kälter' in x or 'Kaltluft' in x or 'kalte Luft in den Tälern' in x) and not L['kaltluft']
+            if falsch_w and not x.startswith(schutz): fehler.append('%s (Nebel/Glätte): „%s“' % (d['datum'], x)); continue
             falsch = (sf in ('trocken', 'vereinzelt') and any(w_ in x for w_ in NASS_WORTE) and not ('vereinzelt' in x or 'einzelner Schauer' in x or 'kurzer Schauer' in x)) \
                      or (sf == 'trocken' and 'Schauer' in x) \
                      or (sf in ('schauer', 'regen', 'gewitter') and any(w_ in x for w_ in TROCKEN_WORTE))
@@ -2496,7 +2543,7 @@ def pruefen(segs):
         if topic:
             try:
                 import urllib.request
-                urllib.request.urlopen(urllib.request.Request('https://ntfy.sh/' + topic, data=('Max-Video: %d widersprüchliche(r) Regen-Satz/Sätze entfernt – Video kommt trotzdem.\n' % len(fehler)
+                urllib.request.urlopen(urllib.request.Request('https://ntfy.sh/' + topic, data=('Max-Video: %d widersprüchliche(r) Satz/Sätze (Regen, Nebel, Glätte) entfernt – Video kommt trotzdem.\n' % len(fehler)
                                                                                             + '\n'.join(fehler))[:3000].encode('utf-8'),
                                                               headers={'Title': 'Max: Selbstkontrolle', 'Tags': 'umbrella'}), timeout=15)
             except Exception as e: print('Push nicht möglich:', e)
