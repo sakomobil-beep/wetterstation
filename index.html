@@ -1834,7 +1834,7 @@ button { font: inherit; color: inherit; }
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 12.11.2026, 17:15 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 12.11.2026, 17:25 Uhr</span></p>
 
 </div>
 
@@ -2537,11 +2537,24 @@ function heroOutlook() {
   if (!FC.hours || !FC.hours.length) return '<div class="or"><small>Ausblick wird geladen …</small></div>';
   var now = new Date(), H = now.getHours(), d0 = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime(), HR = 3600000;
   function win(a, b) { return FC.hours.filter(function (h) { var t = h.t.getTime(); return t > Math.max(a, now.getTime()) && t <= b && h.temp !== null; }); }
-  function rainTxt(hs) {
-    var sum = 0, pm = 0; hs.forEach(function (h) { sum += h.rain || 0; pm = Math.max(pm, h.prob || 0); });
-    if (sum >= 0.3) return 'Regen, ca. ' + nf(sum, 1) + ' mm';
-    if (pm >= 40) return 'Schauer möglich';
-    return 'trocken';
+  /* gleiche Regen-Einstufung wie Max/Facebook (fb/daten.json, stufe_aus in fb_post.py) */
+  var STX = { trocken: 'trocken', vereinzelt: 'meist trocken', schauer: 'örtlich Schauer', gewitter: 'Schauer und Gewitter möglich' };
+  function stufeTxt(st, mm) { return st === 'regen' ? 'Regen' + (mm >= 0.1 ? ', ca. ' + nf(mm, 1) + ' mm' : '') : STX[st]; }
+  function rainTxt(hs, abend) {
+    var day = hs.length ? hs[0].day : null, n = day && NIED[day];
+    if (abend && n && n.ab) {
+      var mmA = 0; hs.forEach(function (h) { var x = NIED_H[h.day + 'T' + pad2(h.t.getHours())]; if (x) mmA += x.mm || 0; });
+      return stufeTxt(n.ab, mmA);
+    }
+    var P = 0, S = 0, G = false, hit = 0;
+    hs.forEach(function (h) {
+      var x = NIED_H[h.day + 'T' + pad2(h.t.getHours())];
+      if (!x) return; hit++;
+      P = Math.max(P, x.rp || 0); S += x.mm || 0; if (x.code >= 95) G = true;
+    });
+    if (!hit) { hs.forEach(function (h) { P = Math.max(P, h.prob || 0); S += h.rain || 0; }); }
+    var st = (P < 10 || (P < 20 && S < 0.05)) ? 'trocken' : (G && P >= 30) ? 'gewitter' : P < 30 ? 'vereinzelt' : (P >= 60 && S >= 1) ? 'regen' : 'schauer';
+    return stufeTxt(st, S);
   }
   function pick(hs, fn) { var b = hs[0]; hs.forEach(function (h) { if (fn(h.temp, b.temp)) b = h; }); return b; }
   function icOf(h) { return h && h.icon ? wxIcon(h.icon) : ''; }
@@ -2549,8 +2562,8 @@ function heroOutlook() {
   function row(label, hs, mode) {
     if (!hs.length) return;
     var x = mode === 'min' ? pick(hs, function (a, b) { return a < b; }) : mode === 'max' ? pick(hs, function (a, b) { return a > b; }) : hs[Math.floor(hs.length / 2)];
-    var info = mode === 'min' ? 'Tiefst um ' + x.t.getHours() + ' Uhr' : mode === 'max' ? 'Höchst um ' + x.t.getHours() + ' Uhr' : rainTxt(hs);
-    if (mode !== 'avg') { var r = rainTxt(hs); if (r !== 'trocken') info += ' · ' + r; }
+    var info = mode === 'min' ? 'Tiefst um ' + x.t.getHours() + ' Uhr' : mode === 'max' ? 'Höchst um ' + x.t.getHours() + ' Uhr' : rainTxt(hs, /Abend/.test(label));
+    if (mode !== 'avg') { var r = rainTxt(hs, false); if (r !== 'trocken') info += ' · ' + r; }
     rows.push('<div class="or"><span>' + label + '</span><b>' + nf(x.temp, 0) + '°</b>' + icOf(x) + '<small>' + info + '</small></div>');
   }
   if (H < 6) {
