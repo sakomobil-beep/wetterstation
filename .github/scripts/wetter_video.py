@@ -51,7 +51,7 @@ def regenzeit(d):
     else: t = [('am Vormittag', d['rp_vm'] >= 50), ('am Nachmittag', d['rp_nm'] >= 50), ('am Abend', d['rp_ab'] >= 50)]
     nass = [n for n, x in t if x]
     if not nass: return None
-    if len(nass) == 3: return 'den ganzen Tag über'
+    if len(nass) == 3: return 'GANZTAGS'
     return ' und '.join(nass)
 
 
@@ -59,6 +59,12 @@ def stufe(d):
     N = d.get('nied')
     if N: return N['stufe']
     return 'trocken' if d['rp'] < 10 else 'vereinzelt' if d['rp'] < 30 else 'regen' if d['rp'] >= 60 and d.get('regen', 0) >= 1 else 'schauer'
+
+
+def N_vm_nass(d):
+    """Nass schon am Vormittag (Regen/Niesel/Schauer laut Einstufung)?"""
+    N = d.get('nied')
+    return (N['vm'] in ('schauer', 'regen', 'gewitter')) if N else d.get('rp_vm', 0) >= 50
 
 
 def nass_tag(d):
@@ -146,7 +152,7 @@ def vergleich_gestern(d, rnd):
         return ' ' + frisch(rnd, 'gestern_waermer', ['Damit wird es rund %d Grad wärmer als gestern.' % dif, 'Das sind etwa %d Grad mehr als gestern.' % dif,
                                                      'Spürbar milder als gestern – gut %d Grad mehr.' % dif])
     if dif <= -3:
-        return ' ' + frisch(rnd, 'gestern_kaelter', ['Das sind rund %d Grad weniger als gestern.' % -dif, 'Deutlich kühler als gestern, um etwa %d Grad.' % -dif,
+        return ' ' + frisch(rnd, 'gestern_kaelter', ['Das sind rund %d Grad weniger als gestern.' % -dif, ('Deutlich kühler als gestern, um etwa %d Grad.' if dif <= -4 else 'Kühler als gestern, um etwa %d Grad.') % -dif,
                                                      'Im Vergleich zu gestern also ein ganzes Stück frischer.'])
     nass_heute = d['rp'] >= 50
     sf = stufe(d)
@@ -208,18 +214,18 @@ def frage_fuer(d, heute, rnd):
 
 def folgen_fuer(heute, rnd, warn=False):
     """Kurzer, wechselnder Aufruf zum Folgen – neue Follower anlocken."""
-    opt = ['Folgst du uns eigentlich schon? Dann verpasst du kein Wetter mehr – jeden Morgen frisch aus dem Odenwald!',
-           'Noch kein Follower? Ein Klick auf Folgen, und ich bin jeden Morgen pünktlich bei dir.',
-           'Kennst du jemanden im Odenwald, der immer wissen will, wie das Wetter wird? Schick ihm das Video – und folg uns, falls du’s noch nicht tust!',
-           'Damit du die nächste Unwetterwarnung nicht verpasst: Folg uns einfach. Kostet nichts – und ich freu mich!',
-           'Das Wetter kommt hier direkt von unserer eigenen Station in Bad König. Wenn dir das gefällt: Folgen, liken, teilen!',
-           'Hilf mir, den ganzen Odenwald zu erreichen: Folg uns und teil das Video mit deinen Nachbarn!',
-           'Wer uns folgt, weiß morgens als Erster Bescheid – ob Frost, Regen oder Sonne. Bist du schon dabei?',
-           'Ein Daumen hoch und ein Follow – damit hilfst du einem kleinen Wetterprojekt aus dem Odenwald enorm!',
-           'Du schaust gerade zum ersten Mal zu? Dann herzlich willkommen – und gleich auf Folgen drücken!']
-    if heute.weekday() == 0: opt.append('Neue Woche, neue Follower? Wenn du uns noch nicht folgst: Jetzt ist der perfekte Moment!')
-    if heute.weekday() == 4: opt.append('Bevor’s ins Wochenende geht: Folg uns, dann weißt du auch Samstag und Sonntag, was das Wetter macht!')
-    if warn: opt.append('Bei Warnungen melden wir uns sofort – folg uns, damit du nichts verpasst!')
+    opt = ['Folgt ihr uns eigentlich schon? Dann verpasst ihr kein Wetter mehr – jeden Morgen frisch aus dem Odenwald!',
+           'Noch kein Follower? Ein Klick auf Folgen, und ich bin jeden Morgen pünktlich bei euch.',
+           'Kennt ihr jemanden im Odenwald, der immer wissen will, wie das Wetter wird? Schickt ihm das Video – und folgt uns, falls ihr’s noch nicht tut!',
+           'Damit ihr die nächste Unwetterwarnung nicht verpasst: Folgt uns einfach. Kostet nichts – und ich freu mich!',
+           'Das Wetter kommt hier direkt von unserer eigenen Station in Bad König. Wenn euch das gefällt: Folgen, liken, teilen!',
+           'Helft mir, den ganzen Odenwald zu erreichen: Folgt uns und teilt das Video mit euren Nachbarn!',
+           'Wer uns folgt, weiß morgens als Erster Bescheid – ob Frost, Regen oder Sonne. Seid ihr schon dabei?',
+           'Ein Daumen hoch und ein Follow – damit helft ihr einem kleinen Wetterprojekt aus dem Odenwald enorm!',
+           'Ihr schaut gerade zum ersten Mal zu? Dann herzlich willkommen – und gleich auf Folgen drücken!']
+    if heute.weekday() == 0: opt.append('Neue Woche, neue Follower? Wenn ihr uns noch nicht folgt: Jetzt ist der perfekte Moment!')
+    if heute.weekday() == 4: opt.append('Bevor’s ins Wochenende geht: Folgt uns, dann wisst ihr auch Samstag und Sonntag, was das Wetter macht!')
+    if warn: opt.append('Bei Warnungen melden wir uns sofort – folgt uns, damit ihr nichts verpasst!')
     return frisch(rnd, 'folgen', opt)
 
 
@@ -378,7 +384,7 @@ def winter_saetze(d, wann, rnd):
         out.append(frisch(rnd, 'nebel_w', ['%s liegt in den Tälern Nebel%s – Licht an beim Autofahren!' % (morgens.capitalize(), bis),
                                            'Im Mümlingtal hängt %s der Nebel%s. Also: Licht an und mit Abstand fahren.' % (morgens, bis),
                                            '%s gibt es in den Tälern Nebel%s, oben auf den Höhen ist es oft klarer.' % (morgens.capitalize(), bis)]))
-    elif L['nebel'] == 'moeglich':
+    elif L['nebel'] == 'moeglich' and wort(d['code']) != 'neblig':   # Nebel schon im Wettersatz genannt → nicht nochmal „vielleicht“
         out.append(frisch(rnd, 'nebel_m', ['%s ist in den Tälern stellenweise Nebel möglich.' % morgens.capitalize(),
                                            'Hier und da kann sich %s in den Tälern Nebel bilden.' % morgens]))
     if L['kaltluft'] and d.get('frost_min', d['tmin']) <= 3:
@@ -421,7 +427,11 @@ def tagtext(d, wann, nachtfrost=True):
     s = frisch(rnd, 'tag', opt)
     rz = regenzeit(d)
     sf = stufe(d)
-    if rz and sf == 'schauer':
+    if rz == 'GANZTAGS':
+        s += ' ' + (frisch(rnd, 'schauerzeit', ['Schauer sind den ganzen Tag über möglich.', 'Mit Schauern müsst ihr den ganzen Tag rechnen.']) if sf == 'schauer'
+                    else frisch(rnd, 'regenzeit', ['Den Schirm braucht ihr den ganzen Tag.', 'Nass bleibt es den ganzen Tag über.', 'Mit Regen müsst ihr den ganzen Tag rechnen.']) if sf in ('regen', 'gewitter') and w not in ('Regen',) else '')
+        s = s.rstrip()
+    elif rz and sf == 'schauer':
         s += ' ' + frisch(rnd, 'schauerzeit', ['Örtlich sind %s Schauer möglich.' % rz, 'Schauer gibt es am ehesten %s – nicht überall, aber hier und da.' % rz,
                                                'Ein Schirm schadet nicht, %s kann es örtlich schauern.' % rz])
     elif rz and sf in ('regen', 'gewitter') and w not in ('Regen',):
@@ -431,9 +441,12 @@ def tagtext(d, wann, nachtfrost=True):
     elif sf == 'vereinzelt':
         s += ' ' + frisch(rnd, 'vereinzelt', ['Meist bleibt es trocken, nur vereinzelt ist ein kurzer Schauer möglich.',
                                               'Ganz ausschließen lässt sich ein einzelner Schauer nicht, meistens bleibt es aber trocken.'])
-    if nachtfrost and d.get('frost_min', d['tmin']) <= 0:   # Frost nach dem kältesten Talort
-        n = zahl(d.get('frost_min', d['tmin']))
-        s += ' ' + frisch(rnd, 'frost', ['In der Nacht wird es frostig, bis %s Grad.' % n,
+    if nachtfrost and d.get('frost_min', d['tmin']) <= 0:   # Frost nach dem kältesten Talort (Nacht VOR diesem Tag)
+        n = zahl(d.get('frost_min', d['tmin'])); tg_ = TAGE[d['datum'].weekday()]
+        s += ' ' + frisch(rnd, 'frost', ['In der Nacht zum %s wird es frostig, bis %s Grad.' % (tg_, n),
+                                         'In der Nacht zum %s geht es runter auf %s Grad. Also: morgens Scheiben kratzen!' % (tg_, n),
+                                         'Achtung, in der Nacht zum %s gibt es Frost, bis %s Grad.' % (tg_, n),
+                                         'In der Nacht zum %s friert es, bis %s Grad. Wer früh losmuss: Zeit zum Kratzen einplanen.' % (tg_, n)]) if Wk not in ('Heute',) else ' ' + frisch(rnd, 'frost', ['In der Nacht wird es frostig, bis %s Grad.' % n,
                                          'Nachts geht es runter auf %s Grad. Also: morgens Scheiben kratzen!' % n,
                                          'Und Achtung, in der Nacht gibt es Frost, bis %s Grad.' % n,
                                          'Nachts friert es, mit bis zu %s Grad.' % n,
@@ -453,6 +466,8 @@ def tagtext(d, wann, nachtfrost=True):
         if nachtfrost and H['tmin'] <= 0 < d.get('frost_min', d['tmin']):
             s += ' ' + rnd.choice(['Nachts friert es auf den Höhen, bis %s Grad.' % zahl(H['tmin']),
                                     'Auf den Höhen gibt es nachts leichten Frost, bis %s Grad.' % zahl(H['tmin'])])
+    if d.get('frost_min', d['tmin']) <= 0 and N_vm_nass(d) and lage(d)['glaette'] not in ('naesse', 'glatteis', 'schnee'):
+        s += ' Fällt der %s morgens auf den gefrorenen Boden, kann es glatt werden – vorsichtig fahren!' % ('Niesel' if w == 'Nieselregen' else 'Regen')
     s += winter_saetze(d, wann, rnd)
     if d.get('sicher') == 'gering':
         s += ' ' + rnd.choice(['Aber ehrlich gesagt: Da sind sich die Wettermodelle noch uneinig.',
@@ -633,11 +648,17 @@ def skript_abend(days, warn, heute, orte=None):
          'Ei gude wie, Odenwald – hier ist euer Abendwetter mit Max.',
          'Schön, dass ihr einschaltet: Max hier mit dem Odenwald-Wetter am Abend.'])
         + ((' Vorweg: Vom Deutschen Wetterdienst gilt %s.' % warn_txt(warn)) if warn else ''))]
-    zahlen = [rnd.choice(['Der Tag bei uns in Zahlen: Heute haben wir in den Tälern rund %s Grad erreicht.',
-                          'Schauen wir noch mal auf den Tag: Bis zu %s Grad waren es heute bei uns im Odenwald.',
-                          'Kurz zu den Zahlen von heute: Rund %s Grad Höchstwert in den Tälern.']) % zahl(a['tmax'])]
-    if a.get('regen', 0) >= 1:
-        zahlen.append('Dazu kamen etwa %s Liter Regen pro Quadratmeter zusammen.' % zahl(round(a['regen'])))
+    hm = a.get('heute_mess')   # gemessen an der Station Bad König (sonst Vorhersage als Rückfall)
+    if hm:
+        a = dict(a, tmax=hm['tmax'], regen=hm['regen'], boe=hm['boe'] if hm.get('boe') is not None else a.get('boe', 0))
+        zahlen = [rnd.choice(['Der Tag in Zahlen: An unserer Station in Bad König haben wir heute bis zu %s Grad gemessen.',
+                              'Schauen wir noch mal auf den Tag: Höchstens %s Grad hat unsere Station in Bad König heute gemessen.',
+                              'Kurz zu den Zahlen von heute: %s Grad Höchstwert an unserer Station in Bad König.']) % zahl(a['tmax'])]
+        if a['regen'] >= 1: zahlen.append('Dazu kamen etwa %s Liter Regen pro Quadratmeter zusammen.' % zahl(round(a['regen'])))
+    else:
+        zahlen = [rnd.choice(['Der Tag in Zahlen: Heute ging es in den Tälern bis auf rund %s Grad.',
+                              'Kurz zu den Zahlen von heute: Rund %s Grad Höchstwert in den Tälern.']) % zahl(a['tmax'])]
+        if a.get('regen', 0) >= 1: zahlen.append('Dazu kamen etwa %s Liter Regen pro Quadratmeter zusammen.' % zahl(round(a['regen'])))
     # Kommende Nacht = Tiefstwert des Folgetags (wie im Facebook-Abendbeitrag), jeden Abend
     b = days[1] if len(days) > 1 else a
     fm, tn = b.get('frost_min', b['tmin']), b['tmin']
@@ -864,8 +885,9 @@ def skript(days, warn, heute, nur_special=False):
                 nass = (51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 71, 73, 75, 77, 80, 81, 82, 85, 86, 95, 96, 99)
                 gut = [n for n, d in (('Samstag', sa), ('Sonntag', so)) if not nass_tag(d) and d['code'] not in nass]
                 grau = any(d['code'] in (45, 48) or d['code'] == 3 for d in (sa, so))
-                t = '%s Im Odenwald Samstag %s bei %s Grad, Sonntag %s bei %s Grad.' % (rnd.choice(['Ein Blick aufs Wochenende:', 'Und das Wochenende?', 'Kurz noch zum Wochenende:']), wort(sa['code']), zahl(sa['tmax']), wort(so['code']), zahl(so['tmax']))
-                t += (' Trockener bleibt es am %s.' % gut[0]) if len(gut) == 1 else ((' Beide Tage bleiben wohl trocken – zieht euch aber warm an.' if grau else ' Beide Tage sehen gut aus für draußen!') if gut else ' Plant lieber etwas für drinnen ein.')
+                def kurz_(d): return 'nach Nebel freundlich' if wort(d['code']) == 'neblig' and d.get('sonne', 0) >= 3 else wort(d['code'])
+                t = '%s Im Odenwald Samstag %s bei %s Grad, Sonntag %s bei %s Grad.' % (rnd.choice(['Ein Blick aufs Wochenende:', 'Und das Wochenende?', 'Kurz noch zum Wochenende:']), kurz_(sa), zahl(sa['tmax']), kurz_(so), zahl(so['tmax']))
+                t += (' %s bleibt es trocken, %s wird es nass.' % (gut[0], 'Sonntag' if gut[0] == 'Samstag' else 'Samstag')) if len(gut) == 1 else ((' Beide Tage bleiben wohl trocken – zieht euch aber warm an.' if grau else ' Beide Tage sehen gut aus für draußen!') if gut else ' Plant lieber etwas für drinnen ein.')
                 if heute.weekday() == 4:   # freitags: kurze Glätte-/Nebel-Hinweise für Samstagfrüh (eigener Samstag-Teil entfällt)
                     sa_ = dict(sa, lage=dict(sa.get('lage') or {}, kaltluft=False))
                     if sa.get('frost_min', sa['tmin']) <= 0: t += ' Samstagfrüh gibt es Frost, bis %s Grad.' % zahl(sa.get('frost_min', sa['tmin']))

@@ -118,6 +118,8 @@ def load():
     hoehen(days)
     try: days[0]['gestern'] = rueckblick(st)
     except Exception as e: print('Rückblick nicht möglich:', e)
+    try: days[0]['heute_mess'] = heute_gemessen(st)
+    except Exception as e: print('Rückblick nicht möglich:', e)
     for d in days[:2]:
         try: d['fenster'] = fenster(KREIS_OM or om, d)
         except Exception as e: print('Zeitfenster nicht möglich:', e)
@@ -186,6 +188,20 @@ def jahresrekorde(gestern, g):
                 print('Rekord-Push gesendet')
             except Exception as e: print('Rekord-Push fehlgeschlagen:', e)
     return neu
+
+
+def heute_gemessen(st):
+    """Heute bisher an der Station Bad König gemessen (Höchst, Regen, Böe) – für „Der Tag in Zahlen“ im Abendvideo."""
+    heute = dt.datetime.now(TZ).date().isoformat()
+    hi, regen, boe = [], 0.0, []
+    for o in st:
+        if dt.datetime.fromtimestamp(o['epoch'], TZ).date().isoformat() != heute: continue
+        m = o.get('metric') or {}
+        if m.get('tempHigh') is not None: hi.append(m['tempHigh'])
+        if m.get('precipTotal') is not None: regen = max(regen, m['precipTotal'])
+        if m.get('windgustHigh') is not None: boe.append(m['windgustHigh'])
+    if not hi: return None
+    return dict(tmax=round(max(hi), 1), regen=round(regen, 1), boe=round(max(boe)) if boe else None)
 
 
 def rueckblick(st):
