@@ -1796,11 +1796,139 @@ def _dreh(px, py, cx, cy, grad):
     return cx + dx * math.cos(a) + dy * math.sin(a), cy - dx * math.sin(a) + dy * math.cos(a)
 
 
+# --- Weihnachtspullis für Max im Studio (23.11.–28.12.), täglich wechselnd -----------------
+PULLI = [None]          # Name des Pullis heute im Studio (None = kein Pulli)
+MUETZE_STUDIO = [False] # Weihnachtsmütze im Studio (nur Nikolaus 6.12. und Heiligabend 24.12.)
+PULLI_NAMEN = ['rentier', 'baum', 'rot', 'lichter', 'schneemann', 'lebkuchen', 'pinguin']
+_PX0, _PX1, _PY0, _PY1 = 77, 303, 291, 552   # Oberkörper im Grundbild 380 x 760
+_PULLI_CACHE = {}
+
+
+def _flocken(d, r, n, c=(255, 255, 255)):
+    for _ in range(n):
+        x = r.uniform(_PX0 - 40, _PX1 + 40); y = r.uniform(_PY0, _PY1); s = r.uniform(3, 6)
+        for k in range(3):
+            an = k * math.pi / 3; d.line([(x - s * math.cos(an), y - s * math.sin(an)), (x + s * math.cos(an), y + s * math.sin(an))], fill=c, width=2)
+
+
+def _band(d, y, c1, c2):   # Norweger-Strickband
+    d.rectangle([0, y, 380, y + 14], fill=c1)
+    for x in range(0, 380, 12): d.polygon([(x, y + 7), (x + 6, y + 1), (x + 12, y + 7), (x + 6, y + 13)], fill=c2)
+
+
+def pulli_muster(name):
+    if name in _PULLI_CACHE: return _PULLI_CACHE[name]
+    cx, cy = (_PX0 + _PX1) // 2, int(_PY0 + (_PY1 - _PY0) * 0.42)
+    grund = {'rentier': (30, 32, 38), 'baum': (28, 36, 80), 'rot': (205, 35, 40), 'lichter': (22, 22, 26),
+             'schneemann': (25, 110, 60), 'lebkuchen': (120, 30, 40), 'pinguin': (70, 140, 200)}[name]
+    p = Image.new('RGBA', (380, 760), grund + (255,)); d = ImageDraw.Draw(p); r = random.Random(name)
+    W_ = (250, 250, 250)
+    if name == 'rentier':
+        _flocken(d, r, 40); br = (176, 110, 60)
+        for s in (-1, 1):
+            bx = cx + s * 30
+            d.line([(bx, cy - 25), (bx + s * 22, cy - 70)], fill=W_, width=8); d.line([(bx + s * 12, cy - 48), (bx + s * 36, cy - 55)], fill=W_, width=7)
+            d.line([(bx + s * 18, cy - 60), (bx + s * 14, cy - 82)], fill=W_, width=6); d.ellipse([bx + s * 28 - 14, cy - 30, bx + s * 28 + 14, cy - 12], fill=br)
+        d.ellipse([cx - 38, cy - 40, cx + 38, cy + 45], fill=br); d.ellipse([cx - 24, cy + 5, cx + 24, cy + 45], fill=(225, 170, 110))
+        for s in (-1, 1): d.ellipse([cx + s * 15 - 10, cy - 22, cx + s * 15 + 10, cy + 2], fill='white'); d.ellipse([cx + s * 15 - 4, cy - 14, cx + s * 15 + 4, cy - 4], fill='black')
+        d.ellipse([cx - 14, cy + 8, cx + 14, cy + 30], fill=(220, 30, 35)); d.arc([cx - 18, cy + 18, cx + 18, cy + 42], 20, 160, fill=(120, 30, 30), width=3)
+        _band(d, _PY1 - 28, (240, 240, 240), grund)
+    elif name == 'baum':
+        _flocken(d, r, 25, (200, 215, 255)); _band(d, _PY0 + 30, (30, 120, 60), (230, 40, 50)); _band(d, _PY1 - 28, (30, 120, 60), (230, 40, 50))
+        for k in range(4):
+            w_ = 20 + k * 16; ty = cy - 50 + k * 24; d.polygon([(cx, ty - 20), (cx - w_, ty + 20), (cx + w_, ty + 20)], fill=(35, 140, 70))
+        d.rectangle([cx - 7, cy + 50, cx + 7, cy + 64], fill=(110, 70, 40))
+        d.polygon([(cx, cy - 82), (cx + 7, cy - 68), (cx - 7, cy - 68)], fill=(250, 210, 60)); d.polygon([(cx, cy - 62), (cx + 7, cy - 76), (cx - 7, cy - 76)], fill=(250, 210, 60))
+        for _ in range(26):
+            k = r.randint(0, 3); ty = cy - 45 + k * 24 + r.uniform(0, 16); wx = (20 + k * 16) * (ty - (cy - 70 + k * 24)) / 40
+            x = cx + r.uniform(-wx, wx); d.ellipse([x - 3, ty - 3, x + 3, ty + 3], fill=r.choice([(255, 220, 80), (255, 80, 80), (90, 170, 255), W_]))
+    elif name == 'rot':
+        _flocken(d, r, 30)
+        for s in (-1, 1):
+            bx = cx + s * 32; by = cy - 20
+            d.polygon([(bx - s * 22, by + 6), (bx + s * 14, by - 4), (bx + s * 20, by - 16), (bx + s * 26, by - 12), (bx + s * 18, by + 4), (bx + s * 10, by + 14), (bx - s * 18, by + 16)], fill=W_)
+            d.line([(bx + s * 22, by - 14), (bx + s * 16, by - 30)], fill=W_, width=3); d.line([(bx + s * 26, by - 14), (bx + s * 30, by - 30)], fill=W_, width=3)
+            d.line([(bx - s * 16, by + 14), (bx - s * 26, by + 30)], fill=W_, width=4); d.line([(bx + s * 6, by + 14), (bx + s * 14, by + 30)], fill=W_, width=4)
+        d.ellipse([cx - 7, cy - 52, cx, cy - 45], fill=W_); d.ellipse([cx, cy - 52, cx + 7, cy - 45], fill=W_); d.polygon([(cx - 7, cy - 48), (cx + 7, cy - 48), (cx, cy - 40)], fill=W_)
+        d.rectangle([0, cy + 30, 380, cy + 56], fill=(30, 130, 70))
+        for x in range(0, 380, 22):
+            d.line([(x, cy + 36), (x, cy + 50)], fill='white', width=3); d.arc([x, cy + 33, x + 8, cy + 41], 180, 360, fill=(230, 40, 50), width=3)
+        _band(d, _PY1 - 28, W_, grund)
+    elif name == 'lichter':
+        for k in range(7):
+            yy = _PY0 + 20 + k * 38; pts = [(x, yy + 8 * math.sin(x / 14 + k)) for x in range(0, 386, 6)]
+            d.line(pts, fill=(240, 240, 240), width=3)
+            for j, x in enumerate(range(6, 380, 18)):
+                y_ = yy + 8 * math.sin(x / 14 + k) + 6; d.ellipse([x - 4, y_ - 2, x + 4, y_ + 8], fill=[(230, 50, 50), (60, 190, 90), (250, 210, 60), (90, 160, 255)][(j + k) % 4])
+            if k % 2:
+                sx = cx + r.choice([-40, 0, 40])
+                d.polygon([(sx, yy - 14), (sx + 4, yy - 4), (sx + 13, yy - 4), (sx + 6, yy + 2), (sx + 9, yy + 11), (sx, yy + 5), (sx - 9, yy + 11), (sx - 6, yy + 2), (sx - 13, yy - 4), (sx - 4, yy - 4)], fill=(250, 210, 60))
+        for _ in range(9):
+            x = r.uniform(_PX0, _PX1); y = r.uniform(_PY0 + 20, _PY1 - 20); d.ellipse([x - 9, y - 9, x + 9, y + 9], fill=r.choice([(220, 40, 40), (40, 170, 70)]))
+    elif name == 'schneemann':   # NEU: Schneemann mit Zylinder und Schal
+        _flocken(d, r, 45); _band(d, _PY0 + 30, (200, 30, 40), W_); _band(d, _PY1 - 28, (200, 30, 40), W_)
+        d.ellipse([cx - 34, cy + 2, cx + 34, cy + 66], fill=W_); d.ellipse([cx - 24, cy - 40, cx + 24, cy + 8], fill=W_)
+        d.rectangle([cx - 18, cy - 70, cx + 18, cy - 42], fill=(25, 25, 30)); d.rectangle([cx - 26, cy - 46, cx + 26, cy - 40], fill=(25, 25, 30))
+        d.rectangle([cx - 18, cy - 52, cx + 18, cy - 47], fill=(200, 30, 40))
+        for s in (-1, 1): d.ellipse([cx + s * 9 - 3, cy - 26, cx + s * 9 + 3, cy - 20], fill=(25, 25, 30))
+        d.polygon([(cx, cy - 16), (cx + 18, cy - 12), (cx, cy - 9)], fill=(240, 130, 30))
+        d.rectangle([cx - 24, cy + 2, cx + 24, cy + 10], fill=(200, 30, 40)); d.rectangle([cx + 8, cy + 6, cx + 16, cy + 30], fill=(200, 30, 40))
+        for k in range(3): d.ellipse([cx - 3, cy + 20 + k * 13, cx + 3, cy + 26 + k * 13], fill=(25, 25, 30))
+        for s in (-1, 1): d.line([(cx + s * 30, cy + 22), (cx + s * 56, cy + 4)], fill=(110, 70, 40), width=4)
+    elif name == 'lebkuchen':   # NEU: Lebkuchenmänner und Zuckerguss-Zacken
+        _band(d, _PY0 + 30, W_, (200, 150, 90)); _band(d, _PY1 - 28, W_, (200, 150, 90)); _flocken(d, r, 20)
+        for (gx, gy, g) in ((cx, cy + 5, 1.0), (cx - 62, cy + 20, 0.6), (cx + 62, cy + 20, 0.6)):
+            c = (190, 120, 60)
+            d.ellipse([gx - 14 * g, gy - 46 * g, gx + 14 * g, gy - 18 * g], fill=c); d.rounded_rectangle([gx - 16 * g, gy - 22 * g, gx + 16 * g, gy + 18 * g], radius=8 * g, fill=c)
+            d.line([(gx - 14 * g, gy - 14 * g), (gx - 32 * g, gy - 2 * g)], fill=c, width=int(12 * g)); d.line([(gx + 14 * g, gy - 14 * g), (gx + 32 * g, gy - 2 * g)], fill=c, width=int(12 * g))
+            d.line([(gx - 8 * g, gy + 14 * g), (gx - 14 * g, gy + 40 * g)], fill=c, width=int(12 * g)); d.line([(gx + 8 * g, gy + 14 * g), (gx + 14 * g, gy + 40 * g)], fill=c, width=int(12 * g))
+            for s in (-1, 1): d.ellipse([gx + s * 5 * g - 2, gy - 36 * g - 2, gx + s * 5 * g + 2, gy - 36 * g + 2], fill=W_)
+            d.arc([gx - 6 * g, gy - 32 * g, gx + 6 * g, gy - 24 * g], 20, 160, fill=W_, width=2)
+            for k in range(3): d.ellipse([gx - 3, gy - 12 * g + k * 9 * g, gx + 3, gy - 6 * g + k * 9 * g], fill=(230, 40, 50) if k != 1 else (40, 170, 70))
+    elif name == 'pinguin':   # NEU: Pinguin mit Weihnachtsmütze auf hellblauem Pulli mit Schnee
+        _flocken(d, r, 50); _band(d, _PY1 - 28, W_, (40, 90, 160))
+        d.polygon([(0, _PY1 - 40), (100, _PY1 - 60), (200, _PY1 - 46), (300, _PY1 - 64), (380, _PY1 - 44), (380, _PY1 - 28), (0, _PY1 - 28)], fill=W_)
+        d.ellipse([cx - 30, cy - 34, cx + 30, cy + 54], fill=(30, 32, 40)); d.ellipse([cx - 20, cy - 14, cx + 20, cy + 50], fill=W_)
+        for s in (-1, 1): d.ellipse([cx + s * 8 - 4, cy - 22, cx + s * 8 + 4, cy - 14], fill=W_); d.ellipse([cx + s * 8 - 2, cy - 20, cx + s * 8 + 2, cy - 16], fill='black')
+        d.polygon([(cx - 6, cy - 10), (cx + 6, cy - 10), (cx, cy - 2)], fill=(245, 150, 30))
+        d.polygon([(cx - 26, cy - 30), (cx + 26, cy - 30), (cx + 34, cy - 66)], fill=(215, 35, 40)); d.rectangle([cx - 28, cy - 34, cx + 28, cy - 26], fill=W_); d.ellipse([cx + 28, cy - 72, cx + 40, cy - 60], fill=W_)
+        for s in (-1, 1): d.ellipse([cx + s * 14 - 10, cy + 48, cx + s * 14 + 10, cy + 56], fill=(245, 150, 30))
+        d.polygon([(cx - 30, cy + 4), (cx - 46, cy + 30), (cx - 28, cy + 26)], fill=(30, 32, 40)); d.polygon([(cx + 30, cy + 4), (cx + 46, cy + 30), (cx + 28, cy + 26)], fill=(30, 32, 40))
+    tex = Image.effect_noise((380, 760), 30).convert('L').point(lambda v: int(v * 0.07))   # leichte Strick-Struktur
+    p = Image.composite(Image.new('RGBA', p.size, (0, 0, 0, 255)), p, tex)
+    _PULLI_CACHE[name] = p
+    return p
+
+
+def pulli_anziehen(im, name):
+    """Jacke (Türkis, Innenfutter, Reißverschluss, Namensschild) im Oberkörper durch das Pulli-Muster ersetzen; Umrisse bleiben."""
+    a = np.array(im)
+    r_, g_, b_ = a[:, :, 0].astype(int), a[:, :, 1].astype(int), a[:, :, 2].astype(int)
+    al = a[:, :, 3] > 200
+    band = np.zeros(al.shape, bool); band[_PY0 - 40:_PY1 + 30, :] = True
+    tuerkis = (g_ - r_ > 35) & (b_ - r_ > 25)                                  # Jacke + Reißverschluss/Nähte
+    futter = (abs(r_ - 58) <= 6) & (abs(g_ - 68) <= 6) & (abs(b_ - 83) <= 6)   # dunkles Innenteil
+    schild = (r_ > 225) & (g_ > 225) & (b_ > 225); schild[:_PY0 + 30, :] = False   # Namensschild (Hemdkragen oben bleibt)
+    m_ = (tuerkis | futter | schild) & al & band
+    M = Image.fromarray((m_ * 255).astype('uint8'))
+    M = M.filter(ImageFilter.MaxFilter(7)).filter(ImageFilter.MinFilter(7))   # dünne Innenlinien (Reißverschluss, Taschen, Schild) mit schließen
+    inner = Image.fromarray((al * 255).astype('uint8')).filter(ImageFilter.MinFilter(9))   # Außenumriss bleibt erhalten
+    M = Image.fromarray(np.minimum(np.array(M), np.array(inner)))
+    out = im.copy(); out.paste(pulli_muster(name), (0, 0), M)
+    return out
+
+
+def pulli_zeit(heute):
+    return (heute.month == 11 and heute.day >= 23) or (heute.month == 12 and heute.day <= 26)
+
+
 class MaxFigur:
     """Setzt Max Bild für Bild aus den Ebenen zusammen (mit Zwischenspeicher)."""
     def __init__(self, look='normal', prop=None, studio=False, gr=1.0):
         self.look, self.prop, self.studio, self.gr = look, prop, studio, gr
         self.K, self.KO, self.SR, self.PR = {}, {}, {}, {}
+        self.weih = (MUETZE_STUDIO[0] if studio else WEIHNACHT[0])   # im Studio: Mütze nur an Nikolaus/Heiligabend
+        _alt = WEIHNACHT[0]; WEIHNACHT[0] = self.weih
         self.w, self.h = int(380 * gr), int(760 * gr)
         def sk(im): return None if im is None else im.resize((self.w, self.h), Image.LANCZOS)
         self.beine = [(sk(b), (p[0] * gr, p[1] * gr)) for b, p in max_beine()]
@@ -1809,17 +1937,23 @@ class MaxFigur:
         self.knoten, self.ende, self.req = sk(max_schal(look, 'knoten')), sk(max_schal(look, 'ende')), sk(max_prop(prop))
         self.zipfel = 'weih' if WEIHNACHT[0] and look != 'sturm' else 'bommel' if look == 'winter' else None
         self.zf = None   # Feder für Bommel/Mützenzipfel
+        if studio and PULLI[0]: self.knoten, self.ende = None, None   # zum Weihnachtspulli kein Schal
+        WEIHNACHT[0] = _alt
 
     def oberkoerper(self, pr, pl):
         q = (tuple(int(round(v / 3.0)) * 3 for v in pr), tuple(int(round(v / 3.0)) * 3 for v in pl))
         if q not in self.K:
-            self.K[q] = max_oberkoerper(q[0], q[1], self.look, self.studio, self.prop).resize((self.w, self.h), Image.LANCZOS)
+            ok_ = max_oberkoerper(q[0], q[1], self.look, self.studio, self.prop)
+            if self.studio and PULLI[0]: ok_ = pulli_anziehen(ok_.convert('RGBA'), PULLI[0])   # Weihnachtspulli im Studio
+            self.K[q] = ok_.resize((self.w, self.h), Image.LANCZOS)
         return self.K[q]
 
     def kopf(self, vis, auf, auge, blick, braue, ausdruck):
         k = (vis, auf if vis not in ('ruhe', 'MBP', 'U', 'FV') else 0, auge, round(blick * 2) / 2, braue, ausdruck)
         if k not in self.KO:
+            _alt = WEIHNACHT[0]; WEIHNACHT[0] = self.weih
             im = max_kopf(vis, max(1, k[1]), auge, k[3], braue, ausdruck, self.look, self.prop, ohne_zipfel=self.zipfel is not None)
+            WEIHNACHT[0] = _alt
             self.KO[k] = im.resize((self.w, int(KOPF_H * self.gr)), Image.LANCZOS)
         return self.KO[k]
 
@@ -2638,6 +2772,8 @@ def baue(segmente, heute, ziel, special, titel=None):
     tmp = tempfile.mkdtemp()
     seed = int(heute.strftime('%Y%m%d'))
     WEIHNACHT[0] = weihnachtszeit(heute)
+    PULLI[0] = PULLI_NAMEN[heute.toordinal() % len(PULLI_NAMEN)] if pulli_zeit(heute) else None   # täglich ein anderer Pulli
+    MUETZE_STUDIO[0] = (heute.month, heute.day) in ((12, 6), (12, 24))
     STUDIO_ZEIT[0] = (heute, 20 if '--woche' in sys.argv else 15 if '--monat' in sys.argv else 19)
     bgs = hintergruende(seed)
     eigene = [k for k in bgs if k.startswith('eigen') and saison_ok(EIGEN_NAME.get(k, ''), heute)]
