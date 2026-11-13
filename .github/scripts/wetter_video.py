@@ -615,12 +615,23 @@ def skript_abend(days, warn, heute, orte=None):
     zahlen = [rnd.choice(['Der Tag bei uns in Zahlen: Heute haben wir in den Tälern rund %s Grad erreicht.',
                           'Schauen wir noch mal auf den Tag: Bis zu %s Grad waren es heute bei uns im Odenwald.',
                           'Kurz zu den Zahlen von heute: Rund %s Grad Höchstwert in den Tälern.']) % zahl(a['tmax'])]
-    if a.get('frost_min', a['tmin']) <= 0:
-        zahlen.append('Heute Nacht wird es noch mal frostig, bis %s Grad.' % zahl(a.get('frost_min', a['tmin'])))
-    elif a['tmin'] <= 3:
-        zahlen.append('Heute Nacht kühlt es auf etwa %s Grad ab.' % zahl(a['tmin']))
     if a.get('regen', 0) >= 1:
         zahlen.append('Dazu kamen etwa %s Liter Regen pro Quadratmeter zusammen.' % zahl(round(a['regen'])))
+    # Kommende Nacht = Tiefstwert des Folgetags (wie im Facebook-Abendbeitrag), jeden Abend
+    b = days[1] if len(days) > 1 else a
+    fm, tn = b.get('frost_min', b['tmin']), b['tmin']
+    H = b.get('hoch')
+    if fm <= 0:
+        satz = rnd.choice(['Heute Nacht wird es frostig: In den Tälern um %s Grad, an den kältesten Stellen bis %s Grad.',
+                           'Und die kommende Nacht: rund %s Grad in den Tälern, stellenweise Frost bis %s Grad.']) % (zahl(tn), zahl(fm))
+        if tn <= 0: satz = 'Heute Nacht gibt es Frost: In den Tälern geht es runter auf %s Grad, stellenweise bis %s Grad.' % (zahl(tn), zahl(fm))
+    else:
+        satz = rnd.choice(['Heute Nacht sinken die Werte in den Tälern auf etwa %s Grad.',
+                           'Die kommende Nacht: Tiefstwerte um %s Grad in den Tälern.',
+                           'In der Nacht kühlt es in den Tälern auf rund %s Grad ab.']) % zahl(tn)
+    if H and H.get('tmin') is not None and round(H['tmin']) != round(tn):
+        satz += ' Auf den Höhen um %s Grad.' % zahl(H['tmin'])
+    zahlen.append(satz)
     seg.append(dict(art='tag', bg='studio', titel='DER TAG IN ZAHLEN',
                     tafel_img=tafel_text('DER TAG IN ZAHLEN', zahlen, (25, 85, 160)),
                     text=' '.join(zahlen)))
