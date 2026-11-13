@@ -656,8 +656,11 @@ def skript_abend(days, warn, heute, orte=None):
     if H and H.get('tmin') is not None and round(H['tmin']) != round(tn):
         satz += ' Auf den Höhen um %s Grad.' % zahl(H['tmin'])
     zahlen.append(satz)
+    zb, zm = zahlen_folge(a, tn)
+    anker = {'HOECH': zahlen[0][:25], 'NACHT': satz[:25]}
+    if a.get('regen', 0) >= 1: anker['REGEN'] = 'Dazu kamen etwa'
     seg.append(dict(art='tag', bg='studio', titel='DER TAG IN ZAHLEN',
-                    tafel_img=tafel_text('DER TAG IN ZAHLEN', zahlen, (25, 85, 160)),
+                    tafel_seq=zb, seq_t=zm, seq_anker=anker,
                     text=' '.join(zahlen)))
     if wochenende:
         seg.append(dict(art='wochenende', bg='studio', tage=paar, tafel_img=tafel_wochenende(paar),
@@ -2039,6 +2042,107 @@ def tafel_wochenende(tage):
     return im
 
 
+def zahlen_tafel(kacheln, thermo, nacht, hoch_anz=None, nacht_anz=False):
+    """„Der Tag in Zahlen“: Kacheln (Symbol, Wert, Beschriftung, Farbe) im Raster, darunter Thermometer + Nacht-Kachel.
+    thermo = aktuell angezeigte Temperatur (oder None), nacht = Tiefstwert der kommenden Nacht."""
+    w, h = 440, 600
+    im = Image.new('RGBA', (w, h), (0, 0, 0, 0)); dr = ImageDraw.Draw(im)
+    dr.rounded_rectangle([0, 0, w, h], radius=28, fill=(255, 255, 255, 240))
+    dr.rounded_rectangle([0, 0, w, 74], radius=28, fill=(25, 85, 160, 255)); dr.rectangle([0, 46, w, 74], fill=(25, 85, 160, 255))
+    dr.text((w / 2, 37), 'DER TAG IN ZAHLEN', font=F(32), fill=(255, 255, 255), anchor='mm')
+    for k, (sym, wert, txt, col) in enumerate(kacheln):   # 2 x 2 Raster
+        x0, y0 = 20 + (k % 2) * 205, 90 + (k // 2) * 118
+        dr.rounded_rectangle([x0, y0, x0 + 195, y0 + 108], radius=18, fill=tuple(int(255 - (255 - c) * 0.14) for c in col) + (255,), outline=col + (255,), width=3)
+        sym_kachel(dr, sym, x0 + 34, y0 + 42, col)
+        dr.text((x0 + 120, y0 + 44), wert, font=F(40), fill=col, anchor='mm')
+        dr.text((x0 + 97, y0 + 88), txt, font=F(19, False), fill=(70, 85, 105), anchor='mm')
+    # Thermometer (links unten)
+    tx, ty0, ty1 = 70, 340, 560
+    lo, hi = -15, 25
+    def ypos(v): return ty1 - 30 - (min(hi, max(lo, v)) - lo) / (hi - lo) * (ty1 - 30 - ty0 - 10)
+    dr.rounded_rectangle([tx - 16, ty0, tx + 16, ty1 - 20], radius=16, fill=(235, 238, 242), outline=(150, 160, 175), width=3)
+    dr.ellipse([tx - 30, ty1 - 52, tx + 30, ty1 + 8], fill=(235, 238, 242), outline=(150, 160, 175), width=3)
+    for g in range(lo, hi + 1, 5):   # Skala
+        y = ypos(g); dr.line([(tx + 20, y), (tx + 30, y)], fill=(130, 140, 155), width=2)
+        dr.text((tx + 36, y), ('%d°' % g), font=F(16, False), fill=(110, 120, 135), anchor='lm')
+    y0g = ypos(0); dr.line([(tx - 22, y0g), (tx + 30, y0g)], fill=(60, 120, 200), width=2)
+    if thermo is not None:
+        col = (230, 100, 40) if thermo > 0 else (60, 130, 220)
+        dr.rounded_rectangle([tx - 9, ypos(thermo), tx + 9, ty1 - 30], radius=9, fill=col)
+        dr.ellipse([tx - 23, ty1 - 45, tx + 23, ty1 + 1], fill=col)
+        if hoch_anz is not None:   # Marke für den Höchstwert bleibt stehen
+            yh = ypos(hoch_anz); dr.line([(tx - 26, yh), (tx - 16, yh)], fill=(230, 100, 40), width=4)
+    # Nacht-Kachel (rechts unten)
+    if nacht_anz:
+        frost = nacht <= 0
+        col = (40, 110, 210) if frost else (70, 80, 150)
+        x0, y0 = 170, 360
+        dr.rounded_rectangle([x0, y0, x0 + 250, y0 + 190], radius=22, fill=col + (255,))
+        dr.text((x0 + 125, y0 + 34), 'HEUTE NACHT', font=F(26), fill=(255, 255, 255), anchor='mm')
+        dr.text((x0 + 125, y0 + 105), '%s°' % zahl(nacht).replace('minus ', '−'), font=F(78), fill=(255, 255, 255), anchor='mm')
+        dr.text((x0 + 125, y0 + 165), ('❄ Frost' if frost else 'Tiefstwert'), font=F(24), fill=(215, 235, 255), anchor='mm')
+    return im
+
+
+def schneeflocke(dr, x, y, r):
+    for k in range(6):
+        a = k * math.pi / 3
+        dr.line([(x, y), (x + r * math.cos(a), y + r * math.sin(a))], fill=(255, 255, 255), width=3)
+
+
+def sym_kachel(dr, sym, x, y, col):
+    """Einfache Symbole ohne Emoji-Schrift: Thermometer, Tropfen, Sonne, Wind."""
+    if sym == 'temp':
+        dr.rounded_rectangle([x - 6, y - 24, x + 6, y + 10], radius=6, outline=col, width=3); dr.ellipse([x - 12, y + 4, x + 12, y + 28], fill=col)
+    elif sym == 'regen':
+        dr.polygon([(x, y - 24), (x - 15, y + 4), (x + 15, y + 4)], fill=col); dr.ellipse([x - 15, y - 10, x + 15, y + 20], fill=col)
+    elif sym == 'sonne':
+        dr.ellipse([x - 13, y - 13, x + 13, y + 13], fill=col)
+        for k in range(8):
+            a = k * math.pi / 4; dr.line([(x + 18 * math.cos(a), y + 18 * math.sin(a)), (x + 26 * math.cos(a), y + 26 * math.sin(a))], fill=col, width=3)
+    elif sym == 'wind':
+        for k, l in enumerate((34, 26, 30)):
+            yy = y - 14 + k * 14; dr.line([(x - 18, yy), (x - 18 + l, yy)], fill=col, width=4)
+
+
+def zahlen_folge(a, tn):
+    """Bildfolge „Der Tag in Zahlen“ + Zeitmarken (Satzanfang, Versatz in Sek.):
+    Kacheln ploppen nacheinander auf, das Thermometer steigt auf den Höchstwert und fällt dann auf die Nacht."""
+    K = [('temp', '%d°' % round(a['tmax']), 'Höchstwert', (220, 90, 30))]
+    if a.get('regen', 0) >= 1: K.append(('regen', '%d l' % round(a['regen']), 'Regen pro m²', (40, 110, 200)))
+    if a.get('sonne', 0) >= 0.5: K.append(('sonne', '%d h' % round(a['sonne']), 'Sonne', (225, 160, 20)))
+    if a.get('boe', 0) >= 25: K.append(('wind', '%d' % round(a['boe']), 'Böen km/h', (90, 110, 130)))
+    bilder, marken = [], []
+    tmax = a['tmax']
+    for k in range(8):   # Thermometer steigt, Höchstwert-Kachel steht
+        v = tmax * (k + 1) / 8 if tmax > 0 else tmax
+        bilder.append(zahlen_tafel(K[:1], v, tn)); marken.append(('HOECH', 0.15 * k))
+    for j in range(1, len(K)):   # weitere Kacheln nacheinander
+        bilder.append(zahlen_tafel(K[:j + 1], tmax, tn, hoch_anz=tmax)); marken.append(('REGEN' if K[j][0] == 'regen' else 'HOECH', 1.6 + 0.9 * j if K[j][0] != 'regen' else 0.0))
+    for k in range(10):   # Thermometer fällt auf die Nacht, Nacht-Kachel erscheint
+        v = tmax + (tn - tmax) * (k + 1) / 10
+        bilder.append(zahlen_tafel(K, v, tn, hoch_anz=tmax, nacht_anz=k >= 6)); marken.append(('NACHT', 0.12 * k))
+    return bilder, marken
+
+
+def seq_zeiten(s):
+    """Startzeiten der Bilder aus den Zeitmarken: Satzanfang laut Wortzeiten + Versatz; immer aufsteigend."""
+    txt = s['text']; w = s.get('woerter') or []; n_txt = max(1, len(txt.split())); dauer = s.get('dauer', 10)
+    anf = s.get('seq_anker', {})
+    def t_von(key):
+        pos = txt.find(anf.get(key, '\x00'))
+        if pos < 0: return None
+        nw = len(txt[:pos].split())
+        return (w[min(nw, len(w) - 1)][0] if w else (dauer - 0.6) * nw / n_txt)
+    out, last = [], 0.0
+    for key, off in s['seq_t']:
+        t0 = t_von(key)
+        if t0 is None: t0 = last
+        t = max(last + 0.04, t0 + off) if out else max(0.0, t0 + off)
+        out.append(t); last = t
+    return out
+
+
 def tafel_text(kopf, zeilen, farbe):
     w = 440
     f = F(30); dr0 = ImageDraw.Draw(Image.new('RGB', (1, 1)))
@@ -2546,6 +2650,9 @@ def baue(segmente, heute, ziel, special, titel=None):
             sq = s.get('tafel_seq')
             if s.get('tafel_wechsel'):
                 tf = tf_wechsel if tf_alt is None else tf_alt
+            elif sq and s.get('seq_t'):   # zeitgesteuerte Bildfolge (Der Tag in Zahlen)
+                if '_seqz' not in s: s['_seqz'] = seq_zeiten(s)
+                tf = sq[max([0] + [i_ for i_, a_ in enumerate(s['_seqz']) if lt >= a_])]
             elif sq:   # die Orte erscheinen nacheinander
                 schritt = max(0.55, (s['dauer'] - 1.4) / len(sq))
                 tf = sq[min(len(sq) - 1, int(lt / schritt))]
