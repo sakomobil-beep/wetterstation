@@ -1563,5 +1563,80 @@
 "d": "2026-11-13",
 "g": "frost",
 "k": "Achtung, in der Nacht zum Sonntag gibt e"
+},
+{
+"d": "2026-11-13",
+"g": "r_neutral",
+"k": ""
+},
+{
+"d": "2026-11-13",
+"g": "ueberg_heute",
+"k": "Und nun zum Tag. "
+},
+{
+"d": "2026-11-13",
+"g": "tag",
+"k": "Und wie wird es heute? Nach Nebel am Mor"
+},
+{
+"d": "2026-11-13",
+"g": "glaette_r",
+"k": "Heute früh kann Reif auf Brücken und Neb"
+},
+{
+"d": "2026-11-13",
+"g": "gestern_kaelter",
+"k": "Kühler als gestern, um etwa 3 Grad."
+},
+{
+"d": "2026-11-13",
+"g": "ueberg_tipp",
+"k": "Was könnt ihr heute machen? "
+},
+{
+"d": "2026-11-13",
+"g": "ueberg_morgen",
+"k": "Und wie geht’s morgen weiter? "
+},
+{
+"d": "2026-11-13",
+"g": "tag",
+"k": "Am Samstag bekommen wir nach Nebel am Mo"
+},
+{
+"d": "2026-11-13",
+"g": "frost",
+"k": "In der Nacht zum Samstag friert es, bis "
+},
+{
+"d": "2026-11-13",
+"g": "glaette_r",
+"k": "Achtet morgens auf Reifglätte, vor allem"
+},
+{
+"d": "2026-11-13",
+"g": "nebel_w",
+"k": "Morgens liegt in den Tälern Nebel bis et"
+},
+{
+"d": "2026-11-13",
+"g": "glaette_r",
+"k": "Achtet Samstagfrüh auf Reifglätte, vor a"
+},
+{
+"d": "2026-11-13",
+"g": "nebel_w",
+"k": "Samstagfrüh gibt es in den Tälern Nebel "
+},
+{
+"d": "2026-11-13",
+"g": "frage",
+"k": "Wie kalt war es heute Morgen bei euch? S"
+},
+{
+"d": "2026-11-13",
+"g": "folgen",
+"k": "Das Wetter kommt hier direkt von unserer"
 }
 ]
