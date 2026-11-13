@@ -242,8 +242,13 @@ def abend_tipp(heute, rnd, regen=False):
     return ' ' + wahl(rnd, [o[1 if regen else 0] for o in opt], tage=3)
 
 
-def tipp(d, rnd, heute):
-    """Freizeittipp für den Odenwald passend zum Wetter und zur Jahreszeit."""
+def tipp(d, rnd, heute, zusatz=True):
+    """Freizeittipp für den Odenwald passend zum Wetter und zur Jahreszeit (zusatz=False: genau EIN Tipp, ohne Christmas-Lights-Anhang)."""
+    if not zusatz:
+        global abend_tipp
+        _alt = abend_tipp; abend_tipp = lambda *a, **k: ''
+        try: return tipp(d, rnd, heute)
+        finally: abend_tipp = _alt
     m, tag = heute.month, heute.day
     w = wort(d['code'])
     trocken = not nass_tag(d) and w not in ('Regen', 'Gewitter', 'Schnee')
@@ -822,7 +827,7 @@ def skript(days, warn, heute, nur_special=False):
                          + tagtext(a, 'Heute') + vergleich_gestern(a, rnd) + einordnung(a, rnd) + mundart(a, rnd) + fenster_txt(a, rnd) + grafik_saetze(a, (['regen'] if a['rp'] >= 30 else []) + (['wind'] if a.get('boe', 0) >= 45 else []), rnd)))
     seg.append(dict(art='tipp', tag=a, bg='wald' if not nass_tag(a) else 'schloss', text=frisch(rnd, 'ueberg_tipp', ['Mein Tipp für heute: ', 'Max-Tipp des Tages: ', 'Und jetzt mein Tipp: ', 'Übrigens, mein Tipp für heute: ',
                                                                                'Was könnt ihr heute machen? ', 'Und wenn ihr noch nichts vorhabt: ', 'Bevor ich’s vergesse – mein Tipp: ',
-                                                                               'Noch was für eure Freizeit: ', 'Ihr sucht noch was für heute? ', 'Kleiner Tipp am Rande: ']) + tipp(a, rnd, heute) + max_privat(a, rnd, heute)))
+                                                                               'Noch was für eure Freizeit: ', 'Ihr sucht noch was für heute? ', 'Kleiner Tipp am Rande: ']) + tipp(a, rnd, heute, zusatz=False) + max_privat(a, rnd, heute), nur_tipp=True))
     if not nur_special:
         seg.append(dict(art='tag', tag=b, titel='MORGEN', bg='hoehen', grafiken=[],
                         text=frisch(rnd, 'ueberg_morgen', ['', 'So, und jetzt der Blick nach vorn. ', 'Was bringt der nächste Tag? ', 'Schauen wir auf morgen. ',
@@ -841,7 +846,15 @@ def skript(days, warn, heute, nur_special=False):
     if not nur_special:
         try:
             th = TERMINE.max_hinweis(heute, rnd)
-            if th: seg[-1 if seg[-1]['art'] != 'wochenende' else -1]['text'] += ' ' + th
+            veranst = th and th.startswith(('Heute hat der', 'Tipp für heute', 'Schon mal vormerken'))
+            if veranst and not th.startswith('Schon mal vormerken'):   # Dauerveranstaltung (z. B. Christmas Lights): nur jeden 3. Tag, sonst Wetter-Tipp
+                for t_ in TERMINE.laden().get('termine', []):
+                    if th and t_['name'] in th and not t_.get('daten') and t_.get('von') != heute.isoformat() and heute.toordinal() % 3:
+                        veranst, th = False, None
+            ts = next((x for x in seg if x.get('nur_tipp')), None)
+            if veranst and ts:   # nur EIN Tipp im Morgenvideo: Veranstaltung ersetzt den Wetter-Tipp
+                ts['text'] = rnd.choice(['Mein Tipp für heute: ', 'Und jetzt mein Tipp: ', 'Noch was für eure Freizeit: ']) + th.replace('Tipp für heute: ', '')
+            elif th: seg[-1 if seg[-1]['art'] != 'wochenende' else -1]['text'] += ' ' + th   # Feiertag/Ferien: nur Hinweis, kein Tipp
         except Exception as e: print('Termine nicht möglich:', e)
     if not nur_special:
         try:
