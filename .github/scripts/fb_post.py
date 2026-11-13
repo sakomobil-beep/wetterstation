@@ -210,6 +210,17 @@ def rueckblick(st):
         if not f.endswith('.json'): continue
         for k, r in json.load(open(os.path.join(LD, f), encoding='utf-8')).items():
             if 'st' in r and int(k[11:13]) <= 9: nacht[k[:10]] = min(nacht.get(k[:10], 99), r['st'])
+    # Fix 13.11.2026: zusätzlich das komplette Stundenarchiv (data/archiv, ab Messbeginn 20.01.2026) einbeziehen –
+    # vorher kannte die Suche nur das Lern-Archiv (ab Oktober) und meldete fälschlich „seit Beginn der Aufzeichnungen“.
+    AD = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'archiv')
+    for f in sorted(os.listdir(AD)) if os.path.isdir(AD) else []:
+        if not f.startswith('stunden-'): continue
+        try:
+            for tag, obs in json.load(open(os.path.join(AD, f), encoding='utf-8')).get('tage', {}).items():
+                for o in obs:
+                    v = (o.get('metric') or {}).get('tempLow'); h = int(str(o.get('obsTimeLocal', ''))[11:13] or 99)
+                    if v is not None and h <= 9: nacht[tag] = min(nacht.get(tag, 99), v)
+        except Exception as e: print('Archiv', f, 'nicht lesbar:', e)
     for o in st:
         t = dt.datetime.fromtimestamp(o['epoch'], TZ); v = (o.get('metric') or {}).get('tempLow')
         if v is not None and t.hour <= 9: nacht[t.date().isoformat()] = min(nacht.get(t.date().isoformat(), 99), v)
@@ -219,7 +230,9 @@ def rueckblick(st):
         seit = kaelter[-1] if kaelter else None
         tage = (dt.date.fromisoformat(heute) - dt.date.fromisoformat(seit or frueher[0])).days
         if tage >= 10:
-            out['rekord'] = dict(wert=round(jetzt_n, 1), seit=seit, beginn=frueher[0], tage=tage)
+            # „seit Beginn“ nur, wenn das Archiv wirklich ab Messbeginn reicht – sonst lieber gar keine Aussage
+            if seit or frueher[0] <= REK_START:
+                out['rekord'] = dict(wert=round(jetzt_n, 1), seit=seit, beginn=frueher[0], tage=tage)
     return out
 
 
