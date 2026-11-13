@@ -353,7 +353,7 @@ def lage(d):
 def winter_saetze(d, wann, rnd):
     """Nebel am Morgen, Kaltluft in den Tälern, Glätte – nur wenn die Einstufung es hergibt."""
     L = lage(d); out = []
-    morgens = {'Heute': 'heute früh', 'Morgen': 'morgen früh'}.get(wann.rstrip(','), 'morgens')
+    morgens = {'Heute': 'heute früh', 'Morgen': 'morgen früh', 'Samstag': 'Samstagfrüh'}.get(wann.rstrip(','), 'morgens')
     if L['glaette'] == 'glatteis':
         out.append(frisch(rnd, 'glatteis', ['Achtung, %s droht Glatteis! Gefrierender Regen macht Straßen und Gehwege spiegelglatt – lasst euch Zeit.' % morgens,
                                             'Ganz wichtig: %s kann es Glatteis geben. Fahrt langsam und passt auch zu Fuß gut auf!' % morgens.capitalize()]))
@@ -843,6 +843,10 @@ def skript(days, warn, heute, nur_special=False):
                 grau = any(d['code'] in (45, 48) or d['code'] == 3 for d in (sa, so))
                 t = '%s Im Odenwald Samstag %s bei %s Grad, Sonntag %s bei %s Grad.' % (rnd.choice(['Ein Blick aufs Wochenende:', 'Und das Wochenende?', 'Kurz noch zum Wochenende:']), wort(sa['code']), zahl(sa['tmax']), wort(so['code']), zahl(so['tmax']))
                 t += (' Trockener bleibt es am %s.' % gut[0]) if len(gut) == 1 else ((' Beide Tage bleiben wohl trocken – zieht euch aber warm an.' if grau else ' Beide Tage sehen gut aus für draußen!') if gut else ' Plant lieber etwas für drinnen ein.')
+                if heute.weekday() == 4:   # freitags: kurze Glätte-/Nebel-Hinweise für Samstagfrüh (eigener Samstag-Teil entfällt)
+                    sa_ = dict(sa, lage=dict(sa.get('lage') or {}, kaltluft=False))
+                    if sa.get('frost_min', sa['tmin']) <= 0: t += ' Samstagfrüh gibt es Frost, bis %s Grad.' % zahl(sa.get('frost_min', sa['tmin']))
+                    t += winter_saetze(sa_, 'Samstag', rnd)
                 seg.append(dict(art='wochenende', tage=[sa, so], bg='wald', text=t))
     if not nur_special:
         try:
