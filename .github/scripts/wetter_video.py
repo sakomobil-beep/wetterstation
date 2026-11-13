@@ -2699,13 +2699,14 @@ def baue(segmente, heute, ziel, special, titel=None):
         bgi = s['bgimg']; bw, bh = bgi.size
         sc = 1.0 if studio else 1.0 + 0.06 * p
         cw, ch = int(W * bh / H / sc * (H / bh) * (bh / H)), 0
-        cw = int(min(bw, bh * W / H) / sc); ch = int(cw * H / W)
+        HB = H if studio else PF_TOP + 36   # draußen endet das Bild genau an der Oberkante des Pflasterwegs
+        cw = int(min(bw, bh * W / HB) / sc); ch = int(cw * HB / W)
         x0 = (bw - cw) // 2 if studio else int((bw - cw) * (0.15 + 0.7 * p)) if bw > cw + 10 else (bw - cw) // 2
         y0 = int((bh - ch) * 0.4) if not studio else 0
-        if not studio: bgi = pf_hintergrund(bgi)
-        fr = bgi.crop((x0, y0, x0 + cw, y0 + ch)).resize((W, H), Image.BILINEAR).convert('RGBA')
-        if not studio:   # Bild hochsetzen, davor der Pflasterweg
-            fr2 = Image.new('RGBA', (W, H)); fr2.paste(fr.crop((0, PF_HOCH, W, H)), (0, 0)); fr2.paste(fr.crop((0, H - 2, W, H)).resize((W, PF_HOCH)), (0, H - PF_HOCH))
+        if not studio: bgi = pf_hintergrund(bgi); y0 = bh - ch   # Bild unten anliegend: unterer Bildrand sitzt am Weg
+        fr = bgi.crop((x0, y0, x0 + cw, y0 + ch)).resize((W, HB), Image.BILINEAR).convert('RGBA')
+        if not studio:   # davor der Pflasterweg
+            fr2 = Image.new('RGBA', (W, H)); fr2.paste(fr, (0, 0)); fr2.paste(fr.crop((0, HB - 2, W, HB)).resize((W, H - HB)), (0, HB))
             fr = fr2; fr.alpha_composite(pflaster(s['bgimg'], s['pf_zust'], s.get('bg_name')))
         # Übergang: kurzes Einblenden aus Weiß
         if lt < 0.3 and i > 0:
