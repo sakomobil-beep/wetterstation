@@ -1315,12 +1315,19 @@ ORT_WORTE = {'kurpark': ('Kurpark',), 'therme': ('Therme', 'Sauna', 'Salzgrotte'
 
 def saison_ok(name, heute):
     m, t = heute.month, heute.day
+    if name.startswith('christmas-lights'):   # Christmas Lights im Kurpark: 13.11. bis 10.01. (nur wenn Max sie erwähnt, siehe nur_bei_nennung)
+        return (m == 11 and t >= 13) or m == 12 or (m == 1 and t <= 10)
     if name.endswith('_advent'): return (m == 11 and t >= 15) or m == 12 or (m == 1 and t <= 6)
     if name.endswith('_winter'): return m in (11, 12, 1, 2)
     if name.endswith('_herbst'): return m in (9, 10, 11)
     if name.endswith('_fruehling'): return m in (3, 4, 5)
     if name.endswith('_sommer'): return m in (5, 6, 7, 8, 9)
     return True
+
+
+def nur_bei_nennung(name):
+    """Bilder, die nur kommen, wenn Max den Ort ausdrücklich nennt (nicht zufällig im Wechsel)."""
+    return (name or '').startswith('christmas-lights')
 
 
 def bild_zum_text(text, kandidaten, n_=0):
@@ -2582,7 +2589,7 @@ def baue(segmente, heute, ziel, special, titel=None):
     eigene = [k for k in bgs if k.startswith('eigen') and saison_ok(EIGEN_NAME.get(k, ''), heute)]
     land = [k for k in bgs if k.startswith('land_') and heute.month in LAND_SAISON.get(k[5:], ())]   # gezeichnete Odenwald-Szenen der Jahreszeit
     WETTERBILD = ('schnee', 'nebel', 'regen', 'schauer', 'gewitter', 'sturm', 'frost')   # Wetterbilder nur bei passender Lage
-    pool = [e for e in eigene if not EIGEN_NAME.get(e, '').startswith(WETTERBILD)] + land
+    pool = [e for e in eigene if not EIGEN_NAME.get(e, '').startswith(WETTERBILD) and not nur_bei_nennung(EIGEN_NAME.get(e))] + land
     echt = True
     # Audio je Abschnitt
     for i, s in enumerate(segmente):
@@ -2641,7 +2648,7 @@ def baue(segmente, heute, ziel, special, titel=None):
         if bg == 'auto': bg = 'hoehen'
         if bg != 'studio' and not fx and s['art'] in ('tipp', 'intro', 'outro'):   # passendes eigenes Bild zum genannten Ort / Advent
             treffer = bild_zum_text(s['text'], eigene, seed + k)
-            if not treffer and s['art'] == 'intro': treffer = next((e for e in eigene if EIGEN_NAME[e].endswith('_advent')), None)
+            if not treffer and s['art'] == 'intro': treffer = next((e for e in eigene if EIGEN_NAME[e].endswith('_advent') and not nur_bei_nennung(EIGEN_NAME[e])), None)
             if treffer: bg = treffer
         if bg == 'studio': fx = None   # im Studio keine Wetter-Effekte
         if fx and bg != 'schloss' or fx and s['art'] in ('tag', 'special'):
@@ -2651,7 +2658,7 @@ def baue(segmente, heute, ziel, special, titel=None):
         elif bg != 'studio' and s['art'] == 'tag' and s.get('tag') and s['tag']['code'] in (45, 48) and any(EIGEN_NAME[e].startswith('nebel') for e in eigene):
             nb = [e for e in eigene if EIGEN_NAME[e].startswith('nebel')]; bg = nb[(seed + k) % len(nb)]   # Nebeltag
         elif WEIHNACHT[0] and bg in ('wald', 'hoehen'):   # Adventszeit: eigene Advents-Bilder oder Lichterketten-Landschaft
-            adv = [e for e in eigene if EIGEN_NAME.get(e, '').endswith('_advent')]
+            adv = [e for e in eigene if EIGEN_NAME.get(e, '').endswith('_advent') and not nur_bei_nennung(EIGEN_NAME.get(e))]
             bg = adv[(k + seed) % len(adv)] if adv and k % 2 else ('advent_schnee' if lk0 == 'winter' else 'advent')
         elif pool and bg in ('wald', 'hoehen'): bg = pool[(k + seed) % len(pool)]
         s['look'], s['prop'] = FX_LOOK.get(fx, (lk0, None))
