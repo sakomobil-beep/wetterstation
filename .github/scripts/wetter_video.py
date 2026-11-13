@@ -1101,6 +1101,48 @@ STUDIO_SCREEN = (530, 190, 890, 700)
 STUDIO_TISCH = 905   # Oberkante des Tisches im fertigen Bild (720x1280)
 
 
+STUDIO_ZEIT = [None]   # (Datum, Stunde) des Studio-Videos – für Tag/Dämmerung/Nacht im Fenster
+SONNENUNTERGANG = [16.7, 17.5, 18.3, 20.1, 20.9, 21.5, 21.4, 20.7, 19.7, 18.6, 16.9, 16.5]   # Bad König, Ortszeit, je Monat
+
+
+def fenster_blick(w, h):
+    """Blick aus dem Studiofenster aufs Schloss Bad König (eigene gemalte Bilder in video/studio/),
+    in der Adventszeit mit Weihnachtsbaum; nach Sonnenuntergang abgedunkelt, Lichter leuchten weiter."""
+    from PIL import ImageEnhance, ImageChops
+    name = 'studio-fenster_advent.jpg' if WEIHNACHT[0] else 'studio-fenster.jpg'
+    pfad = os.path.join(ROOT, 'video', 'studio', name)
+    if not os.path.exists(pfad): pfad = os.path.join(ROOT, 'video', 'studio', 'studio-fenster.jpg')
+    try: src = Image.open(pfad).convert('RGB')
+    except Exception:
+        return Image.new('RGB', (w, h), (160, 195, 220))
+    s = h / (src.height * 0.70)              # Ausschnitt um das Schloss (Himmel + Gebäude, wenig Pflaster)
+    src = src.resize((int(src.width * s), int(src.height * s)), Image.LANCZOS)
+    x0 = max(0, min(src.width - w, int(src.width * 0.53 - w / 2)))
+    y0 = int(src.height * 0.10)
+    blick = src.crop((x0, y0, x0 + w, y0 + h))
+    datum, stunde = STUDIO_ZEIT[0] or (None, None)
+    if datum is not None and stunde is not None:
+        su = SONNENUNTERGANG[datum.month - 1]
+        if stunde >= su + 0.5 or stunde < 7:      # Nacht
+            dunkel = ImageEnhance.Brightness(blick).enhance(0.38)
+            dunkel = Image.blend(dunkel, Image.new('RGB', blick.size, (18, 28, 62)), 0.35)
+            g = blick.convert('L').point(lambda v: 255 if v > 165 else 0)
+            r_, g_, b_ = blick.split()
+            warm = ImageChops.subtract(r_, b_).point(lambda v: 255 if v > 75 else 0)
+            licht = ImageChops.multiply(g, warm)
+            hell = ImageEnhance.Brightness(blick).enhance(1.25)
+            blick = Image.composite(hell, dunkel, licht.filter(ImageFilter.GaussianBlur(1)))   # Lichterkette/Lampen bleiben hell
+            glow = Image.new('RGB', blick.size, (255, 190, 90))
+            blick = Image.composite(glow, blick, licht.filter(ImageFilter.GaussianBlur(6)).point(lambda v: int(v * 0.45)))
+        elif stunde >= su - 1:                       # Dämmerung / Abendrot
+            blick = Image.blend(ImageEnhance.Brightness(blick).enhance(0.75), Image.new('RGB', blick.size, (230, 140, 90)), 0.18)
+    glas = Image.new('L', blick.size, 0); gd = ImageDraw.Draw(glas)   # leichte Spiegelung auf der Scheibe
+    for k in range(0, w + h, 6):
+        a = int(26 * max(0, 1 - abs(k - (w + h) * 0.35) / (w * 0.35)))
+        if a: gd.line([(k, 0), (k - h, h)], fill=a, width=6)
+    return Image.composite(Image.new('RGB', blick.size, (235, 240, 250)), blick, glas)
+
+
 def bg_studio(seed):
     BW, BH = 1000, 1500
     r = random.Random(seed * 13 + 7)
@@ -1113,18 +1155,7 @@ def bg_studio(seed):
     # Fenster mit Blick auf Schloss Bad König und Wald
     fx0, fy0, fx1, fy1 = 90, 140, 430, 720
     dr.rectangle([fx0 - 18, fy0 - 18, fx1 + 18, fy1 + 18], fill=(78, 56, 36), outline=(50, 36, 22), width=6)
-    sky = Image.new('RGB', (fx1 - fx0, fy1 - fy0), (160, 195, 220))
-    sd = ImageDraw.Draw(sky)
-    for yy in range(sky.height):
-        t = yy / sky.height
-        sd.line([(0, yy), (sky.width, yy)], fill=(int(140 + 40 * t), int(170 + 50 * t), int(205 + 30 * t)))
-    for k, (hy, amp, col) in enumerate(((0.52, 22, (90, 110, 80)), (0.62, 28, (62, 86, 55)))):
-        pts = [(x, int(sky.height * hy) + int(amp * math.sin(x / 55 + k))) for x in range(0, sky.width + 10, 10)]
-        sd.polygon([(0, sky.height)] + pts + [(sky.width, sky.height)], fill=col)
-    cx = sky.width * 0.46
-    sd.rectangle([cx - 36, sky.height * 0.42, cx + 36, sky.height * 0.66], fill=(150, 140, 120))
-    sd.polygon([(cx - 40, sky.height * 0.42), (cx, sky.height * 0.3), (cx + 40, sky.height * 0.42)], fill=(95, 70, 60))
-    sd.rectangle([cx - 10, sky.height * 0.34, cx + 10, sky.height * 0.42], fill=(50, 38, 32))
+    sky = fenster_blick(fx1 - fx0, fy1 - fy0)
     im.paste(sky, (fx0, fy0))
     dr.line([(fx0 + (fx1 - fx0) // 2, fy0), (fx0 + (fx1 - fx0) // 2, fy1)], fill=(78, 56, 36), width=10)
     dr.line([(fx0, fy0 + (fy1 - fy0) // 2), (fx1, fy0 + (fy1 - fy0) // 2)], fill=(78, 56, 36), width=10)
@@ -2328,6 +2359,7 @@ def baue(segmente, heute, ziel, special, titel=None):
     tmp = tempfile.mkdtemp()
     seed = int(heute.strftime('%Y%m%d'))
     WEIHNACHT[0] = weihnachtszeit(heute)
+    STUDIO_ZEIT[0] = (heute, 20 if '--woche' in sys.argv else 15 if '--monat' in sys.argv else 19)
     bgs = hintergruende(seed)
     eigene = [k for k in bgs if k.startswith('eigen') and saison_ok(EIGEN_NAME.get(k, ''), heute)]
     land = [k for k in bgs if k.startswith('land_') and heute.month in LAND_SAISON.get(k[5:], ())]   # gezeichnete Odenwald-Szenen der Jahreszeit
