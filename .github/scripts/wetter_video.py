@@ -593,8 +593,12 @@ def karten_txt(orte, tag, rnd, nacht=False):
         frost = [x for x in W if x[1] <= 0]
         s_ = rnd.choice(['Und so wird die Nacht bei euch im Kreis: ', 'Schauen wir auf die Nacht im Odenwaldkreis: ', 'Die kommende Nacht im Kreis: '])
         if frost:
-            orte_ = ', '.join(x[0] for x in frost[:3])
-            s_ += 'Frost gibt es vor allem in %s. Am kältesten wird es in %s mit %s Grad.' % (orte_, kalt[0], zahl(kalt[1]))
+            if len(frost) >= 3:
+                s_ += 'Verbreitet Frost – am kältesten wird es in %s mit %s Grad.' % (kalt[0], zahl(kalt[1]))
+            elif len(frost) == 2:
+                s_ += 'Frost gibt es in %s und %s, am kältesten wird es in %s mit %s Grad.' % (frost[0][0], frost[1][0], kalt[0], zahl(kalt[1]))
+            else:
+                s_ += 'Frost gibt es nur in %s mit %s Grad.' % (kalt[0], zahl(kalt[1]))
         else:
             s_ += 'Am kältesten wird es in %s mit %s Grad, am mildesten bleibt es in %s mit %s Grad.' % (kalt[0], zahl(kalt[1]), warm[0], zahl(warm[1]))
         return s_
@@ -626,10 +630,14 @@ def skript_abend(days, warn, heute, orte=None):
     b = days[1] if len(days) > 1 else a
     fm, tn = b.get('frost_min', b['tmin']), b['tmin']
     H = b.get('hoch')
-    if fm <= 0:
+    kaelter = round(fm) <= round(tn) - 1   # „stellenweise“ nur, wenn es irgendwo mind. 1 Grad kälter wird
+    if fm <= 0 and kaelter:
         satz = rnd.choice(['Heute Nacht wird es frostig: In den Tälern um %s Grad, an den kältesten Stellen bis %s Grad.',
                            'Und die kommende Nacht: rund %s Grad in den Tälern, stellenweise Frost bis %s Grad.']) % (zahl(tn), zahl(fm))
-        if tn <= 0: satz = 'Heute Nacht gibt es Frost: In den Tälern geht es runter auf %s Grad, stellenweise bis %s Grad.' % (zahl(tn), zahl(fm))
+        if tn <= 0: satz = 'Heute Nacht gibt es Frost: In den Tälern geht es runter auf %s Grad, stellenweise sogar bis %s Grad.' % (zahl(tn), zahl(fm))
+    elif tn <= 0:
+        satz = rnd.choice(['Heute Nacht gibt es Frost: In den Tälern geht es runter auf %s Grad.',
+                           'Die kommende Nacht wird frostig: Tiefstwerte um %s Grad in den Tälern.']) % zahl(tn)
     else:
         satz = rnd.choice(['Heute Nacht sinken die Werte in den Tälern auf etwa %s Grad.',
                            'Die kommende Nacht: Tiefstwerte um %s Grad in den Tälern.',
