@@ -1,14 +1,14 @@
 [
  {
   "datum": "2026-11-13",
-  "datei": "2026-11-13.mp4",
-  "art": "morgen",
-  "erstellt": "2026-11-13T20:55+00:00",
+  "datei": "2026-11-13-abend.mp4",
+  "art": "abend",
+  "erstellt": "2026-11-13T21:00+00:00",
   "special": false,
   "warn": [
    "Amtliche Warnung vor Frost"
   ],
-  "dauer": 119.4
+  "dauer": 84.7
  },
  {
   "datum": "2026-11-13",
@@ -23,14 +23,14 @@
  },
  {
   "datum": "2026-11-13",
-  "datei": "2026-11-13-abend.mp4",
-  "art": "abend",
-  "erstellt": "2026-11-13T20:01+00:00",
+  "datei": "2026-11-13.mp4",
+  "art": "morgen",
+  "erstellt": "2026-11-13T19:56+00:00",
   "special": false,
   "warn": [
    "Amtliche Warnung vor Frost"
   ],
-  "dauer": 89.7
+  "dauer": 118.7
  },
  {
   "datum": "2026-11-12",
