@@ -833,6 +833,7 @@ def skript(days, warn, heute, nur_special=False):
                         text=frisch(rnd, 'ueberg_morgen', ['', 'So, und jetzt der Blick nach vorn. ', 'Was bringt der nächste Tag? ', 'Schauen wir auf morgen. ',
                                                            'Und wie geht’s morgen weiter? ', 'Kurzer Blick nach vorn. ', 'Und dann? ', 'Werfen wir noch einen Blick auf morgen. '])
                              + tagtext(b, rnd.choice(['Morgen, am %s,', 'Am %s']) % TAGE[b['datum'].weekday()]) ))
+        if heute.weekday() == 4 and len(days) >= 7: seg.pop()   # freitags kein eigener Samstag-Teil – Samstag kommt im Wochenendwetter
         if 3 <= heute.weekday() <= 4 and len(days) >= 7:   # Wochenendwetter erst ab Donnerstag (vorher zu ungenau)
             sa = next(d for d in days if d['datum'].weekday() == 5)
             so = next(d for d in days if d['datum'].weekday() == 6)
