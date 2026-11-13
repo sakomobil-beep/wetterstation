@@ -846,7 +846,17 @@ def skript(days, warn, heute, nur_special=False):
                 if heute.weekday() == 4:   # freitags: kurze Glätte-/Nebel-Hinweise für Samstagfrüh (eigener Samstag-Teil entfällt)
                     sa_ = dict(sa, lage=dict(sa.get('lage') or {}, kaltluft=False))
                     if sa.get('frost_min', sa['tmin']) <= 0: t += ' Samstagfrüh gibt es Frost, bis %s Grad.' % zahl(sa.get('frost_min', sa['tmin']))
-                    t += winter_saetze(sa_, 'Samstag', rnd)
+                    _h = winter_saetze(sa_, 'Samstag', rnd)
+                    if 'Samstagfrüh' in t or _h.count('Samstagfrüh') > 1:   # „Samstagfrüh“ nur einmal sagen
+                        _e = 'Samstagfrüh' not in t
+                        _r = []
+                        for _x in _h.split('. '):
+                            if 'Samstagfrüh' in _x and _e: _e = False
+                            elif _x.lstrip().startswith('Samstagfrüh '): _x = _x.replace('Samstagfrüh ', 'Dazu ', 1)
+                            else: _x = _x.replace(' Samstagfrüh ', ' dann ')
+                            _r.append(_x)
+                        _h = '. '.join(_r)
+                    t += _h
                 seg.append(dict(art='wochenende', tage=[sa, so], bg='wald', text=t))
     if not nur_special:
         try:
