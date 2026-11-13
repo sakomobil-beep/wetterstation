@@ -1191,6 +1191,120 @@ def studio_desk_overlay():
 
 # Eigene Bilder: Dateiname = Ort, optional _saison (_sommer, _herbst, _winter, _fruehling, _advent)
 EIGEN_NAME = {}
+
+# ---------------------------------------------------------------------
+#  Pflasterweg draußen: Max steht vorne auf einem Weg, das Bild dahinter ist
+#  leicht unscharf eingeblendet (wie Greenscreen) und etwas hochgesetzt.
+#  Zustand nach Wetter: trocken / regen (nass, Spiegelung, Pfützen) / frost (Reif) / schnee
+# ---------------------------------------------------------------------
+PF_TOP = H - 270          # Oberkante des Weges (links), rechts 30 px tiefer
+PF_HOCH = 150             # so weit wird das Hintergrundbild hochgesetzt
+PF_MAUER = ('stausee', 'nebel', 'schauer', 'kurpark-see', 'christmas-lights-see')   # Weitblick/Wasser: Steinmauer als Abschluss
+PF_SCHNEEBILD = ('winter', 'schnee')
+PFUETZEN = [(110, H - 130, 110), (560, H - 60, 140), (420, H - 200, 70)]
+_PF_CACHE = {}
+
+
+def pf_zustand(fx, bg_name):
+    n = (bg_name or '').lower()
+    if fx == 'schnee' or any(k in n for k in PF_SCHNEEBILD): return 'schnee'
+    if fx in ('regen', 'gewitter', 'sturm'): return 'regen'
+    if fx == 'frost': return 'frost'
+    return 'trocken'
+
+
+def pf_maske():
+    m = Image.new('L', (W, H), 0); ImageDraw.Draw(m).polygon([(0, H), (W, H), (W, PF_TOP + 30), (0, PF_TOP)], fill=255)
+    return m
+
+
+def pflaster(bgi, zust, bg_name):
+    """Weg-Ebene (RGBA, W x H) passend zu Bild und Wetter – einmal je Hintergrund/Zustand berechnet."""
+    from PIL import ImageStat, ImageEnhance
+    key = (id(bgi), zust, bg_name)
+    if key in _PF_CACHE and _PF_CACHE[key][0] is bgi: return _PF_CACHE[key][1]
+    r = random.Random(3)
+    hell = sum(ImageStat.Stat(bgi.convert('RGB').resize((64, 96))).mean) / 3
+    nacht = hell < 95
+    fak = 0.72 if zust == 'regen' else 1.0
+    if nacht: fak *= max(0.35, hell / 130)
+    p = Image.new('RGBA', (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(p)
+    d.polygon([(0, H), (W, H), (W, PF_TOP + 30), (0, PF_TOP)], fill=tuple(int(c * fak) for c in (120, 105, 95)) + (255,))
+    steine = []
+    for row in range(16):
+        y = PF_TOP + row * 20; hh = 10 + row * 2
+        for k in range(-2, 40):
+            bw = 24 + row * 4; xx = k * bw + (row % 2) * bw // 2 + r.randint(-3, 3)
+            c = r.choice([(140, 120, 108), (126, 104, 92), (150, 132, 118), (118, 98, 88), (160, 140, 125), (134, 96, 80)])
+            d.rounded_rectangle([xx, y, xx + bw - 4, y + hh], radius=4, fill=tuple(int(q * fak) for q in c) + (255,))
+            steine.append((xx, y, bw, hh))
+    d.line([(0, PF_TOP), (W, PF_TOP + 30)], fill=tuple(int(c * fak) for c in (90, 80, 70)) + (255,), width=4)
+    maske = pf_maske()
+    p.putalpha(ImageChops_min(p.split()[3], maske))
+    if nacht:   # Farbschein der Lichter im Bild aufs Pflaster
+        mittel = tuple(int(c) for c in ImageStat.Stat(bgi.convert('RGB').resize((32, 48))).mean)
+        tint = Image.new('RGBA', (W, H), mittel + (0,)); tint.putalpha(maske.point(lambda v: int(v * 0.25)))
+        p.alpha_composite(tint)
+    if zust == 'regen':   # nasse Spiegelung des Bildes
+        b = bgi.convert('RGB'); sc = W / b.width
+        b = b.resize((W, int(b.height * sc))).transpose(Image.FLIP_TOP_BOTTOM).filter(ImageFilter.GaussianBlur(4))
+        sp = Image.new('RGBA', (W, H), (0, 0, 0, 0)); sp.paste(b.convert('RGBA'), (0, PF_TOP))
+        grad = Image.linear_gradient('L').resize((W, H - PF_TOP)).point(lambda v: int(105 * (1 - v / 255)))
+        a = Image.new('L', (W, H), 0); a.paste(grad, (0, PF_TOP))
+        sp.putalpha(ImageChops_min(a, maske)); p.alpha_composite(sp)
+        pm = Image.new('L', (W, H), 0); pd = ImageDraw.Draw(pm)   # Pfützen, weich und unregelmäßig
+        for (cx, cy, rw) in PFUETZEN:
+            for j in range(5):
+                ox, oy, f_ = r.uniform(-rw * .35, rw * .35), r.uniform(-4, 4), r.uniform(.45, .8)
+                pd.ellipse([cx + ox - rw * f_, cy + oy - rw * .16 * f_, cx + ox + rw * f_, cy + oy + rw * .16 * f_], fill=230)
+        pm = pm.filter(ImageFilter.GaussianBlur(4))
+        himmel = bgi.convert('RGB').crop((0, 0, bgi.width, int(bgi.height * 0.35))).transpose(Image.FLIP_TOP_BOTTOM)   # Pfützen spiegeln den Himmel
+        b2 = ImageEnhance.Brightness(himmel.resize((W, H - PF_TOP)).filter(ImageFilter.GaussianBlur(2))).enhance(0.9)
+        sp2 = Image.new('RGBA', (W, H), (0, 0, 0, 0)); sp2.paste(b2.convert('RGBA'), (0, PF_TOP))
+        sp2.putalpha(pm); p.alpha_composite(sp2)
+    elif zust == 'frost':
+        o = Image.new('RGBA', (W, H), (0, 0, 0, 0)); od = ImageDraw.Draw(o)
+        for (xx, y, bw, hh) in steine:
+            for _ in range(int(bw / 3)): od.point((xx + r.uniform(0, bw - 4), y + r.uniform(0, hh * .5)), fill=(235, 242, 250, 220))
+            od.line([(xx + 3, y + 1), (xx + bw - 7, y + 1)], fill=(225, 235, 248, 200), width=2)
+        o.putalpha(ImageChops_min(o.split()[3], maske)); p.alpha_composite(o)
+        bl = Image.new('RGBA', (W, H), (200, 220, 245, 0)); bl.putalpha(maske.point(lambda v: int(v * .23))); p.alpha_composite(bl)
+    elif zust == 'schnee':
+        o = Image.new('RGBA', (W, H), (0, 0, 0, 0)); od = ImageDraw.Draw(o)
+        od.polygon([(0, H), (W, H), (W, PF_TOP + 30), (0, PF_TOP)], fill=tuple(int(c * (0.55 if nacht else 1)) for c in (240, 244, 250)) + (240,))
+        for _ in range(500):
+            x = r.uniform(0, W); y = r.uniform(PF_TOP + 10, H); od.ellipse([x - 6, y - 2, x + 6, y + 3], fill=(212, 220, 232, 150))
+        for (xx, y, bw, hh) in steine:
+            if r.random() < 0.06: od.rounded_rectangle([xx + 4, y + 3, xx + bw - 8, y + hh - 3], radius=3, fill=(130, 115, 105, 150))
+        p.alpha_composite(o)
+    if any(k in (bg_name or '').lower() for k in PF_MAUER):   # niedrige Steinmauer als Abschluss (Aussichtsterrasse)
+        o = Image.new('RGBA', (W, H), (0, 0, 0, 0)); od = ImageDraw.Draw(o); x = -10
+        while x < W:
+            bw = r.randint(38, 62); y0 = PF_TOP - 26 + 30 * x / W
+            c = tuple(int(q * fak) for q in r.choice([(150, 128, 105), (138, 116, 96), (160, 140, 118)]))
+            od.rounded_rectangle([x, y0, x + bw - 3, y0 + 28], radius=5, fill=c + (255,))
+            od.line([(x + 3, y0 + 2), (x + bw - 7, y0 + 2)], fill=tuple(min(255, q + 30) for q in c) + (255,), width=2)
+            if zust == 'schnee': od.rounded_rectangle([x, y0 - 4, x + bw - 3, y0 + 6], radius=4, fill=(240, 244, 250, 255))
+            x += bw
+        p.alpha_composite(o)
+    sh = Image.new('RGBA', (W, H), (0, 0, 0, 0)); ImageDraw.Draw(sh).ellipse([110, H - 165, 470, H - 120], fill=(0, 0, 0, 95))
+    p.alpha_composite(sh.filter(ImageFilter.GaussianBlur(8)))   # Schatten unter Max
+    _PF_CACHE[key] = (bgi, p)
+    return p
+
+
+def ImageChops_min(a, b):
+    from PIL import ImageChops
+    return ImageChops.darker(a, b)
+
+
+def pf_hintergrund(bgi):
+    """Hintergrund leicht unscharf (Greenscreen-Tiefe), einmal je Bild."""
+    from PIL import ImageEnhance
+    key = ('bg', id(bgi))
+    if key not in _PF_CACHE or _PF_CACHE[key][0] is not bgi:
+        _PF_CACHE[key] = (bgi, ImageEnhance.Brightness(bgi.convert('RGB').filter(ImageFilter.GaussianBlur(2.2))).enhance(0.94))
+    return _PF_CACHE[key][1]
 ORT_WORTE = {'kurpark': ('Kurpark',), 'therme': ('Therme', 'Sauna', 'Salzgrotte', 'Thermalbad'), 'limesturm': ('Limesturm', 'Vielbrunn'),
              'wuerzberg': ('Würzberg', 'Römerbad', 'Kastellbad'), 'haselburg': ('Haselburg',), 'eulbach': ('Eulbach',),
              'erbach': ('Schloss Erbach', 'Erbach'), 'felsenmeer': ('Felsenmeer',), 'michelstadt': ('Michelstadt', 'Michelstädter'),
@@ -2562,6 +2676,8 @@ def baue(segmente, heute, ziel, special, titel=None):
             d_ = (s['dauer'] - 0.35) * len(x) / ges
             s['ut'].append((t, t + d_, untertitel_bild(x))); t += d_
         s['partikel'] = fx
+        s['bg_name'] = EIGEN_NAME.get(bg, bg)
+        s['pf_zust'] = pf_zustand(fx, s['bg_name'])
 
     rnd = random.Random(1)
     tropfen = [(rnd.uniform(0, W), rnd.uniform(0, H), rnd.uniform(14, 26)) for _ in range(110)]
@@ -2586,7 +2702,11 @@ def baue(segmente, heute, ziel, special, titel=None):
         cw = int(min(bw, bh * W / H) / sc); ch = int(cw * H / W)
         x0 = (bw - cw) // 2 if studio else int((bw - cw) * (0.15 + 0.7 * p)) if bw > cw + 10 else (bw - cw) // 2
         y0 = int((bh - ch) * 0.4) if not studio else 0
+        if not studio: bgi = pf_hintergrund(bgi)
         fr = bgi.crop((x0, y0, x0 + cw, y0 + ch)).resize((W, H), Image.BILINEAR).convert('RGBA')
+        if not studio:   # Bild hochsetzen, davor der Pflasterweg
+            fr2 = Image.new('RGBA', (W, H)); fr2.paste(fr.crop((0, PF_HOCH, W, H)), (0, 0)); fr2.paste(fr.crop((0, H - 2, W, H)).resize((W, PF_HOCH)), (0, H - PF_HOCH))
+            fr = fr2; fr.alpha_composite(pflaster(s['bgimg'], s['pf_zust'], s.get('bg_name')))
         # Übergang: kurzes Einblenden aus Weiß
         if lt < 0.3 and i > 0:
             fr = Image.blend(Image.new('RGBA', (W, H), (255, 255, 255, 255)), fr, lt / 0.3)
@@ -2609,6 +2729,9 @@ def baue(segmente, heute, ziel, special, titel=None):
             for (x, y, l) in tropfen:
                 yy = (y + t * 900) % H; xx = (x - t * schraeg) % W
                 dr.line([xx, yy, xx - 5 - schraeg / 40, yy + l], fill=(200, 215, 235, 200), width=2)
+            for j_, (cx_, cy_, rw_) in enumerate(PFUETZEN * 3):   # Ringe in den Pfützen
+                ph_ = (t * 1.3 + j_ * 0.29) % 1; rx_ = cx_ + ((j_ * 37) % 60 - 30) * rw_ / 80
+                dr.ellipse([rx_ - 18 * ph_ - 2, cy_ - 4 * ph_ - 1, rx_ + 18 * ph_ + 2, cy_ + 4 * ph_ + 1], outline=(225, 235, 248, int(170 * (1 - ph_))), width=2)
             for j_ in range(14):   # Spritzer am Boden
                 sx = (j_ * 53 + int(t * 7) * 131) % W; sp_ = (t * 6 + j_ * 0.37) % 1
                 dr.ellipse([sx - 6 * sp_ - 2, H - 175 - 3 * sp_, sx + 6 * sp_ + 2, H - 171 + 3 * sp_], outline=(220, 230, 245, int(200 * (1 - sp_))), width=2)
