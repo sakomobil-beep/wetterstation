@@ -30,8 +30,14 @@ def zahl(n):
     return ('minus %d' % -n) if n < 0 else str(n)
 
 
+def warn_txt(warn):
+    """„eine amtliche Warnung vor …“ – grammatisch korrekt."""
+    return ' und '.join(('eine ' + w[0].lower() + w[1:]) if w.lower().startswith('amtliche') else w for w in warn[:2])
+
+
 def art(d):
     w = wort(d['code'])
+    if w == 'neblig' and d.get('sonne', 0) >= 3: return 'nach Nebel am Morgen auch Sonne'
     return {'sonnig': 'viel Sonne', 'heiter bis wolkig': 'einen Mix aus Sonne und Wolken', 'bedeckt': 'viele Wolken',
             'neblig': 'Nebel', 'Nieselregen': 'Nieselregen', 'Regen': 'Regen', 'Schnee': 'Schnee',
             'Schauer': 'einzelne Schauer', 'Gewitter': 'Gewitter'}.get(w, 'wechselhaftes Wetter')
@@ -380,15 +386,20 @@ def winter_saetze(d, wann, rnd):
                                             'Typisch Odenwald: In der klaren Nacht sackt die Kaltluft in die Täler, da ist es unten frostiger als oben.',
                                             'Kleine Besonderheit: Nachts ist es diesmal in den Tälern kälter als auf den Höhen, weil sich die kalte Luft unten sammelt.']))
     out = out[:2]   # höchstens zwei Hinweise: Glätte vor Nebel vor Kaltluft
+    if len(out) == 2 and morgens.lower() in out[0].lower() and morgens.lower() in out[1].lower():   # Zeitangabe nur einmal sagen
+        x = out[1]
+        x = ('Dazu' + x[len(morgens):]) if x.startswith(morgens.capitalize()) else x.replace(' ' + morgens + ' ', ' dann ', 1)
+        out[1] = x
     return (' ' + ' '.join(out)) if out else ''
 
 
-def tagtext(d, wann):
+def tagtext(d, wann, nachtfrost=True):
     """Tagesvorhersage in wechselnden, gesprochen klingenden Formulierungen (pro Tag fest, damit Tests gleich bleiben)."""
     rnd = random.Random('tag' + str(d['datum']) + wann)
     W, w, t = wann, wort(d['code']), zahl(d['tmax'])
     Wk = W.rstrip(',')
     adj = ADJ.get(w, 'wechselhaft')
+    if w == 'neblig' and d.get('sonne', 0) >= 3: adj = 'nach Nebel am Morgen freundlich'
     A = art(d)[0].upper() + art(d)[1:]
     opt = ['%s gibt es %s bei Höchstwerten um %s Grad.' % (W, art(d), t),
            '%s wird es %s, bei rund %s Grad.' % (W, adj, t),
@@ -420,7 +431,7 @@ def tagtext(d, wann):
     elif sf == 'vereinzelt':
         s += ' ' + frisch(rnd, 'vereinzelt', ['Meist bleibt es trocken, nur vereinzelt ist ein kurzer Schauer möglich.',
                                               'Ganz ausschließen lässt sich ein einzelner Schauer nicht, meistens bleibt es aber trocken.'])
-    if d.get('frost_min', d['tmin']) <= 0:   # Frost nach dem kältesten Talort
+    if nachtfrost and d.get('frost_min', d['tmin']) <= 0:   # Frost nach dem kältesten Talort
         n = zahl(d.get('frost_min', d['tmin']))
         s += ' ' + frisch(rnd, 'frost', ['In der Nacht wird es frostig, bis %s Grad.' % n,
                                          'Nachts geht es runter auf %s Grad. Also: morgens Scheiben kratzen!' % n,
@@ -437,9 +448,9 @@ def tagtext(d, wann):
                                     'Und wer hoch hinaus muss: Auf den Odenwaldhöhen ist Schnee drin, bei rund %s Grad.' % zahl(H['tmax'])])
         elif d['tmax'] - H['tmax'] >= 2:
             s += ' ' + rnd.choice(['Auf den Höhen, etwa in Oberzent, sind es nur rund %s Grad.' % zahl(H['tmax']),
-                                    'Oben auf den Höhen wird es mit etwa %s Grad deutlich frischer als in den Tälern.' % zahl(H['tmax']),
+                                    'Oben auf den Höhen wird es mit etwa %s Grad %s frischer als in den Tälern.' % (zahl(H['tmax']), 'deutlich' if d['tmax'] - H['tmax'] >= 4 else 'etwas'),
                                     'Richtung Beerfelden und Mossautal bleibt es kühler, um %s Grad.' % zahl(H['tmax'])])
-        if H['tmin'] <= 0 < d['tmin']:
+        if nachtfrost and H['tmin'] <= 0 < d.get('frost_min', d['tmin']):
             s += ' ' + rnd.choice(['Nachts friert es auf den Höhen, bis %s Grad.' % zahl(H['tmin']),
                                     'Auf den Höhen gibt es nachts leichten Frost, bis %s Grad.' % zahl(H['tmin'])])
     s += winter_saetze(d, wann, rnd)
@@ -448,7 +459,7 @@ def tagtext(d, wann):
                                 'Kleiner Haken: Die Wettermodelle sind sich da noch nicht einig, also lieber nochmal reinschauen.',
                                 'Noch ist das aber unsicher, die Modelle rechnen ziemlich unterschiedlich.'])
     if d['boe'] >= 60: s += ' Vorsicht, Sturmböen bis %d Kilometer pro Stunde!' % round(d['boe'])
-    elif d['boe'] >= 45: s += ' ' + rnd.choice(['Dazu frischer Wind mit Böen um %d.' % round(d['boe']),
+    elif d['boe'] >= 45: s += ' ' + rnd.choice(['Dazu frischer Wind mit Böen um %d Kilometer pro Stunde.' % round(d['boe']),
                                                  'Und der Wind frischt auf, Böen um %d Kilometer pro Stunde.' % round(d['boe'])])
     return s
 
@@ -561,7 +572,7 @@ def skript_woche(days, warn, heute):
                 text=rnd.choice(['Ei gude, Odenwald! Hier ist euer Max mit dem Wochenausblick aus dem Studio.',
                                  'Guten Abend, Odenwald! Max hier im Studio – Zeit für den Blick auf die neue Woche.',
                                  'Sonntagabend im Odenwald – hier ist Max mit dem Wochenausblick!'])
-                + ((' Vorweg: Vom Deutschen Wetterdienst gilt %s.' % ' und '.join(warn[:2])) if warn else ''))]
+                + ((' Vorweg: Vom Deutschen Wetterdienst gilt %s.' % warn_txt(warn)) if warn else ''))]
     for k, d in enumerate(woch[:3]):
         wann = TAGE[d['datum'].weekday()]
         seg.append(dict(art='tag', tag=d, titel=wann.upper(), bg='studio',
@@ -620,7 +631,7 @@ def skript_abend(days, warn, heute, orte=None):
         ['Guten Abend, Odenwald! Euer Max meldet sich aus dem Studio.',
          'Ei gude wie, Odenwald – hier ist euer Abendwetter mit Max.',
          'Schön, dass ihr einschaltet: Max hier mit dem Odenwald-Wetter am Abend.'])
-        + ((' Vorweg: Vom Deutschen Wetterdienst gilt %s.' % ' und '.join(warn[:2])) if warn else ''))]
+        + ((' Vorweg: Vom Deutschen Wetterdienst gilt %s.' % warn_txt(warn)) if warn else ''))]
     zahlen = [rnd.choice(['Der Tag bei uns in Zahlen: Heute haben wir in den Tälern rund %s Grad erreicht.',
                           'Schauen wir noch mal auf den Tag: Bis zu %s Grad waren es heute bei uns im Odenwald.',
                           'Kurz zu den Zahlen von heute: Rund %s Grad Höchstwert in den Tälern.']) % zahl(a['tmax'])]
@@ -650,10 +661,10 @@ def skript_abend(days, warn, heute, orte=None):
                     text=' '.join(zahlen)))
     if wochenende:
         seg.append(dict(art='wochenende', bg='studio', tage=paar, tafel_img=tafel_wochenende(paar),
-                        text='Und jetzt der Blick aufs Wochenende: ' + tagtext(paar[0], 'Samstag') + ' ' + tagtext(paar[1], 'Sonntag')))
+                        text='Und jetzt der Blick aufs Wochenende: ' + tagtext(paar[0], 'Samstag', nachtfrost=False) + ' ' + tagtext(paar[1], 'Sonntag')))
     else:
         seg.append(dict(art='tag', bg='studio', titel='MORGEN', tag=paar[0], grafiken=(['regen'] if paar[0]['rp'] >= 30 else []),
-                        tafel_img=tafel_tag('MORGEN', paar[0]), text=tagtext(paar[0], 'Morgen') + grafik_saetze(paar[0], (['regen'] if paar[0]['rp'] >= 30 else []), rnd, 'morgen')))
+                        tafel_img=tafel_tag('MORGEN', paar[0]), text=tagtext(paar[0], 'Morgen', nachtfrost=False) + grafik_saetze(paar[0], (['regen'] if paar[0]['rp'] >= 30 else []), rnd, 'morgen')))
         kt = karten_txt(orte or {}, 1, rnd)
         if kt:   # Reliefkarte des Kreises: die Orte erscheinen nacheinander, während Max spricht
             seg.append(dict(art='tag', bg='studio', titel='MORGEN IM KREIS',
@@ -832,7 +843,7 @@ def skript(days, warn, heute, nur_special=False):
                         text=gestern_txt(a['gestern'], rnd)))
     seg.append(dict(art='tag', tag=a, titel='HEUTE', bg='auto', grafiken=(['regen'] if a['rp'] >= 30 else []) + (['wind'] if a.get('boe', 0) >= 45 else []),
                     text=reaktion(a, rnd) + frisch(rnd, 'ueberg_heute', ['', '', 'Kommen wir zum Wetter. ', 'So, jetzt zum Wetter. ', 'Und nun zum Tag. '])
-                         + tagtext(a, 'Heute') + vergleich_gestern(a, rnd) + einordnung(a, rnd) + mundart(a, rnd) + fenster_txt(a, rnd) + grafik_saetze(a, (['regen'] if a['rp'] >= 30 else []) + (['wind'] if a.get('boe', 0) >= 45 else []), rnd)))
+                         + tagtext(a, 'Heute', nachtfrost=False) + vergleich_gestern(a, rnd) + einordnung(a, rnd) + mundart(a, rnd) + fenster_txt(a, rnd) + grafik_saetze(a, (['regen'] if a['rp'] >= 30 else []) + (['wind'] if a.get('boe', 0) >= 45 else []), rnd)))
     seg.append(dict(art='tipp', tag=a, bg='wald' if not nass_tag(a) else 'schloss', text=frisch(rnd, 'ueberg_tipp', ['Mein Tipp für heute: ', 'Max-Tipp des Tages: ', 'Und jetzt mein Tipp: ', 'Übrigens, mein Tipp für heute: ',
                                                                                'Was könnt ihr heute machen? ', 'Und wenn ihr noch nichts vorhabt: ', 'Bevor ich’s vergesse – mein Tipp: ',
                                                                                'Noch was für eure Freizeit: ', 'Ihr sucht noch was für heute? ', 'Kleiner Tipp am Rande: ']) + tipp(a, rnd, heute, zusatz=False) + max_privat(a, rnd, heute), nur_tipp=True))
