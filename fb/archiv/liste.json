@@ -1,6 +1,17 @@
 [
  {
   "datum": "2026-11-13",
+  "datei": "2026-11-13.mp4",
+  "art": "morgen",
+  "erstellt": "2026-11-13T20:55+00:00",
+  "special": false,
+  "warn": [
+   "Amtliche Warnung vor Frost"
+  ],
+  "dauer": 119.4
+ },
+ {
+  "datum": "2026-11-13",
   "datei": "2026-11-13-woche.mp4",
   "art": "woche",
   "erstellt": "2026-11-13T20:13+00:00",
@@ -20,17 +31,6 @@
    "Amtliche Warnung vor Frost"
   ],
   "dauer": 89.7
- },
- {
-  "datum": "2026-11-13",
-  "datei": "2026-11-13.mp4",
-  "art": "morgen",
-  "erstellt": "2026-11-13T19:56+00:00",
-  "special": false,
-  "warn": [
-   "Amtliche Warnung vor Frost"
-  ],
-  "dauer": 118.7
  },
  {
   "datum": "2026-11-12",
