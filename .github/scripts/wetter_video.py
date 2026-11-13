@@ -625,6 +625,7 @@ def skript_abend(days, warn, heute, orte=None):
     """Abendvideo (Studio): Rückblick auf heute, Ausblick auf morgen/übermorgen (freitags aufs Wochenende)."""
     rnd = random.Random('abend' + heute.isoformat())
     a = days[0]
+    WARMER_ABEND[0] = a['tmax'] >= 25
     wochenende = heute.weekday() == 4   # Freitag
     paar = days[1:3]
     seg = [dict(art='intro', bg='studio', tafel_img=tafel_text('GUTEN ABEND', ['%s, %d. %s' % (TAGE[heute.weekday()], heute.day, MONATE[heute.month - 1]), '• Der Tag in Zahlen', '• Das Wochenende' if wochenende else '• Morgen und übermorgen'], (40, 30, 100)), text=rnd.choice(
@@ -1172,6 +1173,59 @@ def bg_studio(seed):
     return im.filter(ImageFilter.SMOOTH)
 
 
+GETRAENK = ['kaffee']
+WARMER_ABEND = [False]   # abends noch ≥ 20 °C (Höchstwert ≥ 25 °C) → Limo   # Getränk auf dem Studiotisch
+
+
+def dampf(t, cx, y0):
+    """Aufsteigender Dampf über der Tasse: 3 weiche, schlängelnde Schwaden, die oben verblassen.
+    Liefert (Bild, (x, y)) – kleines Bild, wird an Position eingesetzt (schnell)."""
+    bw_, bh_ = 140, 220; ox, oy = cx - bw_ // 2, y0 - bh_ + 10
+    im = Image.new('RGBA', (bw_, bh_), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
+    for k in range(3):
+        ph = (t * 0.45 + k / 3) % 1
+        for j in range(26):
+            q = j / 25
+            hoehe = q * 150 * (0.55 + 0.45 * ph) + ph * 30
+            x = cx + (k - 1) * 12 + 16 * math.sin(q * 4.5 + t * 2.2 + k * 2) * q - ox
+            y = y0 - hoehe - oy
+            a = int(210 * (1 - q) * math.sin(math.pi * ph) * (0.6 + 0.4 * (1 - q)))
+            r = 5 + 10 * q
+            if a > 4: d.ellipse([x - r, y - r, x + r, y + r], fill=(255, 255, 255, a))
+    return im.filter(ImageFilter.GaussianBlur(4)), (ox, oy)
+
+
+def tasse(desk, art, top):
+    """Getränk auf dem Studiotisch: kaffee (weiße Tasse), gluehwein (roter Becher mit Zimtstange), limo (Glas mit Eis/Zitrone)."""
+    d = ImageDraw.Draw(desk)
+    O = (25, 30, 40, 255)
+    if art == 'kaffee':
+        d.rounded_rectangle([430, top - 34, 500, top + 20], radius=8, fill=(240, 240, 235, 255), outline=O, width=4)
+        d.arc([488, top - 22, 522, top + 10], 270, 90, fill=O, width=5)
+        d.ellipse([436, top - 38, 494, top - 28], fill=(92, 58, 34, 255), outline=O, width=3)
+        lx, ly = 465, top - 8   # Wetterstation-Logo: Sonne hinter Wolke
+        d.ellipse([lx - 2, ly - 16, lx + 14, ly], fill=(245, 180, 40, 255))
+        for k in range(6):
+            a_ = k * math.pi / 3; d.line([(lx + 6 + 11 * math.cos(a_), ly - 8 + 11 * math.sin(a_)), (lx + 6 + 14 * math.cos(a_), ly - 8 + 14 * math.sin(a_))], fill=(245, 180, 40, 255), width=2)
+        d.ellipse([lx - 14, ly - 8, lx, ly + 4], fill=(90, 150, 210, 255)); d.ellipse([lx - 6, ly - 12, lx + 8, ly + 4], fill=(90, 150, 210, 255)); d.rectangle([lx - 8, ly - 2, lx + 6, ly + 4], fill=(90, 150, 210, 255))
+    elif art == 'gluehwein':
+        d.rounded_rectangle([430, top - 34, 500, top + 20], radius=8, fill=(178, 34, 40, 255), outline=O, width=4)
+        d.arc([488, top - 22, 522, top + 10], 270, 90, fill=O, width=5)
+        for k in range(5): d.ellipse([440 + k * 12, top - 6, 446 + k * 12, top], fill=(255, 255, 255, 255))   # Schneeflocken-Punkte
+        d.ellipse([436, top - 38, 494, top - 28], fill=(110, 20, 35, 255), outline=O, width=3)
+        d.line([(452, top - 34), (478, top - 66)], fill=(120, 72, 40, 255), width=7)   # Zimtstange
+        d.line([(452, top - 34), (478, top - 66)], fill=(150, 95, 55, 255), width=3)
+        d.ellipse([462, top - 40, 476, top - 32], fill=(240, 150, 40, 255))           # Orangenscheibe
+    elif art == 'limo':
+        d.polygon([(434, top - 50), (496, top - 50), (490, top + 20), (440, top + 20)], fill=(200, 230, 245, 140), outline=O)
+        d.line([(434, top - 50), (440, top + 20)], fill=O, width=3); d.line([(496, top - 50), (490, top + 20)], fill=O, width=3)
+        d.polygon([(437, top - 30), (493, top - 30), (490, top + 16), (440, top + 16)], fill=(250, 210, 80, 230))
+        for (x, y) in ((448, top - 26), (468, top - 20), (458, top - 8)): d.rectangle([x, y, x + 14, y + 12], fill=(235, 248, 255, 220), outline=(170, 200, 220, 255))
+        d.ellipse([480, top - 62, 512, top - 30], fill=(245, 225, 60, 255), outline=O, width=3)      # Zitronenscheibe am Rand
+        d.line([(470, top - 72), (462, top - 10)], fill=(230, 60, 60, 255), width=5)                # Strohhalm
+    return desk
+
+
 def studio_desk_overlay():
     """Holztisch im Vordergrund (Bildkoordinaten) – verdeckt Max' Beine, sodass er am Tisch zu sitzen scheint."""
     im = Image.new('RGBA', (W, H), (0, 0, 0, 0))
@@ -1182,8 +1236,7 @@ def studio_desk_overlay():
     dr.rectangle([0, top + 58, W, H], fill=(74, 52, 34, 255))                        # Front
     for y in range(top + 90, H, 34):
         dr.line([(0, y), (W, y)], fill=(62, 44, 28, 255), width=2)
-    dr.rounded_rectangle([430, top - 34, 500, top + 20], radius=8, fill=(240, 240, 235, 255), outline=(25, 30, 40, 255), width=4)   # Kaffeetasse
-    dr.arc([488, top - 22, 522, top + 10], 270, 90, fill=(25, 30, 40, 255), width=5)
+    tasse(im, GETRAENK[0], top)   # Kaffee / Glühwein (Advent) / Limo (warmer Sommerabend)
     dr.rounded_rectangle([560, top + 4, 690, top + 24], radius=4, fill=(235, 235, 240, 255), outline=(25, 30, 40, 255), width=3)    # Notizen
     dr.text((W / 2, top + 150), 'ODENWALD-WETTER', font=F(34), fill=(215, 180, 130, 255), anchor='mm')
     return im
@@ -2638,6 +2691,7 @@ def baue(segmente, heute, ziel, special, titel=None):
     FX_LOOK = {'frost': ('winter', None), 'nebel': ('kuehl', None), 'schnee': ('winter', 'schippe'), 'regen': ('regen', 'schirm'), 'schauer': ('regen', None), 'gewitter': ('regen', None), 'sturm': ('sturm', None)}
     BAEUME = [baum(a_) for a_ in range(-14, 15, 2)]
     KAPPE = kappe()
+    GETRAENK[0] = 'gluehwein' if WEIHNACHT[0] else ('limo' if WARMER_ABEND[0] else 'kaffee')
     STUDIO_DESK = studio_desk_overlay()
     kopf = kopfband(heute, special, titel)
     zeit = 0.0
@@ -2823,6 +2877,7 @@ def baue(segmente, heute, ziel, special, titel=None):
         fr.alpha_composite(mm, (mx + int(xoff), my))
         if studio:
             fr.alpha_composite(STUDIO_DESK, (0, 0))
+            if GETRAENK[0] != 'limo': _dm, _dp = dampf(t, 465, STUDIO_TISCH - 36); fr.alpha_composite(_dm, _dp)   # heißes Getränk dampft
         if pk == 'sturm' and lt < 2.4:   # die Kappe fliegt ihm vom Kopf davon
             q = lt / 2.4
             kp = KAPPE.rotate(-q * 540, expand=True)
