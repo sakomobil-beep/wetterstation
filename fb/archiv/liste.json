@@ -1,6 +1,17 @@
 [
  {
   "datum": "2026-11-13",
+  "datei": "2026-11-13-abend.mp4",
+  "art": "abend",
+  "erstellt": "2026-11-13T13:03+00:00",
+  "special": false,
+  "warn": [
+   "Amtliche Warnung vor Frost"
+  ],
+  "dauer": 101.7
+ },
+ {
+  "datum": "2026-11-13",
   "datei": "2026-11-13.mp4",
   "art": "morgen",
   "erstellt": "2026-11-13T12:41+00:00",
