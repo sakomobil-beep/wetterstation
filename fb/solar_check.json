@@ -1,11 +1,11 @@
 {
- "stand": "2026-11-13T02:23+01:00",
+ "stand": "2026-11-13T08:32+01:00",
  "quellen": {
   "Sonnenwind (Plasma)": "ok",
   "Magnetfeld Bz": "ok",
   "Kp-Index": "ok",
   "Kp-Prognose": "ok",
-  "Kurzzeit-Kp": "ok",
+  "Kurzzeit-Kp": "keine gültigen Daten",
   "Flare-Wahrscheinlichkeiten": "ok",
   "Röntgenstrahlung GOES": "ok",
   "Protonen GOES": "ok",
@@ -16,6 +16,10 @@
   "Polarlichtoval-Animation": "ok",
   "Sonnenbild SDO": "ok"
  },
- "fehler": {},
- "gemeldet": {}
+ "fehler": {
+  "Kurzzeit-Kp": "keine gültigen Daten"
+ },
+ "gemeldet": {
+  "Kurzzeit-Kp": "2026-11-13"
+ }
 }
