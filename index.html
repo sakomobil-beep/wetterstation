@@ -471,7 +471,7 @@ button { font: inherit; color: inherit; }
 .mchart .grid { stroke: var(--line); stroke-width: 1; }
 .mchart .zero { stroke: #9FB1BA; stroke-width: 1.2; }
 .mchart .axis { font: 400 11px var(--font-data); fill: var(--muted); }
-.mchart .trange { fill: #EBAA88; }
+.mchart .mrange { fill: #EBAA88; }
 .mchart .tmean { fill: var(--warm); stroke: var(--surface); stroke-width: 2; }
 .mchart .rbar { fill: var(--accent); }
 .mchart .normtick { stroke: var(--ink); stroke-width: 2; stroke-linecap: round; }
@@ -1848,7 +1848,7 @@ button { font: inherit; color: inherit; }
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 12.11.2026, 23:05 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 13.11.2026, 19:05 Uhr</span></p>
 
 </div>
 
@@ -4688,7 +4688,7 @@ function drawMonthCharts() {
     ags.forEach(function (a, i) {
       if (a.lo === null || a.hi === null) return;
       var cx = m.l + colW * (i + 0.5), y1 = Y(a.hi), y2 = Y(a.lo);
-      out += '<rect class="trange" x="' + (cx - bw / 2).toFixed(1) + '" y="' + y1.toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + Math.max(2, y2 - y1).toFixed(1) + '" rx="' + Math.min(4, bw / 2) + '"/>';
+      out += '<rect class="mrange" x="' + (cx - bw / 2).toFixed(1) + '" y="' + y1.toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + Math.max(2, y2 - y1).toFixed(1) + '" rx="' + Math.min(4, bw / 2) + '"/>';
       if (a.mean !== null) out += '<circle class="tmean" cx="' + cx.toFixed(1) + '" cy="' + Y(a.mean).toFixed(1) + '" r="4.5"/>';
     });
     tb.innerHTML = out + cols('colhi') + '</svg><div class="tip" hidden></div>';
