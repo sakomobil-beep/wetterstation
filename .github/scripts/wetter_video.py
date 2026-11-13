@@ -1203,11 +1203,12 @@ def tasse(desk, art, top):
         d.rounded_rectangle([430, top - 34, 500, top + 20], radius=8, fill=(240, 240, 235, 255), outline=O, width=4)
         d.arc([488, top - 22, 522, top + 10], 270, 90, fill=O, width=5)
         d.ellipse([436, top - 38, 494, top - 28], fill=(92, 58, 34, 255), outline=O, width=3)
-        lx, ly = 465, top - 8   # Wetterstation-Logo: Sonne hinter Wolke
-        d.ellipse([lx - 2, ly - 16, lx + 14, ly], fill=(245, 180, 40, 255))
-        for k in range(6):
-            a_ = k * math.pi / 3; d.line([(lx + 6 + 11 * math.cos(a_), ly - 8 + 11 * math.sin(a_)), (lx + 6 + 14 * math.cos(a_), ly - 8 + 14 * math.sin(a_))], fill=(245, 180, 40, 255), width=2)
-        d.ellipse([lx - 14, ly - 8, lx, ly + 4], fill=(90, 150, 210, 255)); d.ellipse([lx - 6, ly - 12, lx + 8, ly + 4], fill=(90, 150, 210, 255)); d.rectangle([lx - 8, ly - 2, lx + 6, ly + 4], fill=(90, 150, 210, 255))
+        lx, ly = 465, top - 6   # Handzeichen auf der Tasse (gespreizte Finger, 2 + 2)
+        H_ = (25, 30, 40, 255)
+        d.rounded_rectangle([lx - 9, ly - 4, lx + 9, ly + 14], radius=5, outline=H_, width=2)          # Handfläche
+        for fx_, l_, w_ in ((-7, 13, -6), (-3, 15, -5), (3, 15, 5), (7, 13, 6)):                     # Finger: zwei Paare, gespreizt
+            d.line([(lx + fx_, ly - 3), (lx + fx_ + w_, ly - 3 - l_)], fill=H_, width=3)
+        d.line([(lx - 9, ly + 6), (lx - 16, ly - 2)], fill=H_, width=3)                              # Daumen
     elif art == 'gluehwein':
         d.rounded_rectangle([430, top - 34, 500, top + 20], radius=8, fill=(178, 34, 40, 255), outline=O, width=4)
         d.arc([488, top - 22, 522, top + 10], 270, 90, fill=O, width=5)
