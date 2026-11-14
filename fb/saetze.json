@@ -1,46 +1,6 @@
 [
 {
 "d": "2026-11-12",
-"g": "ueberg_tipp",
-"k": "Max-Tipp des Tages: "
-},
-{
-"d": "2026-11-12",
-"g": "ueberg_morgen",
-"k": "Kurzer Blick nach vorn. "
-},
-{
-"d": "2026-11-12",
-"g": "tag",
-"k": "Am Freitag: Nebel, und das Thermometer k"
-},
-{
-"d": "2026-11-12",
-"g": "frost",
-"k": "In der Nacht rutschen die Werte auf minu"
-},
-{
-"d": "2026-11-12",
-"g": "frage",
-"k": "Passt meine Vorhersage bei euch? Sagt’s "
-},
-{
-"d": "2026-11-12",
-"g": "folgen",
-"k": "Hilf mir, den ganzen Odenwald zu erreich"
-},
-{
-"d": "2026-11-12",
-"g": "ueberg_heute",
-"k": "So, jetzt zum Wetter. "
-},
-{
-"d": "2026-11-12",
-"g": "tag",
-"k": "Heute bekommen wir einzelne Schauer – un"
-},
-{
-"d": "2026-11-12",
 "g": "regenzeit",
 "k": "Nass werden kann es am Vormittag und am "
 },
@@ -1998,5 +1958,45 @@
 "d": "2026-11-14",
 "g": "schluss_nebel",
 "k": "Licht an im Nebel, fahrt vorsichtig – un"
+},
+{
+"d": "2026-11-14",
+"g": "abend_gruss",
+"k": "Ei gude wie, Odenwald – hier ist euer Ab"
+},
+{
+"d": "2026-11-14",
+"g": "dwd",
+"k": "Ein Hinweis vorab: Für unsere Gegend gil"
+},
+{
+"d": "2026-11-14",
+"g": "tag",
+"k": "Morgen zeigt sich das Wetter nass, die H"
+},
+{
+"d": "2026-11-14",
+"g": "tag",
+"k": "Dann bekommen wir Regen – und um die 10 "
+},
+{
+"d": "2026-11-14",
+"g": "folgen_abend",
+"k": "Das Wetter kommt direkt von unserer eige"
+},
+{
+"d": "2026-11-14",
+"g": "abend_ende",
+"k": "So viel für heute aus dem Studio."
+},
+{
+"d": "2026-11-14",
+"g": "abend_gute_nacht",
+"k": "Kommt gut durch die Nacht – bis morgen f"
+},
+{
+"d": "2026-11-14",
+"g": "abend_live",
+"k": "Alle Live-Werte gibt es auf wetter-badko"
 }
 ]
