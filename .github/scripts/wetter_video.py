@@ -212,8 +212,17 @@ def frage_fuer(d, heute, rnd):
     return frisch(rnd, 'frage', opt)
 
 
-def folgen_fuer(heute, rnd, warn=False):
+def folgen_fuer(heute, rnd, warn=False, abend=False):
     """Kurzer, wechselnder Aufruf zum Folgen – neue Follower anlocken."""
+    if abend:   # Abendvideo aus dem Studio
+        opt = ['Folgt ihr uns eigentlich schon? Dann verpasst ihr kein Wetter mehr – morgens draußen, abends hier im Studio!',
+               'Noch kein Follower? Ein Klick auf Folgen, und ich bin morgen früh pünktlich wieder bei euch.',
+               'Wenn euch der Abendausblick gefällt: Folgen, liken, teilen – damit helft ihr unserem kleinen Wetterprojekt enorm!',
+               'Kennt ihr jemanden im Odenwald, der wissen will, wie das Wetter morgen wird? Schickt ihm das Video – und folgt uns!',
+               'Das Wetter kommt direkt von unserer eigenen Station in Bad König. Wer uns folgt, ist morgens als Erster informiert!']
+        if heute.weekday() == 4: opt.append('Fürs Wochenende bestens informiert: Folgt uns, dann wisst ihr auch Samstag und Sonntag, was das Wetter macht!')
+        if warn: opt.append('Bei Warnungen melden wir uns sofort – auch nachts. Folgt uns, damit ihr nichts verpasst!')
+        return frisch(rnd, 'folgen_abend', opt)
     opt = ['Folgt ihr uns eigentlich schon? Dann verpasst ihr kein Wetter mehr – jeden Morgen frisch aus dem Odenwald!',
            'Noch kein Follower? Ein Klick auf Folgen, und ich bin jeden Morgen pünktlich bei euch.',
            'Kennt ihr jemanden im Odenwald, der immer wissen will, wie das Wetter wird? Schickt ihm das Video – und folgt uns, falls ihr’s noch nicht tut!',
@@ -700,6 +709,7 @@ def skript_abend(days, warn, heute, orte=None):
     if nacht_frost:   # Nachtkarte nur, wenn irgendwo im Kreis Frost ansteht
         nt = karten_txt(orte or {}, 1, rnd, nacht=True)
         if nt: seg.append(dict(art='tag', bg='studio', titel='HEUTE NACHT', tafel_seq=karten_folge(orte, 1, nacht=True), text=nt))
+    seg.append(dict(art='cta', bg='studio', text=folgen_fuer(heute, rnd, bool(warn), abend=True)))   # Aufruf zum Folgen (wie im Morgenvideo)
     seg.append(dict(art='outro', bg='studio', text=rnd.choice(['Das war euer Odenwald-Wetter am Abend.', 'So viel für heute aus dem Studio.', 'Das war es für heute von mir.'])
                     + ' Kommt gut durch die Nacht – bis morgen früh beim Wettervideo! Alle Live-Werte gibt es auf wetter-badkoenig.de.'))
     return seg
