@@ -1,16 +1,6 @@
 [
 {
 "d": "2026-11-12",
-"g": "tag",
-"k": "Dann wird es richtig sonnig, und mehr al"
-},
-{
-"d": "2026-11-12",
-"g": "frost",
-"k": "Nachts wird es mit minus 1 Grad richtig "
-},
-{
-"d": "2026-11-12",
 "g": "ueberg_heute",
 "k": "So, jetzt zum Wetter. "
 },
@@ -1998,5 +1988,15 @@
 "d": "2026-11-14",
 "g": "schluss_nebel",
 "k": "Kommt gut durch die graue Suppe – oben a"
+},
+{
+"d": "2026-11-14",
+"g": "wissen_intro",
+"k": "Wetterwissen mit Max – heute eine spanne"
+},
+{
+"d": "2026-11-14",
+"g": "wissen_ende",
+"k": "Am Montag gibt’s das nächste Wetterwisse"
 }
 ]
