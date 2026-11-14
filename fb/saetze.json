@@ -1,61 +1,6 @@
 [
 {
 "d": "2026-11-12",
-"g": "tag",
-"k": "Heute bekommen wir einzelne Schauer – un"
-},
-{
-"d": "2026-11-12",
-"g": "regenzeit",
-"k": "Nass werden kann es am Vormittag."
-},
-{
-"d": "2026-11-12",
-"g": "gestern_trocken",
-"k": "Gestern nass, heute trocken – so mag ich"
-},
-{
-"d": "2026-11-12",
-"g": "ueberg_tipp",
-"k": "Max-Tipp des Tages: "
-},
-{
-"d": "2026-11-12",
-"g": "ueberg_morgen",
-"k": "Kurzer Blick nach vorn. "
-},
-{
-"d": "2026-11-12",
-"g": "tag",
-"k": "Am Freitag: Einen Mix aus Sonne und Wolk"
-},
-{
-"d": "2026-11-12",
-"g": "frost",
-"k": "In der Nacht rutschen die Werte auf 0 Gr"
-},
-{
-"d": "2026-11-12",
-"g": "frage",
-"k": "Passt meine Vorhersage bei euch? Sagt’s "
-},
-{
-"d": "2026-11-12",
-"g": "folgen",
-"k": "Hilf mir, den ganzen Odenwald zu erreich"
-},
-{
-"d": "2026-11-12",
-"g": "ueberg_heute",
-"k": "So, jetzt zum Wetter. "
-},
-{
-"d": "2026-11-12",
-"g": "tag",
-"k": "Heute bekommen wir einzelne Schauer – un"
-},
-{
-"d": "2026-11-12",
 "g": "regenzeit",
 "k": "Nass werden kann es am Vormittag und am "
 },
@@ -1998,5 +1943,60 @@
 "d": "2026-11-14",
 "g": "folgen",
 "k": "Kennt ihr jemanden im Odenwald, der imme"
+},
+{
+"d": "2026-11-14",
+"g": "ueberg_heute",
+"k": "Kommen wir zum Wetter. "
+},
+{
+"d": "2026-11-14",
+"g": "tag",
+"k": "Heute wird es nach Nebel am Morgen freun"
+},
+{
+"d": "2026-11-14",
+"g": "glaette_r",
+"k": "Achtet heute früh auf Reifglätte, vor al"
+},
+{
+"d": "2026-11-14",
+"g": "nebel_w",
+"k": "Heute früh liegt in den Tälern Nebel bis"
+},
+{
+"d": "2026-11-14",
+"g": "mundart",
+"k": "Kammer nix mache."
+},
+{
+"d": "2026-11-14",
+"g": "ueberg_tipp",
+"k": "Noch was für eure Freizeit: "
+},
+{
+"d": "2026-11-14",
+"g": "ueberg_morgen",
+"k": "So, und jetzt der Blick nach vorn. "
+},
+{
+"d": "2026-11-14",
+"g": "tag",
+"k": "Morgen, am Sonntag, wird es nass. Die Te"
+},
+{
+"d": "2026-11-14",
+"g": "frost",
+"k": "In der Nacht zum Sonntag geht es runter "
+},
+{
+"d": "2026-11-14",
+"g": "frage",
+"k": "Was habt ihr bei dem schönen Wetter heut"
+},
+{
+"d": "2026-11-14",
+"g": "folgen",
+"k": "Folgt ihr uns eigentlich schon? Dann ver"
 }
 ]
