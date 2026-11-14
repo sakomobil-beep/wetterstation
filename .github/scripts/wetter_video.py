@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Täglicher Video-Wetterbericht „Odenwald-Wetter“ mit dem Comic-Moderator Max (Wettersprecher).
 Liest fb/daten.json (von fb_post.py), schreibt fb/wetter.mp4 (+ wetter.json) bzw. fb/special.mp4 (+ special.json).
-Stimme: Microsoft Neural-Stimme „Florian Multilingual“ über edge-tts. Ohne edge-tts (Test) wird eine stumme Spur erzeugt.
+Stimme: Microsoft Neural-Stimme „Conrad“ (Tonhöhe +6 Hz) über edge-tts. Ohne edge-tts (Test) wird eine stumme Spur erzeugt.
 Eigene (KI-)Hintergrundbilder: einfach als .jpg/.png in den Ordner video/hintergruende/ legen – sie werden mitbenutzt."""
 import json, termine as TERMINE, os, sys, math, random, subprocess, asyncio, glob, tempfile, datetime as dt
 from zoneinfo import ZoneInfo
@@ -11,7 +11,8 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 FB = os.path.join(ROOT, 'fb')
 W, H, FPS = 720, 1280, 25
-VOICE = 'de-DE-FlorianMultilingualNeural'
+VOICE = 'de-DE-ConradNeural'
+PITCH = '+6Hz'   # Conrad etwas höher (Kingmans Wahl 14.11.2026)
 TAGE = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
 MONATE = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']
 B = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
@@ -2757,8 +2758,8 @@ def sprich(text, pfad, rate='+2%', woerter=None):
     try:
         import edge_tts
         async def go():
-            try: c = edge_tts.Communicate(text, VOICE, rate=rate, boundary='WordBoundary')
-            except TypeError: c = edge_tts.Communicate(text, VOICE, rate=rate)
+            try: c = edge_tts.Communicate(text, VOICE, rate=rate, pitch=PITCH, boundary='WordBoundary')
+            except TypeError: c = edge_tts.Communicate(text, VOICE, rate=rate, pitch=PITCH)
             n = 0
             with open(pfad, 'wb') as f:
                 async for ch in c.stream():
@@ -2771,7 +2772,7 @@ def sprich(text, pfad, rate='+2%', woerter=None):
         except Exception as e:   # Rückfall: Stimme ohne Wortzeiten wie früher (Mundbilder dann aus dem Text verteilt)
             print('Wortzeiten nicht verfügbar (%s) – Stimme ohne Wortzeiten.' % e)
             if woerter is not None: woerter.clear()
-            asyncio.run(edge_tts.Communicate(text, VOICE, rate=rate).save(pfad))
+            asyncio.run(edge_tts.Communicate(text, VOICE, rate=rate, pitch=PITCH).save(pfad))
         return True
     except Exception as e:
         print('Sprachausgabe nicht verfügbar (%s) – stumme Testspur.' % e)
