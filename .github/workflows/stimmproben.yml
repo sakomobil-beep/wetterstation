@@ -1,0 +1,28 @@
+name: Stimmproben
+on: { workflow_dispatch: {} }
+permissions: { contents: write }
+jobs:
+  proben:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install edge-tts
+      - run: |
+          T="Guten Morgen, Odenwald! Hier ist Max mit eurem Wetter. Gestern hatten wir in Bad König bis zu neun Grad. Heute bleibt es meist trocken, am Nachmittag zeigt sich sogar mal die Sonne. Heute Nacht wird es frostig, also morgen früh die Scheiben kratzen!"
+          cd stimmproben
+          p(){ edge-tts --voice "$1" --rate="$3" --pitch="$4" --text "$T" --write-media "$2.mp3"; }
+          p de-DE-FlorianMultilingualNeural 1-florian-aktuell +0% +0Hz
+          p de-DE-ConradNeural 2-conrad +0% +0Hz
+          p de-DE-ConradNeural 3-conrad-tiefer-langsamer -8% -6Hz
+          p de-DE-KillianNeural 4-killian +0% +0Hz
+          p de-AT-JonasNeural 5-jonas-oesterreich +0% +0Hz
+          p en-US-AndrewMultilingualNeural 6-andrew-multilingual +0% +0Hz
+          p en-US-BrianMultilingualNeural 7-brian-multilingual +0% +0Hz
+          p de-CH-JanNeural 8-jan-schweiz +0% +0Hz
+          { echo '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>Stimmproben Max</title><body style="font-family:sans-serif;max-width:600px;margin:20px auto"><h1>Stimmproben für Max</h1>'
+            for f in *.mp3; do echo "<h3>${f%.mp3}</h3><audio controls src=\"$f\" style=\"width:100%\"></audio>"; done; } > index.html
+      - run: |
+          git config user.name github-actions; git config user.email actions@github.com
+          git add stimmproben && git commit -m "Stimmproben für Max" && git push
