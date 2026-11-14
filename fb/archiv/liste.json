@@ -1,5 +1,16 @@
 [
  {
+  "datum": "2026-11-14",
+  "datei": "2026-11-14.mp4",
+  "art": "morgen",
+  "erstellt": "2026-11-14T06:20+00:00",
+  "special": false,
+  "warn": [
+   "Amtliche Warnung vor Frost"
+  ],
+  "dauer": 119.7
+ },
+ {
   "datum": "2026-11-13",
   "datei": "2026-11-13.mp4",
   "art": "morgen",
@@ -101,22 +112,6 @@
   "special": false,
   "warn": [],
   "dauer": 59.6,
-  "art": "morgen"
- },
- {
-  "datum": "2026-11-07",
-  "datei": "2026-11-07-woche.mp4",
-  "special": false,
-  "warn": [],
-  "dauer": 49.3,
-  "art": "woche"
- },
- {
-  "datum": "2026-11-07",
-  "datei": "2026-11-07.mp4",
-  "special": false,
-  "warn": [],
-  "dauer": 67.8,
   "art": "morgen"
  }
 ]
