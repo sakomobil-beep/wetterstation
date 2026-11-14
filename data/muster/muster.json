@@ -28,5 +28,23 @@
   "titel": "Strenger Frost",
   "bild": "muster-frost.jpg",
   "text": "🥶 WETTER-SONDERMELDUNG für den Odenwald: Strenger Frost 🥶\n\n⚠️ Stufe 2 – Markantes Wetter\n📍 Gilt für: ganzer Odenwaldkreis\n• DWD: Amtliche WARNUNG vor STRENGEM FROST\n🕒 Gültig von morgen 17:00 Uhr bis Montag 05:00 Uhr\n\n👉 Schützen Sie Wasserleitungen vor dem Einfrieren.\n\nLive-Werte, Radar & Warnungen 👉 https://wetter-badkoenig.de\n#Odenwald #Odenwaldkreis #BadKönig #Wetter #Frost #Unwetter"
+ },
+ {
+  "typ": "starkregen",
+  "titel": "Starkregen",
+  "bild": "muster-starkregen.jpg",
+  "text": "🌧️ WETTER-SONDERMELDUNG für den Odenwald: Starkregen 🌧️\n\n⚠️ Stufe 3 – Unwetter\n📍 Gilt für: ganzer Odenwaldkreis\n• DWD: Amtliche UNWETTERWARNUNG vor HEFTIGEM STARKREGEN\n🕒 Gültig von morgen 09:00 Uhr bis morgen 15:00 Uhr\n\n👉 Meiden Sie Unterführungen und tiefliegende Straßen. Rechnen Sie mit Überflutungen.\n\nLive-Werte, Radar & Warnungen 👉 https://wetter-badkoenig.de\n#Odenwald #Odenwaldkreis #BadKönig #Wetter #Starkregen #Unwetter"
+ },
+ {
+  "typ": "hitze",
+  "titel": "Hitze",
+  "bild": "muster-hitze.jpg",
+  "text": "🥵 WETTER-SONDERMELDUNG für den Odenwald: Hitze 🥵\n\n⚠️ Stufe 4 – Extremes Unwetter\n📍 Gilt für: ganzer Odenwaldkreis\n• DWD: Amtliche WARNUNG vor EXTREMER HITZE\n🕒 Gültig von morgen 10:00 Uhr bis morgen 17:00 Uhr\n\n👉 Vermeiden Sie Aufenthalte im Freien in der Mittagszeit und trinken Sie ausreichend.\n\nLive-Werte, Radar & Warnungen 👉 https://wetter-badkoenig.de\n#Odenwald #Odenwaldkreis #BadKönig #Wetter #Hitze #Unwetter"
+ },
+ {
+  "typ": "nebel",
+  "titel": "Dichter Nebel",
+  "bild": "muster-nebel.jpg",
+  "text": "🌫️ WETTER-SONDERMELDUNG für den Odenwald: Dichter Nebel 🌫️\n\n⚠️ Stufe 1 – Wetterwarnung\n📍 Gilt für: Bad König, Michelstadt, Erbach, Höchst\n• DWD: Amtliche WARNUNG vor NEBEL\n🕒 Gültig von morgen 00:00 Uhr bis morgen 07:00 Uhr\n\n👉 Fahren Sie mit Licht und verringern Sie die Geschwindigkeit.\n\nLive-Werte, Radar & Warnungen 👉 https://wetter-badkoenig.de\n#Odenwald #Odenwaldkreis #BadKönig #Wetter #Nebel #Unwetter"
  }
 ]
