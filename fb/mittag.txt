@@ -1,11 +1,11 @@
 🗺️ Nachmittag im Odenwaldkreis – so geht der Tag weiter:
 
-🌡️ Jetzt an unserer Station in Bad König: 6,6 °C (12:00 Uhr)
+🌡️ Jetzt an unserer Station in Bad König: 5,4 °C (12:00 Uhr)
 
-📍 Höchstwerte bis zum Abend: Breuberg 8° · Höchst 8° · Bad König 8° · Mossautal 6° · Michelstadt 8° · Oberzent 6°
+📍 Höchstwerte bis zum Abend: Breuberg 8° · Höchst 8° · Bad König 8° · Mossautal 7° · Michelstadt 8° · Oberzent 6°
 
 🌫️ Neblig, meist trocken.
-⛰️ Auf den Höhen (Oberzent, Mossautal) bis 5 °C.
+⛰️ Auf den Höhen (Oberzent, Mossautal) bis 6 °C.
 
 Gemessen wird in Bad König, die übrigen Orte kommen aus unserer Modellmischung (ICON-D2, AROME, ECMWF, ICON-EU) – je Ort mit seiner Höhe.
 Live-Werte, Radar & Vorhersage 👉 https://wetter-badkoenig.de
