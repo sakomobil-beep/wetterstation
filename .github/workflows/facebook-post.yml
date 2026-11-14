@@ -78,6 +78,7 @@ jobs:
           cp fb/post.jpg fb/post.txt fb/post.json /tmp/
           python .github/scripts/fb_post.py
           cp /tmp/post.jpg /tmp/post.txt /tmp/post.json fb/
+          python .github/scripts/fb_post.py --abend --nur-abends || echo "Abend-Story nicht erstellt"   # Abend-Story mit dem Wetter für Montag
           python .github/scripts/wetter_video.py --woche
       - name: Nachmittag – Special-Video bei neuer Unwetterwarnung (Tagesbeitrag bleibt)
         if: github.event.schedule == '0 15 * * *'
