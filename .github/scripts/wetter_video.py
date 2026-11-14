@@ -86,10 +86,16 @@ def wahl(rnd, liste, tage=14):
     """Wählt einen Tipp, der in den letzten `tage` Tagen nicht vorkam (falls möglich)."""
     grenze = (dt.date.today() - dt.timedelta(days=tage)).isoformat()
     neu = {e['k'] for e in TIPP_LOG if e['d'] >= grenze}
-    frei = [t for t in liste if _schluessel(t) not in neu] or liste
+    orte_neu = {o for e in TIPP_LOG if e['d'] >= grenze for o in e.get('o', [])}   # gleicher Ort (z. B. Elfenbeinmuseum) nicht in neuer Formulierung wiederholen
+    frei = [t for t in liste if _schluessel(t) not in neu and not (set(_tipp_orte(t)) & orte_neu)] \
+        or [t for t in liste if _schluessel(t) not in neu] or liste
     t = rnd.choice(frei)
-    TIPP_LOG.append(dict(d=dt.date.today().isoformat(), k=_schluessel(t)))
+    TIPP_LOG.append(dict(d=dt.date.today().isoformat(), k=_schluessel(t), o=_tipp_orte(t)))
     return t
+
+
+TIPP_ORTE = ('Elfenbein', 'Schloss Erbach', 'Salzgrotte', 'Stadtmuseum', 'Spielzeugmuseum', 'Reichenberg', 'Einhardsbasilika', 'Römerbad', 'Altstadt', 'Tromm')
+def _tipp_orte(t): return [o for o in TIPP_ORTE if o in t]
 
 
 # --- Satz-Gedächtnis: dieselbe Formulierung frühestens nach 10 Tagen wieder (fb/saetze.json) ---
@@ -195,6 +201,15 @@ def mundart(d, rnd):
     return ' ' + frisch(rnd, 'mundart', opt, tage=21)
 
 
+def dwd_satz(rnd, was):
+    """Hinweis auf eine amtliche DWD-Warnung – abwechslungsreich formuliert, Inhalt bleibt amtlich."""
+    return frisch(rnd, 'dwd', ['Kurz vorweg: Vom Deutschen Wetterdienst gilt %s. Passt auf euch auf!' % was,
+                                'Erst das Wichtige: Der Deutsche Wetterdienst hat %s herausgegeben.' % was.replace('gilt ', ''),
+                                'Bevor es losgeht – vom Deutschen Wetterdienst gilt %s. Also Augen auf!' % was,
+                                'Ein Hinweis vorab: Für unsere Gegend gilt vom Deutschen Wetterdienst %s.' % was,
+                                'Wichtig zuerst: Der Deutsche Wetterdienst meldet für uns %s. Seid vorsichtig!' % was], tage=4)
+
+
 def frage_fuer(d, heute, rnd):
     """Frage an die Zuschauer zum Schluss – passend zum Wetter, gleiche Frage frühestens nach 10 Tagen."""
     w = wort(d['code']); opt = []
@@ -204,7 +219,10 @@ def frage_fuer(d, heute, rnd):
                                                                                      'Was macht ihr an so einem Regentag? Verratet es mir in den Kommentaren!']
     if w == 'Schnee' or d.get('schnee', 0) >= 1: opt += ['Liegt bei euch schon Schnee? Schreibt mir euren Ort – und gern ein Foto!']
     if w == 'neblig' or lage(d)['nebel'] == 'wahrscheinlich': opt += ['Wie dicht ist der Nebel bei euch? Schreibt euren Ort in die Kommentare!']
-    if w in ('sonnig', 'heiter bis wolkig') or d.get('sonne', 0) >= 5: opt += ['Was habt ihr bei dem schönen Wetter heute vor? Schreibt’s mir!',
+    trueb = w == 'neblig' or lage(d)['nebel'] != 'keiner' or lage(d)['glaette'] != 'keine'
+    if trueb: opt += ['Wie kommt ihr heute in den Tag – mit Licht an und Eiskratzer? Schreibt’s mir!',
+                      'Wie sieht es bei euch heute früh aus – Nebel, Reif oder schon Sonne? Schreibt mir euren Ort!']
+    if (w in ('sonnig', 'heiter bis wolkig') or d.get('sonne', 0) >= 5) and not trueb: opt += ['Was habt ihr bei dem schönen Wetter heute vor? Schreibt’s mir!',
                                                                              'Scheint bei euch schon die Sonne? Schreibt mir euren Ort!']
     opt += ['Aus welchem Ort im Odenwald schaut ihr zu? Schreibt’s in die Kommentare!',
             'Wie sieht’s gerade bei euch draußen aus? Schreibt mir euren Ort!',
@@ -301,7 +319,9 @@ def tipp(d, rnd, heute, zusatz=True):
                            'Durchatmen trotz Nebel: Die Salzgrotte in der Odenwald-Therme Bad König ist wie ein Kurzurlaub am Meer.',
                            'Ein Tag zum Aufwärmen: Heißer Kakao und ein gutes Buch – und wer mag, schaut nachmittags, ob sich der Nebel auf den Höhen lichtet.',
                            'Im Nebel wirkt die Burg Reichenberg über Reichelsheim richtig geheimnisvoll – ein kurzer Spaziergang lohnt sich.',
-                           'Nebel im Tal heißt oft Sonne oben: Fahrt mal hoch Richtung Beerfelden oder auf die Tromm – manchmal liegt der Odenwald dann unter einem Nebelmeer.']) + abend_tipp(heute, rnd)
+                           'Nebel im Tal heißt oft Sonne oben: Fahrt mal hoch Richtung Beerfelden oder auf die Tromm – manchmal liegt der Odenwald dann unter einem Nebelmeer.',
+                           'Ein stiller Ort für einen Nebeltag: die Einhardsbasilika in Michelstadt-Steinbach – über 1200 Jahre alt und im Dunst besonders stimmungsvoll.',
+                           'Geschichte im Nebel: Das Römerbad am Limes bei Würzberg ist ein kurzer Abstecher – da wirkt der alte Grenzwall gleich noch rätselhafter.']) + abend_tipp(heute, rnd)
     if d['tmax'] <= 3:
         return wahl(rnd, ['Klare, kalte Luft – perfekt für einen Winterspaziergang im Kurpark Bad König. Danach einen heißen Kakao!',
                            'Klare Winterluft auf der Höhe: Ein Spaziergang am Limes bei Würzberg zum römischen Kastellbad – mit warmem Tee im Rucksack.',
@@ -596,7 +616,7 @@ def skript_woche(days, warn, heute):
                 text=rnd.choice(['Ei gude, Odenwald! Hier ist euer Max mit dem Wochenausblick aus dem Studio.',
                                  'Guten Abend, Odenwald! Max hier im Studio – Zeit für den Blick auf die neue Woche.',
                                  'Sonntagabend im Odenwald – hier ist Max mit dem Wochenausblick!'])
-                + ((' Vorweg: Vom Deutschen Wetterdienst gilt %s.' % warn_txt(warn)) if warn else ''))]
+                + ((' ' + dwd_satz(rnd, warn_txt(warn))) if warn else ''))]
     for k, d in enumerate(woch[:3]):
         wann = TAGE[d['datum'].weekday()]
         seg.append(dict(art='tag', tag=d, titel=wann.upper(), bg='studio',
@@ -652,11 +672,15 @@ def skript_abend(days, warn, heute, orte=None):
     WARMER_ABEND[0] = a['tmax'] >= 25
     wochenende = heute.weekday() == 4   # Freitag
     paar = days[1:3]
-    seg = [dict(art='intro', bg='studio', tafel_img=tafel_text('GUTEN ABEND', ['%s, %d. %s' % (TAGE[heute.weekday()], heute.day, MONATE[heute.month - 1]), '• Der Tag in Zahlen', '• Das Wochenende' if wochenende else '• Morgen und übermorgen'], (40, 30, 100)), text=rnd.choice(
+    seg = [dict(art='intro', bg='studio', tafel_img=tafel_text('GUTEN ABEND', ['%s, %d. %s' % (TAGE[heute.weekday()], heute.day, MONATE[heute.month - 1]), '• Der Tag in Zahlen', '• Das Wochenende' if wochenende else '• Morgen und übermorgen'], (40, 30, 100)), text=frisch(rnd, 'abend_gruss',
         ['Guten Abend, Odenwald! Euer Max meldet sich aus dem Studio.',
          'Ei gude wie, Odenwald – hier ist euer Abendwetter mit Max.',
-         'Schön, dass ihr einschaltet: Max hier mit dem Odenwald-Wetter am Abend.'])
-        + ((' Vorweg: Vom Deutschen Wetterdienst gilt %s.' % warn_txt(warn)) if warn else ''))]
+         'Schön, dass ihr einschaltet: Max hier mit dem Odenwald-Wetter am Abend.',
+         'N’Abend, Odenwald! Kaffee steht bereit – Max hier, mit dem Wetter vom Tag und für morgen.',
+         'Hallo zusammen und guten Abend! Hier ist Max im Studio – schauen wir, was der Tag gebracht hat.',
+         'Feierabend im Odenwald – und Zeit für euer Abendwetter. Max hier, schön, dass ihr dabei seid!',
+         'Guten Abend aus dem Studio in Bad König! Max hier – los geht’s mit dem Tag in Zahlen.'])
+        + ((' ' + dwd_satz(rnd, warn_txt(warn))) if warn else ''))]
     hm = a.get('heute_mess')   # gemessen an der Station Bad König (sonst Vorhersage als Rückfall)
     if hm:
         a = dict(a, tmax=hm['tmax'], regen=hm['regen'], boe=hm['boe'] if hm.get('boe') is not None else a.get('boe', 0))
@@ -710,8 +734,15 @@ def skript_abend(days, warn, heute, orte=None):
         nt = karten_txt(orte or {}, 1, rnd, nacht=True)
         if nt: seg.append(dict(art='tag', bg='studio', titel='HEUTE NACHT', tafel_seq=karten_folge(orte, 1, nacht=True), text=nt))
     seg.append(dict(art='cta', bg='studio', text=folgen_fuer(heute, rnd, bool(warn), abend=True)))   # Aufruf zum Folgen (wie im Morgenvideo)
-    seg.append(dict(art='outro', bg='studio', text=rnd.choice(['Das war euer Odenwald-Wetter am Abend.', 'So viel für heute aus dem Studio.', 'Das war es für heute von mir.'])
-                    + ' Kommt gut durch die Nacht – bis morgen früh beim Wettervideo! Alle Live-Werte gibt es auf wetter-badkoenig.de.'))
+    seg.append(dict(art='outro', bg='studio', text=frisch(rnd, 'abend_ende', ['Das war euer Odenwald-Wetter am Abend.', 'So viel für heute aus dem Studio.', 'Das war es für heute von mir.',
+                                                                             'Und damit Feierabend hier im Studio.', 'Das war der Tag in Zahlen.'], tage=4)
+                    + ' ' + frisch(rnd, 'abend_gute_nacht', ['Kommt gut durch die Nacht – bis morgen früh beim Morgenvideo!',
+                                                             'Schlaft gut – morgen früh bin ich mit dem Morgenvideo wieder da!',
+                                                             'Macht’s gut und gute Nacht – wir sehen uns morgen früh!',
+                                                             'Gute Nacht, Odenwald – bis morgen früh!',
+                                                             'Habt einen schönen Abend – morgen früh gibt’s das neue Wetter!'], tage=4)
+                    + ' ' + frisch(rnd, 'abend_live', ['Alle Live-Werte gibt es auf wetter-badkoenig.de.', 'Die aktuellen Messwerte findet ihr jederzeit auf wetter-badkoenig.de.',
+                                                       'Wer nachts mal nachschauen will: wetter-badkoenig.de zeigt alles live.', 'Live dabei seid ihr auf wetter-badkoenig.de.'], tage=3)))
     return seg
 
 
@@ -784,8 +815,11 @@ def abschied(d, rnd):
         return rnd.choice(['Macht es euch heute gemütlich – der Odenwald läuft nicht weg!',
                            'Tee kochen, Füße hoch – das nächste schöne Wetter kommt bestimmt!'])
     if d['code'] in (45, 48):
-        return rnd.choice(['Licht an im Nebel, fahrt vorsichtig – und macht es euch gemütlich!',
-                           'Warm einpacken und vorsichtig fahren – bis morgen!'])
+        return frisch(rnd, 'schluss_nebel', ['Licht an im Nebel, fahrt vorsichtig – und macht es euch gemütlich!',
+                           'Warm einpacken und vorsichtig fahren – bis morgen!',
+                           'Kommt gut durch die graue Suppe – oben auf den Höhen wartet vielleicht schon die Sonne!',
+                           'Abblendlicht an, Abstand halten – und dann einen schönen Tag, bis morgen!',
+                           'Nebel hin oder her – macht was Schönes aus dem Tag. Bis morgen!'], tage=5)
     if d['code'] == 3:
         return rnd.choice(['Auch ein grauer Tag kann schön werden – macht was draus!', 'Jacke an und los – bis morgen!'])
     if d['tmax'] <= 3:
@@ -871,7 +905,7 @@ def skript(days, warn, heute, nur_special=False):
         seg.append(dict(art='special', karte=karte, bg='sturm' if sp and sp[0] in ('warn', 'sturm', 'gewitter', 'regen') else 'winter' if 'schnee' in sp else 'hoehen',
                         text=(gruss + ' ' if not nur_special else '') + t))
     else:
-        hinweis = (' Kurz vorweg: Vom Deutschen Wetterdienst gilt %s. Passt auf euch auf!' % ' und '.join(('eine ' + w[0].lower() + w[1:]) if w.lower().startswith('amtliche') else w for w in warn[:2])) if warn else ''
+        hinweis = (' ' + dwd_satz(rnd, ' und '.join(('eine ' + w[0].lower() + w[1:]) if w.lower().startswith('amtliche') else w for w in warn[:2]))) if warn else ''
         seg.append(dict(art='intro', bg='schloss', text=gruss + (' Für alle, die neu dabei sind: Ich bin Max, euer Wettersprecher für den Odenwald.' if heute.weekday() == 0 else '') + ' Das ist euer Odenwald-Wetter für %s.' % TAGE[heute.weekday()] + hinweis))
     if not nur_special and a.get('gestern'):
         seg.append(dict(art='rueckblick', bg='schloss', tafel_img=tafel_gestern(a['gestern'], heute - dt.timedelta(days=1)),
