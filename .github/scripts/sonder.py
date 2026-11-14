@@ -72,7 +72,10 @@ def erkennen(alerts, H):
                 if typ == 'frost' and 'STRENG' not in ev: continue      # normaler Frost kommt schon im Tagesbeitrag
                 zeit = None
                 if a.get('onset') and a.get('expires'): zeit = 'Gültig von %s bis %s' % (uhr(a['onset']), uhr(a['expires']))
-                add(typ, 'dwd', ['DWD: ' + (a.get('headline_de') or a.get('event_de'))], zeit, DWD_STUFE.get(a.get('severity')),
+                st = DWD_STUFE.get(a.get('severity'))
+                if typ == 'hitze':   # DWD-Hitzewarnungen haben ein eigenes, zweistufiges System
+                    st = 'Hitzewarnung Stufe 2 – Extreme Wärmebelastung' if 'EXTREM' in ev else 'Hitzewarnung Stufe 1 – Starke Wärmebelastung'
+                add(typ, 'dwd', ['DWD: ' + (a.get('headline_de') or a.get('event_de'))], zeit, st,
                     (a.get('instruction_de') or '').split('\n')[0][:220] or None, a.get('orte'))
                 break                                                   # eine Warnung = eine Meldung
     # 2) Vorhersage der nächsten 24 Stunden
