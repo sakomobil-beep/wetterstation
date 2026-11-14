@@ -1,16 +1,6 @@
 [
 {
 "d": "2026-11-12",
-"g": "frost",
-"k": "In der Nacht rutschen die Werte auf 0 Gr"
-},
-{
-"d": "2026-11-12",
-"g": "frage",
-"k": "Aus welchem Ort im Odenwald schaut ihr z"
-},
-{
-"d": "2026-11-12",
 "g": "folgen",
 "k": "Wer uns folgt, weiß morgens als Erster B"
 },
@@ -1998,5 +1988,15 @@
 "d": "2026-11-14",
 "g": "schluss_nebel",
 "k": "Kommt gut durch die graue Suppe – oben a"
+},
+{
+"d": "2026-11-14",
+"g": "wissen_intro",
+"k": "Zeit für Wetterwissen – in 20 Sekunden!"
+},
+{
+"d": "2026-11-14",
+"g": "wissen_ende",
+"k": "Morgen gibt’s das nächste Wetterwissen –"
 }
 ]
