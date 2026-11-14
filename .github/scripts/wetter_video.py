@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Täglicher Video-Wetterbericht „Odenwald-Wetter“ mit dem Comic-Moderator Max (Wettersprecher).
 Liest fb/daten.json (von fb_post.py), schreibt fb/wetter.mp4 (+ wetter.json) bzw. fb/special.mp4 (+ special.json).
-Stimme: Microsoft Neural-Stimme „Conrad“ über edge-tts. Ohne edge-tts (Test) wird eine stumme Spur erzeugt.
+Stimme: Microsoft Neural-Stimme „Florian Multilingual“ über edge-tts. Ohne edge-tts (Test) wird eine stumme Spur erzeugt.
 Eigene (KI-)Hintergrundbilder: einfach als .jpg/.png in den Ordner video/hintergruende/ legen – sie werden mitbenutzt."""
 import json, termine as TERMINE, os, sys, math, random, subprocess, asyncio, glob, tempfile, datetime as dt
 from zoneinfo import ZoneInfo
@@ -11,7 +11,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 FB = os.path.join(ROOT, 'fb')
 W, H, FPS = 720, 1280, 25
-VOICE = 'de-DE-ConradNeural'
+VOICE = 'de-DE-FlorianMultilingualNeural'
 TAGE = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
 MONATE = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']
 B = '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf'
