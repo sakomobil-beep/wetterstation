@@ -26,4 +26,4 @@ jobs:
             for f in *.mp3; do echo "<h3>${f%.mp3}</h3><audio controls src=\"$f\" style=\"width:100%\"></audio>"; done; } > index.html
       - run: |
           git config user.name github-actions; git config user.email actions@github.com
-          git add stimmproben && git commit -m "Stimmproben für Max" && git push
+          git add stimmproben && git commit -m "Stimmproben für Max" && git pull --rebase && git push
