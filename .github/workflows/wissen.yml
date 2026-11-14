@@ -1,0 +1,42 @@
+name: Wetterwissen in 20 Sekunden
+# Mo–Fr: um 14:30 Uhr (Berlin) wird das neue Wetterwissen-Short gebaut, damit es um 15 Uhr zum Posten bereitliegt.
+# Vorerst NICHT automatisch gepostet – Kingman teilt es von Hand aus der Zentrale (💡 Wetterwissen).
+on:
+  schedule:
+    - cron: '30 12 * * 1-5'   # 14:30 Sommerzeit
+    - cron: '30 13 * * 1-5'   # 14:30 Winterzeit
+  workflow_dispatch: {}
+permissions:
+  contents: write
+concurrency:
+  group: repo-schreiben
+  cancel-in-progress: false
+jobs:
+  wissen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Nur um 14 Uhr Berliner Zeit (Sommer-/Winterzeit)
+        id: zeit
+        run: |
+          H=$(TZ=Europe/Berlin date +%-H)
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "$H" = "14" ]; then echo "los=1" >> $GITHUB_OUTPUT; else echo "Nicht jetzt ($H Uhr)."; fi
+      - if: steps.zeit.outputs.los == '1'
+        uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - if: steps.zeit.outputs.los == '1'
+        uses: FedericoCarboni/setup-ffmpeg@v3
+        timeout-minutes: 5
+      - if: steps.zeit.outputs.los == '1'
+        run: pip install pillow numpy edge-tts
+      - if: steps.zeit.outputs.los == '1'
+        run: python .github/scripts/wissen_video.py
+      - if: steps.zeit.outputs.los == '1'
+        name: Speichern
+        run: |
+          git config user.name "wetter-bot"; git config user.email "actions@users.noreply.github.com"
+          git add -A fb
+          git diff --cached --quiet && exit 0
+          git commit -m "Wetterwissen $(TZ=Europe/Berlin date +'%d.%m.%Y %H:%M')"
+          for i in 1 2 3; do git pull --rebase -X theirs -q && git push && break; git rebase --abort 2>/dev/null; sleep 5; done

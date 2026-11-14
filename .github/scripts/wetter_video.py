@@ -960,7 +960,7 @@ def skript(days, warn, heute, nur_special=False):
                 ts['text'] = rnd.choice(['Mein Tipp für heute: ', 'Und jetzt mein Tipp: ', 'Noch was für eure Freizeit: ']) + th.replace('Tipp für heute: ', '')
             elif th: seg[-1 if seg[-1]['art'] != 'wochenende' else -1]['text'] += ' ' + th   # Feiertag/Ferien: nur Hinweis, kein Tipp
         except Exception as e: print('Termine nicht möglich:', e)
-    if not nur_special:
+    if False:   # (14.11.2026) Wetter-Wissen ist jetzt eine eigene Rubrik (wissen_video.py, Mo–Fr 15 Uhr)
         try:
             ww = wetterwissen(a, heute, rnd)
             if ww: seg.append(dict(art='wissen', bg='wald', titel_w=ww['t'], text=rnd.choice(['Und jetzt: Wetter-Wissen in 20 Sekunden! ', 'Zum Schluss noch Wetter-Wissen in 20 Sekunden: ', 'Wetter-Wissen in 20 Sekunden: ']) + ww['s']))
