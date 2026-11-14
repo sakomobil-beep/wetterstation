@@ -1,5 +1,5 @@
-name: Wetterwissen in 20 Sekunden
-# Mo–Fr: um 14:30 Uhr (Berlin) wird das neue Wetterwissen-Short gebaut, damit es um 15 Uhr zum Posten bereitliegt.
+name: Wetterwissen mit Max
+# Mo–Fr: um 14:30 Uhr (Berlin) wird das neue Video „Wetterwissen mit Max“ (ca. 45 Sek.) gebaut, damit es um 15 Uhr zum Posten bereitliegt.
 # Vorerst NICHT automatisch gepostet – Kingman teilt es von Hand aus der Zentrale (💡 Wetterwissen).
 on:
   schedule:

@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       art:
-        description: 'Welches Video? (tag = Morgenvideo, woche = Wochenausblick, thema = Themenvideo Max erklärt, mittag = Mittagsbeitrag mit der Kreiskarte, abend = Abendvideo aus dem Studio, monat = Monatsrückblick, wissen = Wetterwissen in 20 Sekunden)'
+        description: 'Welches Video? (tag = Morgenvideo, woche = Wochenausblick, thema = Themenvideo Max erklärt, mittag = Mittagsbeitrag mit der Kreiskarte, abend = Abendvideo aus dem Studio, monat = Monatsrückblick, wissen = Wetterwissen mit Max)'
         default: 'tag'
         type: choice
         options: [tag, woche, thema, mittag, abend, monat, wissen]

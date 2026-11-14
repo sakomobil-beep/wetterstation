@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""„Wetterwissen in 20 Sekunden“ – eigene Rubrik (seit 14.11.2026), Mo–Fr um 15 Uhr, vorerst von Hand posten.
+"""„Wetterwissen mit Max“ – eigene Rubrik (seit 14.11.2026, ca. 45 Sekunden), Mo–Fr um 15 Uhr, vorerst von Hand posten.
+Ablauf: Aufhänger – Erklärung in 3 Schritten (Grafik baut sich mit auf) – Odenwald-Bezug mit echten Werten unserer Station – Abschluss.
 Max sitzt in seinem Wissenszimmer (Schubladenschrank, großer Fernseher, Bücher, Lampen, Globus) und erklärt ein
 Wetter-Phänomen – passend zu Wetter und Jahreszeit (Einstufung wie im Morgenvideo), dasselbe Thema frühestens nach 365 Tagen
 (bzw. wenn der Vorrat aufgebraucht ist: das am längsten zurückliegende). Max trägt täglich wechselnd Hemd oder Pulli.
 Ausgabe: fb/wissen.mp4 + fb/wissen.json (Titel, Skript, Beitragstext).   Test ohne Ton:  python wissen_video.py --demo"""
-import os, sys, json, math, random, subprocess, tempfile, datetime as dt
+import os, re, sys, json, math, random, subprocess, tempfile, datetime as dt
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -151,7 +152,7 @@ def kategorien(a, heute):
 
 
 def thema_waehlen(a, heute, rnd):
-    L = json.load(open(os.path.join(ROOT, 'data', 'wetterwissen.json'), encoding='utf-8'))
+    L = json.load(open(os.path.join(ROOT, 'data', 'wetterwissen_max.json'), encoding='utf-8'))
     try: log = json.load(open(LOG, encoding='utf-8'))
     except Exception: log = []
     zuletzt = {e['t']: e['d'] for e in log}
@@ -167,7 +168,7 @@ def thema_waehlen(a, heute, rnd):
 
 
 # --- Grafik im Fernseher (640 x 360), leicht animiert ------------------------------------------
-def szene(k, titel, t):
+def szene(k, titel, t, kurz=None, schritt=-1):
     im = V.verlauf(640, 360, (30, 70, 120), (110, 160, 210)).convert('RGBA'); d = ImageDraw.Draw(im)
     if k in ('nebel', 'herbst'):
         d.polygon([(0, 360), (0, 150), (150, 90), (260, 230), (380, 230), (500, 80), (640, 150), (640, 360)], fill=(70, 110, 80))
@@ -175,7 +176,6 @@ def szene(k, titel, t):
             y = 225 + j * 18; x = (t * 25 + j * 70) % 120 - 60
             d.rounded_rectangle([60 + x, y, 580 + x, y + 26], radius=13, fill=(235, 238, 242, 200))
         for x0 in (60, 560): d.line([(x0, 120), (x0 + (90 if x0 < 300 else -90), 210)], fill=(150, 200, 255), width=6)
-        d.text((320, 340), 'kalte Luft sammelt sich im Tal', font=F(22), fill='white', anchor='mm')
     elif k in ('frost', 'winter'):
         d.rectangle([0, 270, 640, 360], fill=(225, 235, 245))
         for j in range(40): x = (j * 53) % 640; y = (j * 37 + t * 30) % 260; d.text((x, y), '*', font=F(26), fill=(255, 255, 255))
@@ -200,8 +200,29 @@ def szene(k, titel, t):
         r = 70 + 5 * math.sin(t * 2); d.ellipse([320 - r, 160 - r, 320 + r, 160 + r], fill=(250, 205, 60))
         for j in range(12):
             an = j * math.pi / 6 + t * 0.4; d.line([(320 + 95 * math.cos(an), 160 + 95 * math.sin(an)), (320 + 125 * math.cos(an), 160 + 125 * math.sin(an))], fill=(250, 205, 60), width=8)
-    band = Image.new('RGBA', (640, 64), (15, 25, 45, 220)); ImageDraw.Draw(band).text((320, 32), titel, font=F(30), fill='white', anchor='mm')
+    band = Image.new('RGBA', (640, 64), (15, 25, 45, 220)); ImageDraw.Draw(band).text((320, 32), titel, font=F(28), fill='white', anchor='mm')
     im.alpha_composite(band, (0, 0))
+    if kurz and schritt >= 0:   # Schritte bauen sich nacheinander auf
+        ov = Image.new('RGBA', (640, 360), (0, 0, 0, 0)); od = ImageDraw.Draw(ov)
+        od.rectangle([0, 220, 640, 360], fill=(10, 20, 40, 200))
+        for n_, z in enumerate(kurz[:schritt + 1]):
+            akt = n_ == schritt
+            od.ellipse([20, 232 + n_ * 42, 52, 264 + n_ * 42], fill=(215, 160, 20) if akt else (90, 110, 140))
+            od.text((36, 248 + n_ * 42), str(n_ + 1), font=F(20), fill=(30, 20, 5) if akt else 'white', anchor='mm')
+            od.text((66, 248 + n_ * 42), z, font=F(26), fill='white' if akt else (190, 200, 215), anchor='lm')
+        im.alpha_composite(ov)
+    return im
+
+
+def wertekarte(titel, text):
+    im = V.verlauf(640, 360, (20, 60, 40), (40, 110, 70)).convert('RGBA'); d = ImageDraw.Draw(im)
+    d.rectangle([0, 0, 640, 64], fill=(15, 25, 45, 230)); d.text((320, 32), 'Station Bad König – gemessen', font=F(28), fill='white', anchor='mm')
+    zeilen, z = [], ''
+    for w_ in text.split():
+        if len(z + ' ' + w_) > 30: zeilen.append(z); z = w_
+        else: z = (z + ' ' + w_).strip()
+    zeilen.append(z)
+    for n_, zl in enumerate(zeilen[:6]): d.text((320, 100 + n_ * 42), zl, font=F(28), fill='white', anchor='mm')
     return im
 
 
@@ -221,14 +242,24 @@ def main():
     kl = KLEIDUNG[heute.toordinal() % len(KLEIDUNG)]
     if not (V.pulli_zeit(heute)): anziehen(kl)
     else: V.PULLI[0] = V.PULLI_NAMEN[heute.toordinal() % len(V.PULLI_NAMEN)]   # Advent: Weihnachtspulli wie im Studio
-    intro = V.frisch(rnd, 'wissen_intro', ['Wetterwissen in 20 Sekunden!', 'Zeit für Wetterwissen – in 20 Sekunden!',
-                                           'Max erklärt – Wetterwissen in 20 Sekunden.', 'Hallo zusammen! Heute: Wetterwissen in 20 Sekunden.'])
-    frage = x['t'] if x['t'].endswith('?') else x['t'] + '.'
+    intro = V.frisch(rnd, 'wissen_intro', ['Hallo zusammen, hier ist Max – Zeit für Wetterwissen!', 'Wetterwissen mit Max – heute eine spannende Frage:',
+                                           'Hallo Odenwald! Hier ist euer Max mit einem Stück Wetterwissen.', 'Willkommen zu Wetterwissen mit Max!'])
+    g = (a.get('gestern') or {}); werte = dict(g_tmin=g.get('tmin'), g_tmax=g.get('tmax'), g_regen=g.get('regen'), g_boe=g.get('boe'), sonne=a.get('sonne'))
+    def fmt(v):
+        v = float(v); t_ = str(int(round(v))) if abs(v - round(v)) < 0.05 else ('%.1f' % v).replace('.', ',')
+        return t_.replace('-', 'minus ')
+    bezug = None
+    try:
+        noetig = re.findall(r'\{(\w+)\}', x['bezug'])
+        if all(werte.get(k_) is not None for k_ in noetig): bezug = x['bezug'].format(**{k_: fmt(werte[k_]) for k_ in noetig})
+    except Exception as e: print('Bezug nicht möglich:', e)
     schluss = V.frisch(rnd, 'wissen_ende', ['Wieder was gelernt? Dann folgt uns für mehr Wetterwissen aus dem Odenwald!',
                                             'Habt ihr das gewusst? Schreibt’s mir in die Kommentare!',
                                             ('Am Montag gibt’s das nächste Wetterwissen – schönes Wochenende!' if heute.weekday() >= 4 else 'Morgen gibt’s das nächste Wetterwissen – bis dann!'),
-                                            'Mehr Wetter aus dem Odenwald gibt’s auf wetter-badkoenig.de.'])
-    teile = [('intro', intro + ' ' + frage), ('text', x['s']), ('ende', schluss)]
+                                            'Welches Wetter-Rätsel soll ich als Nächstes lösen? Schreibt’s mir!'])
+    teile = [('intro', intro + ' ' + x['hook'])] + [('s%d' % n_, st) for n_, st in enumerate(x['schritte'])]
+    if bezug: teile.append(('bezug', bezug))
+    teile.append(('ende', schluss))
     tmp = tempfile.mkdtemp(); echt = True; dat = []
     for n, (art, txt) in enumerate(teile):
         p = os.path.join(tmp, 'a%d.mp3' % n)
@@ -252,7 +283,7 @@ def main():
     bg = bg_wissen(); bw, bh = bg.size; cw = int(min(bw, bh * W / H)); x0 = (bw - cw) // 2; sc = W / cw
     basis = bg.crop((x0, 0, x0 + cw, int(cw * H / W))).resize((W, H)).convert('RGBA')
     tx0, ty0, tx1, ty1 = TV; rx, ry, rw, rh = int((tx0 - x0) * sc), int(ty0 * sc), int((tx1 - tx0) * sc), int((ty1 - ty0) * sc)
-    desk = desk_wissen(); KOPF = kopf('WETTERWISSEN IN 20 SEKUNDEN')
+    desk = desk_wissen(); KOPF = kopf('WETTERWISSEN MIT MAX')
     MODS = {}
     ziel = os.path.join(FB, 'wissen.mp4')
     ff = subprocess.Popen(['ffmpeg', '-y', '-loglevel', 'error', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', '%dx%d' % (W, H), '-r', str(FPS), '-i', '-',
@@ -262,14 +293,19 @@ def main():
         zt = i / FPS
         akt = max([t for t in dat if t['start'] <= zt] or dat[:1], key=lambda t: t['start'])
         fr = basis.copy()
-        sz = szene(x['k'], x['t'], zt).resize((rw, rh))
+        if akt['art'] == 'bezug':
+            if 'WK' not in MODS: MODS['WK'] = wertekarte(x['t'], akt['text'])
+            sz = MODS['WK'].resize((rw, rh))
+        else:
+            sch = int(akt['art'][1]) if akt['art'].startswith('s') else (2 if akt['art'] == 'ende' else -1)
+            sz = szene(x['k'], x['t'], zt, x.get('kurz'), sch).resize((rw, rh))
         ein = min(1, zt / 0.6); 
         if ein < 1: sz = Image.blend(Image.new('RGBA', sz.size, (24, 36, 48, 255)), sz, ein)
         fr.alpha_composite(sz, (rx, ry))
         lev = lv[i] if i < len(lv) else 0
         mund = 0 if lev < 0.15 else 1 if lev < 0.45 else 2 if lev < 0.8 else 3
         blink = 1 if (i % 97) < 3 else 0
-        zeig = 1 if akt['art'] == 'text' and zt - akt['start'] < 2.2 else 3 if akt['art'] == 'intro' and zt < 1.6 else 0
+        zeig = 1 if akt['art'] in ('s0', 's1', 's2', 'bezug') and zt - akt['start'] < 1.8 else 3 if akt['art'] == 'intro' and zt < 1.6 else 0
         key = (mund, blink, zeig)
         if key not in MODS: MODS[key] = moderator(mund, blink, zeig, 0, studio=True)
         mm = MODS[key]; bob = int(2 * math.sin(zt * 2.2))
@@ -278,7 +314,7 @@ def main():
         if zt < 3.0: fr.alpha_composite(KOPF, (0, 30))
         ff.stdin.write(fr.convert('RGB').tobytes())
     ff.stdin.close(); ff.wait()
-    beitrag = '\n'.join(['💡 Wetterwissen in 20 Sekunden: ' + x['t'], '', x['s'], '',
+    beitrag = '\n'.join(['💡 Wetterwissen mit Max: ' + x['t'], '', x['hook'], '', ' '.join(x['schritte']), '',
                          'Jeden Montag bis Freitag erklärt Max ein Stück Wetter – folgt uns, um nichts zu verpassen!',
                          '🌦️ Live-Werte aus Bad König: https://wetter-badkoenig.de', '', '#Wetterwissen #Odenwald #BadKönig #Wetter #MaxErklärt'])
     json.dump(dict(erstellt=dt.datetime.now().astimezone().isoformat(timespec='minutes'), datum=heute.isoformat(), titel=x['t'], kategorie=x['k'],
