@@ -476,8 +476,7 @@ def tagtext(d, wann, nachtfrost=True):
         if nachtfrost and H['tmin'] <= 0 < d.get('frost_min', d['tmin']):
             s += ' ' + rnd.choice(['Nachts friert es auf den Höhen, bis %s Grad.' % zahl(H['tmin']),
                                     'Auf den Höhen gibt es nachts leichten Frost, bis %s Grad.' % zahl(H['tmin'])])
-    if d.get('frost_min', d['tmin']) <= 0 and N_vm_nass(d) and lage(d)['glaette'] not in ('naesse', 'glatteis', 'schnee'):
-        s += ' Fällt der %s morgens auf den gefrorenen Boden, kann es glatt werden – vorsichtig fahren!' % ('Niesel' if w == 'Nieselregen' else 'Regen')
+    # (14.11.2026) alte Regel „Regen auf gefrorenen Boden“ entfernt – Glätte sagt nur noch die gemeinsame Einstufung (winter_saetze)
     s += winter_saetze(d, wann, rnd)
     if d.get('sicher') == 'gering':
         s += ' ' + rnd.choice(['Aber ehrlich gesagt: Da sind sich die Wettermodelle noch uneinig.',
