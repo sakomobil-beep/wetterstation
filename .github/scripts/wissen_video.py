@@ -226,7 +226,7 @@ def main():
     frage = x['t'] if x['t'].endswith('?') else x['t'] + '.'
     schluss = V.frisch(rnd, 'wissen_ende', ['Wieder was gelernt? Dann folgt uns für mehr Wetterwissen aus dem Odenwald!',
                                             'Habt ihr das gewusst? Schreibt’s mir in die Kommentare!',
-                                            'Morgen gibt’s das nächste Wetterwissen – bis dann!',
+                                            ('Am Montag gibt’s das nächste Wetterwissen – schönes Wochenende!' if heute.weekday() >= 4 else 'Morgen gibt’s das nächste Wetterwissen – bis dann!'),
                                             'Mehr Wetter aus dem Odenwald gibt’s auf wetter-badkoenig.de.'])
     teile = [('intro', intro + ' ' + frage), ('text', x['s']), ('ende', schluss)]
     tmp = tempfile.mkdtemp(); echt = True; dat = []
