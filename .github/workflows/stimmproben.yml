@@ -11,7 +11,7 @@ jobs:
       - run: pip install edge-tts
       - run: |
           T="Guten Morgen, Odenwald! Hier ist Max mit eurem Wetter. Gestern hatten wir in Bad König bis zu neun Grad. Heute bleibt es meist trocken, am Nachmittag zeigt sich sogar mal die Sonne. Heute Nacht wird es frostig, also morgen früh die Scheiben kratzen!"
-          cd stimmproben
+          mkdir -p stimmproben && cd stimmproben
           p(){ edge-tts --voice "$1" --rate="$3" --pitch="$4" --text "$T" --write-media "$2.mp3"; }
           p de-DE-FlorianMultilingualNeural 1-florian-aktuell +0% +0Hz
           p de-DE-ConradNeural 2-conrad +0% +0Hz
