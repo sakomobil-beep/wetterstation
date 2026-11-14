@@ -16,6 +16,7 @@ jobs:
           p de-DE-FlorianMultilingualNeural 1-florian-aktuell +0% +0Hz
           p de-DE-ConradNeural 2-conrad +0% +0Hz
           p de-DE-ConradNeural 3-conrad-tiefer-langsamer -8% -6Hz
+          p de-DE-ConradNeural 3b-conrad-etwas-hoeher +0% +6Hz
           p de-DE-KillianNeural 4-killian +0% +0Hz
           p de-AT-JonasNeural 5-jonas-oesterreich +0% +0Hz
           p en-US-AndrewMultilingualNeural 6-andrew-multilingual +0% +0Hz
