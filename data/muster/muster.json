@@ -1,0 +1,32 @@
+[
+ {
+  "typ": "gewitter",
+  "titel": "Gewitter",
+  "bild": "muster-gewitter.jpg",
+  "text": "⛈️ WETTER-SONDERMELDUNG für den Odenwald: Gewitter ⛈️\n\n⚠️ Stufe 3 – Unwetter\n📍 Gilt für: ganzer Odenwaldkreis\n• DWD: Amtliche UNWETTERWARNUNG vor SCHWEREM GEWITTER mit STARKREGEN\n🕒 Gültig von morgen 11:00 Uhr bis morgen 15:00 Uhr\n\n👉 Schließen Sie Fenster und Türen! Sichern Sie Gegenstände im Freien. Halten Sie Abstand zu Bäumen.\n\nLive-Werte, Radar & Warnungen 👉 https://wetter-badkoenig.de\n#Odenwald #Odenwaldkreis #BadKönig #Wetter #Gewitter #Unwetter"
+ },
+ {
+  "typ": "sturm",
+  "titel": "Sturm",
+  "bild": "muster-sturm.jpg",
+  "text": "🌪️ WETTER-SONDERMELDUNG für den Odenwald: Sturm 🌪️\n\n⚠️ Stufe 2 – Markantes Wetter\n📍 Gilt für: ganzer Odenwaldkreis\n• DWD: Amtliche WARNUNG vor STURMBÖEN\n🕒 Gültig von morgen 07:00 Uhr bis morgen 17:00 Uhr\n\n👉 Achten Sie besonders auf herabstürzende Äste und umstürzende Bäume.\n\nLive-Werte, Radar & Warnungen 👉 https://wetter-badkoenig.de\n#Odenwald #Odenwaldkreis #BadKönig #Wetter #Sturm #Unwetter"
+ },
+ {
+  "typ": "schnee",
+  "titel": "Schneefall",
+  "bild": "muster-schnee.jpg",
+  "text": "❄️ WETTER-SONDERMELDUNG für den Odenwald: Schneefall ❄️\n\n⚠️ Stufe 2 – Markantes Wetter\n📍 Gilt für: ganzer Odenwaldkreis\n• DWD: Amtliche WARNUNG vor SCHNEEFALL\n🕒 Gültig von morgen 01:00 Uhr bis morgen 09:00 Uhr\n\n👉 Rechnen Sie mit Behinderungen im Straßenverkehr. Fahren Sie vorsichtig.\n\nLive-Werte, Radar & Warnungen 👉 https://wetter-badkoenig.de\n#Odenwald #Odenwaldkreis #BadKönig #Wetter #Schnee #Unwetter"
+ },
+ {
+  "typ": "glaette",
+  "titel": "Glätte",
+  "bild": "muster-glaette.jpg",
+  "text": "🧊 WETTER-SONDERMELDUNG für den Odenwald: Glätte 🧊\n\n⚠️ Stufe 1 – Wetterwarnung\n📍 Gilt für: Oberzent, Mossautal, Michelstadt\n• DWD: Amtliche WARNUNG vor GLÄTTE\n🕒 Gültig von heute 23:00 Uhr bis morgen 06:00 Uhr\n\n👉 Achten Sie auf Glätte auf Straßen und Gehwegen.\n\nLive-Werte, Radar & Warnungen 👉 https://wetter-badkoenig.de\n#Odenwald #Odenwaldkreis #BadKönig #Wetter #Glätte #Unwetter"
+ },
+ {
+  "typ": "frost",
+  "titel": "Strenger Frost",
+  "bild": "muster-frost.jpg",
+  "text": "🥶 WETTER-SONDERMELDUNG für den Odenwald: Strenger Frost 🥶\n\n⚠️ Stufe 2 – Markantes Wetter\n📍 Gilt für: ganzer Odenwaldkreis\n• DWD: Amtliche WARNUNG vor STRENGEM FROST\n🕒 Gültig von morgen 17:00 Uhr bis Montag 05:00 Uhr\n\n👉 Schützen Sie Wasserleitungen vor dem Einfrieren.\n\nLive-Werte, Radar & Warnungen 👉 https://wetter-badkoenig.de\n#Odenwald #Odenwaldkreis #BadKönig #Wetter #Frost #Unwetter"
+ }
+]
