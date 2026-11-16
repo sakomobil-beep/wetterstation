@@ -1,56 +1,6 @@
 [
 {
 "d": "2026-11-14",
-"g": "glaette_r",
-"k": "Achtet heute früh auf Reifglätte, vor al"
-},
-{
-"d": "2026-11-14",
-"g": "nebel_w",
-"k": "Heute früh liegt in den Tälern Nebel bis"
-},
-{
-"d": "2026-11-14",
-"g": "ueberg_tipp",
-"k": "Noch was für eure Freizeit: "
-},
-{
-"d": "2026-11-14",
-"g": "ueberg_morgen",
-"k": "So, und jetzt der Blick nach vorn. "
-},
-{
-"d": "2026-11-14",
-"g": "tag",
-"k": "Morgen, am Sonntag, wird es nass. Die Te"
-},
-{
-"d": "2026-11-14",
-"g": "frost",
-"k": "In der Nacht zum Sonntag geht es runter "
-},
-{
-"d": "2026-11-14",
-"g": "frage",
-"k": "Wer musste heute früh schon Scheiben kra"
-},
-{
-"d": "2026-11-14",
-"g": "folgen",
-"k": "Ein Daumen hoch und ein Follow – damit h"
-},
-{
-"d": "2026-11-14",
-"g": "schluss_nebel",
-"k": "Licht an im Nebel, fahrt vorsichtig – un"
-},
-{
-"d": "2026-11-14",
-"g": "abend_gruss",
-"k": "Ei gude wie, Odenwald – hier ist euer Ab"
-},
-{
-"d": "2026-11-14",
 "g": "dwd",
 "k": "Ein Hinweis vorab: Für unsere Gegend gil"
 },
@@ -1998,5 +1948,55 @@
 "d": "2026-11-16",
 "g": "abend_live",
 "k": "Wer nachts mal nachschauen will: wetter-"
+},
+{
+"d": "2026-11-16",
+"g": "dwd",
+"k": "Erst das Wichtige: Der Deutsche Wetterdi"
+},
+{
+"d": "2026-11-16",
+"g": "r_nass",
+"k": "Tja, "
+},
+{
+"d": "2026-11-16",
+"g": "ueberg_heute",
+"k": "Und nun zum Tag. "
+},
+{
+"d": "2026-11-16",
+"g": "tag",
+"k": "Heute wird es nass. Die Temperatur: rund"
+},
+{
+"d": "2026-11-16",
+"g": "klima_mild",
+"k": "Ganz schön mild für Mitte November!"
+},
+{
+"d": "2026-11-16",
+"g": "ueberg_tipp",
+"k": "Mein Tipp für heute: "
+},
+{
+"d": "2026-11-16",
+"g": "ueberg_morgen",
+"k": ""
+},
+{
+"d": "2026-11-16",
+"g": "tag",
+"k": "Morgen, am Dienstag, ist Regen angesagt,"
+},
+{
+"d": "2026-11-16",
+"g": "frage",
+"k": "Aus welchem Ort im Odenwald schaut ihr z"
+},
+{
+"d": "2026-11-16",
+"g": "folgen",
+"k": "Neue Woche, neue Follower? Wenn ihr uns "
 }
 ]

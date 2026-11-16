@@ -1,6 +1,18 @@
 [
  {
   "datum": "2026-11-16",
+  "datei": "2026-11-16.mp4",
+  "art": "morgen",
+  "erstellt": "2026-11-16T21:10+00:00",
+  "special": false,
+  "warn": [
+   "Amtliche Warnung vor Dauerregen",
+   "Amtliche Warnung vor Windböen"
+  ],
+  "dauer": 127.0
+ },
+ {
+  "datum": "2026-11-16",
   "datei": "2026-11-16-abend.mp4",
   "art": "abend",
   "erstellt": "2026-11-16T18:12+00:00",
@@ -9,19 +21,6 @@
    "Amtliche Warnung vor Dauerregen"
   ],
   "dauer": 95.9
- },
- {
-  "datum": "2026-11-16",
-  "datei": "2026-11-16.mp4",
-  "art": "morgen",
-  "erstellt": "2026-11-16T14:50+00:00",
-  "special": false,
-  "warn": [
-   "Amtliche Warnung vor Sturmböen für Bad König, Brombachtal, Erbach, Fränkisch-Crumbach, Lützelbach, Michelstadt, Mossautal, Oberzent, Reichelsheim",
-   "Amtliche Warnung vor Dauerregen",
-   "Amtliche Warnung vor Windböen"
-  ],
-  "dauer": 134.9
  },
  {
   "datum": "2026-11-15",
