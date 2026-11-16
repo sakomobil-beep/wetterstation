@@ -1,6 +1,15 @@
 {
- "erstellt": "2026-11-16T18:55+01:00",
+ "erstellt": "2026-11-16T19:53+01:00",
  "meldungen": [
+  {
+   "typ": "sturm",
+   "titel": "Sturm",
+   "emoji": "🌪️",
+   "amtlich": true,
+   "stufe": "Stufe 1 – Wetterwarnung",
+   "bild": "sonder-sturm.jpg",
+   "text": "🌪️ WETTER-SONDERMELDUNG für den Odenwald: Sturm 🌪️\n\n⚠️ Stufe 1 – Wetterwarnung\n📍 Gilt für: ganzer Odenwaldkreis\n• DWD: Amtliche WARNUNG vor WINDBÖEN\n🕒 Gültig von morgen 12:00 Uhr bis morgen 20:00 Uhr\n\n👉 Hinweis auf: umherfliegende leichte Gegenstände. \n\nLive-Werte, Radar & Warnungen 👉 https://wetter-badkoenig.de\n#Odenwald #Odenwaldkreis #BadKönig #Wetter #Sturm #Unwetter"
+  },
   {
    "typ": "starkregen",
    "titel": "Starkregen",
