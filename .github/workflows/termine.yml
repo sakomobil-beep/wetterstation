@@ -14,7 +14,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: repo-schreiben
+  group: nebenarbeiten
   cancel-in-progress: false
 jobs:
   eintragen:

@@ -14,7 +14,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: repo-schreiben
+  group: videobau
   cancel-in-progress: false
 
 jobs:

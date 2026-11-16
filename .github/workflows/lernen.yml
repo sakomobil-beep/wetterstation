@@ -2,7 +2,7 @@ name: Vorhersage lernen
 
 on:
   schedule:
-    - cron: '20 */3 * * *'   # alle 3 Stunden: Messwerte + Modell sammeln, Korrektur neu lernen
+    - cron: '40 */3 * * *'   # alle 3 Stunden: Messwerte + Modell sammeln, Korrektur neu lernen
   workflow_dispatch:
   push:
     paths: ['.github/scripts/lernen.py', '.github/scripts/lernen_kreis.py', '.github/workflows/lernen.yml']
@@ -11,7 +11,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: repo-schreiben
+  group: nebenarbeiten
   cancel-in-progress: false
 
 jobs:

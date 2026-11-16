@@ -4,17 +4,17 @@ on:
   schedule:
     - cron: '30 4 * * *'   # 6:30 Uhr Sommerzeit: Bild, Text und Video erstellen (Website)
     - cron: '30 5 * * *'   # 6:30 Uhr Winterzeit
-    - cron: '0 10 * * *'   # 12 Uhr Sommerzeit: Mittagsbeitrag (Karte des Kreises) + neue Unwetterwarnung? -> Special-Video
-    - cron: '0 11 * * *'   # 12 Uhr Winterzeit
-    - cron: '0 15 * * *'   # Nachmittag: neue Unwetterwarnung? -> Special-Video
-    - cron: '0 5 * * 1-5'   # 7 Uhr Sommerzeit (Mo–Fr): Wettervideo auf Facebook
-    - cron: '0 6 * * 1-5'   # 7 Uhr Winterzeit (Mo–Fr)
-    - cron: '0 6 * * 0,6'   # 8 Uhr Sommerzeit (Sa/So): Wettervideo auf Facebook
-    - cron: '0 7 * * 0,6'   # 8 Uhr Winterzeit (Sa/So)
-    - cron: '0 17 * * 1-6'  # 19 Uhr Sommerzeit (Mo–Sa): Abendvideo aus dem Studio + Abend-Story
-    - cron: '0 18 * * 1-6'  # 19 Uhr Winterzeit (Mo–Sa)
-    - cron: '0 18 * * 0'    # Sonntag 20 Uhr Sommerzeit: Wochenausblick-Video
-    - cron: '0 19 * * 0'    # Sonntag 20 Uhr Winterzeit
+    - cron: '20 10 * * *'   # 12 Uhr Sommerzeit: Mittagsbeitrag (Karte des Kreises) + neue Unwetterwarnung? -> Special-Video
+    - cron: '20 11 * * *'   # 12 Uhr Winterzeit
+    - cron: '20 15 * * *'   # Nachmittag: neue Unwetterwarnung? -> Special-Video
+    - cron: '20 5 * * 1-5'   # 7 Uhr Sommerzeit (Mo–Fr): Wettervideo auf Facebook
+    - cron: '20 6 * * 1-5'   # 7 Uhr Winterzeit (Mo–Fr)
+    - cron: '20 6 * * 0,6'   # 8 Uhr Sommerzeit (Sa/So): Wettervideo auf Facebook
+    - cron: '20 7 * * 0,6'   # 8 Uhr Winterzeit (Sa/So)
+    - cron: '20 17 * * 1-6'  # 19 Uhr Sommerzeit (Mo–Sa): Abendvideo aus dem Studio + Abend-Story
+    - cron: '20 18 * * 1-6'  # 19 Uhr Winterzeit (Mo–Sa)
+    - cron: '20 18 * * 0'    # Sonntag 20 Uhr Sommerzeit: Wochenausblick-Video
+    - cron: '20 19 * * 0'    # Sonntag 20 Uhr Winterzeit
     - cron: '5,20,35,50 * * * *' # alle 15 Minuten, rund um die Uhr: Sondermeldungen / DWD-Warnungen prüfen
   workflow_dispatch:
   push:
@@ -22,9 +22,13 @@ on:
 
 permissions:
   contents: write
+  actions: read
 
+# Seit 16.11.2026 zwei getrennte Warteschlangen, damit sich die Läufe nicht mehr gegenseitig verdrängen:
+#  fb-check  = Viertelstunden-Prüfung (Sondermeldungen, Pushes, DWD-Warnungen -> Warn-Story/Unwetter-Special)
+#  fb-posten = Weckrufe von cron-job.org, GitHub-Rückfallzeiten (:20), Knöpfe und Code-Änderungen
 concurrency:
-  group: repo-schreiben
+  group: ${{ github.event.schedule == '5,20,35,50 * * * *' && 'fb-check' || 'fb-posten' }}
   cancel-in-progress: false
 
 jobs:
@@ -32,6 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+      CHECK: ${{ github.event.schedule == '5,20,35,50 * * * *' && '1' || '' }}
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
@@ -44,7 +49,7 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
       - uses: FedericoCarboni/setup-ffmpeg@v3
-        if: github.event_name != 'schedule' || contains(fromJSON('["30 4 * * *","30 5 * * *","0 10 * * *","0 11 * * *","0 15 * * *","0 17 * * 1-6","0 18 * * 1-6","0 5 * * 1-5","0 6 * * 1-5","0 6 * * 0,6","0 7 * * 0,6","0 18 * * 0","0 19 * * 0"]'), github.event.schedule)
+        if: github.event_name != 'schedule' || contains(fromJSON('["30 4 * * *","30 5 * * *","20 10 * * *","20 11 * * *","20 15 * * *","20 17 * * 1-6","20 18 * * 1-6","20 5 * * 1-5","20 6 * * 1-5","20 6 * * 0,6","20 7 * * 0,6","20 18 * * 0","20 19 * * 0"]'), github.event.schedule)
         timeout-minutes: 5
         continue-on-error: true   # fällt die ffmpeg-Einrichtung aus, wird trotzdem gepostet (Morgen: Video von 6:30 Uhr)
       - run: pip install pillow numpy edge-tts
@@ -67,7 +72,7 @@ jobs:
           baue() { python .github/scripts/fb_post.py $ARG && { if git status --porcelain fb | grep -q daten.json; then python .github/scripts/wetter_video.py; fi; }; }
           baue || rueckfall
       - name: Kurz vor dem Posten – Bild, Text und Video frisch erstellen
-        if: contains(fromJSON('["0 5 * * 1-5","0 6 * * 1-5","0 6 * * 0,6","0 7 * * 0,6"]'), github.event.schedule)
+        if: contains(fromJSON('["20 5 * * 1-5","20 6 * * 1-5","20 6 * * 0,6","20 7 * * 0,6"]'), github.event.schedule)
         run: |
           H=$(TZ=Europe/Berlin date +%-H); D=$(TZ=Europe/Berlin date +%u); HEUTE=$(TZ=Europe/Berlin date +%F)
           AB=7; [ "$D" -ge 6 ] && AB=8
@@ -83,7 +88,7 @@ jobs:
           }
           { python .github/scripts/fb_post.py && python .github/scripts/wetter_video.py; } || rueckfall
       - name: Mittag – Karte des Kreises (Rest des Tages) + Special-Video bei neuer Unwetterwarnung
-        if: github.event.schedule == '0 10 * * *' || github.event.schedule == '0 11 * * *' || github.event_name == 'workflow_dispatch'
+        if: github.event.schedule == '20 10 * * *' || github.event.schedule == '20 11 * * *' || github.event_name == 'workflow_dispatch'
         run: |
           H=$(TZ=Europe/Berlin date +%-H); HEUTE=$(TZ=Europe/Berlin date +%F)
           if [ "$H" -lt 12 ] || [ "$H" -ge 16 ]; then echo "Nicht die Mittagszeit ($H Uhr)."; exit 0; fi
@@ -91,7 +96,7 @@ jobs:
           python .github/scripts/fb_post.py --mittag
           python .github/scripts/wetter_video.py --special
       - name: Sonntagabend – Wochenausblick-Video
-        if: github.event.schedule == '0 18 * * 0' || github.event.schedule == '0 19 * * 0' || github.event_name == 'workflow_dispatch'
+        if: github.event.schedule == '20 18 * * 0' || github.event.schedule == '20 19 * * 0' || github.event_name == 'workflow_dispatch'
         run: |
           H=$(TZ=Europe/Berlin date +%-H); HEUTE=$(TZ=Europe/Berlin date +%F)
           if [ "$(TZ=Europe/Berlin date +%u)" != "7" ]; then echo "Nur sonntags."; exit 0; fi
@@ -103,14 +108,14 @@ jobs:
           python .github/scripts/fb_post.py --abend --nur-abends || echo "Abend-Story nicht erstellt"   # Abend-Story mit dem Wetter für Montag
           python .github/scripts/wetter_video.py --woche
       - name: Nachmittag – Special-Video bei neuer Unwetterwarnung (Tagesbeitrag bleibt)
-        if: github.event.schedule == '0 15 * * *'
+        if: github.event.schedule == '20 15 * * *'
         run: |
           cp fb/post.txt /tmp/ ; cp fb/post.json /tmp/
           python .github/scripts/fb_post.py
           cp /tmp/post.txt /tmp/post.json fb/
           python .github/scripts/wetter_video.py --special
       - name: Abends – Abendvideo aus dem Studio, Text und Abend-Story (freitags Wochenende)
-        if: github.event.schedule == '0 17 * * 1-6' || github.event.schedule == '0 18 * * 1-6' || github.event_name == 'workflow_dispatch'
+        if: github.event.schedule == '20 17 * * 1-6' || github.event.schedule == '20 18 * * 1-6' || github.event_name == 'workflow_dispatch'
         run: |
           H=$(TZ=Europe/Berlin date +%-H); HEUTE=$(TZ=Europe/Berlin date +%F)
           if [ "$(TZ=Europe/Berlin date +%u)" = "7" ]; then echo "Sonntags kommt der Wochenausblick."; exit 0; fi
@@ -134,17 +139,21 @@ jobs:
           path: .om-reserve
           key: om-reserve-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Sondermeldungen prüfen
+        if: env.CHECK == '1'
         run: python .github/scripts/sonder.py || echo "Sondermeldung nicht möglich"
       - name: Regen-Push (Radar-Nowcast Bad König)
+        if: env.CHECK == '1'
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
         run: python .github/scripts/regen_push.py
       - name: DWD-Warn-Push (amtliche Warnungen Bad König)
+        if: env.CHECK == '1'
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
         run: python .github/scripts/dwd_push.py
       - name: Unwetter-Check (DWD-Stufe 2 Story, 3/4 Special, rund um die Uhr)
         id: uw
+        if: env.CHECK == '1'
         run: python .github/scripts/unwetter_check.py || echo "neu=0" >> "$GITHUB_OUTPUT"
       - uses: FedericoCarboni/setup-ffmpeg@v3
         if: steps.uw.outputs.neu == '1'
@@ -181,6 +190,10 @@ jobs:
           git pull --rebase -X theirs -q || true   # neuesten Merkzettel holen (gegen Doppelposts)
           # Video (ab 7 Uhr, Sa/So ab 8 Uhr) und Abendbeitrag (ab 18 Uhr) – jeder Lauf versucht es,
           # fb_senden.py postet beides höchstens 1x pro Tag (falls GitHub den festen Termin verspätet oder auslässt)
+          # Getrennte Zuständigkeit (16.11.2026): Warnungen postet nur die Viertelstunden-Prüfung, die festen
+          # Beiträge die Post-Läufe. Die Prüfung holt feste Beiträge nur nach, wenn gerade kein Post-Lauf läuft.
+          ANDERE=$(gh api "repos/${{ github.repository }}/actions/workflows/facebook-post.yml/runs?per_page=20" --jq "[.workflow_runs[] | select(.id != ${{ github.run_id }} and (.status == \"in_progress\" or .status == \"queued\" or .status == \"waiting\" or .status == \"pending\"))] | length" 2>/dev/null || echo 1)
+          if [ "$CHECK" != "1" ] || [ "$ANDERE" = "0" ]; then
           python .github/scripts/fb_senden.py video || echo "Video nicht gepostet"
           python .github/scripts/fb_senden.py mittag || echo "Mittagsbeitrag nicht gepostet"
           python .github/scripts/fb_senden.py mittagstory || echo "Mittags-Story nicht gepostet"
@@ -191,9 +204,12 @@ jobs:
           python .github/scripts/fb_senden.py wissen || echo "Wetterwissen nicht gepostet"
           python .github/scripts/fb_senden.py jahr || echo "Jahresrückblick nicht gepostet"
           python .github/scripts/fb_senden.py monat || echo "Monatsrückblick nicht gepostet"
+          else echo "Post-Lauf aktiv – feste Beiträge übernimmt der."; fi
+          if [ "$CHECK" = "1" ]; then
           python .github/scripts/fb_senden.py warnstory || echo "Warn-Story nicht gepostet"
           python .github/scripts/fb_senden.py special || echo "Unwetter-Special nicht gepostet"
           python .github/scripts/fb_senden.py sonder || echo "Sondermeldung nicht gepostet"
+          fi
           git add fb/gepostet.json 2>/dev/null || true
           git diff --cached --quiet && exit 0
           git commit -m "Facebook: gepostet $(TZ=Europe/Berlin date +'%d.%m. %H:%M')"
