@@ -57,6 +57,31 @@ def _ig_id(tok, page):
 IG_TAGS = '#odenwald #odenwaldwetter #badkönig #wetter #odenwaldkreis #michelstadt #erbach #höchst #breuberg #wetterbericht #hessen #wettervorhersage'
 
 
+def ist_live(datei, max_warten=240):
+    """Facebook/Instagram holen Bilder/Videos selbst von wetter-badkoenig.de. Erst posten, wenn dort GENAU die
+    neue Datei veröffentlicht ist (sonst wird z. B. noch das alte Warnbild gepostet – Fehler vom 16.11.2026).
+    Vergleich mit der lokalen Datei: Bilder per Prüfsumme, Videos per Dateigröße."""
+    import hashlib
+    lokal = os.path.join(FB, datei)
+    if not os.path.exists(lokal): return True
+    gross = os.path.getsize(lokal); video = datei.endswith('.mp4')
+    soll = None if video else hashlib.sha256(open(lokal, 'rb').read()).hexdigest()
+    ende = time.time() + max_warten
+    while True:
+        try:
+            req = urllib.request.Request(BASIS + datei + '?v=' + str(int(time.time())), method='HEAD' if video else 'GET')
+            with urllib.request.urlopen(req, timeout=30) as r:
+                if video: ok = int(r.headers.get('Content-Length') or 0) == gross
+                else: ok = hashlib.sha256(r.read()).hexdigest() == soll
+            if ok: return True
+        except Exception: pass
+        if time.time() > ende: break
+        time.sleep(20)
+    print('%s ist auf der Website noch nicht in der neuen Fassung – nicht gepostet, nächster Lauf versucht es erneut.' % datei)
+    push('Posten verschoben', '%s war auf der Website noch nicht aktuell. Der nächste Lauf postet es.' % datei, tags='hourglass')
+    return False
+
+
 def ig_text(text):
     """Instagram-Text: Hashtag-Zeilen vom Facebook-Text weg, dafür fester Instagram-Hashtag-Block."""
     z = [l for l in text.rstrip().split('\n') if not (l.strip().startswith('#') and all(w.startswith('#') for w in l.split()))]
@@ -72,6 +97,7 @@ def instagram(datei, text, video=False, story=False):
     try:
         ig = _ig_id(tok, page)
         if not ig: print('Instagram: kein Konto mit der Seite verknüpft – übersprungen.'); return False
+        if not ist_live(datei): return False
         url = BASIS + datei + '?v=' + str(int(time.time()))
         d = {'caption': ig_text(text), 'access_token': tok}
         if story: d = {'media_type': 'STORIES', 'image_url': url, 'access_token': tok}
@@ -97,6 +123,7 @@ def instagram(datei, text, video=False, story=False):
 
 
 def video_senden(datei, text):
+    if not ist_live(datei): return False
     url = BASIS + datei + '?v=' + str(int(time.time()))
     tok, page = os.environ.get('FB_PAGE_TOKEN'), os.environ.get('FB_PAGE_ID')
     if tok and page:
@@ -114,6 +141,7 @@ def video_senden(datei, text):
 
 def senden(bild, text, art):
     """bild = Dateiname in fb/, text = Beitragstext. Gibt True zurück, wenn gepostet."""
+    if not ist_live(bild): return False
     url = BASIS + bild + '?v=' + str(int(time.time()))
     tok, page = os.environ.get('FB_PAGE_TOKEN'), os.environ.get('FB_PAGE_ID')
     if tok and page:
@@ -132,6 +160,7 @@ def fb_story(datei):
     """Foto-Story auf der Facebook-Seite: Bild unveröffentlicht hochladen, dann als Story veröffentlichen."""
     tok, page = os.environ.get('FB_PAGE_TOKEN'), os.environ.get('FB_PAGE_ID')
     if not (tok and page): return False
+    if not ist_live(datei): return False
     try:
         url = BASIS + datei + '?v=' + str(int(time.time()))
         q = urllib.parse.urlencode({'url': url, 'published': 'false', 'access_token': tok}).encode()
@@ -356,12 +385,6 @@ def main():
         except Exception: return
         if M.get('warn2_erstellt') == j.get('erstellt'): return
         if (jetzt - dt.datetime.fromisoformat(j['erstellt'])).total_seconds() > 3 * 3600: return
-        for _ in range(12):   # Bild muss erst auf wetter-badkoenig.de veröffentlicht sein (sonst lehnen FB/IG ab) – 15.11.2026
-            try:
-                with urllib.request.urlopen(BASIS + 'warn2-story.jpg?v=' + str(int(time.time())), timeout=20) as r_:
-                    if r_.status == 200 and len(r_.read()) > 10000: break
-            except Exception: pass
-            time.sleep(20)
         story_beide(M, 'warn2_story', 'warn2-story.jpg', j.get('erstellt'), jetzt, 'Warn-Story gepostet', 'DWD-Warnung: ' + '; '.join(j.get('warn', [])[:2]) + '.', 'warning')
         if os.path.exists(os.path.join(FB, 'warn2-post.jpg')) and j.get('text') and M.get('warn2_post') != j.get('erstellt'):   # zusätzlich als Beitrag (15.11.2026)
             try:

@@ -1,0 +1,40 @@
+name: Einmalig – falsche Warn-Posts vom 16.11. löschen
+on: workflow_dispatch
+permissions:
+  contents: write
+concurrency:
+  group: repo-schreiben
+  cancel-in-progress: false
+jobs:
+  korrektur:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - name: Falsche Posts löschen, Merker zurücksetzen
+        env:
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+        run: |
+          python - <<'PY'
+          import json, os, urllib.request
+          G = 'https://graph.facebook.com/v21.0/'
+          tok, page = os.environ['FB_PAGE_TOKEN'], os.environ['FB_PAGE_ID']
+          try:
+              with urllib.request.urlopen(G + page + '?fields=access_token&access_token=' + tok) as r: tok = json.load(r).get('access_token') or tok
+          except Exception as e: print('Seiten-Token:', e)
+          ids = {'FB-Beitrag': page + '_122110740555538370', 'FB-Foto': '122110740507538370', 'FB-Story': '1874869993755052',
+                 'IG-Beitrag': '17916229290510077', 'IG-Story': '18100010126121373'}
+          for n, i in ids.items():
+              try:
+                  req = urllib.request.Request(G + i + '?access_token=' + tok, method='DELETE')
+                  with urllib.request.urlopen(req) as r: print(n, 'gelöscht:', r.read().decode()[:100])
+              except urllib.error.HTTPError as e: print(n, 'nicht gelöscht:', e.code, e.read().decode()[:200])
+          p = 'fb/gepostet.json'; M = json.load(open(p, encoding='utf-8'))
+          for k in [k for k in M if k.startswith(('warn2', 'fb_warn2'))]: M.pop(k)
+          json.dump(M, open(p, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
+          PY
+          git config user.name github-actions; git config user.email actions@github.com
+          git add fb/gepostet.json; git commit -m "Warn-Posts 16.11. zurückgesetzt – neu posten" || true
+          git pull --rebase && git push
