@@ -1,0 +1,63 @@
+name: Wetterwissen mit Max
+# Mo–Fr: um 14:02 Uhr (cron-job.org „Wetterwissen Bau Weckruf“, Rückfall GitHub 14:30 Uhr) wird das neue Video „Wetterwissen mit Max“ (ca. 45 Sek.) gebaut, damit es um 15 Uhr zum Posten bereitliegt.
+# Um 15:02 Uhr (cron-job.org „Wetterwissen Post Weckruf“ → facebook-post.yml, Rückfall GitHub 15:02) wird es automatisch auf Facebook + Instagram gepostet (Rückfall: Abend-Weckruf).
+on:
+  schedule:
+    - cron: '30 12 * * 1-5'   # 14:30 Sommerzeit
+    - cron: '30 13 * * 1-5'   # 14:30 Winterzeit
+    - cron: '2 13 * * *'      # 15:02 Sommerzeit: Autopost (nur wenn das Video dafür gebaut wurde, z. B. Premiere)
+    - cron: '2 14 * * *'      # 15:02 Winterzeit
+  workflow_dispatch: {}
+permissions:
+  contents: write
+concurrency:
+  group: repo-schreiben
+  cancel-in-progress: false
+jobs:
+  wissen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Nur um 14 Uhr Berliner Zeit (Sommer-/Winterzeit)
+        id: zeit
+        run: |
+          H=$(TZ=Europe/Berlin date +%-H)
+          M=$(date -u +%M)
+          if [ "$M" -lt 20 ] && [ "${{ github.event_name }}" = "schedule" ]; then echo "post=1" >> $GITHUB_OUTPUT; exit 0; fi   # :02-Lauf = nur posten
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "$H" = "14" ]; then echo "los=1" >> $GITHUB_OUTPUT; else echo "Nicht jetzt ($H Uhr)."; fi
+      - if: steps.zeit.outputs.los == '1'
+        uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - if: steps.zeit.outputs.los == '1'
+        uses: FedericoCarboni/setup-ffmpeg@v3
+        timeout-minutes: 5
+      - if: steps.zeit.outputs.los == '1'
+        run: pip install pillow numpy edge-tts
+      - if: steps.zeit.outputs.los == '1'
+        run: python .github/scripts/wissen_video.py
+      - if: steps.zeit.outputs.los == '1'
+        name: Speichern
+        run: |
+          git config user.name "wetter-bot"; git config user.email "actions@users.noreply.github.com"
+          git add -A fb
+          git diff --cached --quiet && exit 0
+          git commit -m "Wetterwissen $(TZ=Europe/Berlin date +'%d.%m.%Y %H:%M')"
+          for i in 1 2 3; do git pull --rebase -X theirs -q && git push && break; git rebase --abort 2>/dev/null; sleep 5; done
+      - if: steps.zeit.outputs.post == '1'
+        name: Autopost (nur Videos mit autopost, ab 15 Uhr)
+        env:
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
+          GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+          GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
+          IG_AUTO: ${{ vars.IG_AUTO }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          FB_WARTEN: '5'
+        run: |
+          python .github/scripts/fb_senden.py wissen || echo "Wetterwissen nicht gepostet"
+          git config user.name "wetter-bot"; git config user.email "actions@users.noreply.github.com"
+          git add -A fb; git diff --cached --quiet && exit 0
+          git commit -m "Wetterwissen gepostet $(TZ=Europe/Berlin date +'%d.%m.%Y %H:%M')"
+          for i in 1 2 3; do git pull --rebase -X theirs -q && git push && break; git rebase --abort 2>/dev/null; sleep 5; done

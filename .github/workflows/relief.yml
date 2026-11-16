@@ -1,0 +1,21 @@
+name: Reliefkarte erstellen (einmalig)
+on: workflow_dispatch
+permissions:
+  contents: write
+concurrency:
+  group: repo-schreiben
+  cancel-in-progress: false
+jobs:
+  relief:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install numpy pillow
+      - run: python .github/scripts/relief.py
+      - run: |
+          git config user.name "wetter-bot"; git config user.email "actions@users.noreply.github.com"
+          git add data/odenwald-relief.png data/odenwald-relief.json; git diff --cached --quiet && exit 0
+          git commit -m "Reliefkarte Odenwaldkreis"; for i in 1 2 3; do git pull --rebase -q && git push && break; sleep 5; done

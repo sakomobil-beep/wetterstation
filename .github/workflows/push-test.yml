@@ -1,0 +1,9 @@
+name: Push-Test
+on: workflow_dispatch
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - env: { NTFY_TOPIC: '${{ secrets.NTFY_TOPIC }}' }
+        run: python .github/scripts/fb_senden.py pushtest

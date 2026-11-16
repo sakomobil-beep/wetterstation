@@ -1,0 +1,24 @@
+name: Google-Drive-Ablage testen / nachtragen
+# Von Hand: legt ein vorhandenes Video aus fb/ in Google Drive ab (ohne Posten).
+on:
+  workflow_dispatch:
+    inputs:
+      datei:
+        description: 'Video (wetter.mp4, abendvideo.mp4, woche.mp4, wissen.mp4, monat.mp4, jahr.mp4)'
+        default: 'wetter.mp4'
+      zeit:
+        description: 'Postzeit JJJJ-MM-TTTHH:MM (leer = jetzt)'
+        default: ''
+jobs:
+  ablage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - env:
+          GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
+          GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+          GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: python .github/scripts/drive_ablage.py "${{ inputs.datei }}" ${{ inputs.zeit }}

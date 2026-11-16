@@ -1,0 +1,2146 @@
+[
+ {
+  "k": "nebel",
+  "t": "Warum hängt der Nebel im Tal?",
+  "hook": "Warum liegt Bad König oft im Nebel, während oben in Beerfelden schon die Sonne scheint?",
+  "schritte": [
+   "In klaren Nächten gibt der Boden seine Wärme in den Himmel ab – er kühlt aus, und die Luft direkt darüber auch.",
+   "Kalte Luft ist schwerer als warme. Sie fließt die Hänge hinunter und sammelt sich unten im Tal – bei uns im Mümlingtal wie in einer Schüssel.",
+   "Wird diese kalte Luft so kühl, dass sie das Wasser nicht mehr halten kann, entstehen winzige Tröpfchen: Nebel. Oben auf den Höhen bleibt es dagegen oft klar."
+  ],
+  "kurz": [
+   "Boden kühlt aus",
+   "kalte Luft fließt ins Tal",
+   "Tröpfchen: Nebel"
+  ],
+  "bezug": "Gestern früh hatten wir an unserer Station in Bad König {g_tmin} Grad – typisch für eine Nacht, in der sich kalte Luft im Tal sammelt."
+ },
+ {
+  "k": "nebel",
+  "t": "Nebel oder Dunst?",
+  "hook": "Ist das jetzt Nebel – oder nur Dunst? Dafür gibt es tatsächlich eine feste Regel.",
+  "schritte": [
+   "Nebel ist eigentlich eine Wolke, die direkt am Boden liegt – Milliarden winziger Wassertröpfchen schweben in der Luft.",
+   "Meteorologen sprechen erst dann von Nebel, wenn man weniger als einen Kilometer weit sieht.",
+   "Sieht man weiter, heißt das Ganze Dunst. Und unter 200 Metern Sicht wird es auf der Straße richtig gefährlich – dann warnt der Wetterdienst."
+  ],
+  "kurz": [
+   "Wolke am Boden",
+   "unter 1 km Sicht: Nebel",
+   "über 1 km: Dunst"
+  ],
+  "bezug": "Wenn ihr morgens durchs Mümlingtal fahrt: Licht an, Abstand halten – und nicht das Fernlicht, das blendet im Nebel nur."
+ },
+ {
+  "k": "nebel",
+  "t": "Warum löst sich Nebel auf?",
+  "hook": "Morgens alles grau – und mittags strahlender Sonnenschein. Wohin verschwindet der Nebel eigentlich?",
+  "schritte": [
+   "Die Sonne scheint zuerst auf die Oberseite der Nebelschicht und wärmt sie langsam von oben.",
+   "Gleichzeitig erwärmt sich auch der Boden darunter ein wenig, und die Luft im Tal wird wärmer.",
+   "Warme Luft kann mehr Wasser aufnehmen – die Tröpfchen verdunsten, und der Nebel löst sich auf. Im Spätherbst ist die Sonne aber oft zu schwach, dann bleibt es den ganzen Tag grau."
+  ],
+  "kurz": [
+   "Sonne wärmt von oben",
+   "Luft im Tal wird wärmer",
+   "Tröpfchen verdunsten"
+  ],
+  "bezug": "Heute rechnen wir in Bad König mit rund {sonne} Stunden Sonne – mal sehen, wie schnell sie den Nebel knackt."
+ },
+ {
+  "k": "frost",
+  "t": "Frost bei plus 2 Grad?",
+  "hook": "Das Thermometer zeigt plus 2 Grad – und trotzdem ist die Autoscheibe gefroren. Wie kann das sein?",
+  "schritte": [
+   "Wetterstationen messen die Temperatur in zwei Metern Höhe – so ist es weltweit festgelegt, auch an unserer Station.",
+   "Direkt am Boden und auf dem Autodach ist es in klaren Nächten aber oft mehrere Grad kälter, weil diese Flächen ihre Wärme in den Himmel abstrahlen.",
+   "Deshalb kann es am Boden schon frieren, während das Thermometer noch plus 2 Grad zeigt. Meteorologen nennen das Bodenfrost."
+  ],
+  "kurz": [
+   "gemessen in 2 m Höhe",
+   "Boden strahlt Wärme ab",
+   "Bodenfrost!"
+  ],
+  "bezug": "Gestern früh hatten wir in zwei Metern Höhe {g_tmin} Grad – am Boden war es also noch ein Stück kälter."
+ },
+ {
+  "k": "frost",
+  "t": "Wie entsteht Reif?",
+  "hook": "Morgens ist die Wiese weiß – aber es hat gar nicht geschneit. Was ist das?",
+  "schritte": [
+   "In der Luft ist immer Wasserdampf – unsichtbar, als Gas.",
+   "Kühlen Gräser, Zäune oder Autos in der Nacht unter null Grad ab, setzt sich der Wasserdampf direkt auf ihnen ab.",
+   "Er wird dabei sofort zu Eis, ohne vorher Wasser zu sein. So entstehen die feinen Eiskristalle, die wir Reif nennen."
+  ],
+  "kurz": [
+   "Wasserdampf in der Luft",
+   "kalte Flächen unter 0 °C",
+   "Dampf wird direkt zu Eis"
+  ],
+  "bezug": "Bei {g_tmin} Grad an unserer Station gestern früh war im Mümlingtal Reif auf vielen Wiesen."
+ },
+ {
+  "k": "frost",
+  "t": "Warum frieren Brücken zuerst?",
+  "hook": "Warum steht auf Brücken oft das Schild „Vorsicht Glättegefahr“?",
+  "schritte": [
+   "Eine normale Straße liegt auf dem Erdboden – und der speichert Wärme vom Tag und gibt sie nachts nach oben ab.",
+   "Eine Brücke hat unter sich nur Luft. Sie kühlt von oben UND von unten aus.",
+   "Deshalb friert eine Brücke oft schon, während die Straße davor noch nass, aber eisfrei ist. Vor Brücken also immer Fuß vom Gas!"
+  ],
+  "kurz": [
+   "Straße: Boden wärmt",
+   "Brücke: kalt von unten",
+   "Brücke friert zuerst"
+  ],
+  "bezug": "Auf den Mümlingbrücken bei uns gilt das genauso – gerade an Tagen wie gestern mit {g_tmin} Grad am Morgen."
+ },
+ {
+  "k": "schnee",
+  "t": "Schnee bei Plusgraden?",
+  "hook": "Es hat plus 2 Grad – und trotzdem schneit es. Wie geht das?",
+  "schritte": [
+   "Schneeflocken entstehen hoch oben in den Wolken, wo es viel kälter ist als bei uns unten.",
+   "Auf dem Weg nach unten beginnen sie bei Plusgraden zu schmelzen – aber das dauert eine Weile.",
+   "Ist die Luft trocken, verdunstet ein Teil der Flocke und kühlt sie dabei. Deshalb kommen Flocken manchmal noch bei plus 2 oder 3 Grad als Schnee unten an."
+  ],
+  "kurz": [
+   "Flocken entstehen oben",
+   "Schmelzen dauert",
+   "Verdunstung kühlt"
+  ],
+  "bezug": "Auf den Odenwaldhöhen, rund um Beerfelden, ist es meist ein paar Grad kälter als bei uns im Tal – dort bleibt Schnee deshalb viel öfter liegen."
+ },
+ {
+  "k": "schnee",
+  "t": "Warum ist Schnee so leise?",
+  "hook": "Habt ihr schon mal gemerkt, wie still es draußen ist, wenn frischer Schnee liegt?",
+  "schritte": [
+   "Frischer Schnee besteht zu großen Teilen aus Luft – zwischen den Eiskristallen sind unzählige winzige Hohlräume.",
+   "Schallwellen laufen in diese Hohlräume hinein und werden dort verschluckt, ähnlich wie bei einer Dämmplatte im Tonstudio.",
+   "Deshalb klingt alles gedämpft. Wird der Schnee alt, hart und vereist, verschwindet dieser Effekt wieder."
+  ],
+  "kurz": [
+   "Schnee ist voller Luft",
+   "Hohlräume schlucken Schall",
+   "alter Schnee: wieder laut"
+  ],
+  "bezug": "Wenn es bei uns im Odenwald das nächste Mal schneit: Geht mal kurz raus und hört hin – die Stille ist der Wahnsinn."
+ },
+ {
+  "k": "regen",
+  "t": "Was heißt 30 Prozent Regen?",
+  "hook": "In der Wetter-App steht „30 Prozent Regen“ – aber was heißt das eigentlich?",
+  "schritte": [
+   "Viele denken: Es regnet 30 Prozent der Zeit. Oder auf 30 Prozent der Fläche. Beides stimmt nicht.",
+   "Gemeint ist: An einem Ort wie Bad König fällt mit 30 Prozent Wahrscheinlichkeit messbarer Niederschlag – also mindestens ein Zehntel Millimeter.",
+   "Anders gesagt: An zehn Tagen mit genau dieser Vorhersage regnet es an etwa drei Tagen. Schirm einpacken lohnt sich also manchmal."
+  ],
+  "kurz": [
+   "nicht: 30 % der Zeit",
+   "Wahrscheinlichkeit für Regen",
+   "3 von 10 solchen Tagen"
+  ],
+  "bezug": "Gestern sind an unserer Station {g_regen} Liter Regen pro Quadratmeter gefallen."
+ },
+ {
+  "k": "regen",
+  "t": "Schauer oder Regen?",
+  "hook": "Mal heißt es „Schauer“, mal „Regen“ – ist das nicht dasselbe?",
+  "schritte": [
+   "Regen fällt aus einer großen, flachen Wolkenschicht – gleichmäßig, oft stundenlang, und meist über einem großen Gebiet.",
+   "Schauer kommen aus einzelnen, hoch aufgetürmten Wolken. Die können kräftig sein – aber nach ein paar Minuten ist es vorbei.",
+   "Und dazwischen? Da scheint oft sogar die Sonne. Deshalb sind Schauer so schwer genau vorherzusagen: Im einen Ort schüttet es, im Nachbarort bleibt es trocken."
+  ],
+  "kurz": [
+   "Regen: flache Wolkenschicht",
+   "Schauer: einzelne Türme",
+   "dazwischen Sonne"
+  ],
+  "bezug": "Gestern sind an unserer Station in Bad König {g_regen} Liter pro Quadratmeter zusammengekommen."
+ },
+ {
+  "k": "regen",
+  "t": "Wie viel ist ein Liter Regen?",
+  "hook": "„Fünf Liter Regen“ – klingt nach wenig. Ist es aber gar nicht.",
+  "schritte": [
+   "Ein Liter pro Quadratmeter heißt: Auf jede Fläche von einem mal einem Meter fällt ein Liter Wasser. Das ist genau ein Millimeter Wasserhöhe.",
+   "Nehmen wir einen normalen Garten mit 200 Quadratmetern: Bei fünf Litern Regen landen da 1000 Liter Wasser – mehr als sechs volle Badewannen.",
+   "Und bei einem kräftigen Gewitter mit 30 Litern? Das wären über 6000 Liter auf demselben Garten."
+  ],
+  "kurz": [
+   "1 l/m² = 1 mm",
+   "5 l auf 200 m² = 1000 l",
+   "Gewitter: über 6000 l"
+  ],
+  "bezug": "Gestern waren es an unserer Station {g_regen} Liter pro Quadratmeter."
+ },
+ {
+  "k": "gewitter",
+  "t": "Wie weit ist das Gewitter weg?",
+  "hook": "Blitz – und dann zählen. Aber wie rechnet man daraus die Entfernung?",
+  "schritte": [
+   "Licht ist so schnell, dass wir den Blitz praktisch sofort sehen.",
+   "Der Donner ist Schall – und Schall schafft nur etwa einen Kilometer in drei Sekunden.",
+   "Also: Sekunden zwischen Blitz und Donner zählen und durch drei teilen. Zwölf Sekunden heißt: Das Gewitter ist rund vier Kilometer entfernt. Unter zehn Kilometern seid ihr schon in Gefahr!"
+  ],
+  "kurz": [
+   "Licht: sofort",
+   "Schall: 1 km in 3 Sekunden",
+   "Sekunden ÷ 3 = km"
+  ],
+  "bezug": "Bei Gewitter im Odenwald gilt: raus aus dem Wald, weg von den Höhen wie der Tromm – und ab ins Haus oder ins Auto."
+ },
+ {
+  "k": "gewitter",
+  "t": "Woher kommt Hagel?",
+  "hook": "Im Sommer, bei 25 Grad – und plötzlich fallen Eiskörner vom Himmel. Wie passiert das?",
+  "schritte": [
+   "Gewitterwolken sind riesig – bis zu zwölf Kilometer hoch. Oben ist es selbst im Hochsommer eisig kalt, weit unter minus 30 Grad.",
+   "Starke Aufwinde reißen Regentropfen immer wieder nach oben. Dort gefrieren sie, fallen ein Stück, bekommen eine neue Wasserschicht – und werden wieder hochgerissen.",
+   "Schicht für Schicht wächst das Eiskorn wie eine Zwiebel. Erst wenn es zu schwer ist, fällt es als Hagel herunter."
+  ],
+  "kurz": [
+   "Wolke bis 12 km hoch",
+   "Aufwind: hoch und runter",
+   "Eis wächst wie eine Zwiebel"
+  ],
+  "bezug": "Schneidet mal ein großes Hagelkorn durch, wenn es bei uns im Odenwald wieder hagelt – die Ringe sieht man richtig."
+ },
+ {
+  "k": "sturm",
+  "t": "Was ist eine Böe?",
+  "hook": "Der Wetterbericht sagt „Wind 20, Böen 60“ – warum gibt es zwei Zahlen?",
+  "schritte": [
+   "Der normale Wind ist ein Durchschnittswert über zehn Minuten – so wird er weltweit gemessen.",
+   "Böen sind kurze Windstöße, die nur ein paar Sekunden dauern, aber viel stärker sein können.",
+   "Und genau die Böen richten Schäden an: Äste brechen, Mülltonnen fliegen. Deshalb warnt der Wetterdienst nach den Böen, nicht nach dem Durchschnitt."
+  ],
+  "kurz": [
+   "Wind: Mittel über 10 Min.",
+   "Böe: ein paar Sekunden",
+   "Böen machen Schäden"
+  ],
+  "bezug": "Die stärkste Böe an unserer Station gestern: {g_boe} Kilometer pro Stunde."
+ },
+ {
+  "k": "sturm",
+  "t": "Warum ist es im Tal windstiller?",
+  "hook": "Oben auf der Tromm pfeift der Wind – und unten in Bad König weht kaum ein Lüftchen. Warum?",
+  "schritte": [
+   "Je weiter oben, desto weniger bremst der Boden den Wind. Auf Bergen und Höhen weht er deshalb fast immer stärker.",
+   "Unten im Tal bremsen Hänge, Wälder und Häuser die Luft aus – sie wird verwirbelt und langsamer.",
+   "Deshalb messen Stationen auf den Höhen oft doppelt so starke Böen wie Stationen im Tal – auch bei uns im Odenwald."
+  ],
+  "kurz": [
+   "oben: freie Bahn",
+   "unten: Wald und Häuser bremsen",
+   "Höhen oft doppelt so windig"
+  ],
+  "bezug": "Unsere Station liegt im Mümlingtal auf 184 Metern – gestern hatten wir Böen bis {g_boe} Kilometer pro Stunde."
+ },
+ {
+  "k": "sonne",
+  "t": "Warum ist der Himmel blau?",
+  "hook": "Sonnenlicht ist eigentlich weiß. Warum ist der Himmel dann blau?",
+  "schritte": [
+   "Weißes Sonnenlicht besteht aus allen Farben des Regenbogens.",
+   "Wenn es durch die Luft fliegt, prallt es an winzigen Luftteilchen ab. Blaues Licht wird dabei viel stärker in alle Richtungen gestreut als rotes.",
+   "Deshalb kommt von überall am Himmel blaues Licht zu uns – und der Himmel leuchtet blau. Abends hat das Licht einen längeren Weg, das Blau ist dann weggestreut – es bleibt Rot und Orange."
+  ],
+  "kurz": [
+   "weißes Licht = alle Farben",
+   "Blau wird stark gestreut",
+   "abends bleibt Rot"
+  ],
+  "bezug": "Heute rechnen wir in Bad König mit etwa {sonne} Stunden Sonne."
+ },
+ {
+  "k": "sonne",
+  "t": "Sonnenbrand im Winter?",
+  "hook": "Sonnencreme im November? Klingt komisch – kann aber Sinn machen.",
+  "schritte": [
+   "Die UV-Strahlung der Sonne ist im Winter zwar viel schwächer, weil die Sonne tief steht.",
+   "Aber: Schnee wirft bis zu 80 Prozent der UV-Strahlung zurück – sie trifft euch also zweimal, von oben und von unten.",
+   "Deshalb holen sich Skifahrer so schnell einen Sonnenbrand. Und je höher man ist, desto stärker wird die Strahlung."
+  ],
+  "kurz": [
+   "UV im Winter schwächer",
+   "Schnee spiegelt bis 80 %",
+   "doppelte Dosis"
+  ],
+  "bezug": "Bei Schnee auf den Odenwaldhöhen und Sonne gilt das auch bei uns – zumindest für die Nase."
+ },
+ {
+  "k": "wolken",
+  "t": "Warum schweben Wolken?",
+  "hook": "Eine Wolke wiegt Hunderte Tonnen. Warum fällt sie nicht einfach runter?",
+  "schritte": [
+   "Eine mittelgroße Wolke enthält tatsächlich so viel Wasser wie hundert Elefanten wiegen.",
+   "Aber dieses Wasser ist auf Milliarden winziger Tröpfchen verteilt – jedes viel kleiner als ein Haar dick.",
+   "So kleine Tröpfchen fallen extrem langsam, und schon schwache Aufwinde halten sie oben. Erst wenn sie zu großen Tropfen zusammenwachsen, regnet es."
+  ],
+  "kurz": [
+   "Wolke: hunderte Tonnen",
+   "verteilt auf Mini-Tröpfchen",
+   "Aufwind hält sie oben"
+  ],
+  "bezug": "Schaut heute mal nach oben über dem Odenwald – jede Wolke, die ihr seht, ist eine schwebende Wassertonne."
+ },
+ {
+  "k": "wolken",
+  "t": "Was ist ein Kondensstreifen?",
+  "hook": "Flugzeuge malen weiße Streifen an den Himmel. Ist das Rauch?",
+  "schritte": [
+   "Nein – Kondensstreifen sind künstliche Wolken. Flugzeugtriebwerke stoßen heißen Wasserdampf aus.",
+   "In zehn Kilometern Höhe ist es oft kälter als minus 40 Grad. Der Dampf gefriert dort sofort zu winzigen Eiskristallen.",
+   "Bleiben die Streifen lange am Himmel und werden breit, ist die Luft da oben feucht – oft ein Zeichen, dass das Wetter umschlägt."
+  ],
+  "kurz": [
+   "heißer Wasserdampf",
+   "gefriert bei −40 °C",
+   "lange Streifen: Wetterwechsel?"
+  ],
+  "bezug": "Über dem Odenwald fliegen viele Maschinen von und nach Frankfurt – da kann man das oft beobachten."
+ },
+ {
+  "k": "winter",
+  "t": "Warum ist Glatteis so gefährlich?",
+  "hook": "Glätte gibt es öfter – aber vor Glatteis warnt der Wetterdienst besonders deutlich. Warum?",
+  "schritte": [
+   "Bei Glatteis fällt Regen auf einen Boden, der kälter als null Grad ist.",
+   "Der Regen gefriert in dem Moment, in dem er aufkommt – auf Straßen, Gehwegen, Autos, sogar auf Ästen.",
+   "So entsteht eine durchsichtige, spiegelglatte Eisschicht, die man kaum sieht. Selbst Streusalz schafft es dann nicht sofort."
+  ],
+  "kurz": [
+   "Regen auf Frostboden",
+   "gefriert beim Aufprall",
+   "durchsichtig und spiegelglatt"
+  ],
+  "bezug": "Vor Glatteis im Odenwaldkreis warnen wir sofort mit einer Sondermeldung – folgt uns, dann seid ihr rechtzeitig informiert."
+ },
+ {
+  "k": "herbst",
+  "t": "Warum werden Blätter bunt?",
+  "hook": "Rot, gelb, orange – woher kommen im Herbst plötzlich all die Farben im Odenwald?",
+  "schritte": [
+   "Die Farben waren eigentlich schon den ganzen Sommer in den Blättern – nur überdeckt vom grünen Blattgrün.",
+   "Wenn die Tage kürzer und kühler werden, baut der Baum das wertvolle Grün ab und holt es zurück in Stamm und Wurzeln.",
+   "Jetzt kommen Gelb und Orange zum Vorschein. Das Rot bilden manche Bäume sogar neu – besonders kräftig nach sonnigen Tagen und kühlen Nächten."
+  ],
+  "kurz": [
+   "Farben schon da",
+   "Grün wird abgebaut",
+   "Rot: Sonne + kalte Nächte"
+  ],
+  "bezug": "Sonnige Tage und kühle Nächte wie gestern mit {g_tmin} Grad – genau das macht den Odenwald so bunt."
+ },
+ {
+  "k": "fruehling",
+  "t": "Was sind die Eisheiligen?",
+  "hook": "Gärtner pflanzen Tomaten erst nach den Eisheiligen. Steckt da was dran?",
+  "schritte": [
+   "Die Eisheiligen sind die Namenstage vom 11. bis 15. Mai. Nach der alten Bauernregel kann es bis dahin noch Frost geben.",
+   "Tatsächlich gibt es im Mai öfter Kaltlufteinbrüche aus dem Norden, und in klaren Nächten wird es dann frostig.",
+   "Einen festen Termin gibt es aber nicht – der letzte Frost kommt mal früher, mal später. Als Faustregel für empfindliche Pflanzen taugt die Regel trotzdem."
+  ],
+  "kurz": [
+   "11. bis 15. Mai",
+   "Kaltluft aus dem Norden",
+   "Faustregel, kein Gesetz"
+  ],
+  "bezug": "Im Mümlingtal sammelt sich nachts die kalte Luft – da sind Tomaten und Chili besonders gefährdet."
+ },
+ {
+  "k": "sommer",
+  "t": "Was ist eine Tropennacht?",
+  "hook": "Wenn man nachts nicht schlafen kann, weil es so warm ist – dann war's vielleicht eine Tropennacht.",
+  "schritte": [
+   "Von einer Tropennacht spricht man, wenn die Temperatur die ganze Nacht nicht unter 20 Grad fällt.",
+   "In Städten kommt das viel öfter vor, weil Häuser und Straßen tagsüber Wärme speichern und nachts wieder abgeben.",
+   "Im Odenwald sind Tropennächte selten – die Täler kühlen nachts gut ab, weil kühle Luft von den bewaldeten Hängen herunterfließt."
+  ],
+  "kurz": [
+   "nie unter 20 °C",
+   "Städte speichern Wärme",
+   "Odenwald kühlt gut ab"
+  ],
+  "bezug": "Unsere Station in Bad König zeigt das jeden Sommer: nachts oft deutlich kühler als in Frankfurt oder Darmstadt."
+ },
+ {
+  "k": "allgemein",
+  "t": "Was misst unsere Wetterstation?",
+  "hook": "Woher kommen eigentlich die Werte auf wetter-badkoenig.de?",
+  "schritte": [
+   "Unsere Station in Bad König misst Temperatur und Luftfeuchte – in zwei Metern Höhe auf einem Mast, so wie es Wetterdienste weltweit machen.",
+   "Dazu kommen Regenmenge, Windgeschwindigkeit, Windrichtung, Luftdruck, Sonnenstrahlung und UV.",
+   "Alle paar Minuten gehen die Werte ins Internet – und landen live auf unserer Website und in meinen Videos."
+  ],
+  "kurz": [
+   "Temperatur auf 2 m",
+   "Regen, Wind, Druck, Sonne",
+   "live auf der Website"
+  ],
+  "bezug": "Gestern gemessen: höchstens {g_tmax}, tiefstens {g_tmin} Grad, Böen bis {g_boe} Kilometer pro Stunde."
+ },
+ {
+  "k": "allgemein",
+  "t": "Hoch oder Tief – was ist der Unterschied?",
+  "hook": "Hoch heißt schönes Wetter, Tief heißt Regen. Aber warum eigentlich?",
+  "schritte": [
+   "In einem Hoch sinkt die Luft von oben nach unten. Dabei erwärmt sie sich und wird trockener – Wolken lösen sich auf.",
+   "In einem Tief steigt die Luft dagegen auf. Sie kühlt ab, der Wasserdampf wird zu Wolkentröpfchen – und es kann regnen.",
+   "Übrigens: Im Winter bringt ein Hoch bei uns oft nicht Sonne, sondern Nebel – weil die kalte Luft im Tal gefangen bleibt."
+  ],
+  "kurz": [
+   "Hoch: Luft sinkt",
+   "Tief: Luft steigt",
+   "Winter-Hoch: oft Nebel"
+  ],
+  "bezug": "Den Luftdruck messen wir auch an unserer Station – live auf wetter-badkoenig.de."
+ },
+ {
+  "k": "allgemein",
+  "t": "Wie genau ist eine Wettervorhersage?",
+  "hook": "„Die Wettervorhersage stimmt doch eh nie!“ – stimmt das wirklich?",
+  "schritte": [
+   "Für morgen liegen gute Vorhersagen heute bei rund 90 Prozent Treffer – deutlich besser als noch vor 30 Jahren.",
+   "Für fünf Tage im Voraus ist es etwa so gut wie früher die Vorhersage für morgen.",
+   "Aber: Ab etwa zehn Tagen wird es schwierig, weil kleinste Unterschiede in der Atmosphäre große Auswirkungen haben. Deshalb zeigen wir nur drei Tage mit Zahlen."
+  ],
+  "kurz": [
+   "morgen: rund 90 %",
+   "5 Tage: wie früher 1 Tag",
+   "ab 10 Tagen: schwierig"
+  ],
+  "bezug": "Auf wetter-badkoenig.de seht ihr täglich, wie gut unsere Vorhersage gestern getroffen hat."
+ },
+ {
+  "k": "nebel",
+  "t": "Was ist eine Inversion?",
+  "hook": "Unten im Tal minus 3 Grad, oben auf den Höhen plus 4 – eigentlich müsste es doch umgekehrt sein, oder?",
+  "schritte": [
+   "Normalerweise wird es nach oben hin kälter – etwa ein halbes bis ein Grad pro hundert Meter.",
+   "Bei ruhigem Hochdruckwetter im Winter sammelt sich aber kalte Luft unten in den Tälern, und darüber liegt wärmere Luft wie ein Deckel.",
+   "Das nennt man Inversion – Umkehr. Unter dem Deckel bleibt es kalt und oft neblig, oben scheint die Sonne und es ist milder."
+  ],
+  "kurz": [
+   "normal: oben kälter",
+   "kalte Luft unten, warme drüber",
+   "Umkehr = Inversion"
+  ],
+  "bezug": "Gestern hatten wir an unserer Station im Tal tiefstens {g_tmin} Grad – auf den Höhen ist es bei solchen Lagen oft milder."
+ },
+ {
+  "k": "frost",
+  "t": "Reif oder Raureif?",
+  "hook": "Weiße Bäume ohne Schnee – mal heißt es Reif, mal Raureif. Gibt es da einen Unterschied?",
+  "schritte": [
+   "Reif entsteht in klaren, kalten Nächten: Wasserdampf setzt sich direkt als feine Eiskristalle auf Gras und Autos ab.",
+   "Raureif braucht Nebel und Frost gleichzeitig: Die unterkühlten Nebeltröpfchen frieren beim Auftreffen sofort fest – vor allem auf der Seite, aus der der Wind kommt.",
+   "So wachsen lange, federartige Eisnadeln an Ästen und Zäunen. Besonders schön sieht man das auf den Odenwaldhöhen."
+  ],
+  "kurz": [
+   "Reif: aus Wasserdampf",
+   "Raureif: gefrierender Nebel",
+   "Eisnadeln gegen den Wind"
+  ],
+  "bezug": "Auf der Tromm und rund um Beerfelden gibt es Raureif viel öfter als bei uns im Tal."
+ },
+ {
+  "k": "winter",
+  "t": "Warum friert ein See von oben zu?",
+  "hook": "Warum friert ein See von oben zu – und nicht vom Grund her?",
+  "schritte": [
+   "Fast alle Stoffe werden schwerer, wenn sie abkühlen. Wasser ist eine Ausnahme: Am schwersten ist es bei etwa 4 Grad.",
+   "Im Herbst sinkt das abgekühlte Wasser nach unten, bis der ganze See etwa 4 Grad hat. Kälteres Wasser bleibt dann oben liegen.",
+   "Deshalb bildet sich das Eis an der Oberfläche – und darunter überleben die Fische im 4 Grad warmen Wasser."
+  ],
+  "kurz": [
+   "Wasser am schwersten bei 4 °C",
+   "kaltes Wasser bleibt oben",
+   "Eis oben, Fische unten"
+  ],
+  "bezug": "Auch der Marbach-Stausee und die Seen im Kurpark Bad König frieren so von oben zu – betreten solltet ihr das Eis aber nur, wenn es freigegeben ist."
+ },
+ {
+  "k": "winter",
+  "t": "Was ist die gefühlte Temperatur?",
+  "hook": "Das Thermometer sagt 2 Grad – aber es fühlt sich an wie minus 5. Wie kommt das?",
+  "schritte": [
+   "Unser Körper gibt ständig Wärme an die Luft ab. Bei Windstille bildet sich um die Haut eine dünne, etwas wärmere Luftschicht.",
+   "Wind bläst diese Schicht immer wieder weg – der Körper verliert schneller Wärme, und uns ist kälter.",
+   "Das nennt man Windchill. Im Sommer ist es umgekehrt: Hohe Luftfeuchte macht Hitze schwüler, weil der Schweiß schlechter verdunstet."
+  ],
+  "kurz": [
+   "Haut wärmt die Luft",
+   "Wind bläst Wärme weg",
+   "Windchill und Schwüle"
+  ],
+  "bezug": "Gestern hatten wir an unserer Station Böen bis {g_boe} Kilometer pro Stunde – da fühlt sich jedes Grad kälter an."
+ },
+ {
+  "k": "schnee",
+  "t": "Warum ist jede Schneeflocke anders?",
+  "hook": "Man sagt, keine Schneeflocke gleicht der anderen. Stimmt das?",
+  "schritte": [
+   "Schneeflocken wachsen in der Wolke aus winzigen Eiskristallen – immer mit sechs Armen, weil Wassermoleküle sich so anordnen.",
+   "Auf ihrem Weg nach unten fliegt jede Flocke durch ein bisschen andere Temperatur und Feuchte – und wächst dadurch anders.",
+   "Weil es unzählige mögliche Wege gibt, ist es praktisch ausgeschlossen, dass zwei große Flocken genau gleich aussehen."
+  ],
+  "kurz": [
+   "immer sechs Arme",
+   "jeder Weg ist anders",
+   "praktisch keine zwei gleich"
+  ],
+  "bezug": "Wenn es im Odenwald das nächste Mal schneit: Fangt mal eine Flocke auf einem dunklen Ärmel auf und schaut genau hin."
+ },
+ {
+  "k": "schnee",
+  "t": "Graupel, Griesel, Schneeregen?",
+  "hook": "Es fällt etwas Weißes, aber es ist kein richtiger Schnee. Was ist das?",
+  "schritte": [
+   "Graupel sind kleine, weiche Kügelchen: Schneeflocken, an denen unterkühlte Tröpfchen festgefroren sind. Sie springen beim Aufprall.",
+   "Griesel ist noch feiner – winzige Körnchen aus sehr flachen Wolken, fast wie Puderzucker.",
+   "Und Schneeregen ist eine Mischung aus Regen und halb geschmolzenen Flocken – typisch, wenn es knapp über null Grad ist."
+  ],
+  "kurz": [
+   "Graupel: weiche Kügelchen",
+   "Griesel: winzige Körnchen",
+   "Schneeregen: halb geschmolzen"
+  ],
+  "bezug": "Gestern lag die Tiefsttemperatur an unserer Station bei {g_tmin} Grad – genau in diesem Bereich entscheidet sich, was vom Himmel fällt."
+ },
+ {
+  "k": "schnee",
+  "t": "Warum bleibt Schnee im Wald länger liegen?",
+  "hook": "Auf den Feldern ist der Schnee schon weg – aber im Wald liegt er noch. Warum?",
+  "schritte": [
+   "Im Wald kommt viel weniger Sonne bis auf den Boden, die Bäume werfen Schatten.",
+   "Außerdem bremst der Wald den Wind, und es weht kaum warme Luft über die Schneedecke.",
+   "So schmilzt der Schnee dort viel langsamer – an Nordhängen im Odenwald oft noch Wochen später."
+  ],
+  "kurz": [
+   "weniger Sonne",
+   "weniger Wind",
+   "Schnee hält länger"
+  ],
+  "bezug": "Der Odenwald ist zu großen Teilen bewaldet – deshalb sieht man nach Schneefall noch lange weiße Flecken an den Hängen."
+ },
+ {
+  "k": "regen",
+  "t": "Warum riecht Regen so gut?",
+  "hook": "Kennt ihr den Duft, wenn nach langer Trockenheit die ersten Tropfen fallen?",
+  "schritte": [
+   "Dieser Geruch hat sogar einen Namen: Petrichor.",
+   "In trockenen Zeiten sammeln sich Öle von Pflanzen und ein Stoff von Bodenbakterien im Boden und auf Steinen.",
+   "Wenn Regentropfen aufschlagen, schleudern sie winzige Bläschen mit diesen Duftstoffen in die Luft – und unsere Nase ist dafür extrem empfindlich."
+  ],
+  "kurz": [
+   "Name: Petrichor",
+   "Öle und Bodenbakterien",
+   "Tropfen schleudern Duft hoch"
+  ],
+  "bezug": "Gestern sind an unserer Station {g_regen} Liter pro Quadratmeter gefallen."
+ },
+ {
+  "k": "regen",
+  "t": "Wie entsteht ein Regenbogen?",
+  "hook": "Warum sieht man einen Regenbogen immer nur, wenn man die Sonne im Rücken hat?",
+  "schritte": [
+   "Sonnenlicht trifft auf Regentropfen. Im Tropfen wird es gebrochen, gespiegelt und beim Austreten noch einmal gebrochen.",
+   "Dabei wird das weiße Licht in seine Farben zerlegt – Rot außen, Violett innen.",
+   "Das funktioniert nur in einem bestimmten Winkel gegenüber der Sonne. Deshalb steht der Bogen immer auf der anderen Seite – Sonne im Rücken, Regen vor euch."
+  ],
+  "kurz": [
+   "Licht im Tropfen gebrochen",
+   "Farben werden zerlegt",
+   "immer gegenüber der Sonne"
+  ],
+  "bezug": "Bei Schauerwetter mit Sonne am Nachmittag lohnt sich im Mümlingtal der Blick nach Osten."
+ },
+ {
+  "k": "wolken",
+  "t": "Kündigen Schäfchenwolken Regen an?",
+  "hook": "„Schäfchenwolken am Himmel“ – heißt das, morgen regnet es?",
+  "schritte": [
+   "Schäfchenwolken sind kleine, weiße Wolkenballen in mittlerer Höhe, oft in langen Reihen angeordnet.",
+   "Sie entstehen, wenn feuchtere Luft in größerer Höhe heranzieht – oft vor einer Wetterfront.",
+   "Deshalb sind sie manchmal ein Vorbote für Wetterwechsel. Eine sichere Regel ist es aber nicht – oft lösen sie sich einfach wieder auf."
+  ],
+  "kurz": [
+   "Wolkenballen in Reihen",
+   "feuchte Luft in der Höhe",
+   "manchmal Vorbote"
+  ],
+  "bezug": "Schaut heute mal über den Odenwald – die Wolkenformen verraten viel über das Wetter der nächsten Stunden."
+ },
+ {
+  "k": "regen",
+  "t": "Warum regnet es im Odenwald mehr?",
+  "hook": "Im Odenwald regnet es deutlich mehr als in der Rheinebene. Woran liegt das?",
+  "schritte": [
+   "Unser Wetter kommt meistens von Westen. Die Luft zieht über die flache Rheinebene heran.",
+   "Am Odenwald muss sie aufsteigen. Dabei kühlt sie ab, und die Feuchtigkeit wird zu Wolken und Regen.",
+   "Das nennt man Steigungsregen. Deshalb fällt auf den Odenwaldhöhen im Jahr deutlich mehr Regen als zum Beispiel in Mannheim."
+  ],
+  "kurz": [
+   "Wetter kommt von Westen",
+   "Luft steigt am Gebirge",
+   "Steigungsregen"
+  ],
+  "bezug": "Gestern hat unsere Station in Bad König {g_regen} Liter pro Quadratmeter gemessen."
+ },
+ {
+  "k": "regen",
+  "t": "Ab wann ist es Starkregen?",
+  "hook": "Der Wetterdienst warnt vor Starkregen – aber ab wie viel Regen eigentlich?",
+  "schritte": [
+   "Starkregen heißt: viel Regen in kurzer Zeit. Der Deutsche Wetterdienst warnt ab 15 Litern pro Quadratmeter in einer Stunde.",
+   "Ab mehr als 25 Litern in einer Stunde spricht er von einer Unwetterwarnung.",
+   "Das Problem: So viel Wasser kann der Boden nicht schnell genug aufnehmen. Es läuft oberflächlich ab – Bäche schwellen an, Keller laufen voll."
+  ],
+  "kurz": [
+   "ab 15 l/m² in 1 Stunde",
+   "ab 25 l: Unwetter",
+   "Boden kann es nicht aufnehmen"
+  ],
+  "bezug": "Zum Vergleich: Gestern hatten wir an unserer Station {g_regen} Liter – über den ganzen Tag."
+ },
+ {
+  "k": "gewitter",
+  "t": "Warum ist der Himmel vor Gewitter grünlich?",
+  "hook": "Manchmal wird der Himmel vor einem Gewitter seltsam grün-gelb. Ist das ein schlechtes Zeichen?",
+  "schritte": [
+   "Gewitterwolken sind riesig und enthalten sehr viel Wasser und oft auch Hagel.",
+   "Wenn das rötliche Abendlicht durch so eine dicke Wolke scheint, schluckt das Wasser vor allem rotes Licht – übrig bleiben grünliche Töne.",
+   "Ein grüner Himmel zeigt also: Da ist eine sehr mächtige Wolke mit viel Wasser. Bei so einem Anblick lieber schnell ins Haus."
+  ],
+  "kurz": [
+   "riesige, nasse Wolke",
+   "Wasser schluckt Rot",
+   "grün: mächtige Wolke"
+  ],
+  "bezug": "Bei Gewitterwarnung für den Odenwaldkreis meldet sich unsere Seite sofort mit einer Sondermeldung."
+ },
+ {
+  "k": "gewitter",
+  "t": "Wärmegewitter oder Frontgewitter?",
+  "hook": "Gewitter ist nicht gleich Gewitter. Es gibt zwei ganz unterschiedliche Arten.",
+  "schritte": [
+   "Wärmegewitter entstehen an heißen Sommertagen: Die Sonne heizt den Boden auf, warme Luft steigt hoch und türmt Wolken auf – meist am Nachmittag.",
+   "Frontgewitter entstehen, wenn kalte Luft wie ein Keil unter warme Luft fährt und sie nach oben drückt – das kann auch nachts passieren.",
+   "Frontgewitter ziehen oft als lange Linie durch und bringen Sturmböen. Wärmegewitter sind eher einzeln und ortsfest."
+  ],
+  "kurz": [
+   "Wärmegewitter: Nachmittag",
+   "Frontgewitter: Kaltluft schiebt",
+   "Linie mit Sturmböen"
+  ],
+  "bezug": "Im Odenwald entstehen Wärmegewitter gern über den Höhen und ziehen dann in die Täler."
+ },
+ {
+  "k": "gewitter",
+  "t": "Schlägt der Blitz immer oben ein?",
+  "hook": "Sucht sich ein Blitz immer den höchsten Punkt?",
+  "schritte": [
+   "Oft ja – hohe Bäume, Türme und Bergkuppen werden besonders häufig getroffen.",
+   "Aber der Blitz entscheidet erst auf den letzten Metern, wo er einschlägt. Auch Dinge daneben können getroffen werden.",
+   "Deshalb gilt: Nie unter einzelne Bäume stellen, nicht auf freiem Feld bleiben – am sichersten ist man im Haus oder im Auto."
+  ],
+  "kurz": [
+   "oft: hohe Punkte",
+   "Entscheidung auf letzten Metern",
+   "sicher: Haus oder Auto"
+  ],
+  "bezug": "Bei Gewitter auf den Odenwaldhöhen, etwa am Katzenbuckel oder auf der Tromm, gilt: schnell runter und raus aus dem Wald."
+ },
+ {
+  "k": "sturm",
+  "t": "Was ist eine Fallböe?",
+  "hook": "Ein Gewitter zieht heran – und plötzlich kommt ein heftiger Windstoß. Was passiert da?",
+  "schritte": [
+   "In einer Gewitterwolke kühlt der Regen die Luft stark ab. Diese kalte, schwere Luft stürzt nach unten.",
+   "Am Boden prallt sie auf und breitet sich in alle Richtungen aus – wie Wasser aus einem umgekippten Eimer.",
+   "Das nennt man Fallböe oder Downburst. Sie kann Bäume umwerfen wie ein Tornado – richtet die Schäden aber geradlinig an."
+  ],
+  "kurz": [
+   "Regen kühlt die Luft",
+   "kalte Luft stürzt herab",
+   "breitet sich am Boden aus"
+  ],
+  "bezug": "Gestern hatten wir an unserer Station Böen bis {g_boe} Kilometer pro Stunde."
+ },
+ {
+  "k": "sturm",
+  "t": "Woher kommt eigentlich der Wind?",
+  "hook": "Wind ist unsichtbar – aber woher kommt er überhaupt?",
+  "schritte": [
+   "Die Sonne erwärmt die Erde ungleich. Wo es warm ist, ist die Luft leichter, der Luftdruck sinkt. Wo es kalt ist, steigt er.",
+   "Die Luft will diesen Unterschied ausgleichen und strömt vom hohen zum tiefen Luftdruck.",
+   "Diese strömende Luft spüren wir als Wind. Je größer der Unterschied, desto stärker weht er."
+  ],
+  "kurz": [
+   "Sonne wärmt ungleich",
+   "Luft strömt vom Hoch zum Tief",
+   "großer Unterschied: Sturm"
+  ],
+  "bezug": "Den Luftdruck misst auch unsere Station in Bad König – live auf wetter-badkoenig.de."
+ },
+ {
+  "k": "sturm",
+  "t": "Was bedeutet Windstärke 12?",
+  "hook": "Windstärke 8, Windstärke 12 – was heißt das eigentlich?",
+  "schritte": [
+   "Die Beaufort-Skala stammt aus der Seefahrt: Ein Admiral hat vor über 200 Jahren beschrieben, wie sich Wind auf das Meer und die Segel auswirkt.",
+   "Ab Windstärke 8 spricht man von Sturm, ab etwa 62 Kilometern pro Stunde. Ab 9 werden Äste abgerissen.",
+   "Windstärke 12 ist Orkan – ab etwa 118 Kilometern pro Stunde. Dann können ganze Wälder umstürzen."
+  ],
+  "kurz": [
+   "Skala aus der Seefahrt",
+   "ab 8: Sturm",
+   "12: Orkan ab 118 km/h"
+  ],
+  "bezug": "Unsere stärkste Böe gestern: {g_boe} Kilometer pro Stunde."
+ },
+ {
+  "k": "herbst",
+  "t": "Abendrot – Gutwetterbot?",
+  "hook": "„Abendrot – Gutwetterbot“, sagt eine alte Regel. Stimmt das?",
+  "schritte": [
+   "Unser Wetter kommt meistens von Westen – dort, wo abends die Sonne untergeht.",
+   "Ist der Himmel im Westen klar, kann das Sonnenlicht ungehindert durch und färbt die Wolken über uns rot.",
+   "Ein Abendrot zeigt also: Im Westen ist es frei – und das Wetter von morgen kommt von dort. Ganz oft stimmt die Regel tatsächlich."
+  ],
+  "kurz": [
+   "Wetter kommt von Westen",
+   "Westen klar: Licht kommt durch",
+   "Regel stimmt oft"
+  ],
+  "bezug": "Heute rechnen wir in Bad König mit etwa {sonne} Stunden Sonne."
+ },
+ {
+  "k": "wolken",
+  "t": "Was ist ein Halo?",
+  "hook": "Ein großer Ring um die Sonne oder den Mond – was ist das?",
+  "schritte": [
+   "Das ist ein Halo. Er entsteht in sehr hohen, dünnen Schleierwolken, die aus winzigen Eiskristallen bestehen.",
+   "Die sechseckigen Kristalle brechen das Licht wie kleine Prismen – immer im gleichen Winkel.",
+   "So entsteht ein Ring mit etwa 22 Grad Abstand zur Sonne. Weil Schleierwolken oft vor einer Wetterfront kommen, folgt danach nicht selten Regen."
+  ],
+  "kurz": [
+   "hohe Schleierwolken",
+   "Eiskristalle wie Prismen",
+   "Ring – oft Wetterwechsel"
+  ],
+  "bezug": "Achtet mal drauf, wenn ihr abends über dem Odenwald einen hellen Mondring seht."
+ },
+ {
+  "k": "winter",
+  "t": "Polarlicht im Odenwald?",
+  "hook": "Polarlicht gibt es nur im hohen Norden? Nicht ganz – auch im Odenwald war es schon zu sehen!",
+  "schritte": [
+   "Polarlicht entsteht, wenn Teilchen von der Sonne auf unsere Atmosphäre treffen und die Luft in großer Höhe zum Leuchten bringen.",
+   "Normalerweise passiert das nur nahe den Polen. Bei starken Sonnenstürmen dehnt sich das Polarlicht aber weit nach Süden aus.",
+   "Gemessen wird das mit dem Kp-Wert von 0 bis 9. Bei uns braucht es meist einen Wert ab 6 bis 7 – und einen klaren Himmel nach Norden."
+  ],
+  "kurz": [
+   "Sonnenteilchen bringen Luft zum Leuchten",
+   "Sonnensturm: weiter südlich",
+   "bei uns meist ab Kp 6–7"
+  ],
+  "bezug": "Den aktuellen Kp-Wert und die Polarlicht-Chancen findet ihr auf unserer Solarwetter-Seite."
+ },
+ {
+  "k": "winter",
+  "t": "Warum sind Wintertage so kurz?",
+  "hook": "Im Dezember ist es um halb fünf schon dunkel. Warum sind die Wintertage so kurz?",
+  "schritte": [
+   "Die Erdachse ist schief – um gut 23 Grad geneigt.",
+   "Im Winter ist unsere Nordhalbkugel von der Sonne weggeneigt: Die Sonne steht tief und zieht nur einen kurzen Bogen über den Himmel.",
+   "In Bad König sind es zur Wintersonnenwende nur gut 8 Stunden Tageslicht – im Sommer dagegen über 16 Stunden."
+  ],
+  "kurz": [
+   "Erdachse ist schief",
+   "Winter: Sonne tief, kurzer Bogen",
+   "Bad König: 8 bis 16 Stunden"
+  ],
+  "bezug": "Sonnenauf- und -untergang für Bad König zeigen wir täglich auf wetter-badkoenig.de."
+ },
+ {
+  "k": "sonne",
+  "t": "Was sagt der UV-Index?",
+  "hook": "In der Wetter-App steht „UV-Index 7“. Was bedeutet das?",
+  "schritte": [
+   "Der UV-Index zeigt, wie stark die Sonnenstrahlung ist, die der Haut schaden kann.",
+   "Ab 3 sollte man sich schützen, ab 6 ist die Strahlung hoch, ab 8 sehr hoch.",
+   "Am stärksten ist sie im Sommer um die Mittagszeit. Und Achtung: Auch durch dünne Wolken kommt noch viel UV-Strahlung durch."
+  ],
+  "kurz": [
+   "Maß für schädliche Strahlung",
+   "ab 3 schützen, ab 8 sehr hoch",
+   "auch durch Wolken"
+  ],
+  "bezug": "Unsere Station in Bad König misst die UV-Strahlung live – zu sehen auf wetter-badkoenig.de."
+ },
+ {
+  "k": "allgemein",
+  "t": "Warum ist der Mond am Horizont so groß?",
+  "hook": "Kurz nach dem Aufgehen wirkt der Mond riesig. Ist er da wirklich größer?",
+  "schritte": [
+   "Nein – der Mond ist am Horizont genauso groß wie hoch oben am Himmel. Man kann es sogar mit einem Foto nachmessen.",
+   "Es ist eine Täuschung unseres Gehirns: Am Horizont vergleichen wir den Mond mit Bäumen, Häusern und Hügeln.",
+   "Dadurch wirkt er riesig. Hoch oben, ohne Vergleich, schätzt unser Gehirn ihn kleiner."
+  ],
+  "kurz": [
+   "gleich groß wie oben",
+   "Gehirn vergleicht mit Häusern",
+   "Mondtäuschung"
+  ],
+  "bezug": "Wenn der Mond über dem Odenwald aufgeht, probiert es aus: Mit ausgestrecktem Arm ist er immer gleich groß."
+ },
+ {
+  "k": "regen",
+  "t": "Wie misst man Regen?",
+  "hook": "Wie misst eine Wetterstation eigentlich, wie viel es geregnet hat?",
+  "schritte": [
+   "Unsere Station hat einen Regenmesser mit einem Trichter. Das Wasser läuft in eine kleine Wippe.",
+   "Ist eine Seite der Wippe voll, kippt sie, leert sich – und die Station zählt einen Schlag. Jeder Schlag entspricht einer winzigen Regenmenge.",
+   "Die Station rechnet die Schläge in Liter pro Quadratmeter um. Ein Liter pro Quadratmeter ist genau ein Millimeter Wasserhöhe."
+  ],
+  "kurz": [
+   "Trichter sammelt Regen",
+   "Wippe kippt und zählt",
+   "Umrechnung in l/m²"
+  ],
+  "bezug": "Gestern hat unsere Wippe {g_regen} Liter pro Quadratmeter gezählt."
+ },
+ {
+  "k": "allgemein",
+  "t": "Spürt man Wetterwechsel?",
+  "hook": "Manche sagen: „Das Wetter schlägt um, ich spür’s im Knie.“ Kann das sein?",
+  "schritte": [
+   "Bei einem Wetterwechsel ändern sich Luftdruck, Temperatur und Luftfeuchte – manchmal innerhalb weniger Stunden.",
+   "Unser Körper reagiert darauf: Blutgefäße weiten oder verengen sich, und empfindliche Menschen spüren Kopfschmerzen oder Gelenkbeschwerden.",
+   "Man nennt das Wetterfühligkeit. Wie genau das funktioniert, ist noch nicht ganz erforscht – aber viele Menschen beschreiben es."
+  ],
+  "kurz": [
+   "Druck, Temperatur, Feuchte ändern sich",
+   "Körper reagiert darauf",
+   "Wetterfühligkeit"
+  ],
+  "bezug": "Den Luftdruck zeichnet unsere Station rund um die Uhr auf – auf wetter-badkoenig.de seht ihr, wann er fällt."
+ },
+ {
+  "k": "allgemein",
+  "t": "Warum zeigt die App andere Werte?",
+  "hook": "Die Handy-App sagt 5 Grad, unsere Station 3 Grad. Wer hat recht?",
+  "schritte": [
+   "Viele Apps zeigen keine echte Messung, sondern einen Wert aus einem Wettermodell – berechnet für ein Raster von mehreren Kilometern.",
+   "In so einem Raster liegen Täler, Höhen und Wälder zusammen. Ein Tal wie das Mümlingtal ist nachts aber oft deutlich kälter.",
+   "Unsere Station misst dagegen genau hier vor Ort in Bad König – deshalb passt sie für unser Tal meist besser."
+  ],
+  "kurz": [
+   "Apps: oft Modellwerte",
+   "Raster mischt Tal und Höhe",
+   "Station misst vor Ort"
+  ],
+  "bezug": "Gestern gemessen in Bad König: höchstens {g_tmax}, tiefstens {g_tmin} Grad."
+ },
+ {
+  "k": "herbst",
+  "t": "Was ist der Taupunkt?",
+  "hook": "Warum ist das Gras morgens nass, obwohl es nicht geregnet hat?",
+  "schritte": [
+   "Luft enthält immer unsichtbaren Wasserdampf. Wie viel sie halten kann, hängt von der Temperatur ab – warme Luft mehr, kalte weniger.",
+   "Kühlt die Luft nachts ab, kommt irgendwann der Punkt, an dem sie das Wasser nicht mehr halten kann. Das ist der Taupunkt.",
+   "Dann schlägt sich das Wasser als Tau nieder – auf Gras, Autos und Spinnweben. Liegt der Taupunkt unter null, wird daraus Reif."
+  ],
+  "kurz": [
+   "Luft trägt Wasserdampf",
+   "zu kalt: Taupunkt erreicht",
+   "Tau – oder Reif"
+  ],
+  "bezug": "Gestern früh hatten wir an unserer Station {g_tmin} Grad."
+ },
+ {
+  "k": "allgemein",
+  "t": "Wie entsteht eine Wettervorhersage?",
+  "hook": "Woher weiß man eigentlich, wie das Wetter morgen wird?",
+  "schritte": [
+   "Weltweit messen Tausende Stationen, Wetterballons, Flugzeuge und Satelliten ständig Temperatur, Druck, Wind und Feuchte.",
+   "Supercomputer setzen diese Werte in physikalische Gleichungen ein und rechnen aus, wie sich die Luft in den nächsten Stunden und Tagen bewegt.",
+   "Für unsere Vorhersage mischen wir mehrere dieser Wettermodelle und korrigieren sie mit den Messwerten unserer eigenen Station."
+  ],
+  "kurz": [
+   "Messungen weltweit",
+   "Supercomputer rechnen",
+   "Mischung + eigene Station"
+  ],
+  "bezug": "Wie gut unsere Vorhersage gestern getroffen hat, seht ihr jeden Tag auf wetter-badkoenig.de."
+ },
+ {
+  "k": "allgemein",
+  "t": "Was heißt „Rekord seit Messbeginn“?",
+  "hook": "Neuer Rekord! – aber Rekord seit wann eigentlich?",
+  "schritte": [
+   "Jede Wetterstation hat einen Messbeginn. Ab diesem Tag werden Höchst- und Tiefstwerte gesammelt.",
+   "Ein Rekord heißt also: Der höchste oder tiefste Wert, seit diese Station misst. Bei sehr alten Stationen sind das über hundert Jahre.",
+   "Unsere Station in Bad König misst seit Januar 2026 – deshalb fallen bei uns im ersten Jahr noch viele Rekorde."
+  ],
+  "kurz": [
+   "jede Station hat einen Start",
+   "Rekord seit Messbeginn",
+   "Bad König: seit Januar 2026"
+  ],
+  "bezug": "Gestern gemessen: höchstens {g_tmax}, tiefstens {g_tmin} Grad – neue Rekorde zeigen wir sofort auf der Website."
+ },
+ {
+  "k": "sommer",
+  "t": "Bestimmt der Siebenschläfer den Sommer?",
+  "hook": "„Wie das Wetter am Siebenschläfer sich verhält, ist es sieben Wochen lang bestellt.“ Stimmt das?",
+  "schritte": [
+   "Der Siebenschläfertag ist der 27. Juni. Ganz wörtlich – genau an diesem Tag – stimmt die Regel nicht.",
+   "Aber sie hat einen wahren Kern: Ende Juni und Anfang Juli stellt sich die großräumige Wetterlage über Europa oft für längere Zeit ein.",
+   "Wer also die erste Juliwoche beobachtet, kann tatsächlich eine Tendenz für den Hochsommer ablesen – wenn auch ohne Garantie."
+  ],
+  "kurz": [
+   "27. Juni",
+   "Wetterlage stellt sich ein",
+   "Tendenz – keine Garantie"
+  ],
+  "bezug": "Ob die Regel bei uns in Bad König stimmt, können wir ab nächstem Jahr mit unseren eigenen Messwerten prüfen."
+ },
+ {
+  "k": "sommer",
+  "t": "Was ist die Schafskälte?",
+  "hook": "Mitte Juni wird es oft nochmal richtig kühl. Zufall?",
+  "schritte": [
+   "Die Schafskälte ist ein Kälterückfall um den 11. Juni herum. Den Namen hat sie, weil die Schafe dann schon geschoren sind und frieren.",
+   "Dahinter steckt Physik: Das Festland ist im Juni schon warm, das Meer im Norden noch kühl. Dadurch strömt oft kühle Luft zu uns.",
+   "Statistisch tritt die Schafskälte in den meisten Jahren auf – damit ist sie eine der zuverlässigsten Bauernregeln."
+  ],
+  "kurz": [
+   "um den 11. Juni",
+   "warmes Land, kühles Meer",
+   "in den meisten Jahren"
+  ],
+  "bezug": "Wie stark sie bei uns ausfällt, zeigt unsere Station dann live."
+ },
+ {
+  "k": "herbst",
+  "t": "Woher kommt der Altweibersommer?",
+  "hook": "Goldene Herbsttage im September – warum heißt das Altweibersommer?",
+  "schritte": [
+   "Der Altweibersommer ist eine ruhige Hochdrucklage im Spätsommer oder Frühherbst: sonnige, milde Tage und kühle Nächte.",
+   "Den Namen hat er von den feinen Spinnfäden, die dann über Wiesen und durch die Luft treiben – sie erinnern an graue Haare.",
+   "Junge Spinnen lassen sich an diesen Fäden mit dem Wind treiben. Und die Wetterlage dazu ist tatsächlich sehr häufig."
+  ],
+  "kurz": [
+   "Hochdruck im Frühherbst",
+   "Spinnfäden wie graue Haare",
+   "Spinnen reisen mit dem Wind"
+  ],
+  "bezug": "Im Odenwald sind solche Tage ideal zum Wandern – morgens Nebel im Tal, mittags Sonne."
+ },
+ {
+  "k": "winter",
+  "t": "Wie oft gibt es weiße Weihnachten?",
+  "hook": "Alle wünschen sich weiße Weihnachten. Aber wie wahrscheinlich ist das?",
+  "schritte": [
+   "Meteorologen sprechen von weißer Weihnacht, wenn an allen drei Weihnachtstagen eine Schneedecke liegt.",
+   "In den tiefen Lagen Süddeutschlands ist das selten. Oft kommt um Weihnachten sogar das sogenannte Weihnachtstauwetter mit milder Luft.",
+   "Auf den Höhen stehen die Chancen deutlich besser – je höher, desto öfter."
+  ],
+  "kurz": [
+   "Schnee an allen 3 Tagen",
+   "im Tal: selten",
+   "auf den Höhen: öfter"
+  ],
+  "bezug": "Im Odenwald gilt: in Bad König eher selten, rund um Beerfelden und auf der Tromm deutlich öfter."
+ },
+ {
+  "k": "winter",
+  "t": "Was sind Lostage?",
+  "hook": "Früher hat man an bestimmten Tagen das Wetter fürs ganze Jahr vorhergesagt. Was steckt dahinter?",
+  "schritte": [
+   "Lostage sind bestimmte Kalendertage, an denen Bauern früher das Wetter beobachtet haben – etwa Lichtmess oder die Zwölf Nächte.",
+   "Aus dem Wetter an diesen Tagen leiteten sie Regeln für die kommenden Wochen ab.",
+   "Wissenschaftlich halten die meisten dieser Regeln nicht. Spannend ist aber: Einige beschreiben tatsächlich Wetterlagen, die statistisch oft wiederkehren."
+  ],
+  "kurz": [
+   "bestimmte Kalendertage",
+   "Regeln für Wochen",
+   "manche mit wahrem Kern"
+  ],
+  "bezug": "Wir prüfen solche Regeln künftig mit unseren eigenen Messwerten aus Bad König."
+ },
+ {
+  "k": "allgemein",
+  "t": "Wie kalt ist es auf dem Katzenbuckel?",
+  "hook": "Der Katzenbuckel ist der höchste Berg im Odenwald. Wie viel kälter ist es dort?",
+  "schritte": [
+   "Der Katzenbuckel ist 626 Meter hoch – und er ist ein erloschener Vulkan.",
+   "Normalerweise wird es pro hundert Meter Höhe gut ein halbes Grad kühler.",
+   "Unsere Station in Bad König liegt auf 184 Metern. Oben am Katzenbuckel ist es deshalb im Schnitt rund drei Grad kälter – außer bei Inversion, dann kann es oben sogar wärmer sein."
+  ],
+  "kurz": [
+   "626 m, ein alter Vulkan",
+   "pro 100 m etwa 0,65 Grad",
+   "rund 3 Grad kälter"
+  ],
+  "bezug": "Gestern hatten wir in Bad König höchstens {g_tmax} Grad – auf dem Katzenbuckel war es also deutlich frischer."
+ },
+ {
+  "k": "frost",
+  "t": "Warum ist Bad König ein Frostloch?",
+  "hook": "Warum ist es bei uns in Bad König nachts oft kälter als in Orten weiter oben?",
+  "schritte": [
+   "Bad König liegt unten im Mümlingtal. In klaren, ruhigen Nächten fließt kalte Luft von den Hängen herunter.",
+   "Das Tal funktioniert wie eine Schüssel: Die kalte Luft sammelt sich unten und kann nicht abfließen – ein Kaltluftsee.",
+   "Deshalb gibt es bei uns oft früher Frost als auf den Höhen. Gärtner kennen das: Frostlöcher sind gefährlich für empfindliche Pflanzen."
+  ],
+  "kurz": [
+   "Kaltluft fließt hangabwärts",
+   "Tal wie eine Schüssel",
+   "früher Frost als oben"
+  ],
+  "bezug": "Gestern früh hatten wir an unserer Station {g_tmin} Grad."
+ },
+ {
+  "k": "fruehling",
+  "t": "Warum ist die Bergstraße so mild?",
+  "hook": "An der Bergstraße blühen die Mandelbäume schon im März. Warum ist es dort so mild?",
+  "schritte": [
+   "Die Bergstraße liegt am Westrand des Odenwalds – geschützt vor kalten Ostwinden.",
+   "Die Hänge sind nach Westen und Süden geneigt und bekommen viel Sonne. Dazu kommt warme Luft aus der Rheinebene.",
+   "Deshalb kommt der Frühling dort oft zwei bis drei Wochen früher als bei uns im Mümlingtal."
+  ],
+  "kurz": [
+   "Odenwald schützt vor Ostwind",
+   "sonnige Hänge, warme Ebene",
+   "Frühling früher"
+  ],
+  "bezug": "Wer im Frühjahr Blüten sehen will: erst an die Bergstraße – ein paar Wochen später blüht es auch bei uns."
+ },
+ {
+  "k": "allgemein",
+  "t": "Wie verändert der Wald das Wetter?",
+  "hook": "Im Sommer ist es im Wald angenehm kühl. Aber beeinflusst der Wald auch das Wetter?",
+  "schritte": [
+   "Bäume verdunsten über ihre Blätter riesige Mengen Wasser – eine große Buche an einem Sommertag mehrere hundert Liter.",
+   "Diese Verdunstung kühlt die Luft wie eine natürliche Klimaanlage, und sie liefert Feuchtigkeit für Wolken.",
+   "Außerdem bremst der Wald den Wind. Deshalb ist es im Odenwald oft kühler und windstiller als im offenen Land."
+  ],
+  "kurz": [
+   "Bäume verdunsten Wasser",
+   "natürliche Klimaanlage",
+   "Wald bremst den Wind"
+  ],
+  "bezug": "Gestern hatten wir in Bad König höchstens {g_tmax} Grad."
+ },
+ {
+  "k": "allgemein",
+  "t": "Wie hat sich das Klima verändert?",
+  "hook": "Ist es im Odenwald wirklich wärmer geworden als früher?",
+  "schritte": [
+   "Seit Beginn der regelmäßigen Messungen um 1881 ist es in Deutschland im Schnitt fast 2 Grad wärmer geworden.",
+   "Das merkt man auch bei uns: mehr heiße Tage im Sommer, weniger Frosttage und weniger Schnee in den Tälern.",
+   "Gleichzeitig regnet es häufiger kräftig in kurzer Zeit. Deshalb sind Messungen vor Ort so wichtig – auch unsere Station sammelt dafür Daten."
+  ],
+  "kurz": [
+   "fast 2 Grad seit 1881",
+   "mehr Hitze, weniger Frost",
+   "häufiger Starkregen"
+  ],
+  "bezug": "Unsere Station in Bad König misst seit Januar 2026 – jedes Jahr wird die Datenreihe wertvoller."
+ },
+ {
+  "k": "regen",
+  "t": "Was ist eine Kaltfront?",
+  "hook": "Erst schwül und warm, dann ein Gewitter – und plötzlich ist es zehn Grad kühler. Was ist passiert?",
+  "schritte": [
+   "Da ist eine Kaltfront durchgezogen: die Grenze zwischen warmer und kalter Luft.",
+   "Die kalte Luft ist schwerer und schiebt sich wie ein Keil unter die warme. Die warme Luft wird hochgedrückt – es bilden sich Wolken, Schauer und Gewitter.",
+   "Danach wird es kühler, die Luft klarer und oft windig. Bei einer Warmfront ist es umgekehrt: langer, ruhiger Regen und danach mildere Luft."
+  ],
+  "kurz": [
+   "Grenze kalt – warm",
+   "Kaltluft schiebt sich drunter",
+   "danach kühler und klarer"
+  ],
+  "bezug": "Gestern hat unsere Station {g_regen} Liter Regen und Böen bis {g_boe} Kilometer pro Stunde gemessen."
+ },
+ {
+  "k": "allgemein",
+  "t": "Warum ist es auf Bergen kälter?",
+  "hook": "Oben ist man näher an der Sonne – warum ist es dann auf Bergen kälter?",
+  "schritte": [
+   "Die Sonne wärmt nicht die Luft direkt, sondern vor allem den Boden. Der Boden gibt die Wärme an die Luft darüber ab.",
+   "Steigt Luft nach oben, wird der Luftdruck geringer, die Luft dehnt sich aus – und kühlt dabei ab, wie Gas aus einer Spraydose.",
+   "Im Schnitt wird es deshalb pro hundert Meter Höhe gut ein halbes Grad kälter."
+  ],
+  "kurz": [
+   "Sonne wärmt den Boden",
+   "Luft dehnt sich oben aus",
+   "0,65 Grad pro 100 Meter"
+  ],
+  "bezug": "Gestern hatten wir in Bad König auf 184 Metern höchstens {g_tmax} Grad."
+ },
+ {
+  "k": "wolken",
+  "t": "Warum ist der Himmel manchmal gelb?",
+  "hook": "Gelb-oranger Himmel und Staub auf dem Auto – was ist da los?",
+  "schritte": [
+   "Das ist Saharastaub. Bei kräftigem Südwind wird Wüstensand in Nordafrika mehrere Kilometer hoch gewirbelt.",
+   "In großer Höhe kann der Staub Tausende Kilometer weit bis zu uns transportiert werden.",
+   "Er färbt den Himmel milchig-gelb, schwächt die Sonne ab – und kommt mit dem Regen als Staubschicht auf Autos herunter."
+  ],
+  "kurz": [
+   "Sand aus der Sahara",
+   "Tausende Kilometer Reise",
+   "gelber Himmel, staubige Autos"
+  ],
+  "bezug": "Bei Saharastaub misst auch unsere Station weniger Sonnenstrahlung, obwohl keine Wolken da sind."
+ },
+ {
+  "k": "allgemein",
+  "t": "Was ist ein Omega-Hoch?",
+  "hook": "Manchmal bleibt das Wetter wochenlang gleich. Warum bewegt sich nichts?",
+  "schritte": [
+   "Normalerweise ziehen Hochs und Tiefs von Westen nach Osten über Europa.",
+   "Manchmal blockiert aber ein kräftiges Hoch diesen Weg. Auf der Wetterkarte sieht es dann aus wie der griechische Buchstabe Omega.",
+   "Die Tiefs müssen außen herum – und bei uns bleibt es lange gleich: im Sommer heiß und trocken, im Winter kalt oder neblig."
+  ],
+  "kurz": [
+   "normal: West nach Ost",
+   "Hoch blockiert wie ein Omega",
+   "Wetter bleibt wochenlang"
+  ],
+  "bezug": "Gestern hatten wir in Bad König {g_tmin} bis {g_tmax} Grad."
+ },
+ {
+  "k": "sommer",
+  "t": "Was sind die Hundstage?",
+  "hook": "Die heißesten Wochen im Sommer heißen Hundstage. Was haben Hunde damit zu tun?",
+  "schritte": [
+   "Gar nichts! Der Name kommt von einem Stern: Sirius, dem hellsten Stern am Nachthimmel, auch Hundsstern genannt.",
+   "Schon in der Antike ging er im Hochsommer am Morgenhimmel auf – in der heißesten Zeit des Jahres.",
+   "Heute gelten die Tage vom 23. Juli bis 23. August als Hundstage. Statistisch ist das tatsächlich die wärmste Zeit des Jahres."
+  ],
+  "kurz": [
+   "Name vom Stern Sirius",
+   "Hundsstern im Hochsommer",
+   "23. Juli bis 23. August"
+  ],
+  "bezug": "Unsere Station zeigt in diesen Wochen meist die höchsten Werte des Jahres."
+ },
+ {
+  "k": "sommer",
+  "t": "Warum ist es nachmittags am heißesten?",
+  "hook": "Mittags steht die Sonne am höchsten – warum ist es dann erst am Nachmittag am heißesten?",
+  "schritte": [
+   "Die Sonne wärmt zuerst den Boden, und der Boden gibt die Wärme an die Luft weiter.",
+   "Auch nach dem Mittag bekommt der Boden noch mehr Wärme von der Sonne, als er abgeben kann – die Temperatur steigt weiter.",
+   "Erst am Nachmittag, meist zwischen 15 und 17 Uhr, ist das Gleichgewicht erreicht. Dann wird es langsam wieder kühler."
+  ],
+  "kurz": [
+   "Sonne wärmt den Boden",
+   "Boden heizt weiter auf",
+   "Höchstwert nachmittags"
+  ],
+  "bezug": "Gestern hat unsere Station einen Höchstwert von {g_tmax} Grad gemessen."
+ },
+ {
+  "k": "fruehling",
+  "t": "Woher kommt das Aprilwetter?",
+  "hook": "„April, April, der macht, was er will.“ Warum ist das Wetter im April so wechselhaft?",
+  "schritte": [
+   "Im April steht die Sonne schon so hoch wie im August und heizt den Boden kräftig auf.",
+   "In der Höhe ist die Luft aber oft noch winterlich kalt. Der große Unterschied lässt die Luft schnell aufsteigen – es bilden sich Schauerwolken.",
+   "Deshalb wechseln sich Sonne, Schauer, Graupel und manchmal sogar Schnee innerhalb einer Stunde ab."
+  ],
+  "kurz": [
+   "Sonne schon kräftig",
+   "Höhenluft noch kalt",
+   "Sonne und Schauer im Wechsel"
+  ],
+  "bezug": "Im April zeigt unsere Station oft große Sprünge – auch innerhalb eines Tages."
+ },
+ {
+  "k": "fruehling",
+  "t": "Warum gibt es Pollenflug-Vorhersagen?",
+  "hook": "Juckende Augen, Niesen – und das schon im Februar?",
+  "schritte": [
+   "Hasel und Erle blühen schon im Februar – manchmal sogar im Januar, wenn es mild ist.",
+   "Ihre Pollen sind winzig und werden vom Wind kilometerweit verteilt. Bei trockenem, windigem Wetter fliegen besonders viele.",
+   "Regen wäscht die Pollen dagegen aus der Luft. Deshalb hängt die Pollenvorhersage eng mit der Wettervorhersage zusammen."
+  ],
+  "kurz": [
+   "Hasel und Erle ab Februar",
+   "Wind verteilt Pollen",
+   "Regen wäscht sie aus"
+  ],
+  "bezug": "Gestern hatten wir in Bad König {g_regen} Liter Regen – gute Nachricht für Allergiker."
+ },
+ {
+  "k": "gewitter",
+  "t": "Gibt es Tornados in Deutschland?",
+  "hook": "Tornados gibt es nur in Amerika? Leider nein.",
+  "schritte": [
+   "In Deutschland werden jedes Jahr mehrere Dutzend Tornados bestätigt – die meisten sind aber schwach und kurzlebig.",
+   "Sie entstehen in kräftigen Gewittern, wenn der Wind in verschiedenen Höhen aus unterschiedlichen Richtungen weht und die Luft in Drehung gerät.",
+   "Ein Tornado ist ein Wirbel, der von der Wolke bis zum Boden reicht. Starke Tornados sind bei uns selten, aber möglich."
+  ],
+  "kurz": [
+   "mehrere Dutzend pro Jahr",
+   "Wind dreht mit der Höhe",
+   "Wirbel bis zum Boden"
+  ],
+  "bezug": "Bei amtlichen Unwetterwarnungen für den Odenwaldkreis informieren wir sofort mit einer Sondermeldung."
+ },
+ {
+  "k": "gewitter",
+  "t": "Was ist Wetterleuchten?",
+  "hook": "Es blitzt am Horizont, aber man hört keinen Donner. Was ist das?",
+  "schritte": [
+   "Das ist Wetterleuchten – ein ganz normales Gewitter, nur weit weg.",
+   "Donner ist Schall, und den hört man meist nur bis 15 bis 20 Kilometer Entfernung.",
+   "Das Licht der Blitze sieht man in klaren Nächten aber über 100 Kilometer weit – deshalb blitzt es lautlos am Horizont."
+  ],
+  "kurz": [
+   "ein fernes Gewitter",
+   "Donner nur bis 20 km",
+   "Blitz über 100 km sichtbar"
+  ],
+  "bezug": "In Sommernächten sieht man von den Odenwaldhöhen oft Wetterleuchten über der Rheinebene."
+ },
+ {
+  "k": "schnee",
+  "t": "Was ist die Schneefallgrenze?",
+  "hook": "Im Tal regnet es, auf dem Berg schneit es. Wo ist die Grenze?",
+  "schritte": [
+   "Die Schneefallgrenze ist die Höhe, ab der der Niederschlag als Schnee unten ankommt.",
+   "Sie liegt meist einige hundert Meter unter der Nullgradgrenze, weil Flocken Zeit zum Schmelzen brauchen.",
+   "Im Odenwald entscheidet oft genau sie: In Bad König auf 184 Metern regnet es, in Beerfelden auf über 400 Metern bleibt der Schnee liegen."
+  ],
+  "kurz": [
+   "ab dieser Höhe Schnee",
+   "unter der Nullgradgrenze",
+   "Tal Regen, Höhen Schnee"
+  ],
+  "bezug": "Gestern hatten wir an unserer Station tiefstens {g_tmin} Grad."
+ },
+ {
+  "k": "frost",
+  "t": "Warum knirscht Schnee?",
+  "hook": "Bei manchem Schnee knirscht jeder Schritt – bei anderem nicht. Warum?",
+  "schritte": [
+   "Schnee besteht aus unzähligen Eiskristallen. Wenn wir drauftreten, brechen und reiben sie aneinander.",
+   "Bei strengem Frost sind die Kristalle hart und spröde – sie brechen hörbar, und es knirscht.",
+   "Bei Temperaturen um null ist der Schnee feucht und weich. Die Kristalle gleiten aneinander vorbei – dann bleibt es leise."
+  ],
+  "kurz": [
+   "Kristalle brechen",
+   "strenger Frost: knirscht",
+   "um 0 Grad: leise"
+  ],
+  "bezug": "Gestern hatten wir an unserer Station {g_tmin} Grad."
+ },
+ {
+  "k": "frost",
+  "t": "Wie entstehen Eiszapfen?",
+  "hook": "An manchen Dächern hängen riesige Eiszapfen. Wie wachsen die?",
+  "schritte": [
+   "Tagsüber scheint die Sonne aufs Dach und schmilzt etwas Schnee – auch wenn die Luft noch unter null Grad hat.",
+   "Das Schmelzwasser läuft zur Dachkante und tropft in den kalten Schatten.",
+   "Dort gefriert jeder Tropfen ein bisschen – Schicht für Schicht wächst der Zapfen nach unten. Vorsicht: Große Eiszapfen können gefährlich werden!"
+  ],
+  "kurz": [
+   "Sonne schmilzt Dachschnee",
+   "Wasser tropft in den Schatten",
+   "Zapfen wächst Schicht für Schicht"
+  ],
+  "bezug": "Gestern lag die Höchsttemperatur an unserer Station bei {g_tmax} Grad."
+ },
+ {
+  "k": "frost",
+  "t": "Warum gibt es nach dem Winter Schlaglöcher?",
+  "hook": "Nach jedem Winter sind die Straßen voller Schlaglöcher. Warum?",
+  "schritte": [
+   "Wasser dringt in feine Risse im Asphalt ein.",
+   "Friert es, dehnt sich das Wasser aus – um etwa neun Prozent. Das sprengt die Risse ein Stück weiter auf.",
+   "Taut es wieder, läuft mehr Wasser hinein. Nach vielen Frost-Tau-Wechseln bricht der Asphalt auf – und das Schlagloch ist da."
+  ],
+  "kurz": [
+   "Wasser in Rissen",
+   "Eis dehnt sich aus",
+   "Frost-Tau-Wechsel sprengt"
+  ],
+  "bezug": "Gestern pendelte die Temperatur an unserer Station zwischen {g_tmin} und {g_tmax} Grad – genau solche Wechsel machen Straßen kaputt."
+ },
+ {
+  "k": "herbst",
+  "t": "Warum beschlagen die Scheiben?",
+  "hook": "Ins Auto steigen – und sofort beschlagen die Scheiben. Warum?",
+  "schritte": [
+   "Wir atmen warme, feuchte Luft aus. Im Auto steigt die Luftfeuchte schnell an.",
+   "Trifft diese feuchte Luft auf die kalte Scheibe, kühlt sie unter ihren Taupunkt ab – das Wasser schlägt sich nieder.",
+   "Am schnellsten hilft: Lüftung auf die Scheibe und die Klimaanlage an – die trocknet die Luft."
+  ],
+  "kurz": [
+   "feuchte Atemluft",
+   "kalte Scheibe: Taupunkt",
+   "Klimaanlage trocknet"
+  ],
+  "bezug": "Gestern früh hatten wir an unserer Station {g_tmin} Grad – da beschlagen die Scheiben schnell."
+ },
+ {
+  "k": "regen",
+  "t": "Wie funktioniert der Wasserkreislauf?",
+  "hook": "Das Wasser, das heute auf den Odenwald regnet – wo kommt das eigentlich her?",
+  "schritte": [
+   "Die Sonne lässt Wasser aus Meeren, Seen, Böden und Pflanzen verdunsten.",
+   "Der Wasserdampf steigt auf, kühlt ab und wird zu Wolken. Der Wind trägt sie oft Tausende Kilometer weit.",
+   "Dann fällt das Wasser als Regen oder Schnee, fließt über Bäche wie die Mümling in Main und Rhein – und am Ende zurück ins Meer."
+  ],
+  "kurz": [
+   "Verdunstung durch Sonne",
+   "Wolken reisen mit dem Wind",
+   "über die Mümling zurück ins Meer"
+  ],
+  "bezug": "Gestern hat unsere Station {g_regen} Liter pro Quadratmeter gemessen."
+ },
+ {
+  "k": "winter",
+  "t": "Gibt es Gewitter im Winter?",
+  "hook": "Blitz und Donner im Januar – geht das überhaupt?",
+  "schritte": [
+   "Ja, Wintergewitter gibt es – sie sind aber selten.",
+   "Sie entstehen meist an kräftigen Kaltfronten, wenn sehr kalte Luft auf mildere Luft trifft und diese schnell nach oben drückt.",
+   "Oft bringen sie Graupel oder einen kurzen, heftigen Schneeschauer – und manchmal einen einzelnen, sehr kräftigen Blitz."
+  ],
+  "kurz": [
+   "selten, aber möglich",
+   "an kräftigen Kaltfronten",
+   "Graupel und Schneeschauer"
+  ],
+  "bezug": "Gestern hatten wir an unserer Station Böen bis {g_boe} Kilometer pro Stunde."
+ },
+ {
+  "k": "allgemein",
+  "t": "Wo war es in Deutschland am heißesten?",
+  "hook": "Wie heiß und wie kalt kann es in Deutschland eigentlich werden?",
+  "schritte": [
+   "Der offizielle Hitzerekord liegt bei 41,2 Grad – gemessen im Juli 2019 in Lingen im Emsland.",
+   "Der offizielle Kälterekord: minus 37,8 Grad, gemessen im Februar 1929 in Bayern.",
+   "Zwischen den beiden Werten liegen also fast 80 Grad – und das in einem Land mit gemäßigtem Klima."
+  ],
+  "kurz": [
+   "Hitze: 41,2 °C",
+   "Kälte: minus 37,8 °C",
+   "fast 80 Grad Unterschied"
+  ],
+  "bezug": "Gestern in Bad König: höchstens {g_tmax}, tiefstens {g_tmin} Grad – unsere eigenen Rekorde zeigen wir auf der Website."
+ },
+ {
+  "k": "allgemein",
+  "t": "Warum gibt es Jahreszeiten?",
+  "hook": "Im Winter ist die Erde weiter weg von der Sonne – deshalb ist es kalt. Stimmt das?",
+  "schritte": [
+   "Nein! Tatsächlich ist die Erde Anfang Januar der Sonne sogar am nächsten.",
+   "Der Grund für die Jahreszeiten ist die schiefe Erdachse. Im Sommer ist unsere Nordhalbkugel der Sonne zugeneigt, im Winter abgewandt.",
+   "Im Sommer steht die Sonne deshalb hoch und scheint lange, im Winter tief und kurz – das macht den Unterschied."
+  ],
+  "kurz": [
+   "nicht der Abstand!",
+   "die schiefe Erdachse",
+   "hohe oder tiefe Sonne"
+  ],
+  "bezug": "Heute rechnen wir in Bad König mit etwa {sonne} Stunden Sonne."
+ },
+ {
+  "k": "allgemein",
+  "t": "Beeinflusst der Mond das Wetter?",
+  "hook": "Vollmond – und schon schlägt das Wetter um? Was ist dran?",
+  "schritte": [
+   "Der Mond bewegt mit seiner Anziehungskraft die Meere – das sind Ebbe und Flut.",
+   "Auf die Luft wirkt er auch, aber so schwach, dass es für unser Wetter keine messbare Rolle spielt.",
+   "Wetterwechsel bei Vollmond sind Zufall – der Mond wechselt alle paar Tage seine Phase, das Wetter auch."
+  ],
+  "kurz": [
+   "Mond macht Ebbe und Flut",
+   "Wirkung auf Luft winzig",
+   "Wetterwechsel: Zufall"
+  ],
+  "bezug": "Mondphasen und Mondaufgang für Bad König findet ihr täglich auf wetter-badkoenig.de."
+ },
+ {
+  "k": "wolken",
+  "t": "Was ist der Jetstream?",
+  "hook": "In zehn Kilometern Höhe weht ein Wind, der unser Wetter steuert. Was ist das?",
+  "schritte": [
+   "Der Jetstream ist ein schmales Starkwindband in etwa zehn Kilometern Höhe – oft mit über 200 Kilometern pro Stunde.",
+   "Er entsteht an der Grenze zwischen kalter Polarluft und warmer Luft aus dem Süden.",
+   "Hoch- und Tiefdruckgebiete werden von ihm gesteuert. Schlägt er große Wellen, bleibt das Wetter bei uns oft lange gleich."
+  ],
+  "kurz": [
+   "Starkwind in 10 km Höhe",
+   "Grenze kalt – warm",
+   "steuert Hochs und Tiefs"
+  ],
+  "bezug": "Flugzeuge nach Osten nutzen den Jetstream gerne – über dem Odenwald sieht man ihre Kondensstreifen."
+ },
+ {
+  "k": "wolken",
+  "t": "Welche Wolke bringt Gewitter?",
+  "hook": "Es gibt eine Wolke, die höher ist als jeder Berg der Welt. Welche ist das?",
+  "schritte": [
+   "Die Cumulonimbus – die Gewitterwolke. Sie kann über zwölf Kilometer hoch werden.",
+   "Ganz oben stößt sie an eine Grenze in der Atmosphäre und breitet sich seitlich aus. So entsteht die typische Form eines Ambosses.",
+   "Wenn ihr so einen Amboss am Himmel seht, ist ein Gewitter nicht weit."
+  ],
+  "kurz": [
+   "Cumulonimbus",
+   "über 12 km hoch",
+   "Amboss-Form: Gewitter"
+  ],
+  "bezug": "An Sommernachmittagen bilden sich solche Wolken oft über dem Odenwald."
+ },
+ {
+  "k": "sommer",
+  "t": "Was sind leuchtende Nachtwolken?",
+  "hook": "Mitten in der Nacht leuchten silbrig-blaue Wolken am Nordhimmel. Was ist das?",
+  "schritte": [
+   "Das sind leuchtende Nachtwolken – die höchsten Wolken der Erde, in rund 80 Kilometern Höhe.",
+   "Sie bestehen aus winzigen Eiskristallen und sind so hoch, dass sie noch von der Sonne beleuchtet werden, wenn es bei uns längst dunkel ist.",
+   "Zu sehen sind sie nur im Frühsommer, etwa von Ende Mai bis Anfang August, tief am Nordhimmel."
+  ],
+  "kurz": [
+   "höchste Wolken: 80 km",
+   "noch von der Sonne beleuchtet",
+   "nur im Frühsommer"
+  ],
+  "bezug": "Mit freier Sicht nach Norden, etwa von den Odenwaldhöhen, hat man die besten Chancen."
+ },
+ {
+  "k": "sommer",
+  "t": "Woher kommen Sternschnuppen?",
+  "hook": "Jedes Jahr im August regnet es Sternschnuppen. Warum gerade dann?",
+  "schritte": [
+   "Sternschnuppen sind winzige Staubkörnchen aus dem All, die in unserer Atmosphäre verglühen.",
+   "Im August kreuzt die Erde die Staubspur eines Kometen. Dann treffen besonders viele Körnchen auf die Erde – die Perseiden.",
+   "Um den 12. August sind in dunklen Nächten oft Dutzende pro Stunde zu sehen. Am besten nach Mitternacht, weg von Lampen."
+  ],
+  "kurz": [
+   "Staubkörner verglühen",
+   "Staubspur eines Kometen",
+   "Perseiden um den 12. August"
+  ],
+  "bezug": "Ob der Himmel klar ist, zeigt unsere Seite im Bereich Himmel – mit Beobachtungs-Ampel."
+ },
+ {
+  "k": "schnee",
+  "t": "Wie schwer ist Schnee auf dem Dach?",
+  "hook": "Schnee sieht leicht aus. Aber wie viel wiegt er eigentlich?",
+  "schritte": [
+   "Frischer Pulverschnee ist sehr leicht – er besteht großteils aus Luft. Zehn Zentimeter wiegen etwa zehn Kilo pro Quadratmeter.",
+   "Nasser, schwerer Schnee wiegt bei gleicher Höhe ein Vielfaches.",
+   "Auf einem Hausdach mit hundert Quadratmetern können so schnell mehrere Tonnen zusammenkommen."
+  ],
+  "kurz": [
+   "Pulverschnee: viel Luft",
+   "Nassschnee: viel schwerer",
+   "mehrere Tonnen auf dem Dach"
+  ],
+  "bezug": "Gestern hatten wir an unserer Station tiefstens {g_tmin} Grad."
+ },
+ {
+  "k": "schnee",
+  "t": "Warum ist Schnee weiß?",
+  "hook": "Eis ist durchsichtig – warum ist Schnee dann weiß?",
+  "schritte": [
+   "Jede Schneeflocke besteht aus vielen kleinen Eiskristallen mit unzähligen Kanten und Flächen.",
+   "Das Licht wird an diesen Flächen immer wieder gebrochen und gespiegelt – und zwar alle Farben gleich stark.",
+   "Wenn alle Farben gemischt zurückkommen, sehen wir Weiß. Deshalb ist Schnee weiß, obwohl Eis eigentlich klar ist."
+  ],
+  "kurz": [
+   "viele Kristalle, viele Kanten",
+   "alle Farben gespiegelt",
+   "gemischt ergibt Weiß"
+  ],
+  "bezug": "Wenn auf den Odenwaldhöhen Schnee liegt, sieht man das selbst von Bad König aus leuchten."
+ },
+ {
+  "k": "herbst",
+  "t": "Warum gibt es im Herbst Stürme?",
+  "hook": "Im Herbst stürmt es oft. Warum gerade dann?",
+  "schritte": [
+   "Im Herbst kühlt der Norden schnell ab, während es im Süden noch warm ist.",
+   "Dieser Temperaturunterschied ist der Antrieb für Tiefdruckgebiete – je größer er ist, desto kräftiger werden sie.",
+   "Deshalb ziehen von Oktober bis März besonders oft Sturmtiefs vom Atlantik zu uns."
+  ],
+  "kurz": [
+   "Norden kühlt schnell ab",
+   "Unterschied treibt Tiefs an",
+   "Sturmzeit Oktober bis März"
+  ],
+  "bezug": "Gestern hatten wir an unserer Station Böen bis {g_boe} Kilometer pro Stunde."
+ },
+ {
+  "k": "herbst",
+  "t": "Warum ist morgens Tau auf dem Gras?",
+  "hook": "Auch wenn es nicht geregnet hat, ist das Gras morgens nass. Woher kommt das Wasser?",
+  "schritte": [
+   "Nachts geben Gras und Boden ihre Wärme ab und werden kälter als die Luft.",
+   "Die Luft direkt am Gras kühlt mit ab – bis sie das Wasser nicht mehr halten kann.",
+   "Dann setzt es sich als Tautropfen ab. Besonders viel Tau gibt es in klaren, windstillen Nächten."
+  ],
+  "kurz": [
+   "Gras kühlt nachts ab",
+   "Luft am Gras auch",
+   "Wasser wird zu Tau"
+  ],
+  "bezug": "Gestern früh hatten wir an unserer Station {g_tmin} Grad."
+ },
+ {
+  "k": "schnee",
+  "t": "Wie viel Wasser steckt im Schnee?",
+  "hook": "Zehn Zentimeter Neuschnee – wie viel Regen wäre das eigentlich?",
+  "schritte": [
+   "Schneehöhe misst man ganz einfach: mit einem Messstab an einer freien, ebenen Stelle – nicht dort, wo der Wind den Schnee zusammenweht.",
+   "Frischer Schnee ist sehr locker. Als grobe Faustregel gilt: Ein Zentimeter Neuschnee entspricht etwa einem Liter Wasser pro Quadratmeter.",
+   "Zehn Zentimeter Neuschnee sind also ungefähr zehn Liter Regen. Bei nassem Schnee ist es deutlich mehr, bei Pulverschnee weniger."
+  ],
+  "kurz": [
+   "Messstab an freier Stelle",
+   "1 cm Schnee ≈ 1 Liter",
+   "10 cm ≈ 10 l/m²"
+  ],
+  "bezug": "Gestern hat unsere Station {g_regen} Liter Niederschlag pro Quadratmeter gemessen."
+ },
+ {
+  "k": "schnee",
+  "t": "Welcher Schnee taugt für den Schneemann?",
+  "hook": "Manchmal klappt der Schneemann sofort – manchmal zerbröselt alles. Woran liegt das?",
+  "schritte": [
+   "Bei strengem Frost ist Schnee trocken und pulvrig. Die Kristalle haben kaum Wasser an der Oberfläche und halten nicht zusammen.",
+   "Liegt die Temperatur knapp um null Grad, haben die Flocken einen hauchdünnen Wasserfilm. Drückt man sie zusammen, frieren sie aneinander fest.",
+   "Das ist der berühmte Pappschnee – perfekt für Schneemänner und Schneebälle."
+  ],
+  "kurz": [
+   "Pulverschnee: zu trocken",
+   "um 0 Grad: Wasserfilm",
+   "Pappschnee klebt"
+  ],
+  "bezug": "Gestern hatten wir an unserer Station höchstens {g_tmax} Grad."
+ },
+ {
+  "k": "schnee",
+  "t": "Warum ist Schnee im Schatten blau?",
+  "hook": "Schaut mal genau hin: Im Schatten sieht Schnee oft bläulich aus. Warum?",
+  "schritte": [
+   "In der Sonne wird der Schnee vom weißen Sonnenlicht beleuchtet und erscheint weiß.",
+   "Im Schatten kommt kein direktes Sonnenlicht hin – dort wird der Schnee nur vom Himmel beleuchtet.",
+   "Und der Himmel ist blau. Deshalb wirft der Schnee im Schatten bläuliches Licht zurück."
+  ],
+  "kurz": [
+   "in der Sonne: weißes Licht",
+   "im Schatten: nur Himmelslicht",
+   "Himmel blau, Schnee blau"
+  ],
+  "bezug": "Achtet beim nächsten Schnee im Odenwald mal auf die Schatten der Bäume."
+ },
+ {
+  "k": "schnee",
+  "t": "Warum gibt es Schneeverwehungen?",
+  "hook": "Auf dem Feld liegen fünf Zentimeter – und hinter der Hecke ein Meter Schnee. Wie kommt das?",
+  "schritte": [
+   "Wind kann lockeren Schnee aufnehmen und über den Boden treiben – je stärker der Wind, desto mehr.",
+   "Hinter Hindernissen wie Hecken, Mauern oder Gebäuden wird der Wind plötzlich langsamer.",
+   "Dort fällt der Schnee aus und türmt sich auf. Deshalb sind Straßen hinter offenen Feldern oft zugeweht."
+  ],
+  "kurz": [
+   "Wind treibt Schnee",
+   "hinter Hindernissen: windstill",
+   "Schnee türmt sich auf"
+  ],
+  "bezug": "Gestern hatten wir an unserer Station Böen bis {g_boe} Kilometer pro Stunde."
+ },
+ {
+  "k": "schnee",
+  "t": "Warum ist es über Schnee so kalt?",
+  "hook": "Wenn Schnee liegt, werden die Nächte besonders eisig. Warum?",
+  "schritte": [
+   "Schnee ist ein hervorragender Dämmstoff – er hält die Wärme des Bodens unter sich fest.",
+   "Gleichzeitig strahlt die Schneeoberfläche in klaren Nächten sehr viel Wärme ab.",
+   "Die Luft direkt über dem Schnee kühlt deshalb extrem ab. So kommen die kältesten Nächte des Winters fast immer mit Schneedecke."
+  ],
+  "kurz": [
+   "Schnee dämmt den Boden",
+   "Oberfläche strahlt Wärme ab",
+   "eisige Luft darüber"
+  ],
+  "bezug": "Gestern früh hatten wir an unserer Station {g_tmin} Grad."
+ },
+ {
+  "k": "frost",
+  "t": "Wie wirkt Streusalz?",
+  "hook": "Warum taut Salz das Eis – und warum hilft es bei strengem Frost kaum noch?",
+  "schritte": [
+   "Salz löst sich im Wasser auf der Straße. Salzwasser gefriert erst bei tieferen Temperaturen als reines Wasser.",
+   "So schmilzt das Eis, solange es nicht zu kalt ist.",
+   "Bei sehr strengem Frost, etwa unter minus zehn Grad, wirkt Salz immer schlechter. Dann helfen eher Splitt oder Sand für mehr Halt."
+  ],
+  "kurz": [
+   "Salz löst sich im Wasser",
+   "Salzwasser friert später",
+   "bei strengem Frost: Splitt"
+  ],
+  "bezug": "Gestern früh hatten wir an unserer Station {g_tmin} Grad."
+ },
+ {
+  "k": "frost",
+  "t": "Wie entstehen Eisblumen?",
+  "hook": "Früher waren im Winter die Fenster voller Eisblumen. Wie entstehen diese Muster?",
+  "schritte": [
+   "Warme, feuchte Zimmerluft trifft auf die eiskalte Scheibe eines alten, einfach verglasten Fensters.",
+   "Der Wasserdampf gefriert direkt am Glas. Die ersten Kristalle setzen sich an winzigen Kratzern oder Staubkörnchen fest.",
+   "Von dort wachsen sie verzweigt weiter – wie Farnblätter. Bei modernen, gut gedämmten Fenstern sieht man das kaum noch."
+  ],
+  "kurz": [
+   "feuchte Luft, kalte Scheibe",
+   "Kristalle an Kratzern",
+   "wachsen wie Farn"
+  ],
+  "bezug": "Gestern früh hatten wir an unserer Station {g_tmin} Grad."
+ },
+ {
+  "k": "frost",
+  "t": "Warum platzen Wasserleitungen?",
+  "hook": "Warum kann eine Wasserleitung bei Frost platzen?",
+  "schritte": [
+   "Wasser ist besonders: Wenn es gefriert, dehnt es sich um etwa neun Prozent aus.",
+   "In einem geschlossenen Rohr ist dafür aber kein Platz. Das Eis drückt mit enormer Kraft gegen die Wand.",
+   "Das Rohr reißt – und wenn es taut, läuft das Wasser aus. Deshalb Außenleitungen im Herbst entleeren und Rohre in kalten Räumen schützen."
+  ],
+  "kurz": [
+   "Eis dehnt sich 9 % aus",
+   "kein Platz im Rohr",
+   "Rohr platzt"
+  ],
+  "bezug": "Gestern früh hatten wir an unserer Station {g_tmin} Grad."
+ },
+ {
+  "k": "frost",
+  "t": "Wie tief friert der Boden?",
+  "hook": "Wenn es draußen eine Woche lang friert – wie tief dringt der Frost in den Boden ein?",
+  "schritte": [
+   "Der Boden speichert viel Wärme vom Sommer. Frost dringt deshalb nur langsam ein.",
+   "In normalen Wintern bei uns friert der Boden meist nur ein paar Zentimeter tief, in langen strengen Frostperioden auch einen halben Meter und mehr.",
+   "Deshalb verlegt man Wasserleitungen in Deutschland meist in etwa 80 Zentimetern Tiefe – frostfrei. Und eine Schneedecke schützt den Boden zusätzlich."
+  ],
+  "kurz": [
+   "Boden speichert Wärme",
+   "meist nur wenige cm",
+   "Leitungen ca. 80 cm tief"
+  ],
+  "bezug": "Gestern früh hatten wir an unserer Station {g_tmin} Grad."
+ },
+ {
+  "k": "frost",
+  "t": "Warum platzen Bäume bei Frost?",
+  "hook": "An kalten Wintertagen hört man im Wald manchmal ein lautes Knallen. Was ist das?",
+  "schritte": [
+   "Tagsüber wärmt die tief stehende Wintersonne die Südseite eines Baumstamms.",
+   "Nachts kühlt die Rinde außen sehr schnell ab und zieht sich zusammen, das Holz innen bleibt noch wärmer.",
+   "Diese Spannung kann den Stamm aufreißen – mit einem lauten Knall. Man nennt das Frostriss."
+  ],
+  "kurz": [
+   "Sonne wärmt die Südseite",
+   "nachts: außen kalt, innen warm",
+   "Spannung: Frostriss"
+  ],
+  "bezug": "Im Odenwald mit seinen vielen Wäldern kann man das an klaren Frosttagen tatsächlich hören."
+ },
+ {
+  "k": "winter",
+  "t": "Warum ist gefrierender Regen so gefährlich?",
+  "hook": "Es regnet – bei minus 2 Grad. Wie geht das, und warum ist das so gefährlich?",
+  "schritte": [
+   "In der Höhe liegt eine wärmere Luftschicht. Dort schmelzen die Schneeflocken zu Regentropfen.",
+   "Unten am Boden ist es aber unter null Grad. Die Tropfen fallen unterkühlt herunter – noch flüssig, obwohl sie eigentlich gefrieren müssten.",
+   "Beim Aufprall gefrieren sie sofort. So entsteht in Minuten ein Eispanzer auf Straßen, Autos und Bäumen."
+  ],
+  "kurz": [
+   "warme Schicht in der Höhe",
+   "unterkühlte Tropfen",
+   "gefrieren beim Aufprall"
+  ],
+  "bezug": "Vor gefrierendem Regen im Odenwaldkreis warnen wir sofort mit einer Sondermeldung."
+ },
+ {
+  "k": "winter",
+  "t": "Warum Winterreifen ab 7 Grad?",
+  "hook": "Man hört immer „von O bis O“ – aber eigentlich geht es um sieben Grad. Warum?",
+  "schritte": [
+   "Sommerreifen haben eine härtere Gummimischung. Unter etwa sieben Grad wird sie hart und greift schlechter.",
+   "Winterreifen bleiben auch bei Kälte weich, und ihre Lamellen verzahnen sich mit Schnee und Matsch.",
+   "Vorgeschrieben sind sie in Deutschland bei winterlichen Straßenverhältnissen – sicherer ist man aber schon, sobald es dauerhaft kühler als sieben Grad ist."
+  ],
+  "kurz": [
+   "Sommerreifen werden hart",
+   "Winterreifen bleiben weich",
+   "Pflicht bei Glätte und Schnee"
+  ],
+  "bezug": "Gestern hatten wir an unserer Station höchstens {g_tmax} Grad."
+ },
+ {
+  "k": "nebel",
+  "t": "Hochnebel oder Nebel?",
+  "hook": "Grau ist grau? Nicht ganz – es gibt Nebel und Hochnebel.",
+  "schritte": [
+   "Nebel liegt direkt am Boden – man sieht kaum hundert Meter weit.",
+   "Hochnebel ist eine flache Wolkenschicht, die nur ein paar hundert Meter über dem Boden hängt. Unten ist die Sicht gut, aber der Himmel ist grau.",
+   "Oft wird aus Nebel im Laufe des Vormittags Hochnebel: Die Sonne hebt ihn ein Stück an, schafft es aber nicht, ihn aufzulösen."
+  ],
+  "kurz": [
+   "Nebel: am Boden",
+   "Hochnebel: flache Wolke",
+   "oft wird Nebel zu Hochnebel"
+  ],
+  "bezug": "Heute rechnen wir in Bad König mit etwa {sonne} Stunden Sonne."
+ },
+ {
+  "k": "nebel",
+  "t": "Warum bleibt es tagelang grau?",
+  "hook": "Eine Woche lang kein Sonnenstrahl – obwohl ein Hoch über uns liegt. Wie passt das zusammen?",
+  "schritte": [
+   "Im Winterhalbjahr sammelt sich unter einem Hoch kalte, feuchte Luft in den Niederungen.",
+   "Darüber liegt wärmere Luft wie ein Deckel. Unter diesem Deckel bildet sich eine Hochnebelschicht.",
+   "Die schwache Wintersonne schafft es nicht, sie aufzulösen. Oben auf Bergen ist es dann oft strahlend sonnig – unten bleibt es tagelang grau."
+  ],
+  "kurz": [
+   "kalte Luft unten",
+   "warmer Deckel darüber",
+   "Sonne zu schwach"
+  ],
+  "bezug": "Heute rechnen wir in Bad König mit etwa {sonne} Stunden Sonne."
+ },
+ {
+  "k": "nebel",
+  "t": "Warum dampft die Mümling?",
+  "hook": "An eiskalten Morgen steigt über der Mümling Dampf auf, als würde das Wasser kochen. Was passiert da?",
+  "schritte": [
+   "Das Wasser in Flüssen und Seen kühlt im Winter viel langsamer ab als die Luft. Es ist dann deutlich wärmer als die eisige Morgenluft.",
+   "Vom wärmeren Wasser verdunstet Wasserdampf. Trifft er auf die kalte Luft, kondensiert er sofort zu kleinen Tröpfchen.",
+   "Das sieht aus wie Dampf und heißt Seerauch – wie der Atem, den man an kalten Tagen sieht."
+  ],
+  "kurz": [
+   "Wasser wärmer als Luft",
+   "Dampf trifft Kälte",
+   "Seerauch"
+  ],
+  "bezug": "Gestern früh hatten wir an unserer Station {g_tmin} Grad – genau das Wetter für dampfende Bäche."
+ },
+ {
+  "k": "nebel",
+  "t": "Warum steht Rauch über dem Tal?",
+  "hook": "An manchen Wintertagen hängt Kaminrauch wie eine Decke über dem Ort. Warum steigt er nicht auf?",
+  "schritte": [
+   "Normalerweise steigt warmer Rauch nach oben und verteilt sich.",
+   "Bei einer Inversion liegt aber wärmere Luft über der kalten Talluft. Der Rauch steigt nur bis zu dieser Grenze – dann geht es nicht weiter.",
+   "Er breitet sich seitlich aus und bleibt im Tal hängen. Bei solchen Wetterlagen ist die Luft deshalb oft schlechter."
+  ],
+  "kurz": [
+   "Rauch steigt normal auf",
+   "Inversion als Deckel",
+   "Rauch bleibt im Tal"
+  ],
+  "bezug": "Gestern früh hatten wir an unserer Station im Mümlingtal {g_tmin} Grad."
+ },
+ {
+  "k": "frost",
+  "t": "Was ist Diamantstaub?",
+  "hook": "Bei klirrender Kälte glitzert manchmal die Luft selbst – wie fallender Glitzer. Was ist das?",
+  "schritte": [
+   "Bei strengem Frost kann Wasserdampf in der Luft direkt zu winzigen Eiskristallen gefrieren – ganz ohne Wolke.",
+   "Diese Kristalle schweben langsam zu Boden und spiegeln das Sonnenlicht oder das Licht von Laternen.",
+   "So entsteht das Glitzern, das man Diamantstaub nennt. Bei uns ist das selten – es braucht wirklich eisige, ruhige Luft."
+  ],
+  "kurz": [
+   "Dampf gefriert direkt",
+   "Kristalle schweben",
+   "glitzern wie Diamanten"
+  ],
+  "bezug": "Gestern früh hatten wir an unserer Station {g_tmin} Grad."
+ },
+ {
+  "k": "winter",
+  "t": "Was ist eine Ostwetterlage?",
+  "hook": "Russische Kälte – was steckt hinter dem Begriff?",
+  "schritte": [
+   "Normalerweise kommt unser Wetter von Westen, vom Atlantik.",
+   "Liegt aber ein kräftiges Hoch über Russland oder Skandinavien, dreht der Wind auf Ost.",
+   "Dann strömt trockene, sehr kalte Festlandluft zu uns. Solche Lagen bringen die kältesten Wintertage – oft mit viel Sonne, aber eisigem Ostwind."
+  ],
+  "kurz": [
+   "normal: Wetter von Westen",
+   "Hoch im Osten: Ostwind",
+   "trockene, eisige Luft"
+  ],
+  "bezug": "Gestern hatten wir an unserer Station {g_tmin} bis {g_tmax} Grad."
+ },
+ {
+  "k": "winter",
+  "t": "Warum bringt Westwind milde Winter?",
+  "hook": "Im Winter ist der Atlantik wärmer als das Land. Was bedeutet das für uns?",
+  "schritte": [
+   "Das Meer speichert die Sommerwärme viel länger als das Land – und der Golfstrom bringt zusätzlich warmes Wasser in den Nordatlantik.",
+   "Weht der Wind von Westen, kommt die Luft über dieses vergleichsweise warme Meer zu uns.",
+   "Deshalb sind Winter mit viel Westwind bei uns meist mild und nass – mit Regen statt Schnee im Tal."
+  ],
+  "kurz": [
+   "Meer speichert Wärme",
+   "Westwind bringt Meeresluft",
+   "mild und nass"
+  ],
+  "bezug": "Gestern hatten wir an unserer Station {g_tmin} bis {g_tmax} Grad."
+ },
+ {
+  "k": "winter",
+  "t": "Polarluft oder Meeresluft?",
+  "hook": "Meteorologen reden von Polarluft, Meeresluft, Festlandluft. Was soll das?",
+  "schritte": [
+   "Luft nimmt die Eigenschaften der Gegend an, über der sie lange liegt: über dem Meer feucht, über dem Festland trocken, im Norden kalt, im Süden warm.",
+   "So entstehen Luftmassen – zum Beispiel feuchte Meeresluft vom Atlantik oder trockene, eisige Festlandluft aus Russland.",
+   "Je nachdem, welche Luftmasse gerade zu uns strömt, ändert sich unser Wetter komplett."
+  ],
+  "kurz": [
+   "Luft übernimmt Eigenschaften",
+   "Meeresluft oder Festlandluft",
+   "bestimmt unser Wetter"
+  ],
+  "bezug": "Gestern hatten wir an unserer Station {g_tmin} bis {g_tmax} Grad."
+ },
+ {
+  "k": "winter",
+  "t": "Was ist ein Skandinavienhoch?",
+  "hook": "Wenn der Wetterbericht ein Skandinavienhoch meldet, sollte man die dicke Jacke rausholen. Warum?",
+  "schritte": [
+   "Ein Skandinavienhoch ist ein kräftiges Hochdruckgebiet über Nordeuropa.",
+   "Es blockiert die milden Tiefs vom Atlantik. Gleichzeitig schaufelt es auf seiner Südseite kalte Luft aus Nordosten zu uns.",
+   "Die Folge: trockenes, oft sonniges, aber sehr kaltes Winterwetter – manchmal wochenlang."
+  ],
+  "kurz": [
+   "Hoch über Nordeuropa",
+   "blockiert milde Tiefs",
+   "kalte Luft aus Nordosten"
+  ],
+  "bezug": "Gestern hatten wir an unserer Station tiefstens {g_tmin} Grad."
+ },
+ {
+  "k": "winter",
+  "t": "Gibt es das Weihnachtstauwetter?",
+  "hook": "Erst Schnee im Advent – und an Weihnachten ist alles grün. Zufall?",
+  "schritte": [
+   "Um Weihnachten herum dreht die Strömung in vielen Jahren auf West.",
+   "Dann kommt milde Meeresluft vom Atlantik zu uns – und der Schnee taut.",
+   "Meteorologen nennen das Weihnachtstauwetter. Es ist keine feste Regel, aber eine Wetterlage, die überdurchschnittlich oft vorkommt."
+  ],
+  "kurz": [
+   "Strömung dreht auf West",
+   "milde Atlantikluft",
+   "häufig, aber keine Regel"
+  ],
+  "bezug": "Ob es dieses Jahr bei uns in Bad König klappt mit Schnee, zeigt unsere Station live."
+ },
+ {
+  "k": "winter",
+  "t": "Warum ist der Januar am kältesten?",
+  "hook": "Am 21. Dezember sind die Tage am kürzesten – warum ist es dann erst im Januar am kältesten?",
+  "schritte": [
+   "Boden und Meere haben im Sommer und Herbst viel Wärme gespeichert.",
+   "Auch nach der Wintersonnenwende geben sie mehr Wärme ab, als die schwache Sonne nachliefert – es kühlt also weiter ab.",
+   "Erst Mitte bis Ende Januar ist dieser Speicher leer. Deshalb ist der Januar im Schnitt der kälteste Monat."
+  ],
+  "kurz": [
+   "Boden und Meer speichern Wärme",
+   "Abkühlung geht weiter",
+   "Januar am kältesten"
+  ],
+  "bezug": "Gestern hatten wir an unserer Station tiefstens {g_tmin} Grad."
+ },
+ {
+  "k": "winter",
+  "t": "Warum ist Winterluft so trocken?",
+  "hook": "Trockene Haut, kratziger Hals – warum ist die Luft im Winter so trocken?",
+  "schritte": [
+   "Kalte Luft kann nur sehr wenig Wasserdampf aufnehmen. Draußen ist sie oft trotzdem „feucht“, weil sie fast voll ist.",
+   "Holen wir diese Luft ins Haus und heizen sie auf, kann sie plötzlich viel mehr Wasser aufnehmen – die relative Feuchte sinkt stark.",
+   "Deshalb ist Heizungsluft so trocken. Lüften hilft trotzdem – kurz und kräftig, damit die Feuchtigkeit vom Kochen und Duschen rauskommt."
+  ],
+  "kurz": [
+   "kalte Luft: wenig Wasser",
+   "aufgeheizt: sehr trocken",
+   "Stoßlüften hilft"
+  ],
+  "bezug": "Gestern früh hatten wir an unserer Station {g_tmin} Grad."
+ },
+ {
+  "k": "winter",
+  "t": "Warum sieht man im Winter seinen Atem?",
+  "hook": "Warum sieht man seinen Atem nur, wenn es kalt ist?",
+  "schritte": [
+   "Unsere Atemluft ist warm und sehr feucht – voller unsichtbarem Wasserdampf.",
+   "Trifft sie auf kalte Luft, kühlt sie sofort ab. Der Wasserdampf wird zu winzigen Tröpfchen.",
+   "Das ist eine kleine Wolke – unser Atemwölkchen. Je kälter und feuchter die Luft, desto besser sieht man es."
+  ],
+  "kurz": [
+   "Atem ist warm und feucht",
+   "kühlt in kalter Luft ab",
+   "kleine Wolke"
+  ],
+  "bezug": "Gestern früh hatten wir an unserer Station {g_tmin} Grad – da war das Atemwölkchen garantiert."
+ },
+ {
+  "k": "winter",
+  "t": "Warum ist der Winterhimmel so klar?",
+  "hook": "Sternegucken im Winter lohnt sich besonders. Warum?",
+  "schritte": [
+   "Kalte Luft enthält wenig Wasserdampf und oft weniger Dunst als im Sommer.",
+   "Dadurch ist die Luft klarer, und die Sterne funkeln besonders hell.",
+   "Dazu kommen die langen Nächte: Schon am frühen Abend ist es dunkel genug. Nur warm anziehen sollte man sich!"
+  ],
+  "kurz": [
+   "kalte Luft: wenig Dunst",
+   "Sterne funkeln heller",
+   "lange Nächte"
+  ],
+  "bezug": "Ob der Himmel heute Nacht klar wird, zeigt die Beobachtungs-Ampel auf unserer Seite."
+ },
+ {
+  "k": "winter",
+  "t": "Wo steht der Orion?",
+  "hook": "Drei helle Sterne in einer Reihe – wer die findet, hat den Orion!",
+  "schritte": [
+   "Der Orion ist das bekannteste Wintersternbild. Man sieht ihn an Winterabenden im Süden über dem Horizont.",
+   "Die drei Sterne in der Mitte sind sein Gürtel. Oben links leuchtet der rötliche Riese Beteigeuze, unten rechts der bläuliche Rigel.",
+   "Verlängert man den Gürtel nach links unten, landet man bei Sirius – dem hellsten Stern am ganzen Nachthimmel."
+  ],
+  "kurz": [
+   "Wintersternbild im Süden",
+   "Gürtel: drei Sterne",
+   "links unten: Sirius"
+  ],
+  "bezug": "Von den Odenwaldhöhen, weg von den Laternen, sieht man den Orion besonders gut."
+ },
+ {
+  "k": "winter",
+  "t": "Warum gibt es drei Sonnen?",
+  "hook": "Manchmal stehen links und rechts neben der Sonne zwei helle Flecken – wie Nebensonnen. Was ist das?",
+  "schritte": [
+   "Das sind tatsächlich Nebensonnen. Sie entstehen in hohen, dünnen Wolken aus winzigen, flachen Eiskristallen.",
+   "Diese Plättchen schweben fast waagerecht und brechen das Sonnenlicht wie kleine Prismen.",
+   "So entstehen links und rechts der Sonne, in etwa 22 Grad Abstand, zwei helle, oft farbige Flecken."
+  ],
+  "kurz": [
+   "hohe Eiswolken",
+   "flache Kristalle als Prismen",
+   "zwei Flecken neben der Sonne"
+  ],
+  "bezug": "Bei tief stehender Wintersonne über dem Odenwald lohnt sich der Blick nach links und rechts."
+ },
+ {
+  "k": "winter",
+  "t": "Was sind Lichtsäulen?",
+  "hook": "An Frostabenden ragen über Laternen manchmal leuchtende Säulen in den Himmel. Ist das echt?",
+  "schritte": [
+   "Ja! Das sind Lichtsäulen. Sie entstehen, wenn winzige, flache Eiskristalle in der kalten Luft schweben.",
+   "Die Kristalle liegen fast waagerecht und spiegeln das Licht von Laternen wie viele kleine Spiegel.",
+   "So sieht man über jeder Lichtquelle einen senkrechten Lichtstreifen – ein seltenes, aber wunderschönes Winterphänomen."
+  ],
+  "kurz": [
+   "Eiskristalle in der Luft",
+   "spiegeln das Licht",
+   "senkrechte Lichtstreifen"
+  ],
+  "bezug": "Gestern früh hatten wir an unserer Station {g_tmin} Grad."
+ },
+ {
+  "k": "winter",
+  "t": "Was passiert zur Wintersonnenwende?",
+  "hook": "Am 21. Dezember ist der kürzeste Tag des Jahres. Was passiert da genau?",
+  "schritte": [
+   "An diesem Tag steht die Sonne mittags so tief wie an keinem anderen Tag im Jahr.",
+   "In Bad König sind es dann nur gut acht Stunden zwischen Sonnenaufgang und Sonnenuntergang.",
+   "Ab jetzt werden die Tage wieder länger – erst nur um Sekunden, dann um Minuten. Ab Ende Januar merkt man es deutlich."
+  ],
+  "kurz": [
+   "Sonne am tiefsten",
+   "gut 8 Stunden Tag",
+   "ab jetzt wieder länger"
+  ],
+  "bezug": "Sonnenauf- und -untergang für Bad König findet ihr täglich auf wetter-badkoenig.de."
+ },
+ {
+  "k": "winter",
+  "t": "Warum blendet die Wintersonne so?",
+  "hook": "Im Winter ist die Sonne schwach – und blendet beim Autofahren trotzdem extrem. Warum?",
+  "schritte": [
+   "Im Dezember steht die Sonne in Bad König mittags nur gut 16 Grad über dem Horizont.",
+   "Sie scheint deshalb fast waagerecht – genau auf Augenhöhe, durch die Windschutzscheibe.",
+   "Dazu kommen nasse Straßen und Schnee, die das Licht zusätzlich spiegeln. Sonnenbrille ins Auto und Scheibe innen sauber halten hilft."
+  ],
+  "kurz": [
+   "Sonne nur gut 16 Grad hoch",
+   "Licht auf Augenhöhe",
+   "nasse Straßen spiegeln"
+  ],
+  "bezug": "Heute rechnen wir in Bad König mit etwa {sonne} Stunden Sonne."
+ },
+ {
+  "k": "frost",
+  "t": "Wo ist es im Odenwald am kältesten?",
+  "hook": "Oben auf dem Berg ist es kälter – oder?",
+  "schritte": [
+   "Tagsüber stimmt das meist: Auf den Höhen ist es ein paar Grad kühler als im Tal.",
+   "In klaren, ruhigen Nächten ist es aber oft umgekehrt. Die kalte Luft fließt die Hänge hinunter und sammelt sich in Tälern und Senken.",
+   "Die kältesten Nachtwerte im Odenwald misst man deshalb oft nicht auf den Gipfeln, sondern unten in engen Tälern und Mulden."
+  ],
+  "kurz": [
+   "tagsüber: Höhen kälter",
+   "nachts: Kaltluft fließt ins Tal",
+   "Senken am kältesten"
+  ],
+  "bezug": "Gestern früh hatten wir an unserer Station im Mümlingtal {g_tmin} Grad."
+ },
+ {
+  "k": "winter",
+  "t": "Wie streng war der Winter 1962/63?",
+  "hook": "Es gab einen Winter, in dem sogar der Bodensee komplett zugefroren ist.",
+  "schritte": [
+   "Der Winter 1962 auf 1963 gilt als einer der kältesten des 20. Jahrhunderts in Deutschland.",
+   "Wochenlang lag kalte Festlandluft über Mitteleuropa. Flüsse froren zu, und der Bodensee war komplett mit Eis bedeckt.",
+   "Die Menschen konnten über das Eis von Deutschland in die Schweiz laufen. Ein so strenger Winter ist heute sehr selten geworden."
+  ],
+  "kurz": [
+   "Jahrhundertwinter",
+   "wochenlang Kälte",
+   "Bodensee zugefroren"
+  ],
+  "bezug": "Gestern hatten wir in Bad König tiefstens {g_tmin} Grad."
+ },
+ {
+  "k": "winter",
+  "t": "Was war die Kleine Eiszeit?",
+  "hook": "Auf alten Gemälden sieht man Menschen auf zugefrorenen Flüssen Schlittschuh laufen. Warum war das früher so oft möglich?",
+  "schritte": [
+   "Etwa vom 15. bis ins 19. Jahrhundert war es in Europa deutlich kühler als heute. Man nennt diese Zeit die Kleine Eiszeit.",
+   "Es gab viele lange, strenge Winter und kühle, nasse Sommer – mit Missernten und Hunger.",
+   "Als Ursachen gelten unter anderem eine schwächere Sonne und große Vulkanausbrüche, deren Asche das Sonnenlicht abschwächte."
+  ],
+  "kurz": [
+   "15. bis 19. Jahrhundert",
+   "strenge Winter, kühle Sommer",
+   "schwächere Sonne, Vulkane"
+  ],
+  "bezug": "Unsere Station misst seit 2026 – die Werte von damals kennen wir nur aus alten Aufzeichnungen."
+ },
+ {
+  "k": "winter",
+  "t": "Wann beginnt der Winter?",
+  "hook": "Beginnt der Winter am 1. Dezember – oder am 21. Dezember?",
+  "schritte": [
+   "Beides stimmt! Der astronomische Winter beginnt mit der Wintersonnenwende um den 21. Dezember.",
+   "Meteorologen rechnen aber lieber mit ganzen Monaten: Der meteorologische Winter dauert vom 1. Dezember bis Ende Februar.",
+   "So lassen sich Statistiken einfacher vergleichen – zum Beispiel, ob ein Winter wärmer oder kälter war als üblich."
+  ],
+  "kurz": [
+   "astronomisch: um den 21.12.",
+   "meteorologisch: ab 1.12.",
+   "ganze Monate für Statistik"
+  ],
+  "bezug": "Unsere Station sammelt jeden Winter die Werte für Bad König."
+ },
+ {
+  "k": "winter",
+  "t": "Wann beginnt der Frühling?",
+  "hook": "Frühlingsanfang – am 1. März oder am 20. März?",
+  "schritte": [
+   "Auch hier gibt es zwei Antworten. Der meteorologische Frühling beginnt am 1. März und dauert bis Ende Mai.",
+   "Der astronomische Frühling beginnt mit der Tagundnachtgleiche um den 20. März – dann sind Tag und Nacht etwa gleich lang.",
+   "Und in der Natur? Da zählt der phänologische Frühling: wenn Hasel, Schneeglöckchen und Forsythie blühen."
+  ],
+  "kurz": [
+   "meteorologisch: 1. März",
+   "astronomisch: um den 20. März",
+   "Natur: wenn es blüht"
+  ],
+  "bezug": "Wann es bei uns im Odenwald wirklich losgeht, zeigt die Temperaturkurve unserer Station."
+ },
+ {
+  "k": "winter",
+  "t": "Warum schwächelt die Autobatterie im Winter?",
+  "hook": "An eiskalten Morgen springt das Auto schlecht an. Warum?",
+  "schritte": [
+   "In einer Autobatterie laufen chemische Reaktionen ab. Bei Kälte werden sie deutlich langsamer.",
+   "Die Batterie kann dann weniger Strom liefern – genau dann, wenn der kalte Motor besonders viel Kraft zum Starten braucht.",
+   "Ältere Batterien geben deshalb gerade an Frostmorgen auf. Tipp: Kurzstrecken vermeiden und die Batterie vor dem Winter prüfen lassen."
+  ],
+  "kurz": [
+   "Chemie wird langsamer",
+   "weniger Strom, mehr Bedarf",
+   "Batterie vorher prüfen"
+  ],
+  "bezug": "Gestern früh hatten wir an unserer Station {g_tmin} Grad."
+ },
+ {
+  "k": "winter",
+  "t": "Warum liefert Solar im Winter wenig?",
+  "hook": "Im Sommer produziert die Solaranlage viel Strom, im Winter kaum. Warum?",
+  "schritte": [
+   "Im Winter sind die Tage kurz – es gibt einfach weniger Stunden mit Sonne.",
+   "Die Sonne steht außerdem tief, ihr Licht trifft flach auf und muss durch mehr Luft. Und oft liegt Hochnebel oder Schnee auf den Modulen.",
+   "Übrigens: Kälte selbst ist gut für Solarmodule – sie arbeiten bei niedrigen Temperaturen sogar effizienter."
+  ],
+  "kurz": [
+   "kurze Tage",
+   "tiefe Sonne, Nebel, Schnee",
+   "Kälte selbst hilft sogar"
+  ],
+  "bezug": "Heute rechnen wir in Bad König mit etwa {sonne} Stunden Sonne."
+ },
+ {
+  "k": "winter",
+  "t": "Warum beschlägt die Brille?",
+  "hook": "Raus aus der Kälte, rein ins Warme – und schon sieht man nichts mehr. Warum?",
+  "schritte": [
+   "Draußen kühlen die Brillengläser auf die Außentemperatur ab.",
+   "Drinnen trifft warme, feuchte Raumluft auf das kalte Glas und kühlt dort unter ihren Taupunkt ab.",
+   "Der Wasserdampf schlägt sich als feiner Film nieder. Sobald sich die Gläser erwärmen, verschwindet er wieder."
+  ],
+  "kurz": [
+   "Gläser werden kalt",
+   "warme Luft trifft kaltes Glas",
+   "Wasser schlägt sich nieder"
+  ],
+  "bezug": "Gestern früh hatten wir an unserer Station {g_tmin} Grad."
+ },
+ {
+  "k": "winter",
+  "t": "Wie überstehen Tiere den Frost?",
+  "hook": "Wie kommen Igel, Bäume und Bienen eigentlich durch den Winter?",
+  "schritte": [
+   "Der Igel hält Winterschlaf: Herzschlag und Körpertemperatur sinken stark, so spart er Energie bis zum Frühling.",
+   "Bäume werfen ihre Blätter ab und lagern Zucker in ihre Zellen ein – das wirkt wie ein Frostschutzmittel.",
+   "Und Honigbienen bilden eine Wintertraube: Sie kuscheln sich eng zusammen und erzeugen durch Muskelzittern Wärme."
+  ],
+  "kurz": [
+   "Igel: Winterschlaf",
+   "Bäume: Zucker als Frostschutz",
+   "Bienen: Wintertraube"
+  ],
+  "bezug": "Gestern früh hatten wir an unserer Station {g_tmin} Grad."
+ }
+]

@@ -1,0 +1,41 @@
+name: Termine für Max
+on:
+  workflow_dispatch:
+    inputs:
+      aktion: { description: 'neu oder loeschen', default: 'neu' }
+      name: { description: 'Name', default: '' }
+      ort: { description: 'Ort (z. B. „in der Altstadt von Michelstadt“)', default: '' }
+      von: { description: 'von JJJJ-MM-TT', default: '' }
+      bis: { description: 'bis JJJJ-MM-TT', default: '' }
+      zeit: { description: 'Uhrzeit, z. B. „ab 17 Uhr“', default: '' }
+      info: { description: 'Zusatz, z. B. „nur samstags“', default: '' }
+      wochentage: { description: 'Wochentage 0=Mo … 6=So, z. B. 4,5,6', default: '' }
+      tid: { description: 'ID zum Löschen', default: '' }
+permissions:
+  contents: write
+concurrency:
+  group: repo-schreiben
+  cancel-in-progress: false
+jobs:
+  eintragen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Termin speichern
+        env:
+          AKTION: ${{ inputs.aktion }}
+          NAME: ${{ inputs.name }}
+          ORT: ${{ inputs.ort }}
+          VON: ${{ inputs.von }}
+          BIS: ${{ inputs.bis }}
+          ZEIT: ${{ inputs.zeit }}
+          INFO: ${{ inputs.info }}
+          WOCHENTAGE: ${{ inputs.wochentage }}
+          TID: ${{ inputs.tid }}
+        run: python3 .github/scripts/termin_eintragen.py
+      - name: Speichern
+        run: |
+          git config user.name "wetter-bot"; git config user.email "actions@users.noreply.github.com"
+          git add data/termine.json; git diff --cached --quiet && exit 0
+          git commit -m "Termine für Max: ${{ inputs.aktion }} ${{ inputs.name }}${{ inputs.tid }}"
+          for i in 1 2 3; do git pull --rebase -X theirs -q && git push && break; git rebase --abort 2>/dev/null; sleep 5; done
