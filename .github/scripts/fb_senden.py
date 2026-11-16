@@ -392,6 +392,9 @@ def main():
             except Exception as e: print('Warn-Beitrag nicht gepostet:', e)
         if M.get('warn2_story') == j.get('erstellt') or M.get('fb_warn2_story') == j.get('erstellt'):
             M['warn2_erstellt'] = j.get('erstellt'); M['warn2_zeit'] = jetzt.isoformat(timespec='minutes'); M['warn2_titel'] = '; '.join(j.get('warn', [])[:2])
+    elif modus == 'merkfehler':   # Merkzettel ließ sich nicht speichern (16.11.2026)
+        push('Merkzettel nicht gespeichert', 'Facebook-Merkzettel konnte nicht gesichert werden – bitte prüfen, es droht ein Doppelpost.', prio='high', tags='warning')
+        return
     elif modus == 'sonder':
         modus_s = os.environ.get('FB_SONDER_AUTO') or 'aus'   # seit 15.11.2026 aus: Warnungen laufen über Warn-Story (Stufe 2) bzw. Unwetter-Special (3/4) | amtlich | alle
         if modus_s == 'aus': print('Sondermeldungen werden von Hand geteilt.'); return
