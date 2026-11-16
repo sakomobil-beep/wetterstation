@@ -1,46 +1,6 @@
 [
 {
 "d": "2026-11-14",
-"g": "ueberg_morgen",
-"k": "So, und jetzt der Blick nach vorn. "
-},
-{
-"d": "2026-11-14",
-"g": "tag",
-"k": "Morgen, am Sonntag, wird es nass. Die Te"
-},
-{
-"d": "2026-11-14",
-"g": "frost",
-"k": "In der Nacht zum Sonntag geht es runter "
-},
-{
-"d": "2026-11-14",
-"g": "frage",
-"k": "Was habt ihr bei dem schönen Wetter heut"
-},
-{
-"d": "2026-11-14",
-"g": "folgen",
-"k": "Folgt ihr uns eigentlich schon? Dann ver"
-},
-{
-"d": "2026-11-14",
-"g": "dwd",
-"k": "Kurz vorweg: Vom Deutschen Wetterdienst "
-},
-{
-"d": "2026-11-14",
-"g": "ueberg_heute",
-"k": "Kommen wir zum Wetter. "
-},
-{
-"d": "2026-11-14",
-"g": "tag",
-"k": "Heute wird es nach Nebel am Morgen freun"
-},
-{
-"d": "2026-11-14",
 "g": "glaette_r",
 "k": "Achtet heute früh auf Reifglätte, vor al"
 },
@@ -1998,5 +1958,45 @@
 "d": "2026-11-16",
 "g": "folgen",
 "k": "Neue Woche, neue Follower? Wenn ihr uns "
+},
+{
+"d": "2026-11-16",
+"g": "abend_gruss",
+"k": "Hallo zusammen und guten Abend! Hier ist"
+},
+{
+"d": "2026-11-16",
+"g": "dwd",
+"k": "Erst das Wichtige: Der Deutsche Wetterdi"
+},
+{
+"d": "2026-11-16",
+"g": "tag",
+"k": "Morgen ist Regen angesagt, bei bis zu 14"
+},
+{
+"d": "2026-11-16",
+"g": "tag",
+"k": "Dann ist Regen angesagt, bei bis zu 12 G"
+},
+{
+"d": "2026-11-16",
+"g": "folgen_abend",
+"k": "Kennt ihr jemanden im Odenwald, der wiss"
+},
+{
+"d": "2026-11-16",
+"g": "abend_ende",
+"k": "Und damit Feierabend hier im Studio."
+},
+{
+"d": "2026-11-16",
+"g": "abend_gute_nacht",
+"k": "Macht’s gut und gute Nacht – wir sehen u"
+},
+{
+"d": "2026-11-16",
+"g": "abend_live",
+"k": "Wer nachts mal nachschauen will: wetter-"
 }
 ]
