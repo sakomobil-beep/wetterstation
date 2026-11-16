@@ -1135,6 +1135,7 @@ html[data-theme="dark"] .fcdsel button[aria-pressed="true"] { background: #e8eef
 .ow-btns { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
 .ow-btns button { border: 0; padding: 6px 11px; border-radius: 20px; background: rgba(127,127,127,.13); color: var(--ink); font: 500 12.5px var(--font-body); cursor: pointer; }
 .ow-btns button.on { background: var(--accent); color: #fff; }
+.ow-wxleg { justify-content: center; color: var(--muted); }
 .ow-leg { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; margin-top: 4px; } .ow-leg i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 5px; }
 @media (max-width: 760px) { .ow-chips { grid-template-columns: 1fr 1fr; } .ow-grid { grid-template-columns: 1fr; } .ow-mapc { order: -1; } .ow-grid > div:first-child { order: 2; } }
 </style>
@@ -1441,7 +1442,7 @@ html[data-theme="dark"] .fcdsel button[aria-pressed="true"] { background: #e8eef
         <div class="ow-card ow-mapc">
           <div class="ow-btns" id="owBtns"><button data-k="t" class="on">🌡️ Temperatur</button><button data-k="g">💨 Wind</button><button data-k="r">🌧️ Regen heute</button><button data-k="rh">💧 Feuchte</button></div>
           <div id="owMap"></div>
-          <p class="ow-hint">Werte: eigene Station Bad König und private Wetterstationen bei Weather Underground (Breuberg-Neustadt, Höchst, Michelstadt, Unter-Mossau, Beerfelden-Birkenhöhe). Aktualisiert alle 10 Minuten, jede Messung wird archiviert.</p>
+          <p class="ow-hint">Werte: eigene Station Bad König und private Wetterstationen bei Weather Underground (Breuberg-Neustadt, Höchst, Michelstadt, Unter-Mossau, Beerfelden-Birkenhöhe). Aktualisiert alle 10 Minuten, jede Messung wird archiviert. Die Wettersymbole werden aus den Messwerten jeder Station abgeleitet (Regenrate, Regen der letzten 30 Min., Temperatur, Feuchte, Sonnenstrahlung).</p>
         </div>
       </div>
     </section>
@@ -1963,7 +1964,7 @@ html[data-theme="dark"] .fcdsel button[aria-pressed="true"] { background: #e8eef
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 15.11.2026, 22:10 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 16.11.2026, 08:15 Uhr</span></p>
 
 </div>
 
@@ -6165,6 +6166,9 @@ function owFarbe(k, v) {
   if (k === 'r') return v < 0.1 ? '#9aa5ab' : v < 2 ? '#74c0fc' : v < 10 ? '#1f8fc0' : '#1c3d8f';
   return v < 60 ? '#d9a010' : v < 85 ? '#2f9e44' : '#1f8fc0';
 }
+var OW_WX = { regen: ['🌧️', 'Regen'], schauer: ['🌦️', 'Schauer / leichter Regen'], nass: ['💧', 'Nass, gerade aufgehört'], schnee: ['🌨️', 'Schnee / Schneeregen'], nebel: ['🌫️', 'Nebel / Dunst'],
+  sonne: ['☀️', 'Sonnig'], wolkig: ['⛅', 'Wolkig'], bedeckt: ['☁️', 'Bedeckt'], tag: ['🌤️', 'Trocken'], nacht: ['🌙', 'Trocken (Nacht)'] };
+function owWx(o) { return !owAlt(o) && OW_WX[o.wx] ? OW_WX[o.wx] : null; }
 function owAlt(o) { return !o.zeit || (Date.now() - new Date(o.zeit).getTime()) > 75 * 60000; }
 function owMin(o) { return o.zeit ? Math.max(0, Math.round((Date.now() - new Date(o.zeit).getTime()) / 60000)) : null; }
 function owLaden(force) {
@@ -6190,7 +6194,7 @@ function owZeichnen() {
   $('owTab').innerHTML = '<tr><th>Ort</th><th>Höhe</th><th>Temperatur</th><th>Feuchte</th><th>Wind / Böe</th><th>Regen heute</th><th>Quelle</th><th>Messung</th></tr>' +
     d.orte.map(function (o) {
       var m = owMin(o), a = owAlt(o);
-      return '<tr data-ow="' + esc(o.name) + '" class="' + (a ? 'alt' : '') + (OW.sel === o.name ? ' sel' : '') + '"><td><b>' + esc(o.name) + '</b></td><td>' + o.el + ' m</td><td><b style="color:' + (a ? 'inherit' : owFarbe('t', o.t)) + '">' + owNf(o.t, 1) + ' °C</b></td><td>' + owNf(o.rh, 0) + ' %</td><td>' + owNf(o.w, 0) + ' / ' + owNf(o.g, 0) + ' km/h</td><td>' + owNf(o.r, 1) + ' mm</td><td><span class="ow-q">' + esc(o.quelle) + '</span></td><td>' + (m === null ? '–' : m < 1 ? 'gerade eben' : m < 60 ? 'vor ' + m + ' Min.' : 'vor ' + Math.round(m / 60) + ' Std.') + '</td></tr>';
+      return '<tr data-ow="' + esc(o.name) + '" class="' + (a ? 'alt' : '') + (OW.sel === o.name ? ' sel' : '') + '"><td>' + (owWx(o) ? '<span title="' + owWx(o)[1] + '">' + owWx(o)[0] + '</span> ' : '') + '<b>' + esc(o.name) + '</b></td><td>' + o.el + ' m</td><td><b style="color:' + (a ? 'inherit' : owFarbe('t', o.t)) + '">' + owNf(o.t, 1) + ' °C</b></td><td>' + owNf(o.rh, 0) + ' %</td><td>' + owNf(o.w, 0) + ' / ' + owNf(o.g, 0) + ' km/h</td><td>' + owNf(o.r, 1) + ' mm</td><td><span class="ow-q">' + esc(o.quelle) + '</span></td><td>' + (m === null ? '–' : m < 1 ? 'gerade eben' : m < 60 ? 'vor ' + m + ' Min.' : 'vor ' + Math.round(m / 60) + ' Std.') + '</td></tr>';
     }).join('');
   owKarte(); owVerlauf();
   Array.prototype.forEach.call(document.querySelectorAll('#owTab tr[data-ow]'), function (tr) { tr.onclick = function () { OW.sel = OW.sel === tr.dataset.ow ? null : tr.dataset.ow; owZeichnen(); }; });
@@ -6200,14 +6204,19 @@ function owKarte() {
   var einh = { t: '°', g: ' km/h', r: ' mm', rh: ' %' }[k], dez = { t: 1, g: 0, r: 1, rh: 0 }[k];
   var marks = d.orte.map(function (o) {
     var p = rgXY(o.lon, o.lat), off = OW_POS[o.name] || [10, -16], v = o[k], a = owAlt(o), sel = OW.sel === o.name;
-    var bx = p[0] + off[0], by = p[1] + off[1];
+    var wx = owWx(o), bw = wx ? 100 : 82, tx = wx ? 60 : 41;
+    var bx = p[0] + off[0] - (wx && off[0] < 0 ? 18 : 0), by = p[1] + off[1];
     return '<g data-ow="' + esc(o.name) + '" style="cursor:pointer"><circle cx="' + p[0].toFixed(0) + '" cy="' + p[1].toFixed(0) + '" r="4" fill="#12252E"/>' +
-      '<rect x="' + bx.toFixed(0) + '" y="' + by.toFixed(0) + '" width="82" height="30" rx="8" fill="' + (a ? '#9aa5ab' : owFarbe(k, v)) + '" stroke="' + (sel ? '#ffd400' : '#fff') + '" stroke-width="' + (sel ? 4 : 2) + '"/>' +
-      '<text x="' + (bx + 41).toFixed(0) + '" y="' + (by + 14).toFixed(0) + '" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">' + owNf(v, dez) + einh + '</text>' +
-      '<text x="' + (bx + 41).toFixed(0) + '" y="' + (by + 25).toFixed(0) + '" text-anchor="middle" font-size="8.5" fill="#fff">' + esc(o.name.replace(' i. Odw.', '')) + '</text></g>';
+      '<rect x="' + bx.toFixed(0) + '" y="' + by.toFixed(0) + '" width="' + bw + '" height="30" rx="8" fill="' + (a ? '#9aa5ab' : owFarbe(k, v)) + '" stroke="' + (sel ? '#ffd400' : '#fff') + '" stroke-width="' + (sel ? 4 : 2) + '"/>' +
+      (wx ? '<text x="' + (bx + 13).toFixed(0) + '" y="' + (by + 20).toFixed(0) + '" text-anchor="middle" font-size="15"><title>' + wx[1] + '</title>' + wx[0] + '</text>' : '') +
+      '<text x="' + (bx + tx).toFixed(0) + '" y="' + (by + 14).toFixed(0) + '" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">' + owNf(v, dez) + einh + '</text>' +
+      '<text x="' + (bx + tx).toFixed(0) + '" y="' + (by + 25).toFixed(0) + '" text-anchor="middle" font-size="8.5" fill="#fff">' + esc(o.name.replace(' i. Odw.', '')) + '</text></g>';
   }).join('');
   $('owMap').innerHTML = '<svg viewBox="-60 0 420 500" width="100%" role="img" aria-label="Reliefkarte des Odenwaldkreises mit Live-Werten"><defs><clipPath id="owClip"><polygon points="' + poly + '"/></clipPath></defs>' +
     '<image href="data/odenwald-relief.png" x="20" y="30.9" width="300" height="469.2" preserveAspectRatio="none" clip-path="url(#owClip)"/><polygon points="' + poly + '" fill="none" stroke="#12252E" stroke-width="2.2" stroke-dasharray="6 4"/>' + marks + '</svg>';
+  var da = {}; d.orte.forEach(function (o) { var w = owWx(o); if (w) da[o.wx] = w; });
+  var lg = Object.keys(da).map(function (key) { return '<span>' + da[key][0] + ' ' + da[key][1] + '</span>'; }).join('');
+  if (lg) $('owMap').insertAdjacentHTML('beforeend', '<div class="ow-leg ow-wxleg">' + lg + '</div>');
   Array.prototype.forEach.call(document.querySelectorAll('#owMap g[data-ow]'), function (g) { g.onclick = function () { OW.sel = OW.sel === g.dataset.ow ? null : g.dataset.ow; owZeichnen(); }; });
 }
 function owVerlauf() {

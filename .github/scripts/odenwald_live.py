@@ -2,7 +2,7 @@
 """Live-Werte der 6 Kartenorte im Odenwaldkreis für die Seite „Aktuell Odenwald“ (15.11.2026).
 Läuft im 10-Minuten-Lauf (widget.yml) und schreibt data/odenwald-live.json:
 stand, orte[name, el, lat, lon, quelle, t, rh, w, g, r (Regen heute), p, zeit], verlauf{name: [[HH:MM, t], ...]} für heute."""
-import json, os, sys, datetime as dt
+import json, os, sys, math, datetime as dt
 sys.path.insert(0, os.path.dirname(__file__))
 from fb_post import get, WU_KEY, TZ
 
@@ -20,7 +20,7 @@ def wu(sid):
     if not o: return None
     m = o.get('metric') or {}
     return dict(t=r1(m.get('temp')), rh=o.get('humidity'), w=r1(m.get('windSpeed')), g=r1(m.get('windGust')), r=r1(m.get('precipTotal')),
-                p=r1(m.get('pressure')), zeit=dt.datetime.fromtimestamp(o['epoch'], TZ).isoformat(timespec='minutes'))
+                rr=r1(m.get('precipRate')), sol=o.get('solarRadiation'), p=r1(m.get('pressure')), zeit=dt.datetime.fromtimestamp(o['epoch'], TZ).isoformat(timespec='minutes'))
 
 
 def dwd(sid, heute):
@@ -34,6 +34,36 @@ def dwd(sid, heute):
     except Exception as e: print('Regen heute %s:' % sid, e)
     return dict(t=r1(w.get('temperature')), rh=w.get('relative_humidity'), w=r1(w.get('wind_speed_10')), g=r1(w.get('wind_gust_speed_10')),
                 r=r, p=r1(w.get('pressure_msl')), zeit=dt.datetime.fromisoformat(w['timestamp']).astimezone(TZ).isoformat(timespec='minutes'))
+
+
+def sonnenhoehe(lat, lon, t):
+    """Sonnenhöhe in Grad (Näherung, reicht für Tag/Nacht und Klarhimmel-Strahlung)."""
+    import math
+    u = t.astimezone(dt.timezone.utc); n = u.timetuple().tm_yday; h = u.hour + u.minute / 60
+    g = 2 * math.pi / 365 * (n - 1 + (h - 12) / 24)
+    dek = 0.006918 - 0.399912 * math.cos(g) + 0.070257 * math.sin(g) - 0.006758 * math.cos(2 * g) + 0.000907 * math.sin(2 * g)
+    eq = 229.18 * (0.000075 + 0.001868 * math.cos(g) - 0.032077 * math.sin(g) - 0.014615 * math.cos(2 * g) - 0.040849 * math.sin(2 * g))
+    ha = math.radians((h * 60 + eq + 4 * lon) / 4 - 180)
+    la = math.radians(lat)
+    return math.degrees(math.asin(math.sin(la) * math.sin(dek) + math.cos(la) * math.cos(dek) * math.cos(ha)))
+
+
+def wetter_symbol(o, jetzt):
+    """Wetterlage je Station aus den Messwerten (16.11.2026): regen, schauer, nass, schnee, nebel, sonne, wolkig, bedeckt, nacht."""
+    t, rr, rh, dr = o.get('t'), o.get('rr') or 0, o.get('rh'), o.get('dr30') or 0
+    if t is None: return None
+    if (rr > 0 or dr > 0) and t <= 1: return 'schnee'
+    if rr >= 2.5: return 'regen'
+    if rr > 0: return 'schauer'
+    if dr > 0: return 'nass'
+    if rh is not None and rh >= 97: return 'nebel'
+    el = sonnenhoehe(o['lat'], o['lon'], jetzt)
+    if el < 0: return 'nacht'
+    sol = o.get('sol')
+    if sol is None or el < 5: return 'tag'
+    klar = 1000 * math.sin(math.radians(el)) * 0.75
+    q = sol / klar if klar > 0 else 0
+    return 'sonne' if q >= 0.6 else 'wolkig' if q >= 0.3 else 'bedeckt'
 
 
 def archiv(orte, jetzt):
@@ -61,8 +91,14 @@ def main():
         try: v = wu(sid) if art == 'wu' else dwd(sid, heute)
         except Exception as e: print('Station %s nicht abrufbar:' % n, e); v = None
         alt_o = next((o for o in alt.get('orte', []) if o['name'] == n), None) if alt.get('datum') == heute else None
-        if not v and alt_o: v = {k: alt_o.get(k) for k in ('t', 'rh', 'w', 'g', 'r', 'p', 'zeit')}
+        if not v and alt_o: v = {k: alt_o.get(k) for k in ('t', 'rh', 'w', 'g', 'r', 'rr', 'sol', 'p', 'zeit')}
+        # Regenzuwachs der letzten 30 Minuten (für „nass / gerade aufgehört“)
+        rhist = [x for x in (alt_o or {}).get('rhist', []) if (jetzt - dt.datetime.fromisoformat(x[0])).total_seconds() <= 35 * 60]
+        if v and v.get('r') is not None and v.get('zeit'): rhist.append([v['zeit'], v['r']])
+        dr30 = round(max(0, rhist[-1][1] - rhist[0][1]), 1) if len(rhist) >= 2 else 0
         o = dict(name=n, el=el, lat=la, lon=lo, quelle='eigene Station' if sid == 'IBADKN33' else 'privat (WU)' if art == 'wu' else 'DWD', **(v or {}))
+        o['rhist'] = rhist; o['dr30'] = dr30
+        o['wx'] = wetter_symbol(o, jetzt)
         orte.append(o)
         if v and v.get('t') is not None and (v.get('zeit') or '')[:10] == heute:
             L = verlauf.setdefault(n, []); hm = v['zeit'][11:16]
