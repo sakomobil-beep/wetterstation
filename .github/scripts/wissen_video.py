@@ -299,7 +299,7 @@ def main():
     kl = KLEIDUNG[heute.toordinal() % len(KLEIDUNG)]
     if not (V.pulli_zeit(heute)): anziehen(kl)
     else: V.PULLI[0] = V.PULLI_NAMEN[heute.toordinal() % len(V.PULLI_NAMEN)]   # Advent: Weihnachtspulli wie im Studio
-    intro = V.frisch(rnd, 'wissen_intro', ['Hallo zusammen, hier ist Max – Zeit für Wetterwissen!', 'Wetterwissen mit Max – heute eine spannende Frage:',
+    intro = V.frisch(rnd, 'wissen_intro', ['Hallo zusammen, hier ist Max – Zeit für Wetterwissen!', 'Wetterwissen mit Max – schön, dass ihr dabei seid!',
                                            'Hallo Odenwald! Hier ist euer Max mit einem Stück Wetterwissen.', 'Willkommen zu Wetterwissen mit Max!'])
     g = (a.get('gestern') or {}); werte = dict(g_tmin=g.get('tmin'), g_tmax=g.get('tmax'), g_regen=g.get('regen'), g_boe=g.get('boe'), sonne=a.get('sonne'))
     def fmt(v):
@@ -314,7 +314,9 @@ def main():
                                             'Habt ihr das gewusst? Schreibt’s mir in die Kommentare!',
                                             ('Am Montag gibt’s das nächste Wetterwissen – schönes Wochenende!' if heute.weekday() >= 4 else 'Morgen gibt’s das nächste Wetterwissen – bis dann!'),
                                             'Welches Wetter-Rätsel soll ich als Nächstes lösen? Schreibt’s mir!'])
-    intro = intro + ' Folge %d.' % folge
+    # 17.11.2026 (Kingmans Wunsch): Max nennt am Anfang das Thema der Folge – alle Titel sind Fragen
+    thema = V.frisch(rnd, 'wissen_thema', ['Heute geht es um die Frage: %s', 'Unser Thema heute: %s', 'Heute klären wir: %s', 'Die Frage des Tages: %s']) % x['t']
+    intro = intro + ' Folge %d. ' % folge + thema
     teile = [('intro', intro + ' ' + x['hook'])] + [('s%d' % n_, st) for n_, st in enumerate(x['schritte'])]
     if bezug: teile.append(('bezug', bezug))
     teile.append(('ende', schluss))
