@@ -1,5 +1,5 @@
 {
- "erstellt": "2026-11-17T11:36+01:00",
+ "erstellt": "2026-11-17T14:48+01:00",
  "meldungen": [
   {
    "typ": "sturm",
@@ -9,15 +9,6 @@
    "stufe": "Stufe 2 – Markantes Wetter",
    "bild": "sonder-sturm.jpg",
    "text": "🌪️ WETTER-SONDERMELDUNG für den Odenwald: Sturm 🌪️\n\n⚠️ Stufe 2 – Markantes Wetter\n📍 Gilt für: ganzer Odenwaldkreis\n• DWD: Amtliche WARNUNG vor STURMBÖEN\n• DWD: Amtliche WARNUNG vor WINDBÖEN\n🕒 Gültig von heute 13:00 Uhr bis heute 17:00 Uhr\n\n👉 Gefahr durch: einzelne herabstürzende Äste; umherfliegende Gegenstände. \n\nLive-Werte, Radar & Warnungen 👉 https://wetter-badkoenig.de\n#Odenwald #Odenwaldkreis #BadKönig #Wetter #Sturm #Unwetter"
-  },
-  {
-   "typ": "starkregen",
-   "titel": "Starkregen",
-   "emoji": "🌧️",
-   "amtlich": true,
-   "stufe": "Stufe 2 – Markantes Wetter",
-   "bild": "sonder-starkregen.jpg",
-   "text": "🌧️ WETTER-SONDERMELDUNG für den Odenwald: Starkregen 🌧️\n\n⚠️ Stufe 2 – Markantes Wetter\n📍 Gilt für: ganzer Odenwaldkreis\n• DWD: Amtliche WARNUNG vor DAUERREGEN\n🕒 Gültig von Montag 17:00 Uhr bis heute 14:00 Uhr\n\n👉 Gefahr durch: vereinzelte Überflutungen von Straßen/Unterführungen. \n\nLive-Werte, Radar & Warnungen 👉 https://wetter-badkoenig.de\n#Odenwald #Odenwaldkreis #BadKönig #Wetter #Starkregen #Unwetter"
   }
  ]
 }
