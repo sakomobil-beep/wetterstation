@@ -1,41 +1,6 @@
 [
 {
 "d": "2026-11-14",
-"g": "tag",
-"k": "Heute wird es nach Nebel am Morgen freun"
-},
-{
-"d": "2026-11-14",
-"g": "glaette_r",
-"k": "Achtet heute früh auf Reifglätte, vor al"
-},
-{
-"d": "2026-11-14",
-"g": "nebel_w",
-"k": "Heute früh liegt in den Tälern Nebel bis"
-},
-{
-"d": "2026-11-14",
-"g": "ueberg_tipp",
-"k": "Kleiner Tipp am Rande: "
-},
-{
-"d": "2026-11-14",
-"g": "ueberg_morgen",
-"k": "Und dann? "
-},
-{
-"d": "2026-11-14",
-"g": "tag",
-"k": "Morgen, am Sonntag, wird es nass. Die Te"
-},
-{
-"d": "2026-11-14",
-"g": "frost",
-"k": "In der Nacht zum Sonntag geht es runter "
-},
-{
-"d": "2026-11-14",
 "g": "frage",
 "k": "Wie dicht ist der Nebel bei euch? Schrei"
 },
@@ -1986,17 +1951,52 @@
 },
 {
 "d": "2026-11-17",
-"g": "wissen_intro",
-"k": "Hallo Odenwald! Hier ist euer Max mit ei"
+"g": "dwd",
+"k": "Ein Hinweis vorab: Für unsere Gegend gil"
 },
 {
 "d": "2026-11-17",
-"g": "wissen_ende",
-"k": "Welches Wetter-Rätsel soll ich als Nächs"
+"g": "ueberg_heute",
+"k": "So, jetzt zum Wetter. "
 },
 {
 "d": "2026-11-17",
-"g": "wissen_thema",
-"k": "Heute geht es um die Frage: %s"
+"g": "tag",
+"k": "Heute heißt es: Regen, bei etwa 15 Grad."
+},
+{
+"d": "2026-11-17",
+"g": "gestern_waermer",
+"k": "Damit wird es rund 3 Grad wärmer als ges"
+},
+{
+"d": "2026-11-17",
+"g": "klima_mild",
+"k": "Das sind einige Grad mehr, als um diese "
+},
+{
+"d": "2026-11-17",
+"g": "ueberg_tipp",
+"k": "Max-Tipp des Tages: "
+},
+{
+"d": "2026-11-17",
+"g": "ueberg_morgen",
+"k": "Schauen wir auf morgen. "
+},
+{
+"d": "2026-11-17",
+"g": "tag",
+"k": "Am Mittwoch ist Regen angesagt, bei bis "
+},
+{
+"d": "2026-11-17",
+"g": "frage",
+"k": "Aus welchem Ort im Odenwald schaut ihr z"
+},
+{
+"d": "2026-11-17",
+"g": "folgen",
+"k": "Kennt ihr jemanden im Odenwald, der imme"
 }
 ]
