@@ -849,7 +849,9 @@ FRAGE = ['']        # Frage des Tages an die Zuschauer (geht auch in den Faceboo
 WEIHNACHT = [False]   # wird in baue() für 23.11.–28.12. gesetzt
 
 
-def weihnachtszeit(heute): return (heute.month == 11 and heute.day >= 23) or (heute.month == 12 and heute.day <= 28)
+def weihnachtszeit(heute): return (heute.month == 11 and heute.day >= 23) or (heute.month == 12 and heute.day <= 27)   # einheitlich 23.11.–27.12. (17.11.2026, vorher bis 28.12.)
+ADVENT_KERZEN = [0]   # brennende Kerzen am Adventskranz im Studio (setzt baue())
+STUDIO_FUNKELN = [None]   # funkelnde Lichter im Weihnachts-Studio (3 Ebenen, setzt baue())
 
 
 def advent_gruss(heute, rnd):
@@ -1364,7 +1366,12 @@ def bg_studio(seed):
     sx0, sy0, sx1, sy1 = STUDIO_SCREEN
     dr.rounded_rectangle([sx0 - 14, sy0 - 14, sx1 + 14, sy1 + 14], radius=10, fill=(30, 28, 26))
     dr.rectangle([sx0, sy0, sx1, sy1], fill=(24, 36, 48))
-    return im.filter(ImageFilter.SMOOTH)
+    im = im.filter(ImageFilter.SMOOTH)
+    if WEIHNACHT[0]:   # Weihnachtsdeko Variante B (17.11.2026): Lichterkette, Girlande, Baum
+        try:
+            import studio_weihnacht; im = studio_weihnacht.hintergrund(im)
+        except Exception as e: print('Studio-Weihnachtsdeko nicht gezeichnet:', e)
+    return im
 
 
 GETRAENK = ['kaffee']
@@ -1432,7 +1439,12 @@ def studio_desk_overlay():
     for y in range(top + 90, H, 34):
         dr.line([(0, y), (W, y)], fill=(62, 44, 28, 255), width=2)
     tasse(im, GETRAENK[0], top)   # Kaffee / Glühwein (Advent) / Limo (warmer Sommerabend)
-    dr.rounded_rectangle([560, top + 4, 690, top + 24], radius=4, fill=(235, 235, 240, 255), outline=(25, 30, 40, 255), width=3)    # Notizen
+    deko = False
+    if WEIHNACHT[0]:   # Advent: Adventskranz und Geschenke statt Notizblock (17.11.2026)
+        try:
+            import studio_weihnacht; studio_weihnacht.tisch(im, top, ADVENT_KERZEN[0]); dr = ImageDraw.Draw(im); deko = True
+        except Exception as e: print('Adventskranz nicht gezeichnet:', e)
+    if not deko: dr.rounded_rectangle([560, top + 4, 690, top + 24], radius=4, fill=(235, 235, 240, 255), outline=(25, 30, 40, 255), width=3)    # Notizen
     dr.text((W / 2, top + 150), 'ODENWALD-WETTER', font=F(34), fill=(215, 180, 130, 255), anchor='mm')
     return im
 
@@ -2113,7 +2125,7 @@ def pulli_anziehen(im, name):
 
 
 def pulli_zeit(heute):
-    return (heute.month == 11 and heute.day >= 23) or (heute.month == 12 and heute.day <= 26)
+    return (heute.month == 11 and heute.day >= 23) or (heute.month == 12 and heute.day <= 27)   # einheitlich bis 27.12. (17.11.2026, vorher 26.12.)
 
 
 class MaxFigur:
@@ -3023,6 +3035,11 @@ def baue(segmente, heute, ziel, special, titel=None):
     BAEUME = [baum(a_) for a_ in range(-14, 15, 2)]
     KAPPE = kappe()
     GETRAENK[0] = 'gluehwein' if WEIHNACHT[0] else ('limo' if WARMER_ABEND[0] else 'kaffee')
+    STUDIO_FUNKELN[0] = None
+    if WEIHNACHT[0]:
+        try:
+            import studio_weihnacht; ADVENT_KERZEN[0] = studio_weihnacht.advent_kerzen(heute); STUDIO_FUNKELN[0] = studio_weihnacht.funkeln()
+        except Exception as e: print('Studio-Funkeln nicht vorbereitet:', e)
     STUDIO_DESK = studio_desk_overlay()
     kopf = kopfband(heute, special, titel)
     zeit = 0.0
@@ -3097,6 +3114,7 @@ def baue(segmente, heute, ziel, special, titel=None):
         y0 = int((bh - ch) * 0.4) if not studio else 0
         if not studio: bgi = pf_hintergrund(bgi); y0 = bh - ch   # Bild unten anliegend: unterer Bildrand sitzt am Weg
         fr = bgi.crop((x0, y0, x0 + cw, y0 + ch)).resize((W, HB), Image.BILINEAR).convert('RGBA')
+        if studio and STUDIO_FUNKELN[0]: fr.alpha_composite(STUDIO_FUNKELN[0][int(t * 2.2) % 3])   # Lichterkette und Baum funkeln
         if not studio:   # davor der Pflasterweg
             fr2 = Image.new('RGBA', (W, H)); fr2.paste(fr, (0, 0)); fr2.paste(fr.crop((0, HB - 2, W, HB)).resize((W, H - HB)), (0, HB))
             fr = fr2; fr.alpha_composite(pflaster(s['bgimg'], s['pf_zust'], s.get('bg_name')))
