@@ -405,6 +405,10 @@ button { font: inherit; color: inherit; }
 /* Foto */
 .photo { margin: 0; position: relative; border-radius: 16px; overflow: hidden; background: var(--line); }
 .photo img { display: block; width: 100%; height: clamp(150px, 30vw, 300px); object-fit: cover; object-position: center 45%; }
+/* Titelbild nur auf der Startseite „Aktuell Bad König“; auf allen anderen Reitern folgt nach den Links ein Trennstrich und gleich der Inhalt (17.11.2026) */
+html[data-tab]:not([data-tab="aktuell"]) .photo { display: none; }
+html[data-tab]:not([data-tab="aktuell"]) .top { padding-bottom: 12px; margin-bottom: 6px; border-bottom: 1px solid var(--line); }
+html[data-saison="weihnachten"][data-tab]:not([data-tab="aktuell"]) .top { border-bottom: 0; padding-bottom: 30px; margin-bottom: 14px; }
 
 /* Verlauf */
 .tvbtn { margin-right:auto; display:inline-flex; align-items:center; gap:12px; padding:8px 18px 8px 8px; border-radius:999px; text-decoration:none;
@@ -2112,7 +2116,7 @@ html[data-saison="weihnachten"] .tvbtn .tvbtn-ic { background: #F2C14E; color: #
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 17.11.2026, 23:00 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 17.11.2026, 23:10 Uhr</span></p>
 
 </div>
 
@@ -6485,6 +6489,8 @@ function showTab(name) {
   if (name === 'vorhersage-kreis') { name = 'vorhersage'; if (window.fcView) fcView('kreis', false); }
   if (TABS.indexOf(name) < 0) name = 'aktuell';
   currentTab = name;
+  document.documentElement.setAttribute('data-tab', name);   /* Titelbild nur auf „Aktuell Bad König“ (17.11.2026) */
+  if (typeof SAISON_AKTIV !== 'undefined' && SAISON_AKTIV === 'weihnachten' && typeof kopfMass === 'function') kopfMass();
   if (name !== 'video') { var tv = document.getElementById('tvVid'); if (tv && !tv.paused) tv.pause(); }
   TABS.forEach(function (t) {
     $('panel-' + t).hidden = t !== name;
@@ -6885,7 +6891,11 @@ function schlittenSvg() {
     '</g></svg>';
 }
 /* Schneefläche (17.11.2026, 23:00 Uhr): vom Seitenanfang über Kopf und Titelbild bis zum unteren Rand des ersten Bildschirms – weiter unten (Grafiken, Tabellen) schneit es nicht */
-function kopfMass() { var t = document.querySelector('.photo'), b = $('deko'); if (t && b) b.style.setProperty('--kopf', Math.round(Math.max(window.innerHeight, t.getBoundingClientRect().bottom + window.scrollY + 220)) + 'px'); }
+function kopfMass() {
+  var t = document.querySelector('.photo'), k = document.querySelector('header.top'), b = $('deko'); if (!t || !k || !b) return;
+  var bild = t.offsetParent !== null;   /* ohne Titelbild (andere Reiter) schneit es nur im Kopfbereich, nicht über den Tabellen */
+  b.style.setProperty('--kopf', Math.round(bild ? Math.max(window.innerHeight, t.getBoundingClientRect().bottom + window.scrollY + 220) : k.getBoundingClientRect().bottom + window.scrollY) + 'px');
+}
 window.addEventListener('resize', function () { if (SAISON_AKTIV === 'weihnachten') kopfMass(); });
 function batSvg() {
   return '<svg viewBox="0 0 64 30" aria-hidden="true">' +
