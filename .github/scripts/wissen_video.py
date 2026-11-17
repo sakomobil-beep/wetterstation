@@ -4,7 +4,7 @@ Ablauf: Aufhänger – Erklärung in 3 Schritten (Grafik baut sich mit auf) – 
 Max sitzt in seinem Wissenszimmer (Schubladenschrank, großer Fernseher, Bücher, Lampen, Globus) und erklärt ein
 Wetter-Phänomen – passend zu Wetter und Jahreszeit (Einstufung wie im Morgenvideo), dasselbe Thema frühestens nach 365 Tagen
 (bzw. wenn der Vorrat aufgebraucht ist: das am längsten zurückliegende). Max trägt täglich wechselnd Hemd oder Pulli.
-Ausgabe: fb/wissen.mp4 + fb/wissen.json (Titel, Skript, Beitragstext).   Test ohne Ton:  python wissen_video.py --demo"""
+Ausgabe: fb/wissen.mp4 + fb/wissen.json (Titel, Skript, Beitragstext) + Kopie für die Website in fb/wissen-archiv/ (7 Tage, wissen_archiv.py).   Test ohne Ton:  python wissen_video.py --demo"""
 import os, re, sys, json, math, random, subprocess, tempfile, datetime as dt
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
@@ -418,6 +418,10 @@ def main():
         try: vorrat_berechnen(log, heute)
         except Exception as e: print('Vorrat nicht berechnet:', e)
     if not DEMO: V.saetze_speichern()
+    if not DEMO:   # Website (17.11.2026): Folge 7 Tage für den Video-Tab aufbewahren – darf den Bau nie stoppen
+        try:
+            import wissen_archiv; wissen_archiv.ablegen()
+        except Exception as e: print('Wetterwissen-Archiv nicht geschrieben:', e)
     print('Wetterwissen fertig: %s (%.0f s)' % (x['t'], gesamt))
 
 

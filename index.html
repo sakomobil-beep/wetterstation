@@ -308,6 +308,15 @@ button { font: inherit; color: inherit; }
 .outlook2 { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 1fr); gap: 16px; }
 .tvbtn.tvbig { margin: 0; flex-direction: column; justify-content: center; text-align: center; border-radius: 16px; padding: 22px 16px; gap: 14px; }
 .tvbtn.tvbig .tvbtn-ic { width: 58px; height: 58px; font-size: 22px; }
+/* Videospalte der Startseite: oben Wetterbericht, darunter Wetterwissen mit Max (17.11.2026) */
+.tvcol { display: grid; grid-auto-rows: 1fr; gap: 12px; min-width: 0; }
+.tvcol .tvbtn.tvbig { padding: 14px 14px; gap: 10px; }
+.tvcol .tvbtn.tvbig .tvbtn-ic { width: 48px; height: 48px; font-size: 19px; }
+.tvbtn.wissen { background: linear-gradient(135deg, #0f5c54, #1d9e8a); box-shadow: 0 4px 14px rgba(15,92,84,.35); }
+.tvbtn.wissen .tvbtn-ic { padding-left: 0; animation: none; }
+@media (max-width: 760px) { .tvcol { grid-auto-rows: auto; gap: 10px; } .tvcol .tvbtn.tvbig { padding: 10px 18px 10px 10px; gap: 12px; } .tvcol .tvbtn.tvbig .tvbtn-ic { width: 42px; height: 42px; font-size: 16px; } }
+#wwCard .vt-item.aktiv img { outline-color: #1d9e8a; }
+#wwCard .vt-grid { margin-top: 4px; }
 @media (max-width: 760px) { .outlook2 { grid-template-columns: minmax(0, 1fr); } .tvbtn.tvbig { flex-direction: row; text-align: left; padding: 10px 18px 10px 10px; } .tvbtn.tvbig .tvbtn-ic { width: 42px; height: 42px; font-size: 16px; } }
 /* Hero */
 .hero {
@@ -1362,7 +1371,10 @@ html[data-theme="dark"] .fcdsel button[aria-pressed="true"] { background: #e8eef
       <div id="ncHome" class="nowcast" hidden></div>
       <a class="fc-link" href="#vorhersage" data-tab="vorhersage">Zur ausführlichen Vorhersage →</a>
     </article>
+    <div class="tvcol">
     <a class="tvbtn tvbig" id="tvBtn" href="#video" data-tab="video"><span class="tvbtn-ic">▶</span><span><b id="tvBtnT">Video-Wetterbericht</b><small id="tvBtnS">Heute mit Max, eurem Wettersprecher</small></span></a>
+    <a class="tvbtn tvbig wissen" id="wwBtn" href="#video" data-tab="video"><span class="tvbtn-ic">💡</span><span><b>Wetterwissen mit Max</b><small id="wwBtnS">Montag bis Freitag ein Stück Wetter erklärt</small></span></a>
+    </div>
     <a class="fbfollow" href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="#fff" d="M14 8V6.2c0-.8.2-1.2 1.4-1.2H17V2h-2.6C11.3 2 10.5 3.6 10.5 6v2H8v3h2.5v11h3.5V11h2.6l.4-3z"/></svg><span><b>Folge uns auf Facebook</b><small>Max' Wettervideo jeden Morgen &amp; Unwetterwarnungen sofort</small></span></a>
     <a class="fbfollow igfollow" href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="#fff" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="#fff" stroke-width="2"/><circle cx="17.3" cy="6.7" r="1.2" fill="#fff"/></svg><span><b>Folge uns auf Instagram</b><small>@wetterstation_badkoenig · Wettervideos &amp; Abendausblick</small></span></a>
   </div>
@@ -1548,6 +1560,17 @@ html[data-theme="dark"] .fcdsel button[aria-pressed="true"] { background: #e8eef
     </div>
     <div class="tv-wrap"><video id="tvVid" controls playsinline preload="metadata"></video></div>
     <p class="note" id="tvMsg" hidden>Das Video wird gerade erstellt – schau gleich nochmal vorbei.</p>
+  </section>
+  <section class="chart tv" id="wwCard" aria-label="Wetterwissen mit Max" hidden>
+    <div class="hist-head">
+      <div>
+        <div class="label">Montag bis Freitag um 15 Uhr neu · Max erklärt ein Stück Wetter</div>
+        <h2 class="fc-h2" id="wwH2">💡 Wetterwissen mit Max</h2>
+      </div>
+      <div class="stamp num" id="wwStamp"></div>
+    </div>
+    <div class="tv-wrap"><video id="wwVid" controls playsinline preload="metadata"></video></div>
+    <div class="vt-grid" id="wwGrid"></div>
   </section>
   <section class="chart" aria-label="Videothek">
     <div class="hist-head"><div><div class="label">Alle Wetterberichte der letzten 7 Tage – morgens, abends, Wochenausblick und Monatsrückblick</div><h2 class="fc-h2">📼 Videothek</h2></div></div>
@@ -2010,7 +2033,7 @@ html[data-theme="dark"] .fcdsel button[aria-pressed="true"] { background: #e8eef
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 17.11.2026, 20:40 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 17.11.2026, 21:00 Uhr</span></p>
 
 </div>
 
@@ -7483,6 +7506,33 @@ setInterval(renderSaison, 600000);
       else el('tvBtnS').textContent = (artVon(neu) === 'abend' ? 'Heute Abend' : artVon(neu) === 'woche' ? 'Wochenausblick' : artVon(neu) === 'monat' ? 'Monatsrückblick' : 'Heute') + ' mit Max, eurem Wettersprecher';
     } else el('tvBtnS').textContent = 'Der neueste Bericht vom ' + datumText(neu.datum);
   }).catch(function () { el('tvMsg').hidden = false; el('tvBtnS').textContent = 'Morgens und abends neu'; });
+  /* Wetterwissen mit Max (17.11.2026): Folgen der letzten 7 Tage aus fb/wissen-archiv; die Folge von heute erst ab 15 Uhr (Autopost) */
+  function wwName(e) { return (e.folge ? 'Folge ' + e.folge + ': ' : '') + (e.titel || 'Wetterwissen'); }
+  function wwSpiele(e, auto) {
+    var vid = el('wwVid');
+    vid.src = 'fb/wissen-archiv/' + e.datei + '?v=' + v; vid.poster = 'fb/wissen-archiv/' + e.datei.replace('.mp4', '.jpg') + '?v=' + v;
+    el('wwH2').textContent = '💡 Wetterwissen mit Max – ' + wwName(e);
+    el('wwStamp').textContent = (e.datum === heute ? 'heute' : datumText(e.datum)) + ' · ' + Math.round(e.dauer || 0) + ' Sek.';
+    Array.prototype.forEach.call(document.querySelectorAll('#wwGrid .vt-item'), function (b) { b.classList.toggle('aktiv', b.dataset.datei === e.datei); });
+    if (auto) { try { vid.play(); } catch (x) {} }
+  }
+  el('wwBtn').addEventListener('click', function () { setTimeout(function () { var c = el('wwCard'); if (!c.hidden) c.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 120); });
+  fetch('fb/wissen-archiv/liste.json?v=' + v, { cache: 'no-store' }).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (liste) {
+    var stunde = +new Date().toLocaleTimeString('de-DE', { timeZone: 'Europe/Berlin', hour: '2-digit', hour12: false }).slice(0, 2);
+    liste = liste.filter(function (e) { return e.datum < heute || (e.datum === heute && stunde >= 15); }).sort(function (a, b) { return a.datum < b.datum ? 1 : -1; });
+    if (!liste.length) throw 0;
+    var g = el('wwGrid'); g.innerHTML = '';
+    if (liste.length > 1) liste.forEach(function (e) {
+      var b = document.createElement('button'); b.className = 'vt-item'; b.type = 'button'; b.dataset.datei = e.datei;
+      b.innerHTML = '<img loading="lazy" alt="" src="fb/wissen-archiv/' + e.datei.replace('.mp4', '.jpg') + '?v=' + v + '"><b>' + (e.folge ? 'Folge ' + e.folge : datumText(e.datum)) + '</b><small></small>';
+      b.lastChild.textContent = (e.titel || '') + ' · ' + (e.datum === heute ? 'heute' : datumText(e.datum));
+      b.onclick = function () { wwSpiele(e, true); el('wwCard').scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+      g.appendChild(b);
+    });
+    el('wwCard').hidden = false;
+    wwSpiele(liste[0], false);
+    el('wwBtnS').textContent = wwName(liste[0]);
+  }).catch(function () { el('wwBtn').hidden = true; });
 })();
 </script>
 
