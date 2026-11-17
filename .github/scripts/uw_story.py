@@ -17,10 +17,11 @@ def _t(iso):
 def zeitraum(I, heute):
     v, b = _t(I.get('von') or ''), _t(I.get('bis') or '')
     def f(t): return ('%d' % t.hour if not t.minute else '%d:%02d' % (t.hour, t.minute))
-    def tag(t): return '' if t.date() == heute else ('morgen ' if t.date() == heute + dt.timedelta(days=1) else t.strftime('%d.%m. '))
-    if v and b and v.date() == b.date(): return '%s%s – %s Uhr' % (tag(v), f(v), f(b))   # gleicher Tag: „morgen 3 – 18 Uhr“
-    if v and b: return '%s%s – %s%s Uhr' % (tag(v), f(v), tag(b), f(b))
-    return ('bis %s%s Uhr' % (tag(b), f(b))) if b else ''
+    WT = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']
+    def tag(t): return '%s %d.%d.' % (WT[t.weekday()], t.day, t.month)   # 17.11.2026: immer Wochentag + Datum statt „heute/morgen“ (Story bleibt 24 Std. sichtbar)
+    if v and b and v.date() == b.date(): return '%s, %s – %s Uhr' % (tag(v), f(v), f(b))   # gleicher Tag: „Mi 18.11., 10 – 19 Uhr“
+    if v and b: return '%s, %s Uhr – %s, %s Uhr' % (tag(v), f(v), tag(b), f(b))   # „Di 17.11., 22 Uhr – Mi 18.11., 3 Uhr“
+    return ('bis %s, %s Uhr' % (tag(b), f(b))) if b else ''
 
 def bauen(warn, info, stufe, heute, pfad):
     W, H = 1080, 1920
