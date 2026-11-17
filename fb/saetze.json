@@ -1,11 +1,6 @@
 [
 {
 "d": "2026-11-14",
-"g": "tag",
-"k": "Am Montag wird es ungemütlich mit Niesel"
-},
-{
-"d": "2026-11-14",
 "g": "regenzeit",
 "k": "Nass bleibt es den ganzen Tag über."
 },
@@ -1956,47 +1951,52 @@
 },
 {
 "d": "2026-11-17",
-"g": "abend_gruss",
-"k": "Guten Abend aus dem Studio in Bad König!"
-},
-{
-"d": "2026-11-17",
 "g": "dwd",
 "k": "Ein Hinweis vorab: Für unsere Gegend gel"
 },
 {
 "d": "2026-11-17",
-"g": "tag",
-"k": "Morgen gibt es Regen bei Höchstwerten um"
+"g": "ueberg_heute",
+"k": "So, jetzt zum Wetter. "
 },
 {
 "d": "2026-11-17",
 "g": "tag",
-"k": "Dann erwartet uns Nieselregen – die Temp"
+"k": "Heute heißt es: Regen, bei etwa 15 Grad."
 },
 {
 "d": "2026-11-17",
-"g": "regenzeit",
-"k": "Mit Regen müsst ihr den ganzen Tag rechn"
+"g": "gestern_waermer",
+"k": "Damit wird es rund 3 Grad wärmer als ges"
 },
 {
 "d": "2026-11-17",
-"g": "folgen_abend",
-"k": "Wenn euch der Abendausblick gefällt: Fol"
+"g": "klima_mild",
+"k": "Das sind einige Grad mehr, als um diese "
 },
 {
 "d": "2026-11-17",
-"g": "abend_ende",
-"k": "Das war es für heute von mir."
+"g": "ueberg_tipp",
+"k": "Max-Tipp des Tages: "
 },
 {
 "d": "2026-11-17",
-"g": "abend_gute_nacht",
-"k": "Kommt gut durch die Nacht – bis morgen f"
+"g": "ueberg_morgen",
+"k": "So, und jetzt der Blick nach vorn. "
 },
 {
 "d": "2026-11-17",
-"g": "abend_live",
-"k": "Live dabei seid ihr auf wetter-badkoenig"
+"g": "tag",
+"k": "Am Mittwoch ist Regen angesagt, bei bis "
+},
+{
+"d": "2026-11-17",
+"g": "frage",
+"k": "Aus welchem Ort im Odenwald schaut ihr z"
+},
+{
+"d": "2026-11-17",
+"g": "folgen",
+"k": "Kennt ihr jemanden im Odenwald, der imme"
 }
 ]
