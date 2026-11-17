@@ -1,6 +1,11 @@
 [
 {
 "d": "2026-11-15",
+"g": "ueberg_tipp",
+"k": "Übrigens, mein Tipp für heute: "
+},
+{
+"d": "2026-11-15",
 "g": "ueberg_morgen",
 "k": "Was bringt der nächste Tag? "
 },
@@ -1951,52 +1956,47 @@
 },
 {
 "d": "2026-11-17",
+"g": "abend_gruss",
+"k": "Guten Abend aus dem Studio in Bad König!"
+},
+{
+"d": "2026-11-17",
 "g": "dwd",
-"k": "Bevor es losgeht – vom Deutschen Wetterd"
-},
-{
-"d": "2026-11-17",
-"g": "ueberg_heute",
-"k": "Kommen wir zum Wetter. "
+"k": "Ein Hinweis vorab: Für unsere Gegend gil"
 },
 {
 "d": "2026-11-17",
 "g": "tag",
-"k": "Heute heißt es: Regen, bei etwa 15 Grad."
-},
-{
-"d": "2026-11-17",
-"g": "gestern_waermer",
-"k": "Damit wird es rund 3 Grad wärmer als ges"
-},
-{
-"d": "2026-11-17",
-"g": "klima_mild",
-"k": "Das sind einige Grad mehr, als um diese "
-},
-{
-"d": "2026-11-17",
-"g": "kein_ausflug",
-"k": "Mütze festhalten! Für einen Ausflug ist "
-},
-{
-"d": "2026-11-17",
-"g": "ueberg_morgen",
-"k": "Schauen wir auf morgen. "
+"k": "Morgen gibt es Regen bei Höchstwerten um"
 },
 {
 "d": "2026-11-17",
 "g": "tag",
-"k": "Am Mittwoch ist Regen angesagt, bei bis "
+"k": "Dann erwartet uns Nieselregen – die Temp"
 },
 {
 "d": "2026-11-17",
-"g": "frage",
-"k": "Was macht ihr an so einem Regentag? Verr"
+"g": "regenzeit",
+"k": "Nass bleibt es den ganzen Tag über."
 },
 {
 "d": "2026-11-17",
-"g": "folgen",
-"k": "Bei Warnungen melden wir uns sofort – fo"
+"g": "folgen_abend",
+"k": "Noch kein Follower? Ein Klick auf Folgen"
+},
+{
+"d": "2026-11-17",
+"g": "abend_ende",
+"k": "Das war es für heute von mir."
+},
+{
+"d": "2026-11-17",
+"g": "abend_gute_nacht",
+"k": "Gute Nacht, Odenwald – bis morgen früh!"
+},
+{
+"d": "2026-11-17",
+"g": "abend_live",
+"k": "Live dabei seid ihr auf wetter-badkoenig"
 }
 ]
