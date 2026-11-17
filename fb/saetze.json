@@ -1,31 +1,6 @@
 [
 {
 "d": "2026-11-14",
-"g": "ueberg_morgen",
-"k": "Und dann? "
-},
-{
-"d": "2026-11-14",
-"g": "tag",
-"k": "Morgen, am Sonntag, wird es nass. Die Te"
-},
-{
-"d": "2026-11-14",
-"g": "frost",
-"k": "In der Nacht zum Sonntag geht es runter "
-},
-{
-"d": "2026-11-14",
-"g": "frage",
-"k": "Wie dicht ist der Nebel bei euch? Schrei"
-},
-{
-"d": "2026-11-14",
-"g": "folgen",
-"k": "Damit ihr die nächste Unwetterwarnung ni"
-},
-{
-"d": "2026-11-14",
 "g": "schluss_nebel",
 "k": "Kommt gut durch die graue Suppe – oben a"
 },
@@ -1998,5 +1973,30 @@
 "d": "2026-11-17",
 "g": "wissen_ende",
 "k": "Welches Wetter-Rätsel soll ich als Nächs"
+},
+{
+"d": "2026-11-17",
+"g": "r_nass",
+"k": "Na ja, "
+},
+{
+"d": "2026-11-17",
+"g": "ueberg_heute",
+"k": "So, jetzt zum Wetter. "
+},
+{
+"d": "2026-11-17",
+"g": "tag",
+"k": "Heute heißt es: Regen, bei etwa 14 Grad."
+},
+{
+"d": "2026-11-17",
+"g": "klima_mild",
+"k": "Für Mitte November ist das übrigens unge"
+},
+{
+"d": "2026-11-17",
+"g": "ueberg_tipp",
+"k": "Ihr sucht noch was für heute? "
 }
 ]
