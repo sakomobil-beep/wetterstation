@@ -561,10 +561,30 @@ def tagtext(d, wann, nachtfrost=True):
         s += ' ' + rnd.choice(['Aber ehrlich gesagt: Da sind sich die Wettermodelle noch uneinig.',
                                 'Kleiner Haken: Die Wettermodelle sind sich da noch nicht einig, also lieber nochmal reinschauen.',
                                 'Noch ist das aber unsicher, die Modelle rechnen ziemlich unterschiedlich.'])
-    if d['boe'] >= 60: s += ' Vorsicht, Sturmböen bis %d Kilometer pro Stunde!' % round(d['boe'])
-    elif d['boe'] >= 45: s += ' ' + rnd.choice(['Dazu frischer Wind mit Böen um %d Kilometer pro Stunde.' % round(d['boe']),
-                                                 'Und der Wind frischt auf, Böen um %d Kilometer pro Stunde.' % round(d['boe'])])
+    # (18.11.2026) Böen: Tageswert = stärkster Ort im Odenwaldkreis (meist die Höhen) – das sagt Max jetzt dazu,
+    # samt Tageszeit, wenn die Spitze nachts liegt; „frischt auf“ nur, wenn der Wind gegenüber dem Vortag wirklich zunimmt.
+    b = round(d['boe']); bz = boe_zeit(d)
+    if d['boe'] >= 60:
+        s += ' ' + rnd.choice(['Vorsicht, im Odenwaldkreis sind%s Sturmböen bis %d Kilometer pro Stunde möglich, am stärksten auf den Höhen!' % (bz, b),
+                               'Vorsicht beim Wind: Im Odenwaldkreis sind%s Sturmböen bis %d Kilometer pro Stunde drin, am stärksten auf den Höhen.' % (bz, b)])
+    elif d['boe'] >= 45:
+        vor = d.get('boe_vor')
+        if vor is not None and d['boe'] >= vor + 10: s += ' Und der Wind frischt auf, Böen um %d Kilometer pro Stunde.' % b
+        elif vor is not None and d['boe'] <= vor - 10: s += ' Der Wind lässt nach, es bleibt aber windig mit Böen um %d Kilometer pro Stunde.' % b
+        else: s += ' Dazu frischer Wind mit Böen um %d Kilometer pro Stunde.' % b
     return s
+
+
+def boe_zeit(d):
+    """Wann am Tag die stärksten Böen kommen – nur wenn die Spitze klar nachts liegt und es tagsüber deutlich ruhiger ist."""
+    st = d.get('stunden') or []
+    if len(st) < 20: return ''
+    pk = max(st, key=lambda x: x['boe'])
+    tags = max([x['boe'] for x in st if 7 <= x['h'] <= 20] or [0])
+    if not pk['boe'] or tags > pk['boe'] * 0.8: return ''
+    if pk['h'] < 6: return ' vor allem in der Nacht und am frühen Morgen'
+    if pk['h'] >= 21: return ' vor allem am späten Abend'
+    return ''
 
 
 def komma(v):
@@ -2817,13 +2837,16 @@ def grafik_saetze(d, grafiken, rnd, wann='heute'):
         if not nass and max(x['rp'] for x in st) < 10:
             out.append('Bei den Regenbalken sieht es gut aus: Es bleibt trocken.')
         elif nass:
-            out.append('Bei den Regenbalken seht ihr: Am ehesten gibt es Niederschlag zwischen %d und %d Uhr, da liegt das Risiko bei bis zu %d Prozent.'
+            nacht = [x for x in d.get('stunden') or [] if x['h'] < 6 and x['rp'] >= 30]
+            if wann != 'heute' and nacht:   # (18.11.2026) Regen in der Nacht davor nicht unterschlagen – die Tafel zeigt erst ab 6 Uhr
+                out.append('Schon in der Nacht ist Regen wahrscheinlich, mit bis zu %d Prozent.' % max(x['rp'] for x in nacht))
+            out.append('Bei den Regenbalken seht ihr: Tagsüber gibt es Niederschlag am ehesten zwischen %d und %d Uhr, da liegt das Risiko bei bis zu %d Prozent.'
                        % (nass[0]['h'], nass[-1]['h'] + 1, max(x['rp'] for x in nass)))
         else:
             out.append('Das Regenrisiko bleibt über den Tag gering, höchstens %d Prozent.' % max(x['rp'] for x in st))
     if 'wind' in grafiken:
         km = max(st, key=lambda x: x['boe'])
-        out.append('Und beim Wind: Die stärksten Böen kommen gegen %d Uhr mit bis zu %d Kilometern pro Stunde.' % (km['h'], km['boe']))
+        out.append('Und beim Wind: Bei uns in Bad König kommen die stärksten Böen tagsüber gegen %d Uhr, mit bis zu %d Kilometern pro Stunde.' % (km['h'], km['boe']))
     return ' ' + ' '.join(out)
 
 
@@ -3285,6 +3308,7 @@ def pruefen(segs):
 def main():
     daten = json.load(open(os.path.join(FB, 'daten.json'), encoding='utf-8'))
     days = [dict(d, datum=dt.date.fromisoformat(d['datum'])) for d in daten['tage']]
+    for i in range(1, len(days)): days[i]['boe_vor'] = days[i - 1].get('boe')   # für „Wind frischt auf / lässt nach“
     # Videos = Odenwald-Wetter: Talwerte aus der Modellmischung für Breuberg, Höchst, Bad König, Michelstadt (wie die Odenwald-Vorhersage der Website)
     for d in days:
         T = d.get('tal')
