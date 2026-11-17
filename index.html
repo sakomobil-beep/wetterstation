@@ -893,6 +893,80 @@ html[data-theme="dark"] .fcdsel button[aria-pressed="true"] { background: #e8eef
 .saison-chip.herbst { background: #7A3B12; color: #FFE2B8; }
 .saison-chip.halloween { background: #2B1E33; color: #FFB25B; }
 .saison-chip.weihnachten { background: #8E1B22; color: #FFF3DE; }
+/* ===== Weihnachtsszene (23.11.–28.12.), neu 17.11.2026: Winterabend im Kopf, Schneedecke, warme Akzente, Adventskerzen, eigenes Titelbild ===== */
+html[data-saison="weihnachten"] { --accent: #1E6B45; overflow-x: clip; }
+html[data-theme="dark"][data-saison="weihnachten"] { --accent: #E7BE5B; }
+html[data-saison="weihnachten"] .top { position: relative; z-index: 1; padding: 18px 0 30px; margin-bottom: 6px; }
+html[data-saison="weihnachten"] .top::before { content: ""; position: absolute; z-index: -2; top: -60px; bottom: 0; left: 50%; width: 100vw; transform: translateX(-50%);
+  background:
+    radial-gradient(1.6px 1.6px at 6% 22%, #fff 50%, transparent 52%), radial-gradient(1.2px 1.2px at 14% 58%, #fff 50%, transparent 52%),
+    radial-gradient(1.8px 1.8px at 23% 14%, #FFF3C9 50%, transparent 52%), radial-gradient(1.2px 1.2px at 31% 44%, #fff 50%, transparent 52%),
+    radial-gradient(1.4px 1.4px at 39% 26%, #fff 50%, transparent 52%), radial-gradient(1.1px 1.1px at 47% 63%, #dfe8ff 50%, transparent 52%),
+    radial-gradient(1.9px 1.9px at 55% 17%, #fff 50%, transparent 52%), radial-gradient(1.2px 1.2px at 63% 49%, #fff 50%, transparent 52%),
+    radial-gradient(1.5px 1.5px at 71% 30%, #FFF3C9 50%, transparent 52%), radial-gradient(1.1px 1.1px at 79% 66%, #fff 50%, transparent 52%),
+    radial-gradient(1.7px 1.7px at 87% 20%, #fff 50%, transparent 52%), radial-gradient(1.2px 1.2px at 94% 52%, #dfe8ff 50%, transparent 52%),
+    linear-gradient(180deg, #0B1733 0%, #142650 55%, #1E3A6B 100%); }
+html[data-saison="weihnachten"] .top::after { content: ""; position: absolute; z-index: -1; bottom: -1px; left: 50%; width: 100vw; height: 26px; transform: translateX(-50%);
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 26' preserveAspectRatio='none'%3E%3Cpath fill='%23F4F8FC' d='M0 26V14c40-10 80-12 130-4s90 10 140 2 100-12 150-4 110 8 180-2v20z'/%3E%3Cpath fill='%23FFFFFF' d='M0 26v-6c50-8 100-8 150-2s100 6 150 0 100-8 150-2 100 6 150 0v10z'/%3E%3C/svg%3E") repeat-x left bottom / 600px 26px; }
+html[data-theme="dark"][data-saison="weihnachten"] .top::after { opacity: .9; }
+html[data-saison="weihnachten"] .top h1 { color: #FFFFFF; }
+html[data-saison="weihnachten"] .top .label { color: #C9D6EE; }
+html[data-saison="weihnachten"] .tabnav a { color: #E9EFFA; }
+html[data-saison="weihnachten"] .tabnav a:hover { color: #F6D27A; }
+html[data-saison="weihnachten"] .tabnav a[aria-current="page"] { color: #F6D27A; border-bottom-color: #F6D27A; }
+html[data-saison="weihnachten"] .navrow.topics { border-top-color: rgba(255,255,255,.2); }
+html[data-saison="weihnachten"] .navrow.topics a { color: #B9C7E2; }
+html[data-saison="weihnachten"] .navrow.topics a:hover, html[data-saison="weihnachten"] .navrow.topics a[aria-current="page"] { color: #F6D27A; }
+html[data-saison="weihnachten"] .sky .cloud, html[data-saison="weihnachten"] .sky .sun { display: none; }
+/* Weihnachtsmann mit Schlitten und Rentieren (bunt, animiert) zieht alle 45 Sekunden durch den Sternenhimmel – hinter Titel und Reitern */
+.top .schlittenbahn { position: absolute; z-index: -1; top: -60px; bottom: 26px; left: 50%; width: 100vw; transform: translateX(-50%); overflow: hidden; pointer-events: none; }
+.top .schlitten { position: absolute; left: 0; top: 66px; width: clamp(170px, 21vw, 300px); transform: translateX(-340px); animation: schlittenFlug 45s linear infinite; animation-delay: 3s; filter: drop-shadow(0 2px 3px rgba(0,0,0,.35)); }
+.top .schlitten svg { display: block; width: 100%; height: auto; overflow: visible; animation: schlittenWippen 2.8s ease-in-out infinite alternate; }
+@keyframes schlittenFlug { 0% { transform: translate(-340px, 44px) rotate(-5deg); } 32% { transform: translate(48vw, 0) rotate(-2deg); } 64% { transform: translate(calc(100vw + 60px), -48px) rotate(-6deg); } 100% { transform: translate(calc(100vw + 60px), -48px) rotate(-6deg); } }
+@keyframes schlittenWippen { from { transform: translateY(-3px); } to { transform: translateY(4px); } }
+.schlitten .sb { animation: .46s ease-in-out infinite alternate; animation-delay: inherit; }
+.schlitten .sb.v1 { animation-name: beinVor; } .schlitten .sb.v2 { animation-name: beinVor2; }
+.schlitten .sb.h1 { animation-name: beinHinten; } .schlitten .sb.h2 { animation-name: beinHinten2; }
+@keyframes beinVor { from { transform: rotate(-48deg); } to { transform: rotate(28deg); } }
+@keyframes beinVor2 { from { transform: rotate(-22deg); } to { transform: rotate(-58deg); } }
+@keyframes beinHinten { from { transform: rotate(38deg); } to { transform: rotate(-30deg); } }
+@keyframes beinHinten2 { from { transform: rotate(8deg); } to { transform: rotate(52deg); } }
+.schlitten .sk { animation: renHuepf .46s ease-in-out infinite alternate; }
+@keyframes renHuepf { from { transform: translateY(1.6px); } to { transform: translateY(-2.2px); } }
+.schlitten .sn { transform-origin: 30px 26px; animation: renKopf .92s ease-in-out infinite alternate; animation-delay: inherit; }
+@keyframes renKopf { from { transform: rotate(3deg); } to { transform: rotate(-5deg); } }
+.schlitten .sw { animation: winken .6s ease-in-out infinite alternate; }
+@keyframes winken { from { transform: rotate(-14deg); } to { transform: rotate(22deg); } }
+.schlitten .ss { animation: schlittenNick 1.4s ease-in-out infinite alternate; transform-origin: 45px 66px; }
+@keyframes schlittenNick { from { transform: rotate(-1.6deg); } to { transform: rotate(1.8deg); } }
+.schlitten .sf > * { animation: funkeln 1.1s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: center; }
+.schlitten .sf > *:nth-child(2n) { animation-delay: -.5s; } .schlitten .sf > *:nth-child(3n) { animation-delay: -.8s; }
+@keyframes funkeln { from { opacity: .25; transform: scale(.6); } to { opacity: 1; transform: scale(1.15); } }
+@media (prefers-reduced-motion: reduce) { .top .schlitten { animation: none; transform: translate(56vw, 0) rotate(-3deg); } .top .schlitten svg, .schlitten svg * { animation: none !important; } }
+@media (max-width: 760px) { .top .schlitten { top: 58px; } }
+/* feiner Schnee nur im Kopfbereich */
+.deko.kopf { position: absolute; inset: 0 0 auto 0; height: var(--kopf, 220px); z-index: 2; }
+.deko.kopf .flake { box-shadow: none; animation-name: snowKopf; }
+@keyframes snowKopf { from { transform: translate3d(0, -14px, 0); opacity: 0; } 12% { opacity: var(--o, .8); } 80% { opacity: var(--o, .8); } to { transform: translate3d(var(--sw), var(--kopf, 220px), 0); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .deko.kopf .flake { animation: none; top: var(--sy0, 30px); } .advent .fl { animation: none !important; } }
+/* Titelbild Weihnachten + Schneedecke auf Bild und ersten Kacheln */
+html[data-saison="weihnachten"] .photo { overflow: visible; background: none; }
+html[data-saison="weihnachten"] .photo img { border-radius: 16px; height: auto; aspect-ratio: 1024 / 420; object-fit: cover; object-position: center; }   /* Panorama-Titelbild: ganzer Platz in voller Breite, PC und Handy */
+html[data-saison="weihnachten"] .photo::before, html[data-saison="weihnachten"] #heroCard::before, html[data-saison="weihnachten"] .tile.ngsun::before, html[data-saison="weihnachten"] .wcard.warntop::before {
+  content: ""; position: absolute; left: 4px; right: 4px; top: -7px; height: 22px; z-index: 3; pointer-events: none; border-radius: 11px 11px 9px 9px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 22' preserveAspectRatio='none'%3E%3Cpath fill='%23FFFFFF' d='M0.0 4.5 L6.0 5.0 L12.0 5.4 L18.0 5.8 L24.0 6.0 L30.0 6.1 L36.0 6.0 L42.0 5.8 L48.0 5.4 L54.0 5.0 L60.0 4.5 L66.0 4.0 L72.0 3.6 L78.0 3.2 L84.0 3.0 L90.0 2.9 L96.0 3.0 L102.0 3.2 L108.0 3.6 L114.0 4.0 L120.0 4.5 L126.0 5.0 L132.0 5.4 L138.0 5.8 L144.0 6.0 L150.0 6.1 L156.0 6.0 L162.0 5.8 L168.0 5.4 L174.0 5.0 L180.0 4.5 L186.0 4.0 L192.0 3.6 L198.0 3.2 L204.0 3.0 L210.0 2.9 L216.0 3.0 L222.0 3.2 L228.0 3.6 L234.0 4.0 L240.0 4.5 L240.0 15.5 L236.0 13.0 L232.0 10.5 L228.0 8.5 L224.0 7.7 L220.0 8.4 L216.0 10.4 L212.0 13.1 L208.0 15.8 L204.0 17.8 L200.0 18.6 L196.0 18.1 L192.0 16.6 L188.0 14.6 L184.0 12.8 L180.0 11.5 L176.0 11.0 L172.0 11.2 L168.0 11.6 L164.0 12.1 L160.0 12.3 L156.0 12.4 L152.0 12.4 L148.0 12.7 L144.0 13.4 L140.0 14.7 L136.0 16.1 L132.0 17.3 L128.0 17.7 L124.0 17.1 L120.0 15.5 L116.0 13.0 L112.0 10.5 L108.0 8.5 L104.0 7.7 L100.0 8.4 L96.0 10.4 L92.0 13.1 L88.0 15.8 L84.0 17.8 L80.0 18.6 L76.0 18.1 L72.0 16.6 L68.0 14.6 L64.0 12.8 L60.0 11.5 L56.0 11.0 L52.0 11.2 L48.0 11.6 L44.0 12.1 L40.0 12.3 L36.0 12.4 L32.0 12.4 L28.0 12.7 L24.0 13.4 L20.0 14.7 L16.0 16.1 L12.0 17.3 L8.0 17.7 L4.0 17.1 L0.0 15.5Z'/%3E%3Cpath fill='none' stroke='%23C9D8E8' stroke-width='1' d='M240.0 15.5 L236.0 13.0 L232.0 10.5 L228.0 8.5 L224.0 7.7 L220.0 8.4 L216.0 10.4 L212.0 13.1 L208.0 15.8 L204.0 17.8 L200.0 18.6 L196.0 18.1 L192.0 16.6 L188.0 14.6 L184.0 12.8 L180.0 11.5 L176.0 11.0 L172.0 11.2 L168.0 11.6 L164.0 12.1 L160.0 12.3 L156.0 12.4 L152.0 12.4 L148.0 12.7 L144.0 13.4 L140.0 14.7 L136.0 16.1 L132.0 17.3 L128.0 17.7 L124.0 17.1 L120.0 15.5 L116.0 13.0 L112.0 10.5 L108.0 8.5 L104.0 7.7 L100.0 8.4 L96.0 10.4 L92.0 13.1 L88.0 15.8 L84.0 17.8 L80.0 18.6 L76.0 18.1 L72.0 16.6 L68.0 14.6 L64.0 12.8 L60.0 11.5 L56.0 11.0 L52.0 11.2 L48.0 11.6 L44.0 12.1 L40.0 12.3 L36.0 12.4 L32.0 12.4 L28.0 12.7 L24.0 13.4 L20.0 14.7 L16.0 16.1 L12.0 17.3 L8.0 17.7 L4.0 17.1 L0.0 15.5'/%3E%3C/svg%3E") repeat-x left top / 240px 22px; }
+html[data-saison="weihnachten"] #heroCard, html[data-saison="weihnachten"] .tile.ngsun, html[data-saison="weihnachten"] .wcard.warntop { position: relative; overflow: visible; }
+html[data-theme="dark"][data-saison="weihnachten"] .photo::before, html[data-theme="dark"][data-saison="weihnachten"] #heroCard::before, html[data-theme="dark"][data-saison="weihnachten"] .tile.ngsun::before, html[data-theme="dark"][data-saison="weihnachten"] .wcard.warntop::before { filter: brightness(.92); }
+/* warme Akzente */
+html[data-saison="weihnachten"] .tvbtn:not(.wissen):not(.special) { background: linear-gradient(135deg, #7A1420, #B3262E); box-shadow: 0 4px 14px rgba(122,20,32,.35); }
+html[data-saison="weihnachten"] .tvbtn .tvbtn-ic { background: #F2C14E; color: #5A0F17; }
+/* Adventskerzen neben dem Titel */
+.advent { display: inline-flex; align-items: flex-end; gap: 5px; margin-left: 12px; vertical-align: -4px; }
+.advent svg { display: block; width: 13px; height: 30px; overflow: visible; }
+.advent .fl { transform-origin: 50% 100%; transform-box: fill-box; animation: kerze 1.7s ease-in-out infinite alternate; }
+.advent svg:nth-child(2) .fl { animation-delay: -.6s; } .advent svg:nth-child(3) .fl { animation-delay: -1.1s; } .advent svg:nth-child(4) .fl { animation-delay: -.3s; }
+@keyframes kerze { from { transform: scale(1, 1) rotate(-3deg); } to { transform: scale(.9, 1.12) rotate(4deg); } }
+.advent + .saison-chip { margin-left: 10px; }
 .photo .web { position: absolute; left: 0; top: 0; width: clamp(70px, 12vw, 130px); height: auto; pointer-events: none; opacity: .85; }
 .photo .pumpkins { position: absolute; right: 12px; bottom: 8px; display: flex; align-items: flex-end; gap: 4px; pointer-events: none; filter: drop-shadow(0 3px 4px rgba(0,0,0,.35)); }
 .photo .pumpkins svg { display: block; height: auto; }
@@ -2038,7 +2112,7 @@ html[data-theme="dark"] .fcdsel button[aria-pressed="true"] { background: #e8eef
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 17.11.2026, 22:15 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 17.11.2026, 22:35 Uhr</span></p>
 
 </div>
 
@@ -6763,7 +6837,55 @@ function saisonHeute(d) {
   if ((m === 11 && t >= 23) || (m === 12 && t <= 28)) return 'weihnachten';
   return null;
 }
-var SAISON_AKTIV = undefined;
+var SAISON_AKTIV = undefined, TITEL_ORIG = null;
+/* Advent: wie viele Kerzen brennen (0–4)? 4. Advent = letzter Sonntag vor dem 25.12. */
+function adventZahl(d) {
+  var q = /[?&]advent=([0-4])/.exec(location.search); if (q) return +q[1];
+  var h = new Date(d.getFullYear(), 11, 24); h.setDate(24 - h.getDay());
+  var heute = new Date(d.getFullYear(), d.getMonth(), d.getDate()), n = 0;
+  for (var k = 0; k < 4; k++) { var s = new Date(h.getFullYear(), 11, h.getDate() - 7 * k); if (heute >= s) n++; }
+  return n;
+}
+function kerzeSvg(an) {
+  return '<svg viewBox="0 0 13 30" aria-hidden="true">' + (an ? '<g class="fl"><ellipse cx="6.5" cy="6" rx="5.5" ry="6" fill="rgba(255,205,90,.28)"/><path d="M6.5 0.8C8.6 4 9.4 5.6 9.4 7.3a2.9 2.9 0 0 1-5.8 0C3.6 5.6 4.4 4 6.5 0.8z" fill="#FFC53D"/><path d="M6.5 4.4c1 1.5 1.3 2.2 1.3 3a1.3 1.3 0 0 1-2.6 0c0-.8.3-1.5 1.3-3z" fill="#FFF3B8"/></g>' : '') +
+    '<rect x="6" y="9.4" width="1" height="2.4" fill="#3A2A1C"/><rect x="2.5" y="11.5" width="8" height="17" rx="1.6" fill="' + (an ? '#C8323A' : '#8E3A40') + '"/><rect x="2.5" y="11.5" width="2.6" height="17" rx="1.3" fill="rgba(255,255,255,.22)"/><rect x="1" y="27.6" width="11" height="2.2" rx="1.1" fill="#D9B45A"/></svg>';
+}
+function schlittenSvg() {
+  /* eigene, bunte Zeichnung (17.11.2026): drei Rentiere im Galopp mit Glöckchen-Geschirr, roter Schlitten mit goldenen Kufen,
+     Geschenkesack und winkender Weihnachtsmann, dahinter eine Funkenspur. Bewegung per CSS (Beine, Köpfe, Winken, Funkeln). */
+  function bein(x, y, kl, dunkel) {
+    return '<g class="sb ' + kl + '" style="transform-origin:' + x + 'px ' + y + 'px"><path d="M' + x + ' ' + y + 'l1.6 8.5-1.2 7" fill="none" stroke="' + (dunkel ? '#7E5530' : '#9B6A3C') + '" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<path d="M' + (x + 0.4) + ' ' + (y + 15.5) + 'l-.2 1.6" stroke="#2E2018" stroke-width="3" stroke-linecap="round"/></g>';
+  }
+  function ren(x, v) {
+    return '<g transform="translate(' + x + ' 22)"><g class="sk" style="animation-delay:' + v + 's">' +
+      bein(11, 30, 'h2', 1) + bein(29, 30, 'v2', 1) +
+      '<ellipse cx="6.5" cy="23" rx="2.8" ry="2.2" fill="#F5EBDA"/><ellipse cx="20" cy="27" rx="14" ry="6.6" fill="#9B6A3C"/><ellipse cx="20" cy="30" rx="10" ry="3.2" fill="#C99C68"/>' +
+      bein(13, 30, 'h1') + bein(31, 30, 'v1') +
+      '<g class="sn"><path d="M29 24l8.5-14.5 5 3.2-7 15.3z" fill="#9B6A3C"/><path d="M31.5 21.5l6 3.6" stroke="#C8323A" stroke-width="2.6" stroke-linecap="round"/><circle cx="35.2" cy="25.6" r="1.9" fill="#F2C14E" stroke="#B8862A" stroke-width=".5"/>' +
+      '<path d="M40.5 6.5l-2.4-8.2M39.4 2.6l-4-2.2M38.6-.4l-2.8-3.2M43.6 6l3-8.4M44.9 2.4l4.2-1.6M45.9-.6l3.2-2.6" fill="none" stroke="#E8D2A6" stroke-width="1.5" stroke-linecap="round"/>' +
+      '<path d="M39.6 6.4l-3.4-2.2 1 3.6z" fill="#7E5530"/><ellipse cx="44.5" cy="10" rx="6.2" ry="4.3" transform="rotate(-14 44.5 10)" fill="#A8743F"/><ellipse cx="49.6" cy="10.8" rx="3.2" ry="2.5" fill="#D2A876"/>' +
+      '<circle cx="52" cy="10.2" r="1.35" fill="#33241A"/><circle cx="44.8" cy="8.3" r="1" fill="#1B1410"/><circle cx="45.1" cy="8" r=".35" fill="#fff"/></g></g></g>';
+  }
+  return '<svg viewBox="-36 -10 304 88" aria-hidden="true">' +
+    '<g class="sf"><path d="M-8 44l1.4 3 3 .4-2.2 2 .6 3-2.8-1.5-2.8 1.5.6-3-2.2-2 3-.4z" fill="#FFE08A"/><circle cx="-20" cy="52" r="1.6" fill="#FFF3C9"/><path d="M-27 40l1 2.2 2.2.3-1.6 1.5.4 2.2-2-1.1-2 1.1.4-2.2-1.6-1.5 2.2-.3z" fill="#FFD166"/><circle cx="-14" cy="60" r="1.2" fill="#FFE08A"/><circle cx="-31" cy="56" r="1" fill="#FFF3C9"/></g>' +
+    '<path d="M70 37C100 32 150 40 244 44" fill="none" stroke="#5A3A1E" stroke-width="1.1"/>' +
+    ren(96, 0) + ren(150, -.18) + ren(204, -.36) +
+    '<g class="ss">' +
+    '<path d="M4 69c-5 0-7-4-4-8" fill="none" stroke="#E0B24A" stroke-width="3" stroke-linecap="round"/><path d="M4 69h72c9 0 13-6 11-13" fill="none" stroke="#E0B24A" stroke-width="3" stroke-linecap="round"/><path d="M22 62v7M60 62v7" stroke="#C99A3A" stroke-width="2.2"/>' +
+    '<path d="M12 28c-7 0-11 6-11 13s5 11 12 11h14V34c-3-4-9-6-15-6z" fill="#1E6B45"/><path d="M13 28l4-6 4 2-3 6z" fill="#17553A"/><path d="M15 23.5l4.6 2.2" stroke="#F2C14E" stroke-width="1.6" stroke-linecap="round"/>' +
+    '<rect x="20" y="20" width="9" height="9" rx="1" fill="#F2C14E"/><path d="M24.5 20v9M20 24.5h9" stroke="#C8323A" stroke-width="1.4"/><rect x="5" y="19" width="8" height="8" rx="1" transform="rotate(-12 9 23)" fill="#4E8FD0"/><path d="M8.4 19.4l1.6 7.8" stroke="#fff" stroke-width="1.3"/>' +
+    '<path d="M8 62C5 49 9 41 19 39h12l2 14h30l4-13c4-2 10-2 14 2 5 8 3 18-6 20z" fill="#B3262E"/><path d="M8.5 60C6 49 10 43 19 41.5h10l2 14h34l4-13.5" fill="none" stroke="#F2C14E" stroke-width="1.6" stroke-linecap="round"/><path d="M12 62h64" stroke="#7A1420" stroke-width="2"/>' +
+    '<ellipse cx="47" cy="42" rx="10.5" ry="11.5" fill="#D12F36"/><path d="M36.6 44.5h20.8v3.6H36.6z" fill="#2A1A14"/><rect x="44.6" y="43.9" width="5" height="4.8" rx=".8" fill="none" stroke="#F2C14E" stroke-width="1.3"/><path d="M47 31v11" stroke="#fff" stroke-width="2.4"/>' +
+    '<path d="M53 37l12-2.5 1 4-12 3z" fill="#D12F36"/><circle cx="66.5" cy="36.6" r="2.7" fill="#1E6B45"/><path d="M63 34.6l1 4.4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>' +
+    '<g class="sw" style="transform-origin:41px 36px"><path d="M42 37l-6-12 3.6-1.8 6.2 11.6z" fill="#D12F36"/><path d="M36.2 26.4l3.8-1.9" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="37" cy="22.4" r="2.8" fill="#1E6B45"/></g>' +
+    '<circle cx="49" cy="24.5" r="6.3" fill="#F3CDAA"/><circle cx="52.6" cy="25.6" r="1.5" fill="#EBA08A"/><circle cx="51.2" cy="23" r=".9" fill="#1B1410"/><circle cx="55" cy="25.2" r="1.3" fill="#E79A86"/>' +
+    '<path d="M42.8 25.5c-1 9 3 14 8 14s8-5 5.6-12.5c-1.8 2.6-4 3.4-6 3-3 .2-5.600-1.500-7.600-4.500z" fill="#fff"/><path d="M50 27.6c1.800-1.200 4-1 5.400.400-1.400 1.600-3.800 1.800-5.400-.400z" fill="#F4F6FA" stroke="#D9E0EA" stroke-width=".4"/>' +
+    '<path d="M42.6 22c0-8 7-12 13-8 3-2 7 0 8.400 4.500l-5.200-1.800c-1.600-.500-2.600.300-3 2z" fill="#D12F36"/><path d="M42 20.600h14.200a1.700 1.700 0 0 1 0 3.400H42a1.700 1.700 0 0 1 0-3.400z" fill="#fff"/><circle cx="64.2" cy="19.2" r="2.500" fill="#fff"/>' +
+    '</g></svg>';
+}
+function kopfMass() { var t = document.querySelector('header.top'), b = $('deko'); if (t && b) b.style.setProperty('--kopf', Math.round(t.getBoundingClientRect().bottom + window.scrollY) + 'px'); }
+window.addEventListener('resize', function () { if (SAISON_AKTIV === 'weihnachten') kopfMass(); });
 function batSvg() {
   return '<svg viewBox="0 0 64 30" aria-hidden="true">' +
     '<path class="wl" fill="currentColor" d="M28 13 C22 4 12 2 2 6 C7 8 8 12 6 16 C10 13 14 14 15 18 C18 15 22 16 24 19 Z"/>' +
@@ -6832,8 +6954,11 @@ function renderSaison() {
   SAISON_AKTIV = art;
   var box = $('deko'), chip = $('saisonChip'), photo = document.querySelector('.photo');
   if (!box || !chip || !photo) return;
-  Array.prototype.forEach.call(photo.querySelectorAll('.saison'), function (el) { el.parentNode.removeChild(el); });
-  box.innerHTML = ''; chip.innerHTML = ''; chip.className = '';
+  Array.prototype.forEach.call(document.querySelectorAll('.photo .saison, header.top > .saison'), function (el) { el.parentNode.removeChild(el); });
+  box.innerHTML = ''; chip.innerHTML = ''; chip.className = ''; box.classList.remove('kopf');
+  if (art) document.documentElement.setAttribute('data-saison', art); else document.documentElement.removeAttribute('data-saison');
+  var im0 = photo.querySelector('img');
+  if (art !== 'weihnachten' && TITEL_ORIG && im0) { im0.src = TITEL_ORIG.src; im0.alt = TITEL_ORIG.alt; TITEL_ORIG = null; }
   if (!art) { box.hidden = true; return; }
   var html = '', i;
   if (art === 'halloween') {
@@ -6856,13 +6981,21 @@ function renderSaison() {
     chip.className = 'saison-chip herbst';
     chip.innerHTML = '<svg viewBox="0 0 40 44" aria-hidden="true"><path fill="#F0A040" d="M20 1 L23 10 L29 6 L28 14 L37 12 L32 20 L39 23 L30 27 L32 33 L23 30 L21 38 H19 L17 30 L8 33 L10 27 L1 23 L8 20 L3 12 L12 14 L11 6 L17 10 Z"/></svg>Goldener Herbst';
   } else {
-    for (i = 0; i < 46; i++) {
-      var s = 4 + (i * 37 % 6), x = (i * 61 % 100), d = 9 + (i * 13 % 11), del = -(i * 7 % 19), sw = ((i % 2 ? 1 : -1) * (8 + i * 5 % 22));
-      html += '<i class="flake" style="--x:' + x + 'vw;--s:' + s + 'px;--d:' + d + 's;--del:' + del + 's;--sw:' + sw + 'px;--o:' + (0.55 + (i % 5) * 0.09).toFixed(2) + ';--sy:' + (i * 23 % 95) + 'vh"></i>';
+    /* Weihnachtsszene (neu 17.11.2026): feiner Schnee nur im Kopf, Adventskerzen, Gruß nur 24.–26.12., eigenes Titelbild */
+    for (i = 0; i < 26; i++) {
+      var s = 2 + (i * 37 % 4), x = (i * 61 % 100), d = 7 + (i * 13 % 9), del = -(i * 7 % 15), sw = ((i % 2 ? 1 : -1) * (6 + i * 5 % 18));
+      html += '<i class="flake" style="--x:' + x + 'vw;--s:' + s + 'px;--d:' + d + 's;--del:' + del + 's;--sw:' + sw + 'px;--o:' + (0.5 + (i % 5) * 0.09).toFixed(2) + ';--sy0:' + (10 + i * 23 % 150) + 'px"></i>';
     }
-    chip.className = 'saison-chip weihnachten';
-    chip.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 L18 11 H15 L20 19 H4 L9 11 H6 Z" fill="#7CC48A"/><rect x="10.5" y="19" width="3" height="3" fill="#E9C9A0"/></svg>Frohe Weihnachten';
-    photo.insertAdjacentHTML('beforeend', '<span class="saison lights">' + lightsSvg() + '</span>' + '<span class="saison">' + treeSvg() + '</span>');
+    box.classList.add('kopf');
+    var jetzt = new Date(), n = adventZahl(jetzt), kz = '';
+    for (i = 1; i <= 4; i++) kz += kerzeSvg(i <= n);
+    chip.innerHTML = '<span class="advent" role="img" aria-label="' + (n ? n + '. Advent' : 'Advent beginnt bald') + '" title="' + (n ? n + '. Advent' : 'Die erste Kerze brennt am 1. Advent') + '">' + kz + '</span>' +
+      ((jetzt.getMonth() === 11 && jetzt.getDate() >= 24 && jetzt.getDate() <= 26) || /deko=weihnachten-gruss/.test(location.search) ? '<span class="saison-chip weihnachten">Frohe Weihnachten</span>' : '');
+    var im = photo.querySelector('img');
+    if (im && !TITEL_ORIG) { TITEL_ORIG = { src: im.getAttribute('src'), alt: im.getAttribute('alt') }; im.src = 'titel-weihnachten.jpg'; im.alt = 'Der Schlossplatz in Bad König mit geschmücktem Weihnachtsbaum im Schnee, gemalt im Stil eines Ölbilds'; }
+    var kopf = document.querySelector('header.top');
+    if (kopf) kopf.insertAdjacentHTML('afterbegin', '<span class="saison schlittenbahn" aria-hidden="true"><span class="schlitten">' + schlittenSvg() + '</span></span>');
+    kopfMass();
   }
   box.innerHTML = html;
   box.hidden = false;
