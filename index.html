@@ -866,6 +866,8 @@ html[data-theme="dark"] .fcdsel button[aria-pressed="true"] { background: #e8eef
   background: linear-gradient(135deg, var(--g1, #F4F7FA), var(--g2, #E6ECF1)); border: 1px solid rgba(18,37,46,.06); }
 .kday svg { width: 44px; height: 44px; display: block; }
 .kday .kd { font-weight: 600; margin-bottom: 2px; }
+.kday.ktend { border: 1px dashed var(--line); background: transparent; }
+.kday.ktend svg { width: 34px; height: 34px; margin: 4px 5px; color: var(--muted); }
 .kday p { margin: 0; font-size: 13.5px; line-height: 1.45; }
 @media (max-width: 760px) { .region { grid-template-columns: 1fr; } .rmap { max-width: 380px; margin: 0 auto; width: 100%; } }
 /* ---------- Saison-Deko: Halloween (24.–31.10.), Herbstlaub (1.–22.11.) und Weihnachten (23.11.–28.12.) ---------- */
@@ -2134,7 +2136,7 @@ html[data-theme="dark"] .am-map .cty text{fill:#EEF3F7!important;stroke:#141B25!
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 17.11.2026, 23:40 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 17.11.2026, 23:50 Uhr</span></p>
 
 </div>
 
@@ -4211,15 +4213,33 @@ function rgKreisTag(ds) {
   if (gx !== null && gx >= 50) out.push('Windig, auf den Höhen Böen bis ' + nf(gx, 0) + ' km/h.');
   return { icon: best, tmax: tx !== null ? tx : hx, tmin: tn, text: out.join(' ') };
 }
+/* Tendenz für den Kreis (17.11.2026): nach den sicheren Tagen nur eine grobe Richtung in Worten – aus der Vorhersage für Bad König
+   (für die übrigen Orte reicht die Modellmischung nur 4 Tage), Höhen entsprechend kühler. Keine Zahlen, nichts geraten. */
+function rgKreisTendenz() {
+  if (!FC.loaded) return '';
+  var tage = FC.days.filter(isTendenz), sicher = FC.days.filter(function (d) { return !isTendenz(d) && !d.night; }), letzter = sicher[sicher.length - 1];
+  if (!tage.length) return '';
+  var tx = avgOf(tage.map(function (d) { return d.tmax; }).filter(function (v) { return v !== null; }));
+  var tn = minOf(tage.map(function (d) { return d.tmin; }).filter(function (v) { return v !== null; }));
+  var trend = (letzter && letzter.tmax !== null && tx !== null) ? (tx - letzter.tmax >= 2 ? 'Es wird milder' : tx - letzter.tmax <= -2 ? 'Es wird kühler' : 'Die Temperaturen ändern sich wenig') : 'Die Richtung ist noch offen';
+  var nass = tage.some(function (d) { return (d.rain || 0) >= 3 || (d.prob || 0) >= 70; }) ? 'es bleibt eher nass'
+    : tage.some(function (d) { return (d.rain || 0) >= 0.5 || (d.prob || 0) >= 40; }) ? 'zeitweise ist Regen möglich' : 'es bleibt eher trocken';
+  var hoehen = tn !== null && tn <= 0 ? ' Nachts ist Frost möglich, auf den Höhen am ehesten.' : tn !== null && tn <= 2.5 ? ' Auf den Höhen ist es ein paar Grad kühler, dort ist nachts Frost möglich.' : ' Auf den Höhen ist es wie gewohnt ein paar Grad kühler als in den Tälern.';
+  var lab = tage.length === 1 ? dayLabel(tage[0].date) : dayLabel(tage[0].date) + ' bis ' + dayLabel(tage[tage.length - 1].date);
+  return '<div class="kday ktend" title="So weit im Voraus gibt es nur eine grobe Richtung">' +
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 16l5-5 4 3 7-7"/><path d="M15 7h5v5"/></svg>' +
+    '<div><div class="kd">Tendenz · ' + esc(lab) + '</div><p>' + trend + ', ' + nass + '.' + hoehen + ' Nur eine grobe Richtung – Zahlen gibt es erst, wenn die Tage näher rücken.</p></div></div>';
+}
 function rgKreis3(ohne) {
   var today = todayStr(), html = '';
-  [0, 1, 2].forEach(function (n) {
+  [0, 1, 2, 3].forEach(function (n) {   /* 17.11.2026: auch der 4. Tag, danach die Tendenz */
     var ds = addDays(today, n), k = ds === ohne ? null : rgKreisTag(ds);   /* 17.11.2026: der gewählte Tag steht schon oben, nicht doppelt */
     if (!k) return;
     html += '<div class="kday ' + wxClass(k.icon) + '">' + wxIcon(k.icon) + '<div><div class="kd">' + (n === 0 ? 'Heute' : n === 1 ? 'Morgen' : esc(dayLabel(ds))) + '</div>' +
       '<p>' + esc(k.text) + '</p></div></div>';
   });
-  return html ? '<div class="kreis3"><h3>Odenwaldkreis · ' + (ohne ? 'die anderen Tage' : '3-Tage-Vorhersage') + '</h3><div class="kgrid">' + html + '</div>' +
+  html += rgKreisTendenz();
+  return html ? '<div class="kreis3"><h3>Odenwaldkreis · ' + (ohne ? 'die anderen Tage' : 'die nächsten Tage') + '</h3><div class="kgrid">' + html + '</div>' +
     '<p class="rsub" style="margin:6px 0 0">Mischung aus ICON-D2, AROME, ECMWF und ICON-EU, für jeden Ort mit seiner Höhe berechnet (Täler 160–210 m, Höhen 380–430 m) und an Messstationen im Kreis angepasst (DWD Michelstadt, Michelstadt-Vielbrunn, Oberzent-Beerfelden sowie private Stationen).</p></div>' : '';
 }
 function rgDays(hours) {
