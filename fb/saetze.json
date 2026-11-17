@@ -1,51 +1,6 @@
 [
 {
 "d": "2026-11-14",
-"g": "schluss_nebel",
-"k": "Kommt gut durch die graue Suppe – oben a"
-},
-{
-"d": "2026-11-14",
-"g": "wissen_intro",
-"k": "Zeit für Wetterwissen – in 20 Sekunden!"
-},
-{
-"d": "2026-11-14",
-"g": "wissen_ende",
-"k": "Morgen gibt’s das nächste Wetterwissen –"
-},
-{
-"d": "2026-11-14",
-"g": "dwd",
-"k": "Kurz vorweg: Vom Deutschen Wetterdienst "
-},
-{
-"d": "2026-11-14",
-"g": "ueberg_heute",
-"k": "Kommen wir zum Wetter. "
-},
-{
-"d": "2026-11-14",
-"g": "tag",
-"k": "Heute wird es nach Nebel am Morgen freun"
-},
-{
-"d": "2026-11-14",
-"g": "glaette_r",
-"k": "Achtet heute früh auf Reifglätte, vor al"
-},
-{
-"d": "2026-11-14",
-"g": "nebel_w",
-"k": "Heute früh liegt in den Tälern Nebel bis"
-},
-{
-"d": "2026-11-14",
-"g": "ueberg_tipp",
-"k": "Kleiner Tipp am Rande: "
-},
-{
-"d": "2026-11-14",
 "g": "ueberg_morgen",
 "k": "Und dann? "
 },
@@ -1998,5 +1953,50 @@
 "d": "2026-11-17",
 "g": "ueberg_tipp",
 "k": "Ihr sucht noch was für heute? "
+},
+{
+"d": "2026-11-17",
+"g": "abend_gruss",
+"k": "Guten Abend aus dem Studio in Bad König!"
+},
+{
+"d": "2026-11-17",
+"g": "dwd",
+"k": "Ein Hinweis vorab: Für unsere Gegend gil"
+},
+{
+"d": "2026-11-17",
+"g": "tag",
+"k": "Morgen gibt es Regen bei Höchstwerten um"
+},
+{
+"d": "2026-11-17",
+"g": "tag",
+"k": "Dann erwartet uns Nieselregen – die Temp"
+},
+{
+"d": "2026-11-17",
+"g": "regenzeit",
+"k": "Mit Regen müsst ihr den ganzen Tag rechn"
+},
+{
+"d": "2026-11-17",
+"g": "folgen_abend",
+"k": "Wenn euch der Abendausblick gefällt: Fol"
+},
+{
+"d": "2026-11-17",
+"g": "abend_ende",
+"k": "Das war es für heute von mir."
+},
+{
+"d": "2026-11-17",
+"g": "abend_gute_nacht",
+"k": "Kommt gut durch die Nacht – bis morgen f"
+},
+{
+"d": "2026-11-17",
+"g": "abend_live",
+"k": "Live dabei seid ihr auf wetter-badkoenig"
 }
 ]

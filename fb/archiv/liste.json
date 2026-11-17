@@ -1,6 +1,18 @@
 [
  {
   "datum": "2026-11-17",
+  "datei": "2026-11-17-abend.mp4",
+  "art": "abend",
+  "erstellt": "2026-11-17T18:09+00:00",
+  "special": false,
+  "warn": [
+   "Amtliche Warnung vor Windböen",
+   "Amtliche Warnung vor Windböen für Breuberg"
+  ],
+  "dauer": 105.2
+ },
+ {
+  "datum": "2026-11-17",
   "datei": "2026-11-17-special.mp4",
   "art": "special",
   "erstellt": "2026-11-17T16:14+00:00",
