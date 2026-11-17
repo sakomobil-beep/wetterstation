@@ -575,7 +575,7 @@ button { font: inherit; color: inherit; }
 .wcard { background: var(--surface); border-radius: 16px; padding: 22px; display: grid; gap: 12px; grid-template-rows: auto auto 1fr auto; align-content: start; min-width: 0; }
 .wcard.wide { grid-template-rows: none; }
 .w-kicker { font-size: 13px; color: var(--muted); }
-.w-list { display: grid; gap: 10px; align-content: start; }
+.w-list { display: grid; gap: 6px; align-content: start; }
 .w-none { display: flex; align-items: center; gap: 10px; font: 600 1.3rem/1.2 var(--font-display); }
 .w-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--live); flex: none; }
 .w-dot.off { background: var(--line); }
@@ -585,6 +585,18 @@ button { font: inherit; color: inherit; }
 .walert .when { font-size: 13px; color: var(--muted); }
 .walert summary { cursor: pointer; font-size: 13px; color: var(--accent); margin-top: 2px; }
 .walert details p { margin: 6px 0 0; font-size: 13.5px; line-height: 1.5; white-space: pre-line; }
+/* Kompakte Warnzeilen: eine Zeile je Warnart, Details per Antippen */
+.walert.wrow { display: block; padding: 0; }
+.walert.wrow > summary { display: flex; flex-wrap: wrap; align-items: baseline; gap: 1px 12px; padding: 8px 34px 8px 12px; margin: 0; color: inherit; list-style: none; position: relative; cursor: pointer; }
+.walert.wrow > summary::-webkit-details-marker { display: none; }
+.walert.wrow > summary::after { content: '▾'; position: absolute; right: 12px; top: 7px; color: var(--muted); font-size: 15px; }
+.walert.wrow[open] > summary::after { content: '▴'; }
+.walert.wrow .ev { font: 600 15px/1.35 var(--font-display); white-space: nowrap; }
+.walert.wrow .when { font-size: 13px; line-height: 1.4; }
+.wrow .wd { display: grid; gap: 10px; padding: 0 12px 10px; }
+.wrow .wd1 { border-top: 1px solid var(--line); padding-top: 8px; display: grid; gap: 3px; }
+.wrow .wd1 b { font: 600 14px/1.3 var(--font-display); }
+.wrow .wd1 p { margin: 4px 0 0; font-size: 13.5px; line-height: 1.5; white-space: pre-line; }
 .w-meta { font-size: 12px; color: var(--muted); }
 .w-link { justify-self: start; color: var(--accent); font-weight: 600; font-size: 14px; text-underline-offset: 3px; }
 .fdays { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(104px, 1fr); gap: 8px; overflow-x: auto; padding-bottom: 4px; scroll-snap-type: x proximity; }
@@ -1964,7 +1976,7 @@ html[data-theme="dark"] .fcdsel button[aria-pressed="true"] { background: #e8eef
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 16.11.2026, 08:15 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 17.11.2026, 20:20 Uhr</span></p>
 
 </div>
 
@@ -4262,16 +4274,53 @@ function rangeTxt(a, b) {
   if (A) return 'Ab ' + whenTxt(A) + ' Uhr';
   return '';
 }
-function alertHtml(a) {
+/* Kompakte Anzeige (17.11.2026): Warnungen gleicher Art und Stufe stehen in EINER Zeile, Details klappen beim Antippen auf */
+function warnName(a) {
+  var t = a.event_de || String(a.headline_de || '').replace(/^.*?WARNUNG vor\s+/i, '') || 'Amtliche Warnung';
+  var klein = { mit: 1, und: 1, vor: 1, 'in': 1, bis: 1, 'über': 1, oder: 1, bei: 1, durch: 1 };
+  return t.toLowerCase().split(' ').map(function (w, i) { return i && klein[w] ? w : w.charAt(0).toUpperCase() + w.slice(1); }).join(' ');
+}
+function warnTag(d) { var ds = ymd(d), t = todayStr(); return ds === t ? 'heute' : ds === addDays(t, 1) ? 'morgen' : WD[d.getDay()] + ' ' + pad2(d.getDate()) + '.' + pad2(d.getMonth() + 1) + '.'; }
+function warnStd(d) { return d.getMinutes() ? d.getHours() + ':' + pad2(d.getMinutes()) : String(d.getHours()); }
+function warnKurz(a) {
+  var A = new Date(a.onset || a.effective), B = a.expires ? new Date(a.expires) : null;
+  if (isNaN(A)) A = null; if (B && isNaN(B)) B = null;
+  if (!B) return A ? (A.getTime() <= Date.now() ? 'ab sofort' : 'ab ' + warnTag(A) + ' ' + warnStd(A) + ' Uhr') : '';
+  if (!A || A.getTime() <= Date.now()) return 'bis ' + warnTag(B) + ' ' + warnStd(B) + ' Uhr';
+  return warnTag(A) + ' ' + warnStd(A) + ' – ' + (ymd(A) === ymd(B) ? '' : warnTag(B) + ' ') + warnStd(B) + ' Uhr';
+}
+function warnGanz(a) { return !a.orte || !a.orte.length || a.orte.length >= KREIS_GEMEINDEN.length - 1; }
+function warnOrte(a, kurz) {
+  if (warnGanz(a)) return kurz ? 'ganzer Kreis' : 'ganzer Odenwaldkreis';
+  return esc(kurz && a.orte.length > 3 ? a.orte.slice(0, 3).join(', ') + ' +' + (a.orte.length - 3) : a.orte.join(', '));
+}
+function warnDrin(a, b) { /* a steckt zeitlich und räumlich ganz in b */
+  var a0 = new Date(a.onset || a.effective).getTime() || 0, b0 = new Date(b.onset || b.effective).getTime() || 0;
+  var a1 = a.expires ? new Date(a.expires).getTime() : Infinity, b1 = b.expires ? new Date(b.expires).getTime() : Infinity;
+  if (b0 > Math.max(a0, Date.now()) || b1 < a1) return false;
+  return warnGanz(b) && (b.orte || []).length >= (a.orte || []).length ? (a.orte || []).every(function (o) { return !b.orte || !b.orte.length || b.orte.indexOf(o) >= 0; }) : (a.orte || []).length > 0 && (a.orte || []).every(function (o) { return (b.orte || []).indexOf(o) >= 0; });
+}
+function alertDetail(a) {
   var sv = SEV[a.severity] || SEV.minor;
-  var desc = a.description_de ? '<p>' + esc(a.description_de) + '</p>' : '';
-  var ins = a.instruction_de ? '<p><b>Hinweis:</b> ' + esc(a.instruction_de) + '</p>' : '';
-  return '<div class="walert" style="--wc:' + sv.c + ';--wbg:' + sv.bg + ';--wtx:' + sv.tx + '">' +
-    '<div class="lvl">' + sv.label + '</div>' +
-    '<div class="ev">' + esc(a.headline_de || a.event_de || 'Amtliche Warnung') + '</div>' +
-    '<div class="when">' + rangeTxt(a.onset || a.effective, a.expires) + '</div>' +
-    (a.orte && a.orte.length ? '<div class="when">📍 ' + (a.orte.length >= KREIS_GEMEINDEN.length - 1 ? 'ganzer Odenwaldkreis' : esc(a.orte.join(', '))) + '</div>' : '') +
-    (desc || ins ? '<details><summary>Details</summary>' + desc + ins + '</details>' : '') + '</div>';
+  return '<div class="wd1"><div class="lvl">' + sv.label + '</div>' +
+    '<b>' + esc(a.headline_de || a.event_de || 'Amtliche Warnung') + '</b>' +
+    '<div class="when">' + rangeTxt(a.onset || a.effective, a.expires) + ' · 📍 ' + warnOrte(a, false) + '</div>' +
+    (a.description_de ? '<p>' + esc(a.description_de) + '</p>' : '') +
+    (a.instruction_de ? '<p><b>Hinweis:</b> ' + esc(a.instruction_de) + '</p>' : '') + '</div>';
+}
+function alertGroupHtml(g) {
+  var sv = SEV[g[0].severity] || SEV.minor;
+  var kern = g.filter(function (a, i) { return !g.some(function (b, j) { return j !== i && warnDrin(a, b) && !(warnDrin(b, a) && j > i); }); });
+  var alleGanz = kern.every(warnGanz);
+  var zeiten = kern.map(function (a) { return warnKurz(a) + (alleGanz ? '' : ' (' + warnOrte(a, true) + ')'); }).join(' · ');
+  return '<details class="walert wrow" style="--wc:' + sv.c + ';--wbg:' + sv.bg + ';--wtx:' + sv.tx + '">' +
+    '<summary><span class="ev">' + esc(warnName(g[0])) + '</span><span class="when">' + zeiten + (alleGanz ? ' · ganzer Odenwaldkreis' : '') + '</span></summary>' +
+    '<div class="wd">' + g.map(alertDetail).join('') + '</div></details>';
+}
+function alertsHtml(list) {
+  var gr = [], idx = {};
+  list.forEach(function (a) { var k = (a.severity || '') + '|' + warnName(a); if (idx[k] === undefined) { idx[k] = gr.length; gr.push([]); } gr[idx[k]].push(a); });
+  return gr.map(alertGroupHtml).join('');
 }
 function renderWarnings() {
   var now = Date.now();
@@ -4286,7 +4335,7 @@ function renderWarnings() {
     html = '<div class="w-none"><span class="w-dot off"></span>Nicht verfügbar</div>';
     meta = WS.err ? 'Die Warnungen konnten nicht geladen werden (' + esc(WS.err) + ').' : '';
   } else {
-    html = list.length ? list.map(alertHtml).join('') : '<div class="w-none"><span class="w-dot"></span>Keine Warnungen</div>';
+    html = list.length ? alertsHtml(list) : '<div class="w-none"><span class="w-dot"></span>Keine Warnungen</div>';
     meta = 'Quelle: Deutscher Wetterdienst · Stand ' + hhmm(WS.fetchedAt) + ' Uhr' + (WS.demo ? ' · Beispiel' : '');
   }
   var place = (WS.loc && (WS.loc.name_short || WS.loc.name)) || CONFIG.placeName;
