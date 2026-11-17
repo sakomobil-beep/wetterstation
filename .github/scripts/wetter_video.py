@@ -991,7 +991,10 @@ def skript(days, warn, heute, nur_special=False):
     seg.append(dict(art='tag', tag=a, titel='HEUTE', bg='auto', grafiken=(['regen'] if a['rp'] >= 30 else []) + (['wind'] if a.get('boe', 0) >= 45 else []),
                     text=reaktion(a, rnd) + frisch(rnd, 'ueberg_heute', ['', '', 'Kommen wir zum Wetter. ', 'So, jetzt zum Wetter. ', 'Und nun zum Tag. '])
                          + tagtext(a, 'Heute', nachtfrost=False) + vergleich_gestern(a, rnd) + einordnung(a, rnd) + mundart(a, rnd) + fenster_txt(a, rnd) + grafik_saetze(a, (['regen'] if a['rp'] >= 30 else []) + (['wind'] if a.get('boe', 0) >= 45 else []), rnd)))
-    seg.append(dict(art='tipp', tag=a, bg='wald' if not nass_tag(a) else 'schloss', text=frisch(rnd, 'ueberg_tipp', ['Mein Tipp für heute: ', 'Max-Tipp des Tages: ', 'Und jetzt mein Tipp: ', 'Übrigens, mein Tipp für heute: ',
+    # 17.11.2026 (Kingmans Wunsch): Ist eine DWD-Warnung ab Stufe 2 aktiv, gibt Max keinen Ausflugstipp.
+    warnstufe = max(list((WARN_DATEN[0][1] or {}).get(r, 0) for r in (WARN_DATEN[0][0] or [])) or [0]) if WARN_DATEN[0] else 0
+    if warnstufe >= 2: print('DWD-Warnung Stufe %d aktiv – kein Ausflugstipp.' % warnstufe)
+    else: seg.append(dict(art='tipp', tag=a, bg='wald' if not nass_tag(a) else 'schloss', text=frisch(rnd, 'ueberg_tipp', ['Mein Tipp für heute: ', 'Max-Tipp des Tages: ', 'Und jetzt mein Tipp: ', 'Übrigens, mein Tipp für heute: ',
                                                                                'Was könnt ihr heute machen? ', 'Und wenn ihr noch nichts vorhabt: ', 'Bevor ich’s vergesse – mein Tipp: ',
                                                                                'Noch was für eure Freizeit: ', 'Ihr sucht noch was für heute? ', 'Kleiner Tipp am Rande: ']) + tipp(a, rnd, heute, zusatz=False) + max_privat(a, rnd, heute), nur_tipp=True))
     if not nur_special:
