@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Wetterwissen mit Max auf der Website (seit 17.11.2026): jede Folge wird 7 Tage in fb/wissen-archiv/ aufbewahrt
-(Video + Vorschaubild + liste.json mit Folge und Titel). Die Website zeigt die Folgen im Video-Tab und nennt die
+"""Wetterwissen mit Max auf der Website (seit 17.11.2026): jede Folge kommt in die Wetterwissen-Videothek fb/wissen-archiv/
+(Video + Vorschaubild + liste.json mit Folge und Titel). Seit 17.11.2026, 22:15 Uhr bleiben ALLE Folgen drin –
+bis auf Weiteres wird nichts gelöscht (Kingmans Entscheidung; TAGE = None). Zum Begrenzen TAGE auf eine Zahl setzen. Die Website zeigt die Folgen im Video-Tab und nennt die
 neueste auf der Startseite – die Folge von heute erst ab 15 Uhr (Zeit des Autoposts, prüft die Seite selbst).
 Aufruf am Ende von wissen_video.py; von Hand:  python wissen_archiv.py"""
 import os, sys, json, glob, shutil, subprocess, datetime as dt
@@ -8,7 +9,7 @@ import os, sys, json, glob, shutil, subprocess, datetime as dt
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 FB = os.path.join(ROOT, 'fb')
 AD = os.path.join(FB, 'wissen-archiv')
-TAGE = 7
+TAGE = None   # None = alle Folgen behalten; Zahl = nur so viele Tage
 
 
 def ablegen():
@@ -25,10 +26,12 @@ def ablegen():
     except Exception: liste = []
     liste = [e for e in liste if e.get('datei') != datei]
     liste.append({'datum': j['datum'], 'datei': datei, 'folge': j.get('folge'), 'titel': j.get('titel', ''), 'dauer': j.get('dauer'), 'erstellt': j.get('erstellt', '')})
-    grenze = (dt.date.fromisoformat(j['datum']) - dt.timedelta(days=TAGE - 1)).isoformat()
-    for f in glob.glob(os.path.join(AD, '*.mp4')) + glob.glob(os.path.join(AD, '*.jpg')):
-        if os.path.basename(f)[:10] < grenze: os.remove(f)
-    liste = sorted([e for e in liste if e['datum'] >= grenze], key=lambda e: e['datum'], reverse=True)
+    if TAGE:
+        grenze = (dt.date.fromisoformat(j['datum']) - dt.timedelta(days=TAGE - 1)).isoformat()
+        for f in glob.glob(os.path.join(AD, '*.mp4')) + glob.glob(os.path.join(AD, '*.jpg')):
+            if os.path.basename(f)[:10] < grenze: os.remove(f)
+        liste = [e for e in liste if e['datum'] >= grenze]
+    liste = sorted(liste, key=lambda e: e['datum'], reverse=True)
     json.dump(liste, open(lp, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     print('Wetterwissen abgelegt: %s (%d Folgen im Archiv)' % (datei, len(liste)))
     return True
