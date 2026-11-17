@@ -31,8 +31,16 @@ def zahl(n):
     return ('minus %d' % -n) if n < 0 else str(n)
 
 
+WARN_DATEN = [None]   # (Roh-Überschriften, Stufen, Infos) aus fb/daten.json – setzt main() (17.11.2026)
 def warn_txt(warn):
-    """„eine amtliche Warnung vor …“ – grammatisch korrekt."""
+    """„eine amtliche Warnung vor …“ – einheitlich für den Odenwaldkreis (warn_einheit.py, 17.11.2026): gleiche Warnart nur einmal,
+    „amtliche Warnung“ nur einmal im Satz, stärkere schluckt schwächere derselben Sorte, Ort nur wenn es nur dort gilt."""
+    if WARN_DATEN[0]:
+        try:
+            import warn_einheit
+            t = warn_einheit.satz(*WARN_DATEN[0])
+            if t: return t
+        except Exception as e: print('Warn-Satz einheitlich nicht möglich:', e)
     return ' und '.join(('eine ' + w[0].lower() + w[1:]) if w.lower().startswith('amtliche') else w for w in warn[:2])
 
 
@@ -203,6 +211,12 @@ def mundart(d, rnd):
 
 def dwd_satz(rnd, was):
     """Hinweis auf eine amtliche DWD-Warnung – abwechslungsreich formuliert, Inhalt bleibt amtlich."""
+    if not was.startswith('eine ') or ' sowie ' in was:   # mehrere Warnungen: „gelten“ statt „gilt“ (17.11.2026)
+        return frisch(rnd, 'dwd', ['Kurz vorweg: Vom Deutschen Wetterdienst gelten %s. Passt auf euch auf!' % was,
+                                    'Erst das Wichtige: Der Deutsche Wetterdienst hat %s herausgegeben.' % was,
+                                    'Bevor es losgeht – vom Deutschen Wetterdienst gelten %s. Also Augen auf!' % was,
+                                    'Ein Hinweis vorab: Für unsere Gegend gelten vom Deutschen Wetterdienst %s.' % was,
+                                    'Wichtig zuerst: Der Deutsche Wetterdienst meldet für uns %s. Seid vorsichtig!' % was], tage=4)
     return frisch(rnd, 'dwd', ['Kurz vorweg: Vom Deutschen Wetterdienst gilt %s. Passt auf euch auf!' % was,
                                 'Erst das Wichtige: Der Deutsche Wetterdienst hat %s herausgegeben.' % was.replace('gilt ', ''),
                                 'Bevor es losgeht – vom Deutschen Wetterdienst gilt %s. Also Augen auf!' % was,
@@ -969,7 +983,7 @@ def skript(days, warn, heute, nur_special=False):
         sptipp = special_tipps(warn, sp, rnd)   # Verhaltenstipps je nach Lage (15.11.2026)
         if sptipp: seg.append(dict(art="special", karte=sptipp[0], bg=bg_, text=sptipp[1]))
     else:
-        hinweis = (' ' + dwd_satz(rnd, ' und '.join(('eine ' + w[0].lower() + w[1:]) if w.lower().startswith('amtliche') else w for w in warn[:2]))) if warn else ''
+        hinweis = (' ' + dwd_satz(rnd, warn_txt(warn))) if warn else ''
         seg.append(dict(art='intro', bg='schloss', text=gruss + (' Für alle, die neu dabei sind: Ich bin Max, euer Wettersprecher für den Odenwald.' if heute.weekday() == 0 else '') + ' Das ist euer Odenwald-Wetter für %s.' % TAGE[heute.weekday()] + hinweis))
     if not nur_special and a.get('gestern'):
         seg.append(dict(art='rueckblick', bg='schloss', tafel_img=tafel_gestern(a['gestern'], heute - dt.timedelta(days=1)),
@@ -3243,6 +3257,7 @@ def main():
     abends = '--abend' in sys.argv   # Abendvideo aus dem Studio (eigene Datei, kommt als „abends“ auch in die Videothek)
     if nur_special and daten.get('warn_info') is not None and any(stufe_von.get(r, 0) >= 3 for r in roh):
         roh = [r for r in roh if stufe_von.get(r, 0) >= 3]; warn = [schoen(x) for x in roh]
+    WARN_DATEN[0] = (roh, stufe_von, daten.get('warn_info') or {})
     segs = skript_unwetter(warn, roh, daten.get('warn_info') or {}, heute) if nur_special and roh and stufe_von.get(roh[0], 0) >= 3 else \
         skript_abend(days, warn, heute, daten.get('orte') or {}) if abends else skript_woche(days, warn, heute) if wochen else skript(days, warn, heute, nur_special)
     pruefen(segs)

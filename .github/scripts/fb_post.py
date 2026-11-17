@@ -48,6 +48,13 @@ OM_RESERVE = os.path.join(OUT, '..', '.om-reserve', 'reserve.json')
 OM_GEAENDERT = '/tmp/om-reserve-geaendert'
 WARN_INFO = {}     # Warntext -> Zeitraum, DWD-Beschreibung und DWD-Verhaltenstipps (15.11.2026)
 WARN_STUFE = {}    # Warntext -> DWD-Stufe 1–4 (für Unwetter-Specials, 15.11.2026)
+def warn_zeilen(warn, n):
+    """Zeilen „🚨 DWD: …“ einheitlich wie in Max' Videos (warn_einheit.py, 17.11.2026); bei Fehler wie bisher die DWD-Überschriften."""
+    try:
+        import warn_einheit
+        return warn_einheit.zeilen(warn, WARN_STUFE, WARN_INFO, n) or list(warn[:n])
+    except Exception as e:
+        print('Warn-Zeilen einheitlich nicht möglich:', e); return list(warn[:n])
 OM_AUS = []        # Open-Meteo in diesem Lauf schon als ausgefallen erkannt -> nicht jede Adresse lange wiederholen
 OM_GENUTZT = []    # Zeitstempel der benutzten Reserve (für die Push-Nachricht)
 
@@ -890,7 +897,7 @@ def text(days, warn):
     for x in hinweise(nacht): zeilen.append('⚠️ ' + x.replace('Frost bis', 'Heute Nacht Frost bis'))
     zeilen.append('Morgen (%s): %s %s, Täler %d bis %d °C%s' % (TAGE[b['datum'].weekday()], emoji(b['code']), wort(b['code']), b['tmin'], b['tmax'],
                   (', Höhen um %d °C.' % b['hoch']['tmax']) if b.get('hoch') else '.'))
-    for w in warn[:3]: zeilen.append('🚨 DWD: ' + w)
+    for w in warn_zeilen(warn, 3): zeilen.append('🚨 DWD: ' + w)
     zeilen += ['', '📍 Vorhersage für den Odenwaldkreis (Täler und Höhen) aus vier Wettermodellen – Messwerte von unserer Station in Bad König.',
                'Live-Werte & Vorhersage 👉 https://wetter-badkoenig.de', '#Odenwald #Odenwaldkreis #BadKönig #Wetter']
     return '\n'.join(zeilen)
@@ -1057,7 +1064,7 @@ def text_abend(paar, wochenende, warn, rest=()):
                       ', Regenrisiko %d %%' % b['rp'] if b['rp'] >= 30 else ', meist trocken'))
     if rest:
         zeilen.append('📈 Danach: ' + ' · '.join('%s %s %d°' % (TAGE[d['datum'].weekday()][:2], emoji(d['code']), d['tmax']) for d in rest))
-    for w in warn[:3]: zeilen.append('🚨 DWD: ' + w)
+    for w in warn_zeilen(warn, 3): zeilen.append('🚨 DWD: ' + w)
     zeilen += ['', 'Gute Nacht und bis morgen früh beim Wettervideo! 🎬',
                '📍 Vorhersage für den Odenwaldkreis aus vier Wettermodellen – Messwerte von unserer Station in Bad König.',
                'Live-Werte & Vorhersage 👉 https://wetter-badkoenig.de', '#Odenwald #Odenwaldkreis #BadKönig #Wetter #Wetterbericht']
@@ -1175,7 +1182,7 @@ def text_mittag(days, rest, live, warn):
     z.append('%s %s%s.' % (emoji(d['code']), wort(d['code']).capitalize(),
                            ', Regenrisiko %d %%' % d['rp'] if d['rp'] >= 30 else ', meist trocken'))
     if d.get('hoch'): z.append('⛰️ Auf den Höhen (Oberzent, Mossautal) bis %d °C.' % d['hoch']['tmax'])
-    for w in warn[:2]: z.append('🚨 DWD: ' + w)
+    for w in warn_zeilen(warn, 2): z.append('🚨 DWD: ' + w)
     z += ['', 'Gemessen wird in Bad König, die übrigen Orte kommen aus unserer Modellmischung (ICON-D2, AROME, ECMWF, ICON-EU) – je Ort mit seiner Höhe.',
           'Live-Werte, Radar & Vorhersage 👉 https://wetter-badkoenig.de',
           '#Odenwald #Odenwaldkreis #BadKönig #Wetter #Michelstadt #Erbach #Höchst #Breuberg']
