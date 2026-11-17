@@ -912,6 +912,39 @@ html[data-theme="dark"] .fcdsel button[aria-pressed="true"] { background: #e8eef
 .hr .p { font: 400 11px/1.2 var(--font-data); color: var(--accent); min-height: 13px; }
 .src { margin: 0; font-size: 12.5px; color: var(--muted); }
 .src a { color: inherit; }
+/* Vorhersage-Tab aufgeräumt (17.11.2026): Umschalter oben, einzeiliger Kopf, Stunden als 3-Stunden-Tabelle, Diagramm per Knopf */
+#fcSection .fcsw { margin: 0 0 12px; }
+.fc-kopf { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px; }
+.fc-kopf .fc-h2 { margin: 0; font-size: 1.25rem; }
+.fc-fuss { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin-top: 6px; padding-top: 12px; border-top: 1px solid var(--line); }
+.nowcast.dry { padding: 8px 14px; margin: 10px 0; }
+.nowcast.dry .nct small { opacity: .7; font-size: 12.5px; margin-left: 6px; }
+.fcstd { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.fcstd button { border: 0; background: transparent; color: inherit; font: 500 13px/1 var(--font-body); padding: 8px 14px; cursor: pointer; }
+.fcstd button[aria-selected="true"] { background: #12252E; color: #fff; }
+.h3t { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; }
+.h3 { display: grid; justify-items: center; gap: 3px; padding: 10px 6px; border-radius: 12px; background: var(--bg); border: 1px solid rgba(18,37,46,.07); }
+.h3.now { background: #12252E; color: #fff; border-color: #12252E; }
+.h3 .h { font: 500 12px/1.2 var(--font-data); color: var(--muted); }
+.h3.now .h { color: #F2B233; font-weight: 600; }
+.h3 svg { display: block; width: 34px; height: 34px; }
+.h3 .t { font: 600 17px/1.2 var(--font-body); font-variant-numeric: tabular-nums; color: var(--tc, inherit); }
+.h3.now .t { color: #fff; }
+.h3 .p { font: 500 12.5px/1.2 var(--font-data); color: var(--accent); }
+.h3.now .p { color: #9CCBF0; }
+.h3 .m { font: 400 12px/1.2 var(--font-data); color: var(--muted); }
+.h3.now .m { color: #c9d6de; }
+.h3leg { margin: 6px 0 0; font-size: 12px; color: var(--muted); }
+#fcDia { display: grid; gap: 10px; } #fcDia[hidden] { display: none; }
+.rtab th[data-s] { cursor: pointer; user-select: none; white-space: nowrap; }
+.rtab th[data-s]:hover { color: var(--ink); }
+.rtab th.sakt { color: var(--accent); }
+@media (max-width: 620px) {
+  .h3t { grid-template-columns: 1fr; gap: 0; border: 1px solid rgba(18,37,46,.1); border-radius: 12px; overflow: hidden; }
+  .h3 { grid-template-columns: 58px 34px 46px 1fr auto; justify-items: start; align-items: center; gap: 8px; border: 0; border-bottom: 1px solid rgba(18,37,46,.08); border-radius: 0; padding: 7px 12px; }
+  .h3 svg { width: 28px; height: 28px; }
+  .h3 .h { font-size: 13px; }
+}
 @media (max-width: 820px) {
   .outlook { grid-template-columns: minmax(0, 1fr); }
 }
@@ -1467,16 +1500,9 @@ html[data-theme="dark"] .fcdsel button[aria-pressed="true"] { background: #e8eef
     <div class="w-meta" id="warnMeta2"></div>
   </section>
   <section class="chart" id="fcSection" aria-label="Wettervorhersage">
-    <div class="hist-head">
-      <div>
-        <div class="label" id="fcVwKick">Station Bad König · Präzisions-Vorhersage · an die Station angepasst</div>
-        <h2 class="fc-h2" id="fcH2">Vorhersage für die Station <span class="place">Bad König</span></h2>
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px"><div class="stamp num" id="fcStamp"></div><button type="button" class="tq-btn bkonly" onclick="tqOpen()">📊 Wie genau war die Vorhersage?</button></div>
-    </div>
     <div class="fcsw" id="fcSw" role="tablist" aria-label="Ansicht wählen"><button type="button" role="tab" data-v="bk" aria-selected="true"><span class="i">📍</span><span><b>Bad König</b><small>Station · Radar · Stundenverlauf</small></span></button><button type="button" role="tab" data-v="kreis" aria-selected="false"><span class="i">🗺️</span><span><b>Odenwaldkreis</b><small>Karte · alle Orte · 3 Tage</small></span></button></div>
+    <div class="fc-kopf"><h2 class="fc-h2" id="fcH2">Vorhersage für die Station <span class="place">Bad König</span></h2><div class="stamp num" id="fcStamp"></div></div>
     <div id="ncTab" class="nowcast" hidden></div>
-    <p id="pxNote" class="note pxnote" hidden></p>
     <p id="fcMsg" class="note" hidden></p>
     <div class="fdays" id="fcDays"></div>
     <div id="fcBody" class="histbody" hidden>
@@ -1490,15 +1516,23 @@ html[data-theme="dark"] .fcdsel button[aria-pressed="true"] { background: #e8eef
         <div class="fchips" id="fcChips"></div>
         <p class="fc-daytext" id="fcDayText"></p>
       </div>
-      <div class="hours" id="fcHours"></div>
       <div class="chart-head">
         <div class="label">Stundenverlauf · Station Bad König</div>
-        <div class="tabs" id="fcTabs"></div>
+        <div class="fcstd" id="fcStd" role="tablist" aria-label="Darstellung wählen"><button type="button" role="tab" data-m="tab" aria-selected="true">Tabelle</button><button type="button" role="tab" data-m="dia" aria-selected="false">Diagramm</button></div>
       </div>
-      <div class="readout num" id="fcReadout"></div>
-      <div class="plot" id="fcPlot"></div>
+      <div id="fcHoursBox"><div class="h3t" id="fcHours"></div><p class="h3leg">Je 3 Stunden: Temperatur zur angegebenen Uhrzeit · höchstes Regenrisiko · Regenmenge zusammen</p></div>
+      <div id="fcDia" hidden>
+        <div class="tabs" id="fcTabs"></div>
+        <div class="readout num" id="fcReadout"></div>
+        <div class="plot" id="fcPlot"></div>
+      </div>
     </div>
     <div id="fcKreis"><div class="fcdsel" id="fcKreisDays"></div><div id="fcRegion"></div></div>
+    <div class="fc-fuss">
+      <div class="label" id="fcVwKick">Station Bad König · Präzisions-Vorhersage · an die Station angepasst</div>
+      <button type="button" class="tq-btn bkonly" onclick="tqOpen()">📊 Wie genau war die Vorhersage?</button>
+    </div>
+    <p id="pxNote" class="note pxnote" hidden></p>
     <p class="src">Quelle: Vorhersagemodelle DWD ICON-D2 und ICON-EU, Météo-France AROME und ECMWF IFS (gemischt und nach eigener Trefferquote gewichtet) über <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> sowie Deutscher Wetterdienst (MOSMIX, Radar RADOLAN, amtliche Warnungen), korrigiert mit den Messwerten der Station IBADKN33, abgerufen über <a href="https://brightsky.dev/" target="_blank" rel="noopener">Bright Sky</a>. Die Texte werden automatisch aus den Vorhersagedaten erstellt.</p>
   </section>
   </div>
@@ -1976,7 +2010,7 @@ html[data-theme="dark"] .fcdsel button[aria-pressed="true"] { background: #e8eef
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 17.11.2026, 20:20 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 17.11.2026, 20:40 Uhr</span></p>
 
 </div>
 
@@ -3665,6 +3699,12 @@ function renderNowcast() {
     if (!t) { el.hidden = true; return; }
     el.hidden = false;
     el.className = 'nowcast' + (t.rain ? ' wet' : '');
+    if (id === 'ncTab' && !t.rain) {   /* 17.11.2026: ohne Regen nur eine Zeile, kein leeres Balkenfeld */
+      var L = NC.list || [], bis = L.length ? hhmm(L[L.length - 1].t) : '';
+      el.className = 'nowcast dry';
+      el.innerHTML = '<div class="nct">☔ <b>Kein Regen in den nächsten 2 Stunden</b>' + (bis ? '<small>laut Radar trocken bis mindestens ' + bis + ' Uhr</small>' : '') + '</div>';
+      return;
+    }
     el.innerHTML = '<div class="nch"><b>☔ Regen-Radar · nächste 2 Stunden</b></div><div class="nct">' + esc(t.txt) + '</div>' + (id === 'ncTab' ? ncBars() : '');
   });
 }
@@ -3908,23 +3948,41 @@ function selectFcDay(ds) {
   if (d.wind !== null) chips.push(ci.wind + 'Wind <b>' + nf(d.wind, 0) + ' km/h</b>' + (d.gust !== null ? ' · Böen <b>' + nf(d.gust, 0) + '</b>' : ''));
   if (d.sun !== null && d.sun > 0) chips.push(ci.sun + 'Sonne <b>' + nf(d.sun / 60, 1) + ' h</b>');
   $('fcChips').innerHTML = chips.map(function (c) { return '<span class="fchip">' + c + '</span>'; }).join('');
-  var from = Date.now() - 3600000;
-  var hs = d.hours.filter(function (h) { return ds !== todayStr() || h.t.getTime() >= from; });
-  var nowT = Date.now();
-  $('fcHours').innerHTML = hs.map(function (h) {
-    var isNow = Math.abs(h.t.getTime() + 1800000 - nowT) <= 1800000;
-    return '<div class="hr' + (isNow ? ' now' : '') + '"><span class="h">' + (isNow ? 'Jetzt' : pad2(h.t.getHours()) + ' Uhr') + '</span>' + wxIcon(h.icon || 'cloudy') +
-      '<span class="t" style="--tc:' + tColor(h.temp, true) + '">' + nf(h.temp, 0) + '°</span>' +
-      '<span class="rb"><i style="width:' + (h.prob !== null ? Math.round(h.prob) : 0) + '%"></i></span>' +
-      '<span class="p">' + (h.prob !== null ? nf(h.prob, 0) + ' %' : '') + '</span></div>';
-  }).join('');
-  $('fcHours').scrollLeft = 0;
+  $('fcHours').innerHTML = fcStd3(d, ds);
   renderRegion();
   fcKreisDays();
   drawFc();
 }
+/* Stunden in 3-Stunden-Schritten (17.11.2026): Temperatur zur vollen Stunde, Regenrisiko = höchster Wert, Menge = Summe der 3 Stunden */
+function fcStd3(d, ds) {
+  var heute = ds === todayStr(), nowT = Date.now(), H = d.hours.slice().sort(function (a, b) { return a.t - b.t; });
+  var start = H.filter(function (h) { return !heute || h.t.getTime() + 3600000 > nowT; });
+  var out = [], i = 0;
+  while (i < start.length && out.length < 9) {
+    var h = start[i], jetzt = heute && h.t.getTime() <= nowT;
+    if (!jetzt && h.t.getHours() % 3 !== 0) { i++; continue; }
+    var ende = (Math.floor(h.t.getHours() / 3) + 1) * 3;
+    var bl = start.filter(function (x) { return x.t.getTime() >= h.t.getTime() && x.t.getHours() < ende; });
+    var pr = bl.map(function (x) { return x.prob; }).filter(function (v) { return v !== null; });
+    var mm = bl.reduce(function (a, x) { return a + (x.rain || 0); }, 0);
+    var ic = bl.filter(function (x) { return /rain|snow|sleet|thunder|hail/.test(x.icon || ''); })[0];
+    out.push('<div class="h3' + (jetzt ? ' now' : '') + '"><span class="h">' + (jetzt ? 'Jetzt' : pad2(h.t.getHours()) + ' Uhr') + '</span>' + wxIcon((ic && ic.icon) || h.icon || 'cloudy') +
+      '<span class="t" style="--tc:' + tColor(h.temp, true) + '">' + nf(h.temp, 0) + '°</span>' +
+      '<span class="p">' + (pr.length ? nf(Math.max.apply(null, pr), 0) + ' %' : '–') + '</span>' +
+      '<span class="m">' + (mm >= 0.05 ? nf(mm, 1) + ' mm' : 'trocken') + '</span></div>');
+    i += bl.length || 1;
+  }
+  return out.join('');
+}
+function fcStdModus(m, merken) {
+  var dia = m === 'dia';
+  $('fcHoursBox').hidden = dia; $('fcDia').hidden = !dia;
+  Array.prototype.forEach.call($('fcStd').children, function (b) { b.setAttribute('aria-selected', b.getAttribute('data-m') === m ? 'true' : 'false'); });
+  if (merken) { try { localStorage.setItem('fcStd', m); } catch (e) {} }
+  if (dia) drawFc();
+}
 function drawFc() {
-  if (!fcChart || !FC.sel || $('panel-vorhersage').hidden || $('fcBody').hidden) return;
+  if (!fcChart || !FC.sel || $('panel-vorhersage').hidden || $('fcBody').hidden || $('fcDia').hidden) return;
   var d = FC.days.filter(function (x) { return x.date === FC.sel; })[0];
   if (!d) return;
   var key = FC.key, s = SERIES[key];
@@ -4023,15 +4081,15 @@ function rgKreisTag(ds) {
   if (gx !== null && gx >= 50) out.push('Windig, auf den Höhen Böen bis ' + nf(gx, 0) + ' km/h.');
   return { icon: best, tmax: tx !== null ? tx : hx, tmin: tn, text: out.join(' ') };
 }
-function rgKreis3() {
+function rgKreis3(ohne) {
   var today = todayStr(), html = '';
   [0, 1, 2].forEach(function (n) {
-    var ds = addDays(today, n), k = rgKreisTag(ds);
+    var ds = addDays(today, n), k = ds === ohne ? null : rgKreisTag(ds);   /* 17.11.2026: der gewählte Tag steht schon oben, nicht doppelt */
     if (!k) return;
     html += '<div class="kday ' + wxClass(k.icon) + '">' + wxIcon(k.icon) + '<div><div class="kd">' + (n === 0 ? 'Heute' : n === 1 ? 'Morgen' : esc(dayLabel(ds))) + '</div>' +
       '<p>' + esc(k.text) + '</p></div></div>';
   });
-  return html ? '<div class="kreis3"><h3>Odenwaldkreis · 3-Tage-Vorhersage</h3><div class="kgrid">' + html + '</div>' +
+  return html ? '<div class="kreis3"><h3>Odenwaldkreis · ' + (ohne ? 'die anderen Tage' : '3-Tage-Vorhersage') + '</h3><div class="kgrid">' + html + '</div>' +
     '<p class="rsub" style="margin:6px 0 0">Mischung aus ICON-D2, AROME, ECMWF und ICON-EU, für jeden Ort mit seiner Höhe berechnet (Täler 160–210 m, Höhen 380–430 m) und an Messstationen im Kreis angepasst (DWD Michelstadt, Michelstadt-Vielbrunn, Oberzent-Beerfelden sowie private Stationen).</p></div>' : '';
 }
 function rgDays(hours) {
@@ -4183,12 +4241,13 @@ function rgInteraktiv() {
   ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (n) { svg.addEventListener(n, function (e) { delete pts[e.pointerId]; start = Object.keys(pts).length ? { vb: RGV.vb.slice(), pts: JSON.parse(JSON.stringify(pts)) } : null; }); });
 }
 var OW = { d: null, k: 't', sel: null, t: 0 };
+var RGS = { k: null, r: 1 };   /* Sortierung der Ortstabelle (17.11.2026): Spalte + Richtung, null = Nord nach Süd */
 function renderRegion() {
   var box = $('fcRegion'); if (!box) return;
   if (!FC.demo) loadRegion();
   var ds = FC.sel;
   var poly = RG_OUTLINE.map(function (p) { var q = rgXY(p[0], p[1]); return q[0].toFixed(1) + ',' + q[1].toFixed(1); }).join(' ');
-  var marks = '', rows = '', heute = ds === todayStr();
+  var marks = '', rows = '', zeilen = [], heute = ds === todayStr();
   if (heute && !OW.d && !OW.lade) { OW.lade = 1; fetch('data/odenwald-live.json?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) { OW.d = j; OW.t = Date.now(); if (FC.sel === todayStr()) renderRegion(); }).catch(function () {}); }
   RG_TOWNS.forEach(function (t) {
     var d = rgDay(t, ds), q = rgXY(t.lon, t.lat), x = q[0] + t.dx, y = q[1] + t.dy;
@@ -4204,20 +4263,24 @@ function renderRegion() {
       '<text class="tn" x="40" y="16">' + esc(t.n.replace(' i. Odw.', '').replace('Station ', '')) + '</text>' +
       '<text class="tt" x="40" y="33" style="fill:' + (t.home ? '#fff' : tColor(d && d.tmax, true)) + '">' + tt + '<tspan class="tl">' + tl + '</tspan></text>' +
       '' + '</g>';
-    rows += '<tr data-ort="' + RG_TOWNS.indexOf(t) + '"' + (t.home ? ' class="home"' : '') + '><td class="n">' + esc(t.n) + '</td><td class="e">' + (t.el ? t.el + ' m' : '') + '</td>' +
+    zeilen.push({ i: RG_TOWNS.indexOf(t), el: t.el || 0, tmax: d && d.tmax !== null ? d.tmax : -99, regen: d ? (d.rain || 0) * 1000 + (d.prob || 0) : -1, html: '<tr data-ort="' + RG_TOWNS.indexOf(t) + '"' + (t.home ? ' class="home"' : '') + '><td class="n">' + esc(t.n) + '</td><td class="e">' + (t.el ? t.el + ' m' : '') + '</td>' +
             '<td class="t"><b style="color:' + tColor(d && d.tmax, true) + '">' + tt + '</b><span>' + tl + '</span></td>' +
-      '<td>' + (d ? (d.prob !== null ? nf(d.prob, 0) + ' %' : '') + (d.rain ? ' · ' + nf(d.rain, 1) + ' mm' : '') : 'keine Daten') + '</td></tr>';
+      '<td>' + (d ? (d.prob !== null ? nf(d.prob, 0) + ' %' : '') + (d.rain ? ' · ' + nf(d.rain, 1) + ' mm' : '') : 'keine Daten') + '</td></tr>' });
   });
+  if (RGS.k) zeilen.sort(function (a, b) { return (b[RGS.k] - a[RGS.k]) * RGS.r || a.i - b.i; });
+  rows = zeilen.map(function (z) { return z.html; }).join('');
+  var th = function (k, txt) { var akt = RGS.k === k; return '<th data-s="' + k + '"' + (akt ? ' class="sakt"' : '') + ' title="Antippen zum Sortieren">' + txt + ' ' + (akt ? (RGS.r > 0 ? '▼' : '▲') : '↕') + '</th>'; };
   var kt = rgKreisTag(ds);
   box.innerHTML = '<div class="region2"><div class="rleft"><h3>Odenwaldkreis · ' + esc(dayLabel(ds)) + '</h3><p class="rsub">Höchst- und Tiefstwerte für ' + esc(longDate(ds)) + '</p>' +
     (kt && kt.text ? '<div class="rtext">' + esc(kt.text) + '</div>' : '') +
-    '<table class="rtab"><tr><th>Ort</th><th>Höhe</th><th>Höchst / Tief</th><th>Regen</th></tr>' + rows + '</table>' +
-    '<p class="rsub" style="margin:8px 0 0">Antippen hebt den Ort in Karte und Tabelle hervor. Station Bad König: an die Station angepasste Präzisions-Vorhersage · übrige Orte: Mischung aus ICON-D2, AROME, ECMWF und ICON-EU für die Höhe des Ortes.</p>' + rgKreis3() + '</div>' +
+    '<table class="rtab"><tr><th data-s="" title="Reihenfolge von Nord nach Süd">Ort</th>' + th('el', 'Höhe') + th('tmax', 'Höchst / Tief') + th('regen', 'Regen') + '</tr>' + rows + '</table>' +
+    '<p class="rsub" style="margin:8px 0 0">Antippen hebt den Ort in Karte und Tabelle hervor, die Spaltenköpfe sortieren die Tabelle. Station Bad König: an die Station angepasste Präzisions-Vorhersage · übrige Orte: Mischung aus ICON-D2, AROME, ECMWF und ICON-EU für die Höhe des Ortes.</p>' + rgKreis3(kt && kt.text ? ds : null) + '</div>' +
     '<div class="rmapcol">' + rgSchalter() + '<div class="rmap relief' + rgVersteckt() + '" id="rgMap"><div class="rginfo" id="rgInfo" hidden></div><div class="rgzoom"><button type="button" data-z="1.4" aria-label="Hineinzoomen">+</button><button type="button" data-z="0.7" aria-label="Herauszoomen">−</button><button type="button" data-z="0" aria-label="Ansicht zurücksetzen">⟲</button></div><svg id="rgSvg" viewBox="' + RGV.vb.join(' ') + '" role="img" aria-label="Reliefkarte des Odenwaldkreises mit Vorhersage">' +
     '<defs><clipPath id="rgClip"><polygon points="' + poly + '"/></clipPath></defs>' +
     '<image href="data/odenwald-relief.png" x="20" y="30.9" width="300" height="469.2" preserveAspectRatio="none" clip-path="url(#rgClip)"/>' +
     '<polygon class="kreis" points="' + poly + '"/>' + rgFluss() + marks + '</svg>' +
     '<div class="rlegende"><span style="background:#78aa6e"></span>Tal ~150 m<span style="background:#c8cd8c"></span>300 m<span style="background:#b4966e"></span>ab 500 m · Höhenlinien alle 100 m · <b style="color:#1f6fc0">━</b> Mümling · <b style="color:#3d8fd8">⬬</b> Stausee<br><b style="color:#e8590c">▲</b> Messstation · <b style="color:#5b3b1f">▲</b> höchster Punkt · <b style="color:#d9822b">━</b> B45/B47 · <b>┅</b> Odenwaldbahn · <b style="color:#7a4b2a">┈</b> Limes · alle Lagen schematisch</div></div></div></div>';   /* 3-Tage-Text steht seit 15.11.2026 links unter der Tabelle */
+  Array.prototype.forEach.call(box.querySelectorAll('.rtab th[data-s]'), function (h) { h.onclick = function () { var k = h.getAttribute('data-s'); if (!k) RGS = { k: null, r: 1 }; else RGS = { k: k, r: RGS.k === k ? -RGS.r : 1 }; renderRegion(); }; });
   rgInteraktiv();
 }
 /* Topografische Karte (OpenTopoMap) mit Höhenlinien und Schummerung; Leaflet wird erst bei Bedarf geladen, sonst bleibt die schematische Karte */
@@ -6149,6 +6212,8 @@ $('refresh').addEventListener('click', function () {
 
 fcChart = makeChart($('fcPlot'), $('fcReadout'));
 buildTabs($('fcTabs'), FC_KEYS, FC.key, function (k) { FC.key = k; drawFc(); });
+Array.prototype.forEach.call($('fcStd').children, function (b) { b.onclick = function () { fcStdModus(b.getAttribute('data-m'), true); }; });
+try { if (localStorage.getItem('fcStd') === 'dia') fcStdModus('dia', false); } catch (e) {}
 watchSize($('fcPlot'), drawFc);
 setupStats();
 setupKlima();
