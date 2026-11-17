@@ -11,6 +11,11 @@ ORTE = [('Breuberg', 160, 'wu', 'IBREUB3', 49.818, 9.040), ('Höchst i. Odw.', 1
         ('Mossautal', 315, 'wu', 'IMOSSA13', 49.667, 8.937), ('Oberzent', 461, 'wu', 'IBEERFEL4', 49.567, 8.976)]
 # 15.11.2026: Michelstadt (vorher DWD 03284, ohne Wind), Mossautal (vorher DWD 03287 = in Wahrheit Michelstadt-Vielbrunn!)
 # und Oberzent (vorher DWD 00330, ohne Wind) auf private WU-Stationen umgestellt. dwd() bleibt als Reserve.
+# 17.11.2026: Regen-Plausibilität. Meldet ein Ort fast keinen Regen, während die anderen deutlich Regen messen (Regenmesser
+# verstopft/defekt – so bei Höchst IHCHST74 seit 16.11.2026), wird der Wert nicht gezeigt, sondern durch eine Nachbarstation ersetzt.
+REGEN_ERSATZ = {'Höchst i. Odw.': ['IHCHSTIO2', 'IDTSANDB5']}   # private WU-Stationen in der Nähe, in dieser Reihenfolge; danach DWD (nächste Station)
+REGEN_MIN_MEDIAN = 5.0    # erst prüfen, wenn die anderen Orte im Mittel (Median) mindestens so viel Regen haben
+REGEN_ANTEIL = 0.25       # unplausibel: weniger als ein Viertel des Medians der anderen Orte
 DATEI = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'odenwald-live.json')
 r1 = lambda v: None if v is None else round(float(v), 1)
 
@@ -34,6 +39,41 @@ def dwd(sid, heute):
     except Exception as e: print('Regen heute %s:' % sid, e)
     return dict(t=r1(w.get('temperature')), rh=w.get('relative_humidity'), w=r1(w.get('wind_speed_10')), g=r1(w.get('wind_gust_speed_10')),
                 r=r, p=r1(w.get('pressure_msl')), zeit=dt.datetime.fromisoformat(w['timestamp']).astimezone(TZ).isoformat(timespec='minutes'))
+
+
+def regen_unplausibel(r, andere):
+    """True, wenn der Regenwert r neben den Werten der anderen Orte nicht stimmen kann (Messer gestört)."""
+    andere = sorted(v for v in andere if v is not None)
+    if r is None or len(andere) < 3: return False
+    n = len(andere); med = andere[n // 2] if n % 2 else (andere[n // 2 - 1] + andere[n // 2]) / 2
+    return med >= REGEN_MIN_MEDIAN and r < REGEN_ANTEIL * med
+
+
+def regen_dwd(la, lo, heute):
+    """Regen heute an der nächstgelegenen DWD-Station (Bright Sky, Stundenwerte seit Mitternacht) oder None."""
+    h = get('https://api.brightsky.dev/weather?lat=%s&lon=%s&date=%s&tz=Europe/Berlin' % (la, lo, heute)).get('weather') or []
+    bis = dt.datetime.now(TZ).isoformat()
+    w = [x.get('precipitation') for x in h if x.get('timestamp', '')[:10] == heute and x['timestamp'] <= bis and x.get('precipitation') is not None]
+    return round(sum(w), 1) if w else None
+
+
+def regen_pruefen(orte, heute):
+    """Unplausible Regenwerte erkennen und ersetzen: o['r_roh'] = gemeldeter Wert, o['r_stoerung'] = True,
+    o['r'] = Ersatzwert (o['r_ersatz'] = Quelle) oder None, wenn kein plausibler Ersatz zu bekommen ist."""
+    for o in orte:
+        andere = [x.get('r') for x in orte if x is not o and not x.get('r_stoerung')]
+        if not regen_unplausibel(o.get('r'), andere): continue
+        o['r_roh'] = o['r']; o['r_stoerung'] = True; o['r'] = None
+        for sid in REGEN_ERSATZ.get(o['name'], []):
+            try: v = (wu(sid) or {}).get('r')
+            except Exception as e: print('Regen-Ersatz %s nicht abrufbar:' % sid, e); v = None
+            if v is not None and not regen_unplausibel(v, andere): o['r'] = v; o['r_ersatz'] = 'Nachbarstation ' + sid; break
+        if o['r'] is None:
+            try: v = regen_dwd(o['lat'], o['lon'], heute)
+            except Exception as e: print('Regen-Ersatz DWD nicht abrufbar:', e); v = None
+            if v is not None and not regen_unplausibel(v, andere): o['r'] = v; o['r_ersatz'] = 'DWD (nächste Station)'
+        print('Regen unplausibel: %s meldet %s mm, andere %s -> %s' % (o['name'], o['r_roh'], andere, ('%s mm von %s' % (o['r'], o['r_ersatz'])) if o['r'] is not None else 'kein Ersatz'))
+    return orte
 
 
 def sonnenhoehe(lat, lon, t):
@@ -103,6 +143,8 @@ def main():
         if v and v.get('t') is not None and (v.get('zeit') or '')[:10] == heute:
             L = verlauf.setdefault(n, []); hm = v['zeit'][11:16]
             if not L or L[-1][0] != hm: L.append([hm, v['t']])
+    try: regen_pruefen(orte, heute)   # vor dem Archiv: dort landet der geprüfte Wert (17.11.2026)
+    except Exception as e: print('Regen-Prüfung nicht möglich:', e)
     archiv(orte, jetzt)
     json.dump(dict(stand=jetzt.isoformat(timespec='minutes'), datum=heute, orte=orte, verlauf=verlauf),
               open(DATEI, 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))

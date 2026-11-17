@@ -1572,7 +1572,7 @@ html[data-saison="weihnachten"] .tvbtn .tvbtn-ic { background: #F2C14E; color: #
       <div class="ow-grid">
         <div>
           <div class="ow-card"><div class="ow-tw"><table class="ow-tab" id="owTab"></table></div>
-            <p class="ow-hint">Ist eine Station länger als 75 Minuten still, wird ihr Wert grau. Antippen hebt den Ort in der Karte hervor.</p></div>
+            <p class="ow-hint">Ist eine Station länger als 75 Minuten still, wird ihr Wert grau. Antippen hebt den Ort in der Karte hervor. „Ersatz“ beim Regen: Der Regenmesser dieser Station liefert gerade keinen glaubwürdigen Wert, angezeigt wird der Regen einer Nachbarstation.</p></div>
           <div class="ow-card"><b>Verlauf heute</b> <small class="ow-mut">Temperatur aller Orte seit Mitternacht</small><div id="owVerlauf"></div></div>
         </div>
         <div class="ow-card ow-mapc">
@@ -2116,7 +2116,7 @@ html[data-saison="weihnachten"] .tvbtn .tvbtn-ic { background: #F2C14E; color: #
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 17.11.2026, 23:10 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 17.11.2026, 23:25 Uhr</span></p>
 
 </div>
 
@@ -6378,6 +6378,13 @@ $('wcLoad').addEventListener('click', function () {
 /* OW wird schon bei der Kreis-Vorhersage angelegt */
 var OW_POS = { 'Breuberg': [10, -30], 'Höchst i. Odw.': [-92, -8], 'Bad König': [10, -16], 'Michelstadt': [10, -16], 'Mossautal': [-90, -6], 'Oberzent': [10, -16] };
 var OW_FARBEN = ['#e05a2b', '#e0a020', '#2f9e44', '#1f8fc0', '#3b5bdb', '#9c36b5'];
+/* Regen heute je Ort; unplausible Werte (Regenmesser gestört) kommen als Ersatzwert einer Nachbarstation oder als „–“ (17.11.2026) */
+function owRegen(o) {
+  if (!o.r_stoerung) return owNf(o.r, 1) + ' mm';
+  var roh = 'Die Station meldet ' + owNf(o.r_roh, 1) + ' mm – das passt nicht zu den Nachbarorten, der Regenmesser ist vermutlich gestört.';
+  if (o.r === null || o.r === undefined) return '– <span class="ow-q" title="' + esc(roh) + '">Messer gestört</span>';
+  return owNf(o.r, 1) + ' mm <span class="ow-q" title="' + esc(roh + ' Ersatzwert: ' + (o.r_ersatz || 'Nachbarstation') + '.') + '">Ersatz</span>';
+}
 function owNf(v, d) { return v === null || v === undefined ? '–' : Number(v).toLocaleString('de-DE', { minimumFractionDigits: d, maximumFractionDigits: d }); }
 function owFarbe(k, v) {
   if (v === null || v === undefined) return '#9aa5ab';
@@ -6414,7 +6421,7 @@ function owZeichnen() {
   $('owTab').innerHTML = '<tr><th>Ort</th><th>Höhe</th><th>Temperatur</th><th>Feuchte</th><th>Wind / Böe</th><th>Regen heute</th><th>Quelle</th><th>Messung</th></tr>' +
     d.orte.map(function (o) {
       var m = owMin(o), a = owAlt(o);
-      return '<tr data-ow="' + esc(o.name) + '" class="' + (a ? 'alt' : '') + (OW.sel === o.name ? ' sel' : '') + '"><td>' + (owWx(o) ? '<span title="' + owWx(o)[1] + '">' + owWx(o)[0] + '</span> ' : '') + '<b>' + esc(o.name) + '</b></td><td>' + o.el + ' m</td><td><b style="color:' + (a ? 'inherit' : owFarbe('t', o.t)) + '">' + owNf(o.t, 1) + ' °C</b></td><td>' + owNf(o.rh, 0) + ' %</td><td>' + owNf(o.w, 0) + ' / ' + owNf(o.g, 0) + ' km/h</td><td>' + owNf(o.r, 1) + ' mm</td><td><span class="ow-q">' + esc(o.quelle) + '</span></td><td>' + (m === null ? '–' : m < 1 ? 'gerade eben' : m < 60 ? 'vor ' + m + ' Min.' : 'vor ' + Math.round(m / 60) + ' Std.') + '</td></tr>';
+      return '<tr data-ow="' + esc(o.name) + '" class="' + (a ? 'alt' : '') + (OW.sel === o.name ? ' sel' : '') + '"><td>' + (owWx(o) ? '<span title="' + owWx(o)[1] + '">' + owWx(o)[0] + '</span> ' : '') + '<b>' + esc(o.name) + '</b></td><td>' + o.el + ' m</td><td><b style="color:' + (a ? 'inherit' : owFarbe('t', o.t)) + '">' + owNf(o.t, 1) + ' °C</b></td><td>' + owNf(o.rh, 0) + ' %</td><td>' + owNf(o.w, 0) + ' / ' + owNf(o.g, 0) + ' km/h</td><td>' + owRegen(o) + '</td><td><span class="ow-q">' + esc(o.quelle) + '</span></td><td>' + (m === null ? '–' : m < 1 ? 'gerade eben' : m < 60 ? 'vor ' + m + ' Min.' : 'vor ' + Math.round(m / 60) + ' Std.') + '</td></tr>';
     }).join('');
   owKarte(); owVerlauf();
   Array.prototype.forEach.call(document.querySelectorAll('#owTab tr[data-ow]'), function (tr) { tr.onclick = function () { OW.sel = OW.sel === tr.dataset.ow ? null : tr.dataset.ow; owZeichnen(); }; });
