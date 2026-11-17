@@ -1,50 +1,5 @@
 [
 {
-"d": "2026-11-14",
-"g": "regenzeit",
-"k": "Nass bleibt es den ganzen Tag über."
-},
-{
-"d": "2026-11-14",
-"g": "frage",
-"k": "Wer musste heute früh schon Scheiben kra"
-},
-{
-"d": "2026-11-14",
-"g": "folgen",
-"k": "Damit ihr die nächste Unwetterwarnung ni"
-},
-{
-"d": "2026-11-15",
-"g": "dwd",
-"k": "Wichtig zuerst: Der Deutsche Wetterdiens"
-},
-{
-"d": "2026-11-15",
-"g": "ueberg_heute",
-"k": "So, jetzt zum Wetter. "
-},
-{
-"d": "2026-11-15",
-"g": "tag",
-"k": "Was bringt der Tag heute? Regen, und das"
-},
-{
-"d": "2026-11-15",
-"g": "gestern_nass",
-"k": "Anders als gestern wird es heute nass."
-},
-{
-"d": "2026-11-15",
-"g": "ueberg_tipp",
-"k": "Übrigens, mein Tipp für heute: "
-},
-{
-"d": "2026-11-15",
-"g": "ueberg_morgen",
-"k": "Was bringt der nächste Tag? "
-},
-{
 "d": "2026-11-15",
 "g": "tag",
 "k": "Am Montag bekommen wir Nieselregen – und"
@@ -1998,5 +1953,50 @@
 "d": "2026-11-17",
 "g": "folgen",
 "k": "Kennt ihr jemanden im Odenwald, der imme"
+},
+{
+"d": "2026-11-17",
+"g": "dwd",
+"k": "Bevor es losgeht – vom Deutschen Wetterd"
+},
+{
+"d": "2026-11-17",
+"g": "ueberg_heute",
+"k": "Kommen wir zum Wetter. "
+},
+{
+"d": "2026-11-17",
+"g": "tag",
+"k": "Heute heißt es: Regen, bei etwa 15 Grad."
+},
+{
+"d": "2026-11-17",
+"g": "gestern_waermer",
+"k": "Damit wird es rund 3 Grad wärmer als ges"
+},
+{
+"d": "2026-11-17",
+"g": "klima_mild",
+"k": "Das sind einige Grad mehr, als um diese "
+},
+{
+"d": "2026-11-17",
+"g": "ueberg_morgen",
+"k": "So, und jetzt der Blick nach vorn. "
+},
+{
+"d": "2026-11-17",
+"g": "tag",
+"k": "Morgen, am Mittwoch, erwartet uns Regen "
+},
+{
+"d": "2026-11-17",
+"g": "frage",
+"k": "Was macht ihr an so einem Regentag? Verr"
+},
+{
+"d": "2026-11-17",
+"g": "folgen",
+"k": "Folgt ihr uns eigentlich schon? Dann ver"
 }
 ]
