@@ -3222,6 +3222,12 @@ def main():
     warn = [schoen(x) for x in roh]
     heute = days[0]['datum']
     nur_special = '--special' in sys.argv
+    if nur_special and not test:
+        # 17.11.2026 (Kingmans Wunsch): Specials gibt es nur noch ab DWD-Stufe 3 und nur als reines Warnvideo – kein Wetterbericht.
+        # Warnungen der Stufe 1/2, Schnee, Sturm, Hitze usw. lösen kein Special mehr aus (vorher mittags/nachmittags mit Tageswetter).
+        roh = [r for r in roh if stufe_von.get(r, 0) >= 3]; warn = [schoen(x) for x in roh]
+        if not roh:
+            print('Keine Warnung ab Stufe 3 – kein Special.'); return
     if nur_special and not test and '--unwetter' not in sys.argv:
         # Mittags/Nachmittags: nur wenn eine NEUE Warnung dazukommt
         alt = []
