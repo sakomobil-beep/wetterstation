@@ -224,26 +224,28 @@ def dwd_satz(rnd, was):
                                 'Wichtig zuerst: Der Deutsche Wetterdienst meldet für uns %s. Seid vorsichtig!' % was], tage=4)
 
 
-KEIN_AUSFLUG = {
-    'allgemein': ['Einen Ausflugstipp spare ich mir heute – das Wetter spielt einfach nicht mit.',
-                  'Heute ist kein guter Tag für einen Ausflug. Macht es euch lieber zu Hause gemütlich.',
+KEIN_AUSFLUG = {   # 17.11.2026, zweite Fassung: allgemein gehalten – kein „Wanderung/Wandern/Tour“ (Kingmans Wunsch)
+    'allgemein': ['Heute ist kein guter Tag für einen Ausflug. Macht es euch lieber zu Hause gemütlich.',
                   'Habt ihr heute einen Ausflug vor? Verschiebt ihn lieber – das Wetter spielt nicht mit.',
-                  'Mein Tipp ist heute ausnahmsweise ganz kurz: Bleibt lieber daheim.',
-                  'Wandern, Radfahren, Spazierengehen – das läuft euch alles nicht weg. Heute lieber nicht.',
-                  'Der Odenwald ist morgen auch noch da. Die Wanderung bleibt heute besser im Kalender stehen.',
+                  'Einen Ausflugstipp spare ich mir heute – das Wetter spielt einfach nicht mit.',
+                  'Falls ihr für heute etwas draußen geplant habt: Schaut, ob es sich verschieben lässt.',
+                  'Normalerweise schicke ich euch jetzt raus in den Odenwald. Heute nicht – heute ist Sofawetter.',
+                  'Der Odenwald ist morgen auch noch da. Was ihr heute draußen vorhattet, kann warten.',
                   'Heute gibt es von mir keinen Freizeittipp, sondern eine Bitte: Nehmt die Warnung ernst.',
                   'Wer heute nicht raus muss, bleibt am besten drinnen – Tee kochen, Füße hoch.',
-                  'Normalerweise schicke ich euch jetzt raus in den Odenwald. Heute nicht – heute ist Sofawetter.',
-                  'Falls ihr für heute etwas draußen geplant habt: Schaut, ob es sich verschieben lässt. Es lohnt sich.'],
-    'wind': ['Bei dem Wind hat heute im Wald niemand etwas verloren – da können Äste herunterkommen. Den Spaziergang holen wir nach.',
-             'Sturm und Wald, das passt nicht zusammen. Heute bitte keine Tour durch den Odenwald.',
-             'Heute pustet es ordentlich. Ausflüge auf die Höhen verschiebt ihr besser auf einen ruhigeren Tag.',
-             'Mütze festhalten! Für eine Wanderung ist es heute zu stürmisch – der Ausflug kann warten.',
-             'Habt ihr heute eine Runde durch den Wald geplant? Lasst es lieber – bei den Böen ist das keine gute Idee.'],
-    'regen': ['Bei dem Regen macht draußen nichts Spaß. Die Wanderschuhe dürfen heute im Schrank bleiben.',
+                  'Mein Tipp ist heute ausnahmsweise ganz kurz: Bleibt lieber daheim.',
+                  'Pläne für draußen? Die hebt ihr euch besser für einen anderen Tag auf.',
+                  'Heute bleibt der Ausflug im Kalender stehen – es kommen wieder bessere Tage.',
+                  'Für Unternehmungen im Freien ist heute nicht der richtige Tag. Holt es einfach nach.'],
+    'wind': ['Bei dem Wind bleibt ihr heute besser aus dem Wald heraus – da können Äste herunterkommen. Den Ausflug holen wir nach.',
+             'Sturm und Wald, das passt nicht zusammen. Heute bitte keine Ausflüge in den Odenwald.',
+             'Heute pustet es ordentlich. Was ihr draußen vorhattet, verschiebt ihr besser auf einen ruhigeren Tag.',
+             'Mütze festhalten! Für einen Ausflug ist es heute zu stürmisch – das kann warten.',
+             'Bei den Böen ist draußen heute Vorsicht angesagt. Einen Ausflug würde ich mir heute sparen.'],
+    'regen': ['Bei dem Regen macht draußen nichts Spaß. Der Ausflug darf heute ausfallen.',
               'Heute wird man schon auf dem Weg zum Auto nass. Den Ausflug verschieben wir auf einen besseren Tag.',
-              'Wege und Wiesen sind heute aufgeweicht – die Tour durch den Odenwald hat Zeit.',
-              'Heute ist ein Tag für Museum, Therme oder Sofa, aber nicht für eine Wanderung.'],
+              'Heute ist ein Tag für Museum, Therme oder Sofa – draußen verpasst ihr nichts.',
+              'Alles ist heute aufgeweicht und nass. Unternehmungen im Freien haben Zeit bis zum nächsten trockenen Tag.'],
     'gewitter': ['Bei Gewitter gilt: nicht in den Wald und nicht auf die Höhen. Den Ausflug holen wir nach.',
                  'Heute kann es blitzen und krachen. Plant draußen lieber nichts, was sich nicht schnell abbrechen lässt.',
                  'Ein Ausflug bei Gewitter? Bitte nicht. Heute bleibt ihr besser in der Nähe von einem Dach.'],
@@ -251,7 +253,7 @@ KEIN_AUSFLUG = {
                'Heute ist jeder Weg ein kleines Abenteuer. Bleibt lieber daheim und trinkt was Warmes.',
                'So schön der Winter im Odenwald ist: Heute bitte keine Ausflüge auf die Höhen.',
                'Habt ihr heute eine Fahrt geplant? Überlegt, ob sie wirklich sein muss – sicher ist sicher.'],
-    'hitze': ['Bei der Hitze ist heute Schatten angesagt, keine Wanderung. Trinkt viel und verschiebt die Tour auf einen kühleren Tag.',
+    'hitze': ['Bei der Hitze ist heute Schatten angesagt. Trinkt viel und verschiebt euren Ausflug auf einen kühleren Tag.',
               'Heute ist es zu heiß für große Unternehmungen. Macht langsam und sucht euch ein schattiges Plätzchen.']}
 def kein_ausflug(rnd):
     """Statt Freizeittipp, wenn eine DWD-Warnung ab Stufe 2 aktiv ist (17.11.2026, Kingmans Wunsch): Max rät vom Ausflug ab –
