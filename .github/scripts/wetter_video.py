@@ -224,6 +224,49 @@ def dwd_satz(rnd, was):
                                 'Wichtig zuerst: Der Deutsche Wetterdienst meldet für uns %s. Seid vorsichtig!' % was], tage=4)
 
 
+KEIN_AUSFLUG = {
+    'allgemein': ['Einen Ausflugstipp spare ich mir heute – das Wetter spielt einfach nicht mit.',
+                  'Heute ist kein guter Tag für einen Ausflug. Macht es euch lieber zu Hause gemütlich.',
+                  'Habt ihr heute einen Ausflug vor? Verschiebt ihn lieber – das Wetter spielt nicht mit.',
+                  'Mein Tipp ist heute ausnahmsweise ganz kurz: Bleibt lieber daheim.',
+                  'Wandern, Radfahren, Spazierengehen – das läuft euch alles nicht weg. Heute lieber nicht.',
+                  'Der Odenwald ist morgen auch noch da. Die Wanderung bleibt heute besser im Kalender stehen.',
+                  'Heute gibt es von mir keinen Freizeittipp, sondern eine Bitte: Nehmt die Warnung ernst.',
+                  'Wer heute nicht raus muss, bleibt am besten drinnen – Tee kochen, Füße hoch.',
+                  'Normalerweise schicke ich euch jetzt raus in den Odenwald. Heute nicht – heute ist Sofawetter.',
+                  'Falls ihr für heute etwas draußen geplant habt: Schaut, ob es sich verschieben lässt. Es lohnt sich.'],
+    'wind': ['Bei dem Wind hat heute im Wald niemand etwas verloren – da können Äste herunterkommen. Den Spaziergang holen wir nach.',
+             'Sturm und Wald, das passt nicht zusammen. Heute bitte keine Tour durch den Odenwald.',
+             'Heute pustet es ordentlich. Ausflüge auf die Höhen verschiebt ihr besser auf einen ruhigeren Tag.',
+             'Mütze festhalten! Für eine Wanderung ist es heute zu stürmisch – der Ausflug kann warten.',
+             'Habt ihr heute eine Runde durch den Wald geplant? Lasst es lieber – bei den Böen ist das keine gute Idee.'],
+    'regen': ['Bei dem Regen macht draußen nichts Spaß. Die Wanderschuhe dürfen heute im Schrank bleiben.',
+              'Heute wird man schon auf dem Weg zum Auto nass. Den Ausflug verschieben wir auf einen besseren Tag.',
+              'Wege und Wiesen sind heute aufgeweicht – die Tour durch den Odenwald hat Zeit.',
+              'Heute ist ein Tag für Museum, Therme oder Sofa, aber nicht für eine Wanderung.'],
+    'gewitter': ['Bei Gewitter gilt: nicht in den Wald und nicht auf die Höhen. Den Ausflug holen wir nach.',
+                 'Heute kann es blitzen und krachen. Plant draußen lieber nichts, was sich nicht schnell abbrechen lässt.',
+                 'Ein Ausflug bei Gewitter? Bitte nicht. Heute bleibt ihr besser in der Nähe von einem Dach.'],
+    'winter': ['Straßen und Wege können heute glatt sein. Wer nicht fahren muss, lässt das Auto stehen – der Ausflug kann warten.',
+               'Heute ist jeder Weg ein kleines Abenteuer. Bleibt lieber daheim und trinkt was Warmes.',
+               'So schön der Winter im Odenwald ist: Heute bitte keine Ausflüge auf die Höhen.',
+               'Habt ihr heute eine Fahrt geplant? Überlegt, ob sie wirklich sein muss – sicher ist sicher.'],
+    'hitze': ['Bei der Hitze ist heute Schatten angesagt, keine Wanderung. Trinkt viel und verschiebt die Tour auf einen kühleren Tag.',
+              'Heute ist es zu heiß für große Unternehmungen. Macht langsam und sucht euch ein schattiges Plätzchen.']}
+def kein_ausflug(rnd):
+    """Statt Freizeittipp, wenn eine DWD-Warnung ab Stufe 2 aktiv ist (17.11.2026, Kingmans Wunsch): Max rät vom Ausflug ab –
+    abwechslungsreich und passend zur Art der stärksten Warnung (Sturm, Regen, Gewitter, Winter, Hitze)."""
+    art = 'allgemein'
+    try:
+        import warn_einheit
+        g = [x for x in warn_einheit.gruppen(*WARN_DATEN[0]) if x.get('stufe', 0) >= 2]
+        sorte = g[0].get('sorte') if g else ''
+        art = {'wind': 'wind', 'dauerregen': 'regen', 'starkregen': 'regen', 'gewitter': 'gewitter', 'schnee': 'winter', 'schneeverwehung': 'winter',
+               'glaette': 'winter', 'frost': 'winter', 'hitze': 'hitze'}.get(sorte, 'allgemein')
+    except Exception as e: print('Warnart für Ausflugs-Satz nicht erkannt:', e)
+    return frisch(rnd, 'kein_ausflug', (KEIN_AUSFLUG.get(art, []) * 3 if art != 'allgemein' else []) + KEIN_AUSFLUG['allgemein'], tage=14)   # passende Sätze dreifach gewichtet
+
+
 def frage_fuer(d, heute, rnd):
     """Frage an die Zuschauer zum Schluss – passend zum Wetter, gleiche Frage frühestens nach 10 Tagen."""
     w = wort(d['code']); opt = []
@@ -993,7 +1036,9 @@ def skript(days, warn, heute, nur_special=False):
                          + tagtext(a, 'Heute', nachtfrost=False) + vergleich_gestern(a, rnd) + einordnung(a, rnd) + mundart(a, rnd) + fenster_txt(a, rnd) + grafik_saetze(a, (['regen'] if a['rp'] >= 30 else []) + (['wind'] if a.get('boe', 0) >= 45 else []), rnd)))
     # 17.11.2026 (Kingmans Wunsch): Ist eine DWD-Warnung ab Stufe 2 aktiv, gibt Max keinen Ausflugstipp.
     warnstufe = max(list((WARN_DATEN[0][1] or {}).get(r, 0) for r in (WARN_DATEN[0][0] or [])) or [0]) if WARN_DATEN[0] else 0
-    if warnstufe >= 2: print('DWD-Warnung Stufe %d aktiv – kein Ausflugstipp.' % warnstufe)
+    if warnstufe >= 2:
+        print('DWD-Warnung Stufe %d aktiv – kein Ausflugstipp, Max rät vom Ausflug ab.' % warnstufe)
+        seg.append(dict(art='ausflug', bg='schloss', text=kein_ausflug(rnd)))
     else: seg.append(dict(art='tipp', tag=a, bg='wald' if not nass_tag(a) else 'schloss', text=frisch(rnd, 'ueberg_tipp', ['Mein Tipp für heute: ', 'Max-Tipp des Tages: ', 'Und jetzt mein Tipp: ', 'Übrigens, mein Tipp für heute: ',
                                                                                'Was könnt ihr heute machen? ', 'Und wenn ihr noch nichts vorhabt: ', 'Bevor ich’s vergesse – mein Tipp: ',
                                                                                'Noch was für eure Freizeit: ', 'Ihr sucht noch was für heute? ', 'Kleiner Tipp am Rande: ']) + tipp(a, rnd, heute, zusatz=False) + max_privat(a, rnd, heute), nur_tipp=True))
@@ -1039,7 +1084,7 @@ def skript(days, warn, heute, nur_special=False):
             ts = next((x for x in seg if x.get('nur_tipp')), None)
             if veranst and ts:   # nur EIN Tipp im Morgenvideo: Veranstaltung ersetzt den Wetter-Tipp
                 ts['text'] = rnd.choice(['Mein Tipp für heute: ', 'Und jetzt mein Tipp: ', 'Noch was für eure Freizeit: ']) + th.replace('Tipp für heute: ', '')
-            elif th: seg[-1 if seg[-1]['art'] != 'wochenende' else -1]['text'] += ' ' + th   # Feiertag/Ferien: nur Hinweis, kein Tipp
+            elif th and not (veranst and warnstufe >= 2): seg[-1 if seg[-1]['art'] != 'wochenende' else -1]['text'] += ' ' + th   # bei Warnung ab Stufe 2 auch kein Veranstaltungs-Tipp (17.11.2026)   # Feiertag/Ferien: nur Hinweis, kein Tipp
         except Exception as e: print('Termine nicht möglich:', e)
     if False:   # (14.11.2026) Wetter-Wissen ist jetzt eine eigene Rubrik (wissen_video.py, Mo–Fr 15 Uhr)
         try:
