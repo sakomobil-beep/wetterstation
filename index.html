@@ -1356,6 +1356,9 @@ document.addEventListener('DOMContentLoaded',function(){
       var n=new Date(),td=n.getFullYear()+'-'+p2(n.getMonth()+1)+'-'+p2(n.getDate()),ym=td.slice(0,7),m=0,y=0,mt=0,yt=0;
       arch.forEach(function(t){var d=String(t.obsTimeLocal||'').slice(0,10);if(d===td||d.slice(0,4)!==td.slice(0,4))return;var v=(t.metric&&t.metric.precipTotal)||0;y+=v;if(v>=0.1)yt++;if(d.slice(0,7)===ym){m+=v;if(v>=0.1)mt++}});
       var h=parseFloat(String(rn.textContent||'').replace(',','.'));if(isNaN(h))h=0;if(h>=0.1){mt++;yt++}
+      window.__archRain={m:Math.round((m+h)*10)/10,mt:mt};
+      var rv=document.getElementById('recRainV'),rs=document.getElementById('recRainS'),rd=document.getElementById('recRainD');
+      if(rv&&rs){var tv=f1(m+h)+' l/m²',ts=(mt===1?'an einem Regentag':mt?'an '+mt+' Regentagen':'bisher kein Regen');if(rv.textContent!==tv)rv.textContent=tv;if(rs.textContent!==ts)rs.textContent=ts;if(rd&&!rd.textContent)rd.textContent='bis heute';}
       document.getElementById('dRM').textContent=f1(m+h);document.getElementById('dRY').textContent=f1(y+h);
       document.getElementById('dRMt').textContent=mt+(mt===1?' Regentag':' Regentage');document.getElementById('dRYt').textContent=yt+(yt===1?' Regentag':' Regentage');
     }
@@ -2214,7 +2217,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 18.11.2026, 11:53 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 18.11.2026, 12:11 Uhr</span></p>
 
 </div>
 
@@ -5025,6 +5028,8 @@ function renderRecords() {
   Array.prototype.forEach.call(document.querySelectorAll('.recSince'), function (el) { el.textContent = since; el.hidden = !since; });
   // Regenmenge im laufenden Monat (1 mm entspricht 1 Liter pro Quadratmeter)
   $('recRainM').textContent = MONTHS[new Date().getMonth()];
+  /* Monatsregen aus dem eigenen Archiv (wie die Regen-Kachel), sobald geladen */
+  if (window.__archRain) { anyRain = true; sum = window.__archRain.m; days = window.__archRain.mt; }
   $('recRainV').textContent = anyRain ? nf(sum, 1) + ' l/m²' : '–';
   $('recRainD').textContent = anyRain ? 'bis heute' : (YR.err || '');
   $('recRainS').textContent = anyRain ? (days === 1 ? 'an einem Regentag' : days ? 'an ' + days + ' Regentagen' : 'bisher kein Regen') : '';
