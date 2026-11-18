@@ -32,6 +32,7 @@ def get(path, **q):
                 return json.loads(b) if b.strip() else {}
         except urllib.error.HTTPError as e:
             if e.code == 204: return {}
+            if e.code in (401, 403): raise   # Schlüssel gesperrt – nicht wiederholen (19.11.2026)
             if e.code == 429: time.sleep(65); continue
             if v == 3: raise
         except Exception:
@@ -117,6 +118,34 @@ def stunden_ergaenzen(bis, max_tage):
     print('Stundenwerte: %d Tage neu geholt' % n)
 
 
+def luecken_fuellen(bis):
+    """19.11.2026: Tage ohne eigene Messwerte (Station aus) mit der Nachbarstation IBADKN32 auffüllen – Tages- und Stundenwerte.
+    Markiert mit 'ersatz': 'IBADKN32' (zählen in Statistiken mit, im Gegensatz zu den Fremdtagen vor Messbeginn)."""
+    p = os.path.join(DIR, 'tage-%d.json' % bis.year)
+    A = lade(p, {'station': STATION, 'tage': []}); da = {t['obsTimeLocal'][:10] for t in A['tage']}
+    d, neu = max(START, dt.date(bis.year, 1, 1)), 0
+    while d <= bis:
+        t = d.isoformat()
+        if t not in da:
+            try:
+                j = get('/v2/pws/history/daily', station=FREMD, date=d.strftime('%Y%m%d'))
+                o = (j.get('observations') or j.get('summaries') or [])
+                if o:
+                    x = schlank(o[-1], False); x['ersatz'] = FREMD; A['tage'].append(x); da.add(t); neu += 1
+                    k = d.strftime('%Y-%m'); ps = os.path.join(DIR, 'stunden-%s.json' % k); S = lade(ps, {'station': STATION, 'tage': {}})
+                    if t not in S['tage']:
+                        h = get('/v2/pws/history/hourly', station=FREMD, date=d.strftime('%Y%m%d'))
+                        L = [schlank(y, True) for y in (h.get('observations') or [])]
+                        for y in L: y['ersatz'] = FREMD
+                        if L: S['tage'][t] = L; S['tage'] = dict(sorted(S['tage'].items())); speichern(ps, S)
+                    print('Lücke %s mit %s gefüllt' % (t, FREMD))
+                time.sleep(1.5)
+            except Exception as e: print('Lücke %s nicht gefüllt:' % t, e); break
+        d += dt.timedelta(days=1)
+    if neu:
+        A['tage'].sort(key=lambda t: t['obsTimeLocal']); speichern(p, A)
+
+
 def index():
     """Übersicht für Website und Zentrale (welche Dateien gibt es)."""
     f = sorted(x for x in os.listdir(DIR) if x.endswith('.json') and x != 'index.json')
@@ -131,7 +160,8 @@ def index():
 
 if __name__ == '__main__':
     gestern = dt.datetime.now(TZ).date() - dt.timedelta(days=1)
-    tage_ergaenzen(gestern)
-    stunden_ergaenzen(gestern, int(sys.argv[1]) if len(sys.argv) > 1 else 400)
+    for schritt in (lambda: luecken_fuellen(gestern), lambda: tage_ergaenzen(gestern), lambda: stunden_ergaenzen(gestern, int(sys.argv[1]) if len(sys.argv) > 1 else 400)):
+        try: schritt()
+        except Exception as e: print('Archiv-Schritt nicht möglich:', e)   # eigene Daten aus dem Live-Lauf füllen den Tag ohnehin
     index()
     print('Abrufe bei Weather Underground:', anz)
