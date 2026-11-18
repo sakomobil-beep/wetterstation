@@ -105,6 +105,9 @@ def get(url):
                 except Exception as e: print('Reserve nicht gespeichert:', e)
             return daten
         except Exception as e:
+            # 18.11.2026: Weather Underground gesperrt/gedrosselt (401/403/429) -> sofort aufgeben, Wiederholen verlängert nur die Sperre
+            if 'api.weather.com' in url and getattr(e, 'code', None) in (401, 403, 429):
+                print('WU-Schlüssel gesperrt/gedrosselt (%s) – kein neuer Versuch.' % e, flush=True); raise
             if versuch == versuche - 1:
                 if om:
                     OM_AUS.append(1)

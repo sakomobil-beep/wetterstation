@@ -30,7 +30,7 @@ def get_wu(url):
         try:
             with urllib.request.urlopen(urllib.request.Request(url, headers={'User-Agent': 'wetter-badkoenig.de'}), timeout=12) as r: return json.loads(r.read().decode())
         except Exception as e:
-            if v: raise
+            if v or getattr(e, 'code', None) in (401, 403, 429): raise
             time.sleep(2)
 
 
