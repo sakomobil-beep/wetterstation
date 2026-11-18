@@ -25,7 +25,7 @@ permissions:
   actions: read
 
 # Seit 16.11.2026 zwei getrennte Warteschlangen, damit sich die Läufe nicht mehr gegenseitig verdrängen:
-#  fb-check  = Viertelstunden-Prüfung (Sondermeldungen, Pushes, DWD-Warnungen -> Warn-Story/Unwetter-Special)
+#  fb-check  = Viertelstunden-Prüfung (Sondermeldungen, Regen-Push; DWD-Warnungen seit 18.11.2026 in dwd-warnung.yml)
 #  fb-posten = Weckrufe von cron-job.org, GitHub-Rückfallzeiten (:20), Knöpfe und Code-Änderungen
 concurrency:
   group: ${{ github.event.schedule == '5,20,35,50 * * * *' && 'fb-check' || 'fb-posten' }}
@@ -146,26 +146,6 @@ jobs:
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
         run: python .github/scripts/regen_push.py
-      - name: DWD-Warn-Push (amtliche Warnungen Bad König)
-        if: env.CHECK == '1'
-        env:
-          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
-        run: python .github/scripts/dwd_push.py
-      - name: Unwetter-Check (DWD-Stufe 2 Story, 3/4 Special, rund um die Uhr)
-        id: uw
-        if: env.CHECK == '1'
-        run: python .github/scripts/unwetter_check.py || echo "neu=0" >> "$GITHUB_OUTPUT"
-      - uses: FedericoCarboni/setup-ffmpeg@v3
-        if: steps.uw.outputs.neu == '1'
-        timeout-minutes: 5
-        continue-on-error: true
-      - name: Unwetter-Special mit Max sofort bauen
-        if: steps.uw.outputs.neu == '1'
-        run: |
-          mkdir -p /tmp/uw; cp fb/post.txt fb/post.json fb/story.jpg fb/story.json /tmp/uw/ 2>/dev/null || true
-          python .github/scripts/fb_post.py
-          cp /tmp/uw/* fb/ 2>/dev/null || true
-          python .github/scripts/wetter_video.py --special --unwetter || echo "Unwetter-Special nicht gebaut"
       - name: Speichern
         run: |
           git config user.name "wetter-bot"
@@ -205,9 +185,8 @@ jobs:
           python .github/scripts/fb_senden.py jahr || echo "Jahresrückblick nicht gepostet"
           python .github/scripts/fb_senden.py monat || echo "Monatsrückblick nicht gepostet"
           else echo "Post-Lauf aktiv – feste Beiträge übernimmt der."; fi
+          # DWD-Warnungen (Warn-Story, Unwetter-Story/-Special) postet seit 18.11.2026 nur noch dwd-warnung.yml
           if [ "$CHECK" = "1" ]; then
-          python .github/scripts/fb_senden.py warnstory || echo "Warn-Story nicht gepostet"
-          python .github/scripts/fb_senden.py special || echo "Unwetter-Special nicht gepostet"
           python .github/scripts/fb_senden.py sonder || echo "Sondermeldung nicht gepostet"
           fi
           git add fb/gepostet.json 2>/dev/null || true

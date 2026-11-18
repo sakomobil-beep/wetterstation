@@ -237,6 +237,21 @@ def abends_gebaut(j, jetzt, ab=18):
         return False
 
 
+def uw_merken(M, merk):
+    """Warnungen als erledigt eintragen (18.11.2026) – erst nach erfolgreichem Posten. Gedächtnis von unwetter_check.py."""
+    if not merk: return
+    U = M.get('uw_merk') if isinstance(M.get('uw_merk'), dict) else None
+    if U is None:   # erster Lauf: bisheriges Gedächtnis aus fb/uw_gemeldet.json übernehmen
+        try: U = json.load(open(os.path.join(FB, 'uw_gemeldet.json'), encoding='utf-8'))
+        except Exception: U = {}
+    jetzt = dt.datetime.now(TZ).isoformat()
+    U = {k: v for k, v in U.items() if isinstance(v, dict) and v.get('bis', '') >= jetzt}
+    for k, v in merk.items():
+        alt = U.get(k) or {}
+        U[k] = {'stufe': max(alt.get('stufe', 0), v.get('stufe', 0)), 'bis': max(alt.get('bis', ''), v.get('bis', ''))}
+    M['uw_merk'] = U
+
+
 def main():
     seiten_token()
     modus = sys.argv[1] if len(sys.argv) > 1 else 'tag'
@@ -388,6 +403,8 @@ def main():
             if (jetzt - dt.datetime.fromisoformat(j['erstellt'])).total_seconds() > 3 * 3600: print('Unwetter-Special ist älter als 3 Stunden – wird nicht mehr gepostet.'); return
         except Exception: print('Unwetter-Special ohne gültige Erstellzeit – übersprungen.'); return
         if M.get('special_erstellt') == j.get('erstellt'): print('Unwetter-Special schon gepostet.'); return
+        try: u3 = json.load(open(os.path.join(FB, 'uw3.json'), encoding='utf-8'))
+        except Exception: u3 = {}
         time.sleep(int(os.environ.get('FB_WARTEN', '90')))
         if frisch_gepostet('special_erstellt', j.get('erstellt')): return
         stufe = 'EXTREMES UNWETTER' if j.get('stufe', 0) >= 4 else 'UNWETTER'
@@ -397,9 +414,21 @@ def main():
                          'Live-Werte & Radar 👉 https://wetter-badkoenig.de', '#Odenwald #Odenwaldkreis #BadKönig #Unwetter #Wetterwarnung #Wettervideo'])
         if video_senden('special.mp4', txt):
             M['special_erstellt'] = j.get('erstellt'); M['special'] = heute; M['special_zeit'] = jetzt.isoformat(timespec='minutes')
-            if os.path.exists(os.path.join(FB, 'special-story.jpg')):   # Story mit Warnung, Zeitraum und DWD-Hinweisen (15.11.2026)
+            uw_merken(M, u3.get('merk'))
+            if M.get('uw3_erstellt') and M.get('uw3_erstellt') == u3.get('erstellt'): print('Unwetter-Story ist schon vorab gepostet.')
+            elif os.path.exists(os.path.join(FB, 'special-story.jpg')):   # Story mit Warnung, Zeitraum und DWD-Hinweisen (15.11.2026)
                 story_beide(M, 'special_story', 'special-story.jpg', j.get('erstellt'), jetzt, 'Unwetter-Story gepostet', 'Story zur Unwetterwarnung.', 'warning')
             push('Unwetter-Special gepostet', 'Max warnt jetzt auf Facebook und Instagram: ' + '; '.join((j.get('warn') or [])[:2]), prio='high', tags='warning,movie_camera')
+    elif modus == 'uw3story':   # DWD-Stufe 3/4: Story sofort, das Video mit Max folgt (18.11.2026)
+        jetzt = dt.datetime.now(TZ)
+        try: j = json.load(open(os.path.join(FB, 'uw3.json'), encoding='utf-8'))
+        except Exception: return
+        if M.get('uw3_erstellt') == j.get('erstellt'): return
+        if (jetzt - dt.datetime.fromisoformat(j['erstellt'])).total_seconds() > 3 * 3600: return
+        story_beide(M, 'uw3_story', 'special-story.jpg', j.get('erstellt'), jetzt, 'Unwetter-Story gepostet', 'UNWETTER: ' + '; '.join(j.get('warn', [])[:2]) + '. Das Video mit Max folgt.', 'warning')
+        if M.get('uw3_story') == j.get('erstellt') or M.get('fb_uw3_story') == j.get('erstellt'):
+            M['uw3_erstellt'] = j.get('erstellt'); uw_merken(M, j.get('merk'))
+            if not str(M.get('special_zeit', '')).startswith(jetzt.date().isoformat()): M['special_zeit'] = jetzt.isoformat(timespec='minutes')   # Tagesplan der Zentrale
     elif modus == 'warnstory':   # DWD-Stufe 2: nur Story (FB + IG), rund um die Uhr (15.11.2026)
         jetzt = dt.datetime.now(TZ)
         try: j = json.load(open(os.path.join(FB, 'warn2.json'), encoding='utf-8'))
@@ -413,6 +442,7 @@ def main():
             except Exception as e: print('Warn-Beitrag nicht gepostet:', e)
         if M.get('warn2_story') == j.get('erstellt') or M.get('fb_warn2_story') == j.get('erstellt'):
             M['warn2_erstellt'] = j.get('erstellt'); M['warn2_zeit'] = jetzt.isoformat(timespec='minutes'); M['warn2_titel'] = '; '.join(j.get('warn', [])[:2])
+            uw_merken(M, j.get('merk'))   # erst jetzt als erledigt merken (18.11.2026)
     elif modus == 'merkfehler':   # Merkzettel ließ sich nicht speichern (16.11.2026)
         push('Merkzettel nicht gespeichert', 'Facebook-Merkzettel konnte nicht gesichert werden – bitte prüfen, es droht ein Doppelpost.', prio='high', tags='warning')
         return
