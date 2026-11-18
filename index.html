@@ -1294,7 +1294,10 @@ html[data-theme="dark"] .am-map .cty text{fill:#EEF3F7!important;stroke:#141B25!
 </style>
 
 <script src="theme.js"></script>
-<style id="fcNeu">/* Moderner Vorhersage-Kasten (18.11.2026) */
+<style id="fcNeu">
+/* 19.11.2026: doppelter Kasten „Höchstwert/Tiefstwert/Böe/Niederschlag heute“ ausgeblendet – „Heute vor 1 Jahr“ steht an seiner Stelle */
+.dcol>.factscard{display:none!important}
+/* Moderner Vorhersage-Kasten (18.11.2026) */
 .fcard{background:var(--surface)!important;color:var(--ink)!important;border:1px solid var(--line);border-radius:16px!important;padding:20px 22px!important}
 .fcard .fc-kicker{color:var(--muted)!important}
 .fcard .fc-title{font-size:1.4rem!important}
@@ -2254,7 +2257,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 00:35 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 00:50 Uhr</span></p>
 
 </div>
 
@@ -3073,8 +3076,15 @@ function eigenTagesSumme(L, tag) {   // Tageszusammenfassung für heute aus dem 
 }
 function eigenAbruf(url) {
   var u; try { u = new URL(url); } catch (e) { return null; }
-  if (u.hostname !== 'api.weather.com' || u.searchParams.get('stationId') !== 'IBADKN33') return null;
+  if (u.hostname !== 'api.weather.com') return null;
   var p = u.pathname, heute = todayStr(), q = u.searchParams;
+  if (q.get('stationId') === 'IBADKN32') {   // Vergleichsstation „Heute vor 1 Jahr“ (vor dem 20.01.2026) aus dem eigenen Archiv
+    if (p === '/v2/pws/history/hourly' && q.get('date')) { var tv = eigenTag(q.get('date')); return eigenJson('data/archiv/stunden-' + tv.slice(0, 7) + '.json').then(function (j) { var L = (j.tage || {})[tv]; if (!L || !L.length || !L[0].quelle) throw new Error('fehlt'); return { observations: L }; }); }
+    if (p === '/v2/pws/history/daily') { var v1 = eigenTag(q.get('startDate') || q.get('date')), v2 = eigenTag(q.get('endDate') || q.get('date'));
+      return eigenJson('data/archiv/tage-' + v1.slice(0, 4) + '.json').then(function (j) { var L = (j.tage || []).filter(function (t) { var d = String(t.obsTimeLocal).slice(0, 10); return d >= v1 && d <= v2 && t.quelle === 'IBADKN32'; }); if (!L.length) throw new Error('fehlt'); return { observations: L }; }); }
+    return null;
+  }
+  if (q.get('stationId') !== 'IBADKN33') return null;
   if (p === '/v2/pws/observations/current') return fetch(LIVE_CF_URL, { cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error('fehlt'); return r.json(); });
   if (p === '/v2/pws/observations/all/1day') return eigenHeute().then(function (L) { return { observations: L }; });
   if ((p === '/v2/pws/history/all' || p === '/v2/pws/history/hourly') && q.get('date')) {
@@ -4992,6 +5002,7 @@ function monthRows(j) {
 /* Eigenes Wetterarchiv (data/archiv, nachts aktualisiert): Tageswerte aus der Datei, nur die Tage danach live von WU */
 var ARCH = {};
 function archivTage(y) {
+  if (y < 2026) return Promise.resolve(null);   // 2025 liegen nur Vergleichsdaten von IBADKN32 im Archiv (für „Heute vor 1 Jahr“)
   if (ARCH[y]) return ARCH[y];
   return ARCH[y] = fetch('data/archiv/tage-' + y + '.json?v=' + todayStr(), { cache: 'no-cache' })
     .then(function (r) { if (!r.ok) throw 0; return r.json(); })

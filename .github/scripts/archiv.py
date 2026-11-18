@@ -146,6 +146,37 @@ def luecken_fuellen(bis):
         A['tage'].sort(key=lambda t: t['obsTimeLocal']); speichern(p, A)
 
 
+def vorjahr_sichern(heute):
+    """19.11.2026: Vergleichsdaten für „Heute vor 1 Jahr“ (IBADKN32, vor Messbeginn 20.01.2026) ins eigene Archiv holen –
+    Tageswerte (tage-JJJJ.json) und Stundenwerte (stunden-JJJJ-MM.json), jeweils mit quelle = IBADKN32. Einmalig, danach nur Lücken."""
+    von, bis = heute - dt.timedelta(days=367), START - dt.timedelta(days=1)
+    if von > bis: return
+    d = von
+    while d <= bis:
+        p = os.path.join(DIR, 'tage-%d.json' % d.year); A = lade(p, {'station': STATION, 'tage': []})
+        da = {t['obsTimeLocal'][:10] for t in A['tage']}
+        ende = min((d.replace(day=28) + dt.timedelta(days=4)).replace(day=1) - dt.timedelta(days=1), bis)
+        if any((d + dt.timedelta(days=i)).isoformat() not in da for i in range((ende - d).days + 1)):
+            j = get('/v2/pws/history/daily', station=FREMD, startDate=d.strftime('%Y%m%d'), endDate=ende.strftime('%Y%m%d'))
+            for o in (j.get('observations') or []):
+                t = str(o.get('obsTimeLocal'))[:10]
+                if t in da or not (d.isoformat() <= t <= ende.isoformat()): continue
+                x = schlank(o, False); x['quelle'] = FREMD; A['tage'].append(x); da.add(t)
+            A['tage'].sort(key=lambda t: t['obsTimeLocal']); speichern(p, A); time.sleep(1.2)
+        d = ende + dt.timedelta(days=1)
+    d, n = von, 0
+    while d <= bis and n < 80:
+        k = d.strftime('%Y-%m'); ps = os.path.join(DIR, 'stunden-%s.json' % k); S = lade(ps, {'station': STATION, 'tage': {}})
+        if d.isoformat() not in S['tage']:
+            h = get('/v2/pws/history/hourly', station=FREMD, date=d.strftime('%Y%m%d'))
+            L = [schlank(y, True) for y in (h.get('observations') or [])]
+            for y in L: y['quelle'] = FREMD
+            if L: S['tage'][d.isoformat()] = L; S['tage'] = dict(sorted(S['tage'].items())); speichern(ps, S)
+            n += 1; time.sleep(1.5)
+        d += dt.timedelta(days=1)
+    print('Vorjahr IBADKN32: %d Tage Stundenwerte neu' % n)
+
+
 def index():
     """Übersicht für Website und Zentrale (welche Dateien gibt es)."""
     f = sorted(x for x in os.listdir(DIR) if x.endswith('.json') and x != 'index.json')
@@ -160,7 +191,7 @@ def index():
 
 if __name__ == '__main__':
     gestern = dt.datetime.now(TZ).date() - dt.timedelta(days=1)
-    for schritt in (lambda: luecken_fuellen(gestern), lambda: tage_ergaenzen(gestern), lambda: stunden_ergaenzen(gestern, int(sys.argv[1]) if len(sys.argv) > 1 else 400)):
+    for schritt in (lambda: vorjahr_sichern(gestern + dt.timedelta(days=1)), lambda: luecken_fuellen(gestern), lambda: tage_ergaenzen(gestern), lambda: stunden_ergaenzen(gestern, int(sys.argv[1]) if len(sys.argv) > 1 else 400)):
         try: schritt()
         except Exception as e: print('Archiv-Schritt nicht möglich:', e)   # eigene Daten aus dem Live-Lauf füllen den Tag ohnehin
     index()
