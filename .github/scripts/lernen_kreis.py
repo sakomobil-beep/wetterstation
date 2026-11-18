@@ -24,6 +24,11 @@ TAGE_HALTEN, GUETE_TAGE, HALBWERT = 120, 21, 14.0
 
 
 def get(url):
+    try:   # 19.11.2026: eigene Station aus eigenen Daten statt WU
+        from eigene_daten import ersatz
+        e = ersatz(url)
+        if e is not None: return e
+    except ImportError: pass
     req = urllib.request.Request(url, headers={'User-Agent': 'wetter-badkoenig.de lernen-kreis'})
     with urllib.request.urlopen(req, timeout=40) as r:
         return json.loads(r.read().decode())
