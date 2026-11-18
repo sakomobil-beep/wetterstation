@@ -1,61 +1,6 @@
 [
 {
 "d": "2026-11-15",
-"g": "tag",
-"k": "Was bringt der Tag heute? Regen, und das"
-},
-{
-"d": "2026-11-15",
-"g": "gestern_nass",
-"k": "Anders als gestern wird es heute nass."
-},
-{
-"d": "2026-11-15",
-"g": "ueberg_tipp",
-"k": "Übrigens, mein Tipp für heute: "
-},
-{
-"d": "2026-11-15",
-"g": "ueberg_morgen",
-"k": "Was bringt der nächste Tag? "
-},
-{
-"d": "2026-11-15",
-"g": "tag",
-"k": "Am Montag gibt es Regen bei Höchstwerten"
-},
-{
-"d": "2026-11-15",
-"g": "frage",
-"k": "Wie sieht’s gerade bei euch draußen aus?"
-},
-{
-"d": "2026-11-15",
-"g": "folgen",
-"k": "Ihr schaut gerade zum ersten Mal zu? Dan"
-},
-{
-"d": "2026-11-15",
-"g": "dwd",
-"k": "Wichtig zuerst: Der Deutsche Wetterdiens"
-},
-{
-"d": "2026-11-15",
-"g": "ueberg_heute",
-"k": "So, jetzt zum Wetter. "
-},
-{
-"d": "2026-11-15",
-"g": "tag",
-"k": "Was bringt der Tag heute? Regen, und das"
-},
-{
-"d": "2026-11-15",
-"g": "gestern_nass",
-"k": "Anders als gestern wird es heute nass."
-},
-{
-"d": "2026-11-15",
 "g": "ueberg_tipp",
 "k": "Übrigens, mein Tipp für heute: "
 },
@@ -1898,6 +1843,61 @@
 "d": "2026-11-18",
 "g": "ueberg_heute",
 "k": "Kommen wir zum Wetter. "
+},
+{
+"d": "2026-11-18",
+"g": "tag",
+"k": "Heute wird es nass, bei rund 13 Grad."
+},
+{
+"d": "2026-11-18",
+"g": "gestern_gleich",
+"k": "Kaum anders als gestern."
+},
+{
+"d": "2026-11-18",
+"g": "klima_mild",
+"k": "Normal wären jetzt eher 6 Grad – also de"
+},
+{
+"d": "2026-11-18",
+"g": "mundart",
+"k": "Des werd e nass Sach!"
+},
+{
+"d": "2026-11-18",
+"g": "ueberg_tipp",
+"k": "Was könnt ihr heute machen? "
+},
+{
+"d": "2026-11-18",
+"g": "ueberg_morgen",
+"k": "Kurzer Blick nach vorn. "
+},
+{
+"d": "2026-11-18",
+"g": "tag",
+"k": "Morgen, am Donnerstag: Regen, und das Th"
+},
+{
+"d": "2026-11-18",
+"g": "frage",
+"k": "Passt meine Vorhersage bei euch? Sagt’s "
+},
+{
+"d": "2026-11-18",
+"g": "folgen",
+"k": "Wer uns folgt, weiß morgens als Erster B"
+},
+{
+"d": "2026-11-18",
+"g": "dwd",
+"k": "Kurz vorweg: Vom Deutschen Wetterdienst "
+},
+{
+"d": "2026-11-18",
+"g": "ueberg_heute",
+"k": ""
 },
 {
 "d": "2026-11-18",
