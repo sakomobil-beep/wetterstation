@@ -1,6 +1,15 @@
 {
- "erstellt": "2026-11-18T10:05+01:00",
+ "erstellt": "2026-11-18T13:04+01:00",
  "meldungen": [
+  {
+   "typ": "gewitter",
+   "titel": "Gewitter",
+   "emoji": "⛈️",
+   "amtlich": true,
+   "stufe": "Stufe 2 – Markantes Wetter",
+   "bild": "sonder-gewitter.jpg",
+   "text": "⛈️ WETTER-SONDERMELDUNG für den Odenwald: Gewitter ⛈️\n\n⚠️ Stufe 2 – Markantes Wetter\n📍 Gilt für: Breuberg\n• DWD: Amtliche WARNUNG vor STARKEM GEWITTER\n🕒 Gültig von heute 12:43 Uhr bis heute 13:30 Uhr\n\n👉 Gefahr durch: Blitzschlag (Lebensgefahr!); vereinzelt umstürzende Bäume; herabstürzende Gegenstände; Hagelschlag. \n\nLive-Werte, Radar & Warnungen 👉 https://wetter-badkoenig.de\n#Odenwald #Odenwaldkreis #BadKönig #Wetter #Gewitter #Unwetter"
+  },
   {
    "typ": "sturm",
    "titel": "Sturm",
