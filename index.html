@@ -1317,6 +1317,7 @@ html[data-theme="dark"] .am-map .cty text{fill:#EEF3F7!important;stroke:#141B25!
 .dcol .nga .windrow .big{display:flex;flex-wrap:wrap;align-items:baseline}
 .dcol .nga .windrow .big .v{font-size:1.9rem}.dcol .nga .windrow .big .u{font-size:.8rem;margin-left:2px}
 .dchart{margin-top:18px}
+.dfc{margin-top:18px}
 .dfollow{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}
 @media (min-width:1001px) and (max-width:1220px){.dcol .compass{width:48px;height:48px;flex-basis:48px}.dcol .nga .windrow .big .v{font-size:1.6rem}.dcol .nga .tile{padding:14px}}
 @media (max-width:1000px){.dgrid{grid-template-columns:minmax(0,1fr)}.dfollow{grid-template-columns:minmax(0,1fr)}}
@@ -1364,8 +1365,9 @@ document.addEventListener('DOMContentLoaded',function(){
   var ob=document.createElement('section');ob.className='dob';ob.innerHTML='<div class="label">Ausblick</div>';ob.appendChild(ho);
   c3.appendChild(ob);c3.appendChild(o2);
   ch.classList.add('dchart');g.parentNode.insertBefore(ch,g.nextSibling);
+  var fc=o2.querySelector('.fcard');if(fc){fc.classList.add('dfc');ch.parentNode.insertBefore(fc,ch.nextSibling);}
   var f=document.createElement('div');f.className='dfollow';[].slice.call(o2.querySelectorAll('.fbfollow')).forEach(function(a){f.appendChild(a)});
-  ch.parentNode.insertBefore(f,ch.nextSibling);
+  var an=(fc||ch);an.parentNode.insertBefore(f,an.nextSibling);
   }catch(e){}
 });
 </script>
@@ -2212,7 +2214,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 18.11.2026, 11:45 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 18.11.2026, 11:53 Uhr</span></p>
 
 </div>
 
