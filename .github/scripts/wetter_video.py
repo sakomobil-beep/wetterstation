@@ -3426,6 +3426,13 @@ def archiv(name, heute, special, warn, gesamt, tage=7):
     ad = os.path.join(FB, 'archiv'); os.makedirs(ad, exist_ok=True)
     art_ = {'special': 'special', 'woche': 'woche', 'abendvideo': 'abend', 'monat': 'monat'}.get(name, 'morgen')
     datei = heute.isoformat() + ('' if art_ == 'morgen' else '-' + art_) + '.mp4'
+    # Seit 18.11.2026: ein schon gepostetes Video bleibt in der Videothek, wie es gepostet wurde – ein späterer Neubau
+    # (z. B. nach einer Code-Änderung) überschreibt es nicht mehr.
+    merk = {'morgen': 'video', 'abend': 'abend', 'woche': 'woche'}.get(art_)
+    try: gep = json.load(open(os.path.join(FB, 'gepostet.json'), encoding='utf-8'))
+    except Exception: gep = {}
+    if merk and gep.get(merk) == heute.isoformat() and os.path.exists(os.path.join(ad, datei)):
+        print('Videothek: %s ist heute schon gepostet – die gepostete Fassung bleibt.' % datei); return
     shutil.copy(os.path.join(FB, name + '.mp4'), os.path.join(ad, datei))
     subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-ss', '3', '-i', os.path.join(ad, datei), '-frames:v', '1', '-vf', 'scale=270:-2', '-q:v', '5',
                     os.path.join(ad, datei.replace('.mp4', '.jpg'))], check=False)
