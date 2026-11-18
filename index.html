@@ -1726,7 +1726,7 @@ document.addEventListener('DOMContentLoaded',function(){
         <div class="ow-card ow-mapc">
           <div class="ow-btns" id="owBtns"><button data-k="t" class="on">🌡️ Temperatur</button><button data-k="g">💨 Wind</button><button data-k="r">🌧️ Regen heute</button><button data-k="rh">💧 Feuchte</button></div>
           <div id="owMap"></div>
-          <p class="ow-hint">Werte: eigene Station Bad König und private Wetterstationen bei Weather Underground (Breuberg-Neustadt, Höchst, Michelstadt, Unter-Mossau, Beerfelden-Birkenhöhe). Aktualisiert alle 10 Minuten, jede Messung wird archiviert. Die Wettersymbole werden aus den Messwerten jeder Station abgeleitet (Regenrate, Regen der letzten 30 Min., Temperatur, Feuchte, Sonnenstrahlung).</p>
+          <p class="ow-hint">Werte: eigene Station Bad König (direkt, jede Minute) und private Wetterstationen bei Weather Underground (Breuberg-Neustadt, Höchst, Michelstadt, Unter-Mossau, Beerfelden-Birkenhöhe; weitere Orte alle 30 Minuten). Aktualisiert alle 10 Minuten, jede Messung wird archiviert. Die Wettersymbole werden aus den Messwerten jeder Station abgeleitet (Regenrate, Regen der letzten 30 Min., Temperatur, Feuchte, Sonnenstrahlung).</p>
         </div>
       </div>
     </section>
@@ -2254,7 +2254,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 18.11.2026, 23:20 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 18.11.2026, 23:58 Uhr</span></p>
 
 </div>
 
@@ -6750,7 +6750,12 @@ setInterval(function () { if (currentTab === 'odenwald' && !document.hidden) owL
   };
   var altKarte = owKarte;
   window.owKarte = owKarte = function () {
-    var d = OW.d, k = OW.k;
+    var d = OW.d, k = OW.k, alle = d.orte;
+    d.orte = alle.filter(function (o) { return !o.extra; });   // Karte: Hauptorte groß, Zusatzorte nur als kleine Punkte (18.11.2026)
+    try { owKarteHaupt(d, k); } finally { d.orte = alle; }
+    owxPunkte(d, k);
+  };
+  function owKarteHaupt(d, k) {
     if (k === 'gf' || k === 'dt' || k === 'p') {   // neue Kartenwerte über die bewährte Karte: Wert vorübergehend auf t legen
       var sic = d.orte.map(function (o) { return o.t; }), kk = OW.k;
       d.orte.forEach(function (o) { o._t = o.t; o.t = k === 'gf' ? o.gf : k === 'p' ? o.p : (o.t !== null && o.t !== undefined && o.t_gestern !== undefined ? Math.round((o.t - o.t_gestern) * 10) / 10 : null); });
@@ -6764,6 +6769,9 @@ setInterval(function () { if (currentTab === 'odenwald' && !document.hidden) owL
         if (k === 'dt') { tx.textContent = v === null ? '–' : (v > 0 ? '+' : '') + owNf(v, 1) + '°'; r.setAttribute('fill', owAlt(o) || v === null ? '#9aa5ab' : v > 2 ? '#c92a2a' : v > 0.5 ? '#e8590c' : v < -2 ? '#3b5bdb' : v < -0.5 ? '#1f8fc0' : '#868e96'); }
       });
     } else altKarte();
+    owxPfeile(d, k);
+  }
+  function owxPfeile(d, k) {
     if (k === 'g') Array.prototype.forEach.call($('owMap').querySelectorAll('g[data-ow]'), function (g) {
       var o = d.orte.filter(function (x) { return x.name === g.dataset.ow; })[0], c = g.querySelector('circle'); if (!o || o.wd === null || o.wd === undefined || owAlt(o)) return;
       var cx = +c.getAttribute('cx'), cy = +c.getAttribute('cy');
@@ -6772,6 +6780,32 @@ setInterval(function () { if (currentTab === 'odenwald' && !document.hidden) owL
     var W = warnJetzt(), poly = $('owMap').querySelector('svg polygon[fill="none"]');
     if (W.length && poly) { poly.setAttribute('stroke', WFARBE[Math.min(4, W[0].st)]); poly.setAttribute('stroke-width', '6');
       $('owMap').insertAdjacentHTML('afterbegin', '<div class="owx-wtag" style="background:' + WFARBE[Math.min(4, W[0].st)] + '">⚠️ DWD-Warnung: ' + esc(W[0].t.charAt(0) + W[0].t.slice(1).toLowerCase()) + '</div>'); }
+  }
+  function owxWert(o, k) {
+    if (k === 'dt') return o.t !== null && o.t !== undefined && o.t_gestern !== undefined ? Math.round((o.t - o.t_gestern) * 10) / 10 : null;
+    return o[k];
+  }
+  function owxPunkte(d, k) {   // Zusatzorte: kleiner Kreis mit Wert, Name beim Antippen/Darüberfahren
+    var svg = $('owMap').querySelector('svg'); if (!svg) return;
+    var dez = { t: 1, gf: 1, dt: 1, g: 0, r: 1, rh: 0, p: 0 }[k], h = '';
+    d.orte.filter(function (o) { return o.extra; }).forEach(function (o) {
+      var p = rgXY(o.lon, o.lat), v = owxWert(o, k), a = owAlt(o) || v === null || v === undefined, sel = OW.sel === o.name;
+      var f = a ? '#9aa5ab' : k === 'p' ? '#5c7cfa' : k === 'dt' ? (v > 2 ? '#c92a2a' : v > 0.5 ? '#e8590c' : v < -2 ? '#3b5bdb' : v < -0.5 ? '#1f8fc0' : '#868e96') : owFarbe(k === 'gf' ? 't' : k, v);
+      var txt = a ? '–' : (k === 'dt' && v > 0 ? '+' : '') + owNf(v, dez);
+      h += '<g data-ow="' + esc(o.name) + '" style="cursor:pointer"><title>' + esc(o.name) + ': ' + (a ? 'kein aktueller Wert' : txt + { t: ' °C', gf: ' °C gefühlt', dt: ' ° zu gestern', g: ' km/h Böe', r: ' mm heute', rh: ' % Feuchte', p: ' hPa' }[k]) + '</title>' +
+        '<circle cx="' + p[0].toFixed(0) + '" cy="' + p[1].toFixed(0) + '" r="' + (sel ? 15 : 13) + '" fill="' + f + '" stroke="' + (sel ? '#ffd400' : '#fff') + '" stroke-width="' + (sel ? 3 : 2) + '"/>' +
+        '<text x="' + p[0].toFixed(0) + '" y="' + (p[1] + 3.5).toFixed(0) + '" text-anchor="middle" font-size="' + (txt.length > 4 ? 8 : 9.5) + '" font-weight="700" fill="#fff">' + txt + '</text>' +
+        (sel ? '<text x="' + p[0].toFixed(0) + '" y="' + (p[1] + 27).toFixed(0) + '" text-anchor="middle" font-size="9" font-weight="700" fill="#12252E" stroke="#fff" stroke-width="3" paint-order="stroke">' + esc(o.name) + '</text>' : '') + '</g>';
+    });
+    if (!h) return;
+    svg.insertAdjacentHTML('beforeend', h);
+    $('owMap').insertAdjacentHTML('beforeend', '<p class="ow-hint" style="text-align:center;margin-top:2px">Kleine Kreise = weitere Orte (Erbach, Reichelsheim, Fränkisch-Crumbach, Brombachtal, Lützelbach) – antippen zeigt den Namen. Werte alle 30 Minuten.</p>');
+    Array.prototype.forEach.call(svg.querySelectorAll('g[data-ow]'), function (g) { g.onclick = function () { OW.sel = OW.sel === g.dataset.ow ? null : g.dataset.ow; owZeichnen(); }; });
+  }
+  var altVerlauf = owVerlauf;
+  window.owVerlauf = owVerlauf = function () {   // Verlauf nur mit den Hauptorten, sonst zu unübersichtlich
+    var alle = OW.d.orte; OW.d.orte = alle.filter(function (o) { return !o.extra; });
+    try { altVerlauf(); } finally { OW.d.orte = alle; }
   };
   function owxRegen() {
     var Lb = { r24: 'letzte 24 Stunden', r7: 'letzte 7 Tage', rmon: 'dieser Monat' };

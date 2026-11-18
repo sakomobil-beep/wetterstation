@@ -64,7 +64,7 @@ def gefuehlt(m):
 # nächste private WU-Station mit aktuellen Werten, nicht schon von einem anderen Ort benutzt; die Wahl hält 24 Stunden.
 EXTRA = [('Erbach', 230, 49.657, 8.994), ('Reichelsheim', 215, 49.713, 8.838), ('Fränkisch-Crumbach', 200, 49.746, 8.858),
          ('Brombachtal', 250, 49.735, 8.946), ('Lützelbach', 230, 49.784, 9.077)]
-EXTRA_AN = False
+EXTRA_AN = True   # 18.11.2026 23:50: wieder an – eigene Station braucht keine WU-Abrufe mehr; Zusatzorte nur alle 30 Minuten
 STATIONSWAHL = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'odenwald-stationen.json')
 
 
@@ -75,7 +75,7 @@ def extra_stationen(jetzt, belegt):
     for n, el, la, lo in EXTRA:
         w = W.get(n)
         if time.time() - START > 90: break   # Zeit reicht nicht mehr – nächster Lauf sucht weiter
-        if w and (jetzt - dt.datetime.fromisoformat(w['gewaehlt'])).total_seconds() < 86400: belegt.add(w['id']); continue
+        if w and (jetzt - dt.datetime.fromisoformat(w['gewaehlt'])).total_seconds() < 7 * 86400: belegt.add(w['id']); continue
         try:
             L = get_wu('https://api.weather.com/v3/location/near?geocode=%s,%s&product=pws&format=json&apiKey=%s' % (la, lo, WU_KEY)).get('location') or {}
             ids, km = L.get('stationId') or [], L.get('distanceKm') or []
@@ -231,7 +231,11 @@ def main():
     except Exception as e: print('Zusatzorte nicht möglich:', e); wahl = {}
     liste = [x + (False,) for x in ORTE] + [(n, el, 'wu', wahl[n]['id'], la, lo, True) for n, el, la, lo in EXTRA if n in wahl]
     alt_alle = alt.get('orte', []) + alt.get('extra', [])
+    extra_jetzt = jetzt.minute < 10 or 30 <= jetzt.minute < 40 or not alt.get('extra')   # Zusatzorte: nur zur vollen und halben Stunde neu
     for n, el, art, sid, la, lo, ist_extra in liste:
+        alt_e = next((o for o in alt.get('extra', []) if o['name'] == n), None) if ist_extra else None
+        if ist_extra and not extra_jetzt and alt_e and alt_e.get('station') == sid:
+            orte.append(alt_e); continue   # alter Wert bleibt bis zum nächsten Abruf
         try: v = wu(sid) if art == 'wu' else dwd(sid, heute)
         except Exception as e: print('Station %s nicht abrufbar:' % n, e); v = None
         alt_o = next((o for o in alt_alle if o['name'] == n), None) if alt.get('datum') == heute else None
