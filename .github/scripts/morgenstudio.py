@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Morgenmagazin-Studio für das Morgenvideo mit Max (18.11.2026, Entwurf D – von Kingman gewählt; überarbeitet 18.11.2026 abends).
-Kontrastreiches Studio wie im Frühstücksfernsehen: dunkelblaue Rückwand mit Lichtleisten, Deckenscheinwerfer, Pflanzen,
+Kontrastreiches Studio wie im Frühstücksfernsehen: dunkelgraue Rückwand (Anthrazit, Kingmans Wahl A) mit weißen Lichtleisten, Deckenscheinwerfer, Pflanzen,
 große LED-Wand, orange Logo „GUTEN MORGEN, ODENWALD!“ und weiß-oranger Stehtisch „ODENWALD AM MORGEN“ mit Kaffeebecher.
 LED-Wand: Kingmans gemalte Odenwald-Bilder passend zum Wetter, ganz auf die Wand eingepasst, mit eigenen Wetter-Effekten
 (Regen, Schnee, Nebel, Sturm, Gewitter, Frost); die Wetterhinweise (Tafeln) erscheinen ebenfalls auf der LED-Wand.
@@ -44,12 +44,12 @@ def _pflanze(d, x, y, s=1.0):
 
 
 def basis(weihnacht=False):
-    fr = _verlauf(W, H, (10, 18, 42), (34, 52, 96)).convert('RGBA')       # dunkelblaue Rückwand
+    fr = _verlauf(W, H, (28, 30, 34), (62, 64, 70)).convert('RGBA')       # dunkelgraue Rückwand (Anthrazit)
     d = ImageDraw.Draw(fr)
     for x in (12, W - 12):                                                 # senkrechte Lichtleisten
-        d.rounded_rectangle([x - 5, 180, x + 5, 1000], radius=5, fill=(120, 190, 255))
+        d.rounded_rectangle([x - 5, 180, x + 5, 1000], radius=5, fill=(235, 235, 240))
     gl = Image.new('RGBA', (W, H), (0, 0, 0, 0)); gd = ImageDraw.Draw(gl)
-    for x in (12, W - 12): gd.rounded_rectangle([x - 22, 170, x + 22, 1010], radius=20, fill=(90, 160, 255, 70))
+    for x in (12, W - 12): gd.rounded_rectangle([x - 22, 170, x + 22, 1010], radius=20, fill=(235, 235, 240, 60))
     gd.ellipse([W / 2 - 360, 120, W / 2 + 360, 520], fill=(255, 150, 60, 46))    # warmer Morgen-Schein hinter der Wand
     fr.alpha_composite(gl.filter(ImageFilter.GaussianBlur(18)))
     d = ImageDraw.Draw(fr)
