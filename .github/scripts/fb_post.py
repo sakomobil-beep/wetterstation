@@ -518,6 +518,21 @@ def orte_rest(heute, ab=None, bis=19):
     return out
 
 
+DIREKT_URL = 'https://wetter-badkoenig.sakomobil.workers.dev/'
+
+
+def station_direkt(max_alter=900):
+    """18.11.2026: Live-Werte direkt von der Station (sendet jede Minute an den Cloudflare-Worker) – ohne WU-Abruf.
+    Gibt die Antwort im WU-Format zurück oder None (dann wie bisher bei WU abrufen)."""
+    try:
+        with urllib.request.urlopen(urllib.request.Request(DIREKT_URL, headers={'User-Agent': 'wetter-badkoenig.de'}), timeout=15) as r: j = json.loads(r.read().decode())
+        o = j['observations'][0]
+        if o.get('quelle') == 'station' and time.time() - o['epoch'] <= max_alter: return j
+        print('Direktwerte zu alt oder nur WU-Reserve.')
+    except Exception as e: print('Direktwerte nicht verfügbar:', e)
+    return None
+
+
 def live_station():
     """Aktueller Messwert der eigenen Station aus data/live.json (vom Widget-Lauf gefüllt)."""
     try:
@@ -808,7 +823,7 @@ def korrigierte_stunden(om, st, nah=None):
         v = (o.get('metric') or {}).get('tempAvg')
         if v is not None: gemessen[dt.datetime.fromtimestamp(o['epoch'], TZ).strftime('%Y-%m-%dT%H')] = v
     try:
-        cur = get('https://api.weather.com/v2/pws/observations/current?stationId=%s&format=json&units=m&apiKey=%s' % (STATION, WU_KEY))
+        cur = station_direkt() or get('https://api.weather.com/v2/pws/observations/current?stationId=%s&format=json&units=m&apiKey=%s' % (STATION, WU_KEY))
         jetzt_t = cur['observations'][0]['metric']['temp']
     except Exception:
         jetzt_t = None
