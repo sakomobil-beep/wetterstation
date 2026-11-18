@@ -887,6 +887,7 @@ WEIHNACHT = [False]   # wird in baue() für 23.11.–28.12. gesetzt
 
 def weihnachtszeit(heute): return (heute.month == 11 and heute.day >= 23) or (heute.month == 12 and heute.day <= 27)   # einheitlich 23.11.–27.12. (17.11.2026, vorher bis 28.12.)
 ADVENT_KERZEN = [0]   # brennende Kerzen am Adventskranz im Studio (setzt baue())
+MORGEN_STUDIO = [False]   # Morgenvideo aus dem Morgenmagazin-Studio (18.11.2026, Entwurf D) – setzt main() nur für wetter.mp4
 STUDIO_FUNKELN = [None]   # funkelnde Lichter im Weihnachts-Studio (3 Ebenen, setzt baue())
 
 
@@ -3068,7 +3069,7 @@ def baue(segmente, heute, ziel, special, titel=None):
     MODS = {}
     lk0 = next((look_fuer(s['tag']) for s in segmente if s.get('tag')), 'kuehl' if heute.month in (11, 12, 1, 2, 3) else 'normal')   # ohne Tageswerte (z. B. Jahresrückblick): nach Jahreszeit
     def mods_fuer(look, prop, st=False):
-        if (look, prop, st) not in MODS: MODS[(look, prop, st)] = MaxFigur(look, prop, st, 1.2 if st else 0.92)
+        if (look, prop, st) not in MODS: MODS[(look, prop, st)] = MaxFigur(look, prop, st, 1.2 if st else 1.12 if MORGEN_STUDIO[0] else 0.92)
         return MODS[(look, prop, st)]
     FX_LOOK = {'frost': ('winter', None), 'nebel': ('kuehl', None), 'schnee': ('winter', 'schippe'), 'regen': ('regen', 'schirm'), 'schauer': ('regen', None), 'gewitter': ('regen', None), 'sturm': ('sturm', None)}
     BAEUME = [baum(a_) for a_ in range(-14, 15, 2)]
@@ -3080,6 +3081,10 @@ def baue(segmente, heute, ziel, special, titel=None):
             import studio_weihnacht; ADVENT_KERZEN[0] = studio_weihnacht.advent_kerzen(heute); STUDIO_FUNKELN[0] = studio_weihnacht.funkeln()
         except Exception as e: print('Studio-Funkeln nicht vorbereitet:', e)
     STUDIO_DESK = studio_desk_overlay()
+    MS = None
+    if MORGEN_STUDIO[0]:   # Morgenmagazin-Studio: Wetterbild läuft auf der LED-Wand, Max steht am Stehtisch
+        import morgenstudio as MSTUDIO
+        MS = (MSTUDIO.basis(WEIHNACHT[0]), MSTUDIO.tisch(), MSTUDIO)
     kopf = kopfband(heute, special, titel)
     zeit = 0.0
     for k, s in enumerate(segmente):
@@ -3147,14 +3152,14 @@ def baue(segmente, heute, ziel, special, titel=None):
         bgi = s['bgimg']; bw, bh = bgi.size
         sc = 1.0 if studio else 1.0 + 0.06 * p
         cw, ch = int(W * bh / H / sc * (H / bh) * (bh / H)), 0
-        HB = H if studio else PF_TOP + 36   # draußen endet das Bild genau an der Oberkante des Pflasterwegs
+        HB = H if studio or MS else PF_TOP + 36   # draußen endet das Bild genau an der Oberkante des Pflasterwegs
         cw = int(min(bw, bh * W / HB) / sc); ch = int(cw * HB / W)
         x0 = (bw - cw) // 2 if studio else int((bw - cw) * (0.15 + 0.7 * p)) if bw > cw + 10 else (bw - cw) // 2
         y0 = int((bh - ch) * 0.4) if not studio else 0
-        if not studio: bgi = pf_hintergrund(bgi); y0 = bh - ch   # Bild unten anliegend: unterer Bildrand sitzt am Weg
+        if not studio and not MS: bgi = pf_hintergrund(bgi); y0 = bh - ch   # Bild unten anliegend: unterer Bildrand sitzt am Weg
         fr = bgi.crop((x0, y0, x0 + cw, y0 + ch)).resize((W, HB), Image.BILINEAR).convert('RGBA')
         if studio and STUDIO_FUNKELN[0]: fr.alpha_composite(STUDIO_FUNKELN[0][int(t * 2.2) % 3])   # Lichterkette und Baum funkeln
-        if not studio:   # davor der Pflasterweg
+        if not studio and not MS:   # davor der Pflasterweg
             fr2 = Image.new('RGBA', (W, H)); fr2.paste(fr, (0, 0)); fr2.paste(fr.crop((0, HB - 2, W, HB)).resize((W, H - HB)), (0, HB))
             fr = fr2; fr.alpha_composite(pflaster(s['bgimg'], s['pf_zust'], s.get('bg_name')))
         # Übergang: kurzes Einblenden aus Weiß
@@ -3204,6 +3209,8 @@ def baue(segmente, heute, ziel, special, titel=None):
             for (x, y, r_, ph) in flocken:
                 yy = (y + t * 60 * r_) % H; xx = (x + 20 * math.sin(t + ph)) % W
                 dr.ellipse([xx - r_, yy - r_, xx + r_, yy + r_], fill=(255, 255, 255, 230))
+        if MS and not studio:   # Morgenstudio: das Wetterbild samt Effekten kommt auf die LED-Wand
+            wb, wm, wp = MS[2].wand(fr); fr = MS[0].copy(); fr.paste(wb, wp, wm)
         # Tafel: im Studio auf dem Bildschirm an der Wand, sonst rechts oben, schiebt sich herein
         tafel_seit = lt; tf_alt = None
         if s.get('tafel_wechsel'):   # Wettergrafiken: Tafeln wechseln gleichmäßig über den Abschnitt
@@ -3262,11 +3269,14 @@ def baue(segmente, heute, ziel, special, titel=None):
         if pk == 'sturm': bob += int(5 * math.sin(t * 9))   # Max wackelt im Wind
         mx, my = -20, H - mm.height - 150 + bob
         if studio: mx, my = 10, STUDIO_TISCH - int(mm.height * 0.70) + bob // 2   # Hüfte auf Tischhöhe: Max sitzt
+        if MS and not studio: my = MS[2].TISCH - int(mm.height * 0.62) + bob // 2   # steht hinter dem Stehtisch
         fr.alpha_composite(mm, (mx + int(xoff), my))
+        if MS and not studio:
+            fr.alpha_composite(MS[1], (0, 0)); _dm, _dp = dampf(t, *MS[2].TASSE); fr.alpha_composite(_dm, _dp)
         if studio:
             fr.alpha_composite(STUDIO_DESK, (0, 0))
             if GETRAENK[0] != 'limo': _dm, _dp = dampf(t, 465, STUDIO_TISCH - 36); fr.alpha_composite(_dm, _dp)   # heißes Getränk dampft
-        if pk == 'sturm' and lt < 2.4:   # die Kappe fliegt ihm vom Kopf davon
+        if pk == 'sturm' and lt < 2.4 and not MS:   # die Kappe fliegt ihm vom Kopf davon (draußen)
             q = lt / 2.4
             kp = KAPPE.rotate(-q * 540, expand=True)
             fr.alpha_composite(kp, (int(mx + 120 + q * 700), int(my + 20 - 260 * q + 300 * q * q)))
@@ -3373,6 +3383,9 @@ def main():
     name = 'abendvideo' if abends else ('special-test' if test else 'special') if nur_special else 'woche' if wochen else 'wetter'
     stufe = max([stufe_von.get(r, 0) for r in roh] or [0])
     ziel = os.path.join(FB, name + '.mp4')
+    # 18.11.2026: Morgenvideo aus dem Morgenmagazin-Studio (Specials bleiben vorerst draußen). Live erst nach Kingmans OK:
+    # bis dahin nur bei Probe-Videos (PROBE=1); eingeschaltet wird es mit der Datei data/morgenstudio.an
+    MORGEN_STUDIO[0] = name == 'wetter' and (os.environ.get('PROBE') == '1' or os.path.exists(os.path.join(ROOT, 'data', 'morgenstudio.an')))
     gesamt, echt = baue(segs, heute, ziel, special, titel='WOCHENAUSBLICK' if wochen else 'ODENWALD AM ABEND' if abends else None)
     if abends: feed_fassung(ziel)
     text = ' '.join(s['text'] for s in segs)
