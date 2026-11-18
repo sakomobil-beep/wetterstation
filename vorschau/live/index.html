@@ -7954,7 +7954,7 @@ function tqHtml(T){
   function maxText(){
     var q=document.getElementById('vmaxQ'), t=document.getElementById('fcText'); if(!q||!t) return false;
     var s=(t.textContent||'').replace(/\s+/g,' ').trim(); if(s.length<20) return false;
-    var m=s.match(/^[^.!?]*[.!?]/); q.textContent='„'+(m?m[0]:s.slice(0,160)).trim()+'“'; return true;
+    var m=s.match(/^[^.!?]*[.!?]/); var x=(m?m[0]:s.slice(0,160)).trim().replace(/^(Heute|In der Nacht|Heute Nacht|Morgen|Am Abend|Heute Abend)\s*:\s*/,function(_,w){return w==='In der Nacht'||w==='Heute Nacht'?'Heute Nacht: ':''}); q.textContent='„'+x.charAt(0).toUpperCase()+x.slice(1)+'“'; return true;
   }
   var n=0, iv=setInterval(function(){ n++; if((maxKarte()&&maxText())||n>60) clearInterval(iv); }, 500);
 })();
