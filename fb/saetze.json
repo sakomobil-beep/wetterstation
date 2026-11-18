@@ -1,51 +1,6 @@
 [
 {
 "d": "2026-11-15",
-"g": "tag",
-"k": "Am Mittwoch zeigt sich das Wetter nass, "
-},
-{
-"d": "2026-11-15",
-"g": "dwd",
-"k": "Wichtig zuerst: Der Deutsche Wetterdiens"
-},
-{
-"d": "2026-11-15",
-"g": "tag",
-"k": "Am Montag gibt es Regen bei Höchstwerten"
-},
-{
-"d": "2026-11-15",
-"g": "tag",
-"k": "Am Dienstag erwartet uns Regen – die Tem"
-},
-{
-"d": "2026-11-15",
-"g": "nebel_w",
-"k": "Morgens gibt es in den Tälern Nebel bis "
-},
-{
-"d": "2026-11-15",
-"g": "tag",
-"k": "Am Mittwoch zeigt sich das Wetter nass, "
-},
-{
-"d": "2026-11-15",
-"g": "dwd",
-"k": "Wichtig zuerst: Der Deutsche Wetterdiens"
-},
-{
-"d": "2026-11-15",
-"g": "ueberg_heute",
-"k": "So, jetzt zum Wetter. "
-},
-{
-"d": "2026-11-15",
-"g": "tag",
-"k": "Was bringt der Tag heute? Regen, und das"
-},
-{
-"d": "2026-11-15",
 "g": "gestern_nass",
 "k": "Anders als gestern wird es heute nass."
 },
@@ -1948,6 +1903,56 @@
 "d": "2026-11-18",
 "g": "folgen",
 "k": "Noch kein Follower? Ein Klick auf Folgen"
+},
+{
+"d": "2026-11-18",
+"g": "dwd",
+"k": "Kurz vorweg: Vom Deutschen Wetterdienst "
+},
+{
+"d": "2026-11-18",
+"g": "ueberg_heute",
+"k": ""
+},
+{
+"d": "2026-11-18",
+"g": "tag",
+"k": "Heute erwartet uns Regen – die Temperatu"
+},
+{
+"d": "2026-11-18",
+"g": "gestern_kaelter",
+"k": "Das sind rund 3 Grad weniger als gestern"
+},
+{
+"d": "2026-11-18",
+"g": "klima_mild",
+"k": "Normal wären jetzt eher 6 Grad – also de"
+},
+{
+"d": "2026-11-18",
+"g": "ueberg_tipp",
+"k": "Kleiner Tipp am Rande: "
+},
+{
+"d": "2026-11-18",
+"g": "ueberg_morgen",
+"k": "Was bringt der nächste Tag? "
+},
+{
+"d": "2026-11-18",
+"g": "tag",
+"k": "Am Freitag heißt es Jacke an – Regen, un"
+},
+{
+"d": "2026-11-18",
+"g": "frage",
+"k": "Wie sieht’s gerade bei euch draußen aus?"
+},
+{
+"d": "2026-11-18",
+"g": "folgen",
+"k": "Wer uns folgt, weiß morgens als Erster B"
 },
 {
 "d": "2026-11-18",
