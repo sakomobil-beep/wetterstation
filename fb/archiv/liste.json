@@ -1,5 +1,17 @@
 [
  {
+  "datum": "2026-11-18",
+  "datei": "2026-11-18.mp4",
+  "art": "morgen",
+  "erstellt": "2026-11-18T06:08+00:00",
+  "special": false,
+  "warn": [
+   "Amtliche Warnung vor Sturmböen",
+   "Amtliche Warnung vor Windböen"
+  ],
+  "dauer": 123.1
+ },
+ {
   "datum": "2026-11-17",
   "datei": "2026-11-17-abend.mp4",
   "art": "abend",
