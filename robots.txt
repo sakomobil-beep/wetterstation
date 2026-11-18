@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /facebook.html
 Disallow: /fb/
+Disallow: /vorschau/
 
 Sitemap: https://wetter-badkoenig.de/sitemap.xml

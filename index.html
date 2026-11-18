@@ -6650,7 +6650,7 @@ function owVerlauf() {
   for (var h = 0; h <= 24; h += 3) g += '<text x="' + X(h + ':00').toFixed(1) + '" y="' + (y1 + 16) + '" font-size="10" text-anchor="middle" fill="#8a959b">' + h + '</text>';
   var leg = '';
   OW.d.orte.forEach(function (o, i) {
-    var L = V[o.name] || []; if (!L.length) return; var c = OW_FARBEN[i % 6], sel = OW.sel === o.name;
+    var L = V[o.name] || []; if (!L.length) return; var c = OW_FARBEN[i % OW_FARBEN.length], sel = OW.sel === o.name;
     g += '<polyline points="' + L.map(function (p) { return X(p[0]).toFixed(1) + ',' + Y(p[1]).toFixed(1); }).join(' ') + '" fill="none" stroke="' + c + '" stroke-width="' + (sel ? 4 : 2.2) + '" stroke-linejoin="round" opacity="' + (OW.sel && !sel ? .35 : 1) + '"/>';
     leg += '<span><i style="background:' + c + '"></i>' + esc(o.name.replace(' i. Odw.', '')) + '</span>';
   });
@@ -6659,6 +6659,174 @@ function owVerlauf() {
 document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('#owBtns button'); if (!b) return; OW.k = b.dataset.k;
   Array.prototype.forEach.call(document.querySelectorAll('#owBtns button'), function (x) { x.classList.toggle('on', x === b); }); owKarte(); });
 setInterval(function () { if (currentTab === 'odenwald' && !document.hidden) owLaden(true); }, 5 * 60000);
+
+/* ===== Aktuell Odenwald ausführlicher (18.11.2026) – zuerst nur in der Live-Vorschau /vorschau/odenwald/ (window.OW_NEU) ===== */
+if (window.OW_NEU) (function () {
+  OW_POS['Erbach'] = [10, 4]; OW_POS['Michelstadt'] = [10, -30]; OW_POS['Reichelsheim'] = [-92, -8]; OW_POS['Fränkisch-Crumbach'] = [-100, -26];
+  OW_POS['Brombachtal'] = [-46, -42]; OW_POS['Lützelbach'] = [10, -16]; OW_POS['Bad König'] = [12, -2];
+  OW_FARBEN = ['#e05a2b', '#e0a020', '#2f9e44', '#1f8fc0', '#3b5bdb', '#9c36b5', '#d6336c', '#0ca678', '#795548', '#f08c00', '#495057'];
+  var LAGE = null, OM = null, RR = 'r24';
+  var kurz = function (n) { return n.replace(' i. Odw.', ''); };
+  var pfeil = function (wd) { return wd === null || wd === undefined ? '' : '<span class="owx-pf" style="transform:rotate(' + (wd + 180) + 'deg)" title="Wind aus ' + wd + '°">↑</span>'; };
+  var RICHT = ['N', 'NO', 'O', 'SO', 'S', 'SW', 'W', 'NW'];
+  var richt = function (wd) { return wd === null || wd === undefined ? '' : RICHT[Math.round(wd / 45) % 8]; };
+  function lageLaden() {
+    fetch('fb/daten.json?v=' + Math.floor(Date.now() / 300000), { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) { LAGE = j; owZeichnen(); }).catch(function () {});
+    fetch('https://api.open-meteo.com/v1/forecast?latitude=49.743&longitude=9.006&hourly=freezing_level_height,snow_depth,snowfall&forecast_days=2&timezone=Europe%2FBerlin')
+      .then(function (r) { return r.json(); }).then(function (j) { OM = j; owZeichnen(); }).catch(function () {});
+  }
+  function heuteTag() { if (!LAGE) return null; var h = new Date().toLocaleDateString('sv-SE'); return (LAGE.tage || []).filter(function (t) { return t.datum === h; })[0] || null; }
+  function warnJetzt() {
+    if (!LAGE) return []; var I = LAGE.warn_info || {}, S = LAGE.warn_stufe || {}, n = Date.now(), L = [];
+    Object.keys(I).forEach(function (w) { var x = I[w]; if (x.bis && new Date(x.bis).getTime() < n) return; if (x.von && new Date(x.von).getTime() > n) return;
+      L.push({ t: w.split(' für ')[0].replace(/^Amtliche (UNWETTERWARNUNG|WARNUNG) vor /i, ''), st: S[w] || 1, x: x }); });
+    return L.sort(function (a, b) { return b.st - a.st; });
+  }
+  var WFARBE = { 1: '#f1c40f', 2: '#e8590c', 3: '#c92a2a', 4: '#7b2cbf' };
+  function gefahren(o) {
+    if (owAlt(o) || o.t === null || o.t === undefined) return [];
+    var L = [], nass = (o.rr || 0) > 0 || (o.dr30 || 0) > 0;
+    if (o.t <= 1 && nass) L.push(['🧊', 'Glätte: nass bei ' + owNf(o.t, 1) + ' °C gemessen']);
+    else if (o.t <= 0) L.push(['❄️', 'Frost: ' + owNf(o.t, 1) + ' °C gemessen']);
+    if (o.wx === 'nebel') L.push(['🌫️', 'Nebel/Dunst gemessen (Feuchte ' + owNf(o.rh, 0) + ' %)']);
+    if ((o.g || 0) >= 75) L.push(['🌪️', 'Sturmböen ' + owNf(o.g, 0) + ' km/h']); else if ((o.g || 0) >= 50) L.push(['💨', 'Starke Böen ' + owNf(o.g, 0) + ' km/h']);
+    if ((o.rr || 0) >= 10) L.push(['🌧️', 'Starkregen ' + owNf(o.rr, 1) + ' mm/h']);
+    return L;
+  }
+  function tiefHoch(n) {
+    var V = (OW.d.verlauf || {})[n] || []; if (!V.length) return null;
+    var lo = V[0], hi = V[0]; V.forEach(function (p) { if (p[1] < lo[1]) lo = p; if (p[1] >= hi[1]) hi = p; }); return [lo, hi];
+  }
+  function maxSatz(ok) {
+    var S = [], T = ok.filter(function (o) { return o.t !== null && o.t !== undefined; }).sort(function (a, b) { return b.t - a.t; });
+    if (T.length >= 2) { var d = T[0].t - T[T.length - 1].t;
+      S.push(d >= 1.5 ? 'Gerade ist es in ' + kurz(T[0].name) + ' mit ' + owNf(T[0].t, 1) + ' °C am wärmsten, in ' + kurz(T[T.length - 1].name) + ' ist es ' + owNf(d, 1) + ' Grad kälter.'
+        : 'Überall im Odenwald ist es gerade ähnlich warm, um ' + owNf(T[0].t, 0) + ' °C.'); }
+    var nass = ok.filter(function (o) { return (o.rr || 0) > 0; });
+    if (nass.length) S.push(nass.length >= ok.length - 1 ? 'Es regnet gerade fast überall.' : 'Regen gibt es gerade in ' + nass.map(function (o) { return kurz(o.name); }).join(', ') + '.');
+    var G = ok.filter(function (o) { return o.g !== null && o.g !== undefined; }).sort(function (a, b) { return b.g - a.g; });
+    if (G.length && G[0].g >= 40) S.push('Die stärkste Böe hatte zuletzt ' + kurz(G[0].name) + ' mit ' + owNf(G[0].g, 0) + ' km/h.');
+    var tg = heuteTag();
+    if (tg) {   // gemeinsame Einstufung aus den Odenwald-Stundenwerten (wie Max im Video und Facebook)
+      var la = tg.lage || {}, ni = tg.nied || {};
+      if (la.glaette && la.glaette !== 'keine') S.push('Achtung: Glättegefahr heute ' + la.glaette + (la.glaette_hoch && la.glaette_hoch !== 'keine' ? ', auf den Höhen ' + la.glaette_hoch : '') + '.');
+      else if (la.glaette_hoch && la.glaette_hoch !== 'keine') S.push('Auf den Höhen ist Glätte ' + la.glaette_hoch + '.');
+      if (la.nebel && la.nebel !== 'keiner') S.push('Nebel ist heute ' + la.nebel + (la.nebel_bis ? ', bis etwa ' + la.nebel_bis + ' Uhr' : '') + '.');
+      if (ni.schnee_tal) S.push('Bis ins Tal kann es heute schneien.'); else if (ni.schnee_hoch) S.push('Auf den Höhen kann es heute schneien.');
+    }
+    return S.join(' ');
+  }
+  window.owZeichnen = owZeichnen = function () {
+    var d = OW.d; if (!d) return;
+    if (!d._m) { d.orte = d.orte.concat(d.extra || []); d._m = 1; }
+    if (!LAGE && !OW._l) { OW._l = 1; lageLaden(); }
+    var st = new Date(d.stand);
+    $('owSub').textContent = 'Live-Werte von ' + d.orte.length + ' Stationen im Odenwaldkreis · Stand ' + st.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) + ' Uhr · aktualisiert alle 10 Minuten';
+    var ok = d.orte.filter(function (o) { return o.t !== null && o.t !== undefined && !owAlt(o); });
+    $('owxMax').innerHTML = '<img src="max-kopf.png" alt="Max" width="52" height="52"><div><b>Max sagt</b><p>' + esc(maxSatz(ok)) + '</p></div>';
+    var mx = function (k) { return ok.filter(function (o) { return o[k] !== null && o[k] !== undefined; }).sort(function (a, b) { return b[k] - a[k]; }); };
+    var T = mx('t'), G = mx('g'), R = mx('r'), P = mx('p');
+    var tal = ok.filter(function (o) { return o.el < 250; }), hoe = ok.filter(function (o) { return o.el >= 350; });
+    var mit = function (L) { return L.reduce(function (s, o) { return s + o.t; }, 0) / L.length; };
+    var diff = tal.length && hoe.length ? mit(tal) - mit(hoe) : null;
+    var tend = ok.filter(function (o) { return o.p3h !== undefined; }), tm = tend.length ? tend.reduce(function (s, o) { return s + o.p3h; }, 0) / tend.length : null;
+    var chip = function (ic, t, v) { return '<div class="ow-chip"><small>' + ic + ' ' + t + '</small><b>' + v + '</b></div>'; };
+    $('owChips').innerHTML = (T.length ? chip('🔥', 'Wärmster Ort', esc(kurz(T[0].name)) + ' ' + owNf(T[0].t, 1) + ' °C') + chip('❄️', 'Kältester Ort', esc(kurz(T[T.length - 1].name)) + ' ' + owNf(T[T.length - 1].t, 1) + ' °C') : '') +
+      (diff !== null ? chip('⛰️', 'Tal ↔ Höhe', diff >= 0 ? owNf(diff, 1) + ' °C kälter oben' : owNf(-diff, 1) + ' °C wärmer oben') : '') +
+      (G.length ? chip('💨', 'Stärkste Böe', esc(kurz(G[0].name)) + ' ' + owNf(G[0].g, 0) + ' km/h') : '') +
+      (R.length ? chip('🌧️', 'Meister Regen heute', R[0].r > 0 ? esc(kurz(R[0].name)) + ' ' + owNf(R[0].r, 1) + ' mm' : 'überall trocken') : '') +
+      (P.length ? chip('🧭', 'Luftdruck', owNf(P.reduce(function (s, o) { return s + o.p; }, 0) / P.length, 0) + ' hPa' + (tm === null ? '' : tm > 1 ? ' ↗ steigt' : tm < -1 ? ' ↘ fällt' : ' → gleich')) : '');
+    var W = warnJetzt();
+    $('owxWarn').innerHTML = W.map(function (w) { return '<div class="fcw" style="border-left-color:' + WFARBE[Math.min(4, w.st)] + '"><b>⚠️ DWD-Warnung Stufe ' + w.st + ': ' + esc(w.t.charAt(0) + w.t.slice(1).toLowerCase()) + '</b>' +
+      (w.x.bis ? ' <span>· bis ' + new Date(w.x.bis).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) + ' Uhr</span>' : '') + '<small>' + esc(w.x.gebiet || 'ganzer Odenwaldkreis') + '</small></div>'; }).join('');
+    $('owTab').innerHTML = '<tr><th>Ort</th><th>Temperatur</th><th>gefühlt</th><th>zu gestern</th><th>Tief / Hoch heute</th><th>Taupunkt</th><th>Feuchte</th><th>Wind / Böe</th><th>Luftdruck</th><th>Regen heute</th><th>UV</th><th>Achtung</th><th>Messung</th></tr>' +
+      d.orte.map(function (o) {
+        var m = owMin(o), a = owAlt(o), th = tiefHoch(o.name), dg = o.t !== null && o.t !== undefined && o.t_gestern !== undefined ? o.t - o.t_gestern : null, gz = gefahren(o);
+        return '<tr data-ow="' + esc(o.name) + '" class="' + (a ? 'alt' : '') + (OW.sel === o.name ? ' sel' : '') + '"><td>' + (owWx(o) ? '<span title="' + owWx(o)[1] + '">' + owWx(o)[0] + '</span> ' : '') +
+          '<b>' + esc(kurz(o.name)) + '</b> <small class="ow-mut" title="' + esc(o.quelle + (o.station ? ' ' + o.station : '')) + '">' + o.el + ' m</small></td>' +
+          '<td><b>' + owNf(o.t, 1) + ' °C</b></td><td>' + owNf(o.gf, 1) + ' °C</td>' +
+          '<td>' + (dg === null ? '–' : '<span style="color:' + (dg > 0.5 ? '#e8590c' : dg < -0.5 ? '#1f8fc0' : 'inherit') + '">' + (dg > 0.5 ? '▲ ' : dg < -0.5 ? '▼ ' : '● ') + (dg > 0 ? '+' : '') + owNf(dg, 1) + '°</span>') + '</td>' +
+          '<td>' + (th ? '<span title="Tiefstwert um ' + th[0][0] + ' Uhr">' + owNf(th[0][1], 1) + '°</span> <small class="ow-mut">' + th[0][0] + '</small> / <span title="Höchstwert um ' + th[1][0] + ' Uhr">' + owNf(th[1][1], 1) + '°</span> <small class="ow-mut">' + th[1][0] + '</small>' : '–') + '</td>' +
+          '<td>' + owNf(o.td, 1) + ' °C</td><td>' + owNf(o.rh, 0) + ' %</td>' +
+          '<td>' + pfeil(o.wd) + ' ' + richt(o.wd) + ' ' + owNf(o.w, 0) + ' / <b>' + owNf(o.g, 0) + '</b> km/h</td>' +
+          '<td>' + owNf(o.p, 0) + ' hPa' + (o.p3h === undefined ? '' : ' <small class="ow-mut" title="Änderung in 3 Stunden">' + (o.p3h > 0 ? '↗ +' : o.p3h < 0 ? '↘ ' : '→ ') + owNf(o.p3h, 1) + '</small>') + '</td>' +
+          '<td>' + owRegen(o) + ((o.rr || 0) > 0 ? ' <small class="ow-mut">' + owNf(o.rr, 1) + ' mm/h</small>' : '') + '</td>' +
+          '<td>' + (o.uv === null || o.uv === undefined ? '–' : owNf(o.uv, 0)) + '</td>' +
+          '<td>' + (gz.length ? gz.map(function (g) { return '<span title="' + esc(g[1]) + '">' + g[0] + '</span>'; }).join(' ') : '<span class="ow-mut">–</span>') + '</td>' +
+          '<td>' + (m === null ? '–' : m < 2 ? 'gerade eben' : 'vor ' + m + ' Min.') + '</td></tr>';
+      }).join('');
+    owKarte(); owVerlauf(); owxRegen(); owxSchnee();
+    Array.prototype.forEach.call(document.querySelectorAll('#owTab tr[data-ow]'), function (tr) { tr.onclick = function () { OW.sel = OW.sel === tr.dataset.ow ? null : tr.dataset.ow; owZeichnen(); }; });
+  };
+  var altKarte = owKarte;
+  window.owKarte = owKarte = function () {
+    var d = OW.d, k = OW.k;
+    if (k === 'gf' || k === 'dt' || k === 'p') {   // neue Kartenwerte über die bewährte Karte: Wert vorübergehend auf t legen
+      var sic = d.orte.map(function (o) { return o.t; }), kk = OW.k;
+      d.orte.forEach(function (o) { o._t = o.t; o.t = k === 'gf' ? o.gf : k === 'p' ? o.p : (o.t !== null && o.t !== undefined && o.t_gestern !== undefined ? Math.round((o.t - o.t_gestern) * 10) / 10 : null); });
+      OW.k = 't'; altKarte(); OW.k = kk;
+      d.orte.forEach(function (o) { o.t = o._t; delete o._t; });
+      var svg = $('owMap').querySelector('svg');
+      Array.prototype.forEach.call($('owMap').querySelectorAll('g[data-ow]'), function (g) {
+        var o = d.orte.filter(function (x) { return x.name === g.dataset.ow; })[0], r = g.querySelector('rect'), t = g.querySelectorAll('text'), tx = t[t.length - 2];
+        var v = k === 'gf' ? o.gf : k === 'p' ? o.p : (o.t_gestern !== undefined && o.t !== null ? o.t - o.t_gestern : null);
+        if (k === 'p') { tx.textContent = owNf(v, 0) + ' hPa'; r.setAttribute('fill', owAlt(o) || v === null || v === undefined ? '#9aa5ab' : '#5c7cfa'); }
+        if (k === 'dt') { tx.textContent = v === null ? '–' : (v > 0 ? '+' : '') + owNf(v, 1) + '°'; r.setAttribute('fill', owAlt(o) || v === null ? '#9aa5ab' : v > 2 ? '#c92a2a' : v > 0.5 ? '#e8590c' : v < -2 ? '#3b5bdb' : v < -0.5 ? '#1f8fc0' : '#868e96'); }
+      });
+    } else altKarte();
+    if (k === 'g') Array.prototype.forEach.call($('owMap').querySelectorAll('g[data-ow]'), function (g) {
+      var o = d.orte.filter(function (x) { return x.name === g.dataset.ow; })[0], c = g.querySelector('circle'); if (!o || o.wd === null || o.wd === undefined || owAlt(o)) return;
+      var cx = +c.getAttribute('cx'), cy = +c.getAttribute('cy');
+      g.insertAdjacentHTML('afterbegin', '<g transform="translate(' + cx + ',' + cy + ') rotate(' + (o.wd + 180) + ')"><line x1="0" y1="10" x2="0" y2="-12" stroke="#12252E" stroke-width="2.4"/><path d="M-5,-8 L0,-16 L5,-8 Z" fill="#12252E"/></g>');
+    });
+    var W = warnJetzt(), poly = $('owMap').querySelector('svg polygon[fill="none"]');
+    if (W.length && poly) { poly.setAttribute('stroke', WFARBE[Math.min(4, W[0].st)]); poly.setAttribute('stroke-width', '6');
+      $('owMap').insertAdjacentHTML('afterbegin', '<div class="owx-wtag" style="background:' + WFARBE[Math.min(4, W[0].st)] + '">⚠️ DWD-Warnung: ' + esc(W[0].t.charAt(0) + W[0].t.slice(1).toLowerCase()) + '</div>'); }
+  };
+  function owxRegen() {
+    var Lb = { r24: 'letzte 24 Stunden', r7: 'letzte 7 Tage', rmon: 'dieser Monat' };
+    var L = OW.d.orte.filter(function (o) { return o[RR] !== undefined && o[RR] !== null; }).sort(function (a, b) { return b[RR] - a[RR]; });
+    var mx = L.length ? Math.max(1, L[0][RR]) : 1, seit = OW.d.orte.reduce(function (s, o) { return o.r_seit && (!s || o.r_seit < s) ? o.r_seit : s; }, null);
+    $('owxRegen').innerHTML = '<div class="ow-btns" id="owxRB">' + Object.keys(Lb).map(function (k) { return '<button data-r="' + k + '"' + (k === RR ? ' class="on"' : '') + '>' + Lb[k] + '</button>'; }).join('') + '</div>' +
+      (L.length ? L.map(function (o) { return '<div class="owx-rb"><span>' + esc(kurz(o.name)) + '</span><i><b style="width:' + Math.max(1.5, o[RR] / mx * 100).toFixed(1) + '%"></b></i><em>' + owNf(o[RR], 1) + ' mm</em></div>'; }).join('')
+        : '<p class="ow-hint">Für diesen Zeitraum gibt es noch keine Werte.</p>') +
+      (RR !== 'r24' && seit ? '<p class="ow-hint">Die Odenwald-Messwerte werden seit ' + new Date(seit).toLocaleDateString('de-DE') + ' gesammelt – davor fehlende Tage zählen noch nicht mit. Neue Orte haben erst ab ihrem Start Werte.</p>' : '');
+    Array.prototype.forEach.call(document.querySelectorAll('#owxRB button'), function (b) { b.onclick = function () { RR = b.dataset.r; owxRegen(); }; });
+  }
+  function owxSchnee() {
+    var box = $('owxSchnee'), tg = heuteTag(), H = OM && OM.hourly, jetzt = Date.now(), fl = [], sd = null, sf = 0;
+    if (H) H.time.forEach(function (t, i) { var z = new Date(t).getTime(); if (z < jetzt - 36e5 || z > jetzt + 24 * 36e5) return;
+      if (H.freezing_level_height[i] !== null) fl.push(H.freezing_level_height[i]); if (sd === null && H.snow_depth[i] !== null) sd = H.snow_depth[i]; sf += H.snowfall[i] || 0; });
+    var tief = fl.length ? Math.min.apply(null, fl) : null, grenze = tief === null ? null : Math.max(0, Math.round((tief - 300) / 50) * 50);
+    var m = new Date().getMonth(), winter = m >= 10 || m <= 2, sch = tg && tg.nied && (tg.nied.schnee_tal || tg.nied.schnee_hoch);
+    if (!winter && !sch && !(grenze !== null && grenze < 1000)) { box.hidden = true; return; }
+    var cmT = tg && tg.tal ? tg.tal.schnee_cm : null, cmH = tg && tg.hoch ? tg.hoch.schnee_cm : null;
+    box.hidden = false;
+    box.innerHTML = '<b>❄️ Schnee im Odenwald</b><div class="owx-sn">' +
+      '<div><small>Schneefallgrenze (24 h, tiefster Wert)</small><b>' + (grenze === null ? '–' : grenze >= 1500 ? 'über 1.500 m' : 'etwa ' + grenze.toLocaleString('de-DE') + ' m') + '</b></div>' +
+      '<div><small>Schneehöhe jetzt (Bad König)</small><b>' + (sd === null ? '–' : sd > 0 ? Math.round(sd * 100) + ' cm' : 'kein Schnee') + '</b></div>' +
+      '<div><small>Neuschnee heute Tal / Höhe</small><b>' + (cmT === null && cmH === null ? '–' : owNf(cmT || 0, 0) + ' / ' + owNf(cmH || 0, 0) + ' cm') + '</b></div></div>' +
+      '<p class="ow-hint">' + (sch ? (tg.nied.schnee_tal ? 'Heute kann es bis ins Tal schneien.' : 'Heute kann es auf den Höhen (Oberzent, Mossautal) schneien.') :
+        grenze !== null && grenze < 600 ? 'Die Schneefallgrenze liegt tief – fällt Niederschlag, kommt er auf den Höhen als Schnee.' : 'Im Moment ist kein Schnee zu erwarten.') +
+      ' Tal = Mümling-, Gersprenz- und Mainnähe, Höhe = über 350 m. Schneefallgrenze ca. 300 m unter der Nullgradgrenze (Open-Meteo).</p>';
+  }
+  var css = document.createElement('style');
+  css.textContent = '.owx-max{display:flex;gap:12px;align-items:center;background:var(--card,#fff);border-radius:16px;padding:12px 16px;box-shadow:0 1px 3px rgba(0,0,0,.07);margin-bottom:14px;border-left:5px solid var(--accent)}' +
+    '.owx-max img{border-radius:50%;flex:none;background:#eef2f4}.owx-max p{margin:2px 0 0;font-size:14px;line-height:1.45}#owxWarn{display:grid;gap:8px;margin-bottom:12px}#owxWarn:empty{display:none}' +
+    '.ow-chips{grid-template-columns:repeat(6,1fr)!important}.owx-pf{display:inline-block;font-weight:700}.owx-wtag{color:#fff;font-size:12px;font-weight:700;border-radius:10px;padding:4px 10px;margin-bottom:6px;display:inline-block}' +
+    '.owx-rb{display:grid;grid-template-columns:118px 1fr 64px;gap:8px;align-items:center;font-size:13px;margin:5px 0}.owx-rb i{display:block;height:10px;border-radius:6px;background:rgba(127,127,127,.13);overflow:hidden}' +
+    '.owx-rb b{display:block;height:100%;background:#1f8fc0;border-radius:6px}.owx-rb em{font-style:normal;text-align:right;font-weight:600}' +
+    '.owx-sn{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}.owx-sn small{display:block;color:var(--muted);font-size:12px}.owx-sn b{font-size:17px}' +
+    '@media(max-width:760px){.ow-chips{grid-template-columns:1fr 1fr!important}.owx-sn{grid-template-columns:1fr}}';
+  document.head.appendChild(css);
+  var sub = $('owSub');
+  sub.insertAdjacentHTML('afterend', '<div class="owx-max" id="owxMax"></div><div id="owxWarn"></div>');
+  $('owBtns').innerHTML = '<button data-k="t" class="on">🌡️ Temperatur</button><button data-k="gf">🧥 Gefühlt</button><button data-k="dt">📅 zu gestern</button><button data-k="g">💨 Wind</button><button data-k="r">🌧️ Regen heute</button><button data-k="rh">💧 Feuchte</button><button data-k="p">🧭 Luftdruck</button>';
+  var verl = $('owVerlauf').parentNode;
+  verl.insertAdjacentHTML('afterend', '<div class="ow-card"><b>Regen-Rangliste</b> <small class="ow-mut">alle Orte im Vergleich</small><div id="owxRegen"></div></div><div class="ow-card" id="owxSchnee" hidden></div>');
+  var hint = document.querySelector('#owTab').parentNode.nextElementSibling;
+  if (hint) hint.innerHTML = 'Ist eine Station länger als 75 Minuten still, wird ihr Wert grau. Antippen hebt den Ort in der Karte hervor. „Zu gestern“: Vergleich mit gestern um dieselbe Uhrzeit. Tief/Hoch mit Uhrzeit. Luftdruck-Pfeil: Änderung in 3 Stunden. „Achtung“ zeigt, was die Station gerade misst: 🧊 Glätte (nass bei höchstens 1 °C), ❄️ Frost, 🌫️ Nebel, 💨 starke Böen, 🌪️ Sturm, 🌧️ Starkregen. „Ersatz“ beim Regen: Wert einer Nachbarstation.';
+})();
 
 /* DWD-Warnungen auch in der Vorhersage zeigen (15.11.2026) – aus fb/daten.json (warn_info, alle 15 Min. aktualisiert) */
 function fcWarnLaden() {

@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="de"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><title>Vorschau – Aktuell Odenwald</title></head>
+<body style="font:15px sans-serif;padding:30px">Live-Vorschau wird geladen …
+<script>
+/* Live-Vorschau „Aktuell Odenwald ausführlicher“ (18.11.2026): lädt die echte Startseite mit allen aktuellen Daten und schaltet die neuen Teile ein */
+fetch('/?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.text(); }).then(function (h) {
+  h = h.replace(/<head>/i, '<head><base href="/"><meta name="robots" content="noindex,nofollow"><script>window.OW_NEU=1;<\/script>');
+  h = h.replace(/<body([^>]*)>/i, '<body$1><div style="position:sticky;top:0;z-index:9999;background:#e8590c;color:#fff;text-align:center;font:600 13px sans-serif;padding:6px">VORSCHAU – Aktuell Odenwald (neu) · noch nicht live</div>');
+  if (!location.hash) history.replaceState(null, '', location.pathname + '#odenwald');
+  document.open(); document.write(h); document.close();
+});
+</script></body></html>

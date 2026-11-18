@@ -25,7 +25,79 @@ def wu(sid):
     if not o: return None
     m = o.get('metric') or {}
     return dict(t=r1(m.get('temp')), rh=o.get('humidity'), w=r1(m.get('windSpeed')), g=r1(m.get('windGust')), r=r1(m.get('precipTotal')),
-                rr=r1(m.get('precipRate')), sol=o.get('solarRadiation'), p=r1(m.get('pressure')), zeit=dt.datetime.fromtimestamp(o['epoch'], TZ).isoformat(timespec='minutes'))
+                rr=r1(m.get('precipRate')), sol=o.get('solarRadiation'), p=r1(m.get('pressure')),
+                wd=o.get('winddir'), td=r1(m.get('dewpt')), uv=o.get('uv'), gf=gefuehlt(m), zeit=dt.datetime.fromtimestamp(o['epoch'], TZ).isoformat(timespec='minutes'))
+
+
+def gefuehlt(m):
+    """Gefühlte Temperatur: Windchill bei Kälte und Wind, Hitzeindex bei Wärme, sonst die Lufttemperatur (18.11.2026)."""
+    t = m.get('temp')
+    if t is None: return None
+    if t <= 10 and (m.get('windSpeed') or 0) > 4.8 and m.get('windChill') is not None: return r1(m['windChill'])
+    if t >= 27 and m.get('heatIndex') is not None: return r1(m['heatIndex'])
+    return r1(t)
+
+
+# 18.11.2026: fünf weitere Orte für „Aktuell Odenwald“ (erst in der Live-Vorschau). Die Station wird automatisch gesucht:
+# nächste private WU-Station mit aktuellen Werten, nicht schon von einem anderen Ort benutzt; die Wahl hält 24 Stunden.
+EXTRA = [('Erbach', 230, 49.657, 8.994), ('Reichelsheim', 215, 49.713, 8.838), ('Fränkisch-Crumbach', 200, 49.746, 8.858),
+         ('Brombachtal', 250, 49.735, 8.946), ('Lützelbach', 230, 49.784, 9.077)]
+STATIONSWAHL = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'odenwald-stationen.json')
+
+
+def extra_stationen(jetzt, belegt):
+    try: W = json.load(open(STATIONSWAHL, encoding='utf-8'))
+    except Exception: W = {}
+    neu = False
+    for n, el, la, lo in EXTRA:
+        w = W.get(n)
+        if w and (jetzt - dt.datetime.fromisoformat(w['gewaehlt'])).total_seconds() < 86400: belegt.add(w['id']); continue
+        try:
+            L = get('https://api.weather.com/v3/location/near?geocode=%s,%s&product=pws&format=json&apiKey=%s' % (la, lo, WU_KEY)).get('location') or {}
+            ids, km = L.get('stationId') or [], L.get('distanceKm') or []
+        except Exception as e: print('Stationssuche %s:' % n, e); continue
+        for sid, k in zip(ids, km):
+            if sid in belegt or k > 4: continue
+            try: v = wu(sid)
+            except Exception: v = None
+            if v and v.get('t') is not None and (jetzt - dt.datetime.fromisoformat(v['zeit'])).total_seconds() < 3600:
+                W[n] = dict(id=sid, km=k, gewaehlt=jetzt.isoformat(timespec='minutes')); belegt.add(sid); neu = True; print('Station für %s: %s (%s km)' % (n, sid, k)); break
+    if neu: json.dump(W, open(STATIONSWAHL, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
+    return W
+
+
+def archiv_lesen(jetzt):
+    A = {}
+    for m in {jetzt.strftime('%Y-%m'), (jetzt - dt.timedelta(days=31)).strftime('%Y-%m'), (jetzt - dt.timedelta(days=1)).strftime('%Y-%m')}:
+        try:
+            for st, werte in json.load(open(os.path.join(os.path.dirname(DATEI), 'odenwald-archiv', m + '.json'), encoding='utf-8')).items(): A.setdefault(st, {}).update(werte)
+        except Exception: pass
+    return A
+
+
+def vergleich(o, A, jetzt):
+    """Wert von gestern um diese Zeit und Regensummen 24 h / 7 Tage / Monat aus dem Archiv (18.11.2026)."""
+    W = A.get(o['name']) or {}
+    if not W: return
+    ziel = jetzt - dt.timedelta(days=1)
+    best = None
+    for z, v in W.items():
+        try: d = abs((dt.datetime.fromisoformat(z).replace(tzinfo=TZ) - ziel).total_seconds())
+        except Exception: continue
+        if d <= 20 * 60 and (best is None or d < best[0]): best = (d, v)
+    if best: o['t_gestern'] = best[1][0]; r_gestern_jetzt = best[1][4]
+    else: r_gestern_jetzt = None
+    tag = {}
+    for z in sorted(W):
+        if W[z][4] is not None: tag[z[:10]] = W[z][4]   # letzter Wert des Tages = Tagessumme
+    heute = jetzt.date().isoformat(); tag[heute] = o.get('r') if o.get('r') is not None else tag.get(heute)
+    gestern = ziel.date().isoformat()
+    if o.get('r') is not None and gestern in tag and r_gestern_jetzt is not None: o['r24'] = round(o['r'] + max(0, tag[gestern] - r_gestern_jetzt), 1)
+    tage7 = [(jetzt - dt.timedelta(days=i)).date().isoformat() for i in range(7)]
+    v7 = [tag[t] for t in tage7 if tag.get(t) is not None]
+    if v7: o['r7'] = round(sum(v7), 1); o['r7_tage'] = len(v7)
+    vm = [v for t, v in tag.items() if t[:7] == heute[:7] and v is not None]
+    if vm: o['rmon'] = round(sum(vm), 1); o['rmon_tage'] = len(vm); o['r_seit'] = min(t for t in tag if tag[t] is not None)
 
 
 def dwd(sid, heute):
@@ -127,18 +199,27 @@ def main():
     verlauf = alt.get('verlauf') if alt.get('datum') == heute else {}
     verlauf = verlauf or {}
     orte = []
-    for n, el, art, sid, la, lo in ORTE:
+    belegt = set(x[3] for x in ORTE)
+    try: wahl = extra_stationen(jetzt, belegt)
+    except Exception as e: print('Zusatzorte nicht möglich:', e); wahl = {}
+    liste = [x + (False,) for x in ORTE] + [(n, el, 'wu', wahl[n]['id'], la, lo, True) for n, el, la, lo in EXTRA if n in wahl]
+    alt_alle = alt.get('orte', []) + alt.get('extra', [])
+    for n, el, art, sid, la, lo, ist_extra in liste:
         try: v = wu(sid) if art == 'wu' else dwd(sid, heute)
         except Exception as e: print('Station %s nicht abrufbar:' % n, e); v = None
-        alt_o = next((o for o in alt.get('orte', []) if o['name'] == n), None) if alt.get('datum') == heute else None
-        if not v and alt_o: v = {k: alt_o.get(k) for k in ('t', 'rh', 'w', 'g', 'r', 'rr', 'sol', 'p', 'zeit')}
+        alt_o = next((o for o in alt_alle if o['name'] == n), None) if alt.get('datum') == heute else None
+        if not v and alt_o: v = {k: alt_o.get(k) for k in ('t', 'rh', 'w', 'g', 'r', 'rr', 'sol', 'p', 'wd', 'td', 'uv', 'gf', 'zeit')}
         # Regenzuwachs der letzten 30 Minuten (für „nass / gerade aufgehört“)
+        phist = [x for x in (alt_o or {}).get('phist', []) if (jetzt - dt.datetime.fromisoformat(x[0])).total_seconds() <= 190 * 60]
+        if v and v.get('p') is not None and v.get('zeit') and (not phist or phist[-1][0] != v['zeit']): phist.append([v['zeit'], v['p']])
         rhist = [x for x in (alt_o or {}).get('rhist', []) if (jetzt - dt.datetime.fromisoformat(x[0])).total_seconds() <= 35 * 60]
         if v and v.get('r') is not None and v.get('zeit'): rhist.append([v['zeit'], v['r']])
         dr30 = round(max(0, rhist[-1][1] - rhist[0][1]), 1) if len(rhist) >= 2 else 0
         o = dict(name=n, el=el, lat=la, lon=lo, quelle='eigene Station' if sid == 'IBADKN33' else 'privat (WU)' if art == 'wu' else 'DWD', **(v or {}))
-        o['rhist'] = rhist; o['dr30'] = dr30
+        o['rhist'] = rhist; o['dr30'] = dr30; o['phist'] = phist
+        if len(phist) >= 2 and (dt.datetime.fromisoformat(phist[-1][0]) - dt.datetime.fromisoformat(phist[0][0])).total_seconds() >= 150 * 60: o['p3h'] = round(phist[-1][1] - phist[0][1], 1)
         o['wx'] = wetter_symbol(o, jetzt)
+        if ist_extra: o['extra'] = True; o['station'] = sid
         orte.append(o)
         if v and v.get('t') is not None and (v.get('zeit') or '')[:10] == heute:
             L = verlauf.setdefault(n, []); hm = v['zeit'][11:16]
@@ -146,7 +227,13 @@ def main():
     try: regen_pruefen(orte, heute)   # vor dem Archiv: dort landet der geprüfte Wert (17.11.2026)
     except Exception as e: print('Regen-Prüfung nicht möglich:', e)
     archiv(orte, jetzt)
-    json.dump(dict(stand=jetzt.isoformat(timespec='minutes'), datum=heute, orte=orte, verlauf=verlauf),
+    try:
+        A = archiv_lesen(jetzt)
+        for o in orte: vergleich(o, A, jetzt)
+    except Exception as e: print('Vergleich nicht möglich:', e)
+    # die Zusatzorte stehen getrennt unter „extra“, damit die jetzige Seite unverändert bleibt (Vorschau zuerst)
+    json.dump(dict(stand=jetzt.isoformat(timespec='minutes'), datum=heute, orte=[o for o in orte if not o.get('extra')],
+                   extra=[o for o in orte if o.get('extra')], verlauf=verlauf),
               open(DATEI, 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
     print('Odenwald live:', [(o['name'], o.get('t')) for o in orte])
 
