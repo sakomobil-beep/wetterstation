@@ -1294,6 +1294,28 @@ html[data-theme="dark"] .am-map .cty text{fill:#EEF3F7!important;stroke:#141B25!
 </style>
 
 <script src="theme.js"></script>
+<style id="fcNeu">/* Moderner Vorhersage-Kasten (18.11.2026) */
+.fcard{background:var(--surface)!important;color:var(--ink)!important;border:1px solid var(--line);border-radius:16px!important;padding:20px 22px!important}
+.fcard .fc-kicker{color:var(--muted)!important}
+.fcard .fc-title{font-size:1.4rem!important}
+.fcard .fc-chip{background:var(--bg)!important;color:var(--muted)}
+.fcard .fc-tog{background:var(--bg)!important}
+.fcard .fc-tog button{color:var(--muted)!important;opacity:1!important}
+.fcard .fc-tog button[aria-pressed="true"]{background:#f97316!important;color:#fff!important}
+.fcard .fc-link{color:#f97316!important}
+.fct-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.fct{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:grid;gap:4px;align-content:start}
+.fct.on{border-color:#f97316;box-shadow:0 0 0 1px #f97316 inset}
+.fct-k{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.fct-k b{font-size:15px}.fct-k span{font-size:12px;color:var(--muted)}
+.fct-ic svg{width:46px;height:46px;margin:4px 0 0}
+.fct-t{font:700 26px/1.1 var(--font-display);letter-spacing:-.5px}.fct-t small{font-size:14px;color:var(--muted);font-weight:500}
+.fct-s{font-size:13.5px;line-height:1.45;color:var(--ink);opacity:.9;min-height:38px}
+.fct-r{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:13px;color:var(--muted)}.fct-r b{color:var(--ink);font-weight:600}
+.fct-bar{flex:1;height:6px;border-radius:4px;background:var(--line);overflow:hidden}.fct-bar i{display:block;height:100%;background:#3b82f6}
+.fct-sic{display:inline-flex;align-items:center;gap:3px;margin-left:auto;font-size:11.5px;color:var(--muted);white-space:nowrap}.fct-sic i{width:8px;height:8px;border-radius:50%;background:var(--line);display:inline-block}.fct-sic i.a{background:#22c55e}.fct-sic i.a.u{background:#f59e0b}
+.fct-leg{margin-top:10px;font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px;align-items:center}.fct-leg .fct-sic{margin:0}
+.fcard .nowcast{border-radius:12px}
+</style>
 <!-- MAX-KARTE ANFANG: „Max sagt“ statt Ausblick (18.11.2026, Kingmans Wunsch). Zurück: diesen Block bis „MAX-KARTE ENDE“ entfernen. -->
 <style id="maxKarte">
 .mxk{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;color:var(--ink)}
@@ -1312,7 +1334,7 @@ html[data-theme="dark"] .mxk .av{background-color:#24324a}
       k.innerHTML='<div class="mx"><div class="av" role="img" aria-label="Max, der Wettersprecher"></div><div><b>Max sagt</b><p>Euer Wettersprecher für den Odenwald</p></div></div><div class="q" id="mxkQ">…</div>';
       ob.parentNode.insertBefore(k,ob); ob.hidden=true;
     }
-    var q=document.getElementById('mxkQ'), s=t?(t.textContent||'').replace(/\s+/g,' ').trim():'';
+    var q=document.getElementById('mxkQ'), s=t?((t.getAttribute('data-satz')||'')||(t.textContent||'')).replace(/\s+/g,' ').trim():'';
     if(q && s.length>20){ var m=s.match(/^[^.!?]*[.!?]/); q.textContent='„'+(m?m[0]:s.slice(0,160)).trim()+'“'; }
     if((q && q.textContent.length>3 && q.textContent!=='…') || n>80) clearInterval(iv);
   },500);
@@ -2242,7 +2264,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 18.11.2026, 22:30 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 18.11.2026, 22:40 Uhr</span></p>
 
 </div>
 
@@ -3623,7 +3645,6 @@ function dayText(d) {
   if (fm !== null && fm <= 0) out.push('Frostgefahr.');
   else if (fm !== null && fm <= 2 && d.cloud !== null && d.cloud <= 30 && (d.wind === null || d.wind <= 10)) out.push('Örtlich Bodenfrost möglich.');   // nur klar + windstill
   if (d.conf === 'gering') out.push('Unsichere Vorhersage – die Wettermodelle sind sich noch uneinig.');
-  else if (d.conf === 'mittel') out.push('Vorhersage mit kleiner Unsicherheit.');
   return out.join(' ');
 }
 
@@ -4042,7 +4063,7 @@ function renderOutlookKreis() {
     var ds = addDays(today, n), k = rgKreisTag(ds);
     if (!k) return;
     last = n === 0 ? 'Heute' : n === 1 ? 'Morgen' : WDL[parseYmd(ds).getDay()];
-    html += '<p><b>' + esc(last) + ':</b> ' + esc(k.text) + '</p>';
+    html += '<div class="fct' + (n === 0 ? ' on' : '') + '"><div class="fct-k"><b>' + esc(last) + '</b><span>Odenwaldkreis</span></div><div class="fct-s" style="margin-top:8px">' + esc(k.text) + '</div></div>';
   });
   if (!html) {
     loadRegion();
@@ -4050,7 +4071,25 @@ function renderOutlookKreis() {
   }
   chip.textContent = last === 'Morgen' ? 'gültig bis morgen Abend' : last === 'Heute' ? 'gültig bis heute Abend' : 'gültig bis ' + last + 'abend';
   chip.hidden = false;
-  $('fcText').innerHTML = html;
+  $('fcText').innerHTML = '<div class="fct-g">' + html + '</div>';
+}
+function fcSicher(c) {
+  var n = c === 'hoch' ? 4 : c === 'mittel' ? 3 : c === 'gering' ? 2 : 0; if (!n) return '';
+  var t = n === 4 ? 'sehr sicher' : n === 3 ? 'ziemlich sicher' : 'unsicher';
+  var dots = ''; for (var i = 0; i < 4; i++) dots += '<i' + (i < n ? ' class="a' + (n === 2 ? ' u' : '') + '"' : '') + '></i>';
+  return '<span class="fct-sic" title="Sicherheit der Vorhersage: ' + t + '">Sicherheit ' + dots + '</span>';
+}
+function fcLegende() { return '<div class="fct-leg">Sicherheit der Vorhersage: <span class="fct-sic"><i class="a"></i><i class="a"></i><i class="a"></i><i class="a"></i></span> sehr sicher · <span class="fct-sic"><i class="a"></i><i class="a"></i><i class="a"></i><i></i></span> ziemlich sicher · <span class="fct-sic"><i class="a u"></i><i class="a u"></i><i></i><i></i></span> unsicher</div>'; }
+function fcKachel(p, akt) {
+  var d = p.d, sub = d.night ? 'bis 7 Uhr' : (p.label === 'Heute' ? 'bis heute Abend' : p.label === 'Morgen' ? WDL[parseYmd(d.date).getDay()] : (d.date ? d.date.slice(8, 10) + '.' + d.date.slice(5, 7) + '.' : ''));
+  var sky = d.night ? (SKY_NIGHT[d.icon] || 'Wechselnd bewölkt') : (SKY_DAY[d.icon] || 'Wechselnd bewölkt');
+  var satz = sky + (d.wind !== null ? ', ' + windWord(d.wind).toLowerCase() + (d.dir !== null ? ' aus ' + dirLong(d.dir) : '') : '');
+  var fm = d.frostMin !== undefined ? d.frostMin : d.tmin; if (fm !== null && fm <= 0) satz += ' · Frostgefahr';
+  var tmp = d.night ? nf(d.tmin, 0) + '° <small>tiefst</small>' : nf(d.tmax, 0) + '° <small>/ ' + nf(d.tmin, 0) + '°</small>';
+  var r = d.rain || 0, pr = d.prob === null || d.prob === undefined ? null : Math.round(d.prob);
+  var regen = '<div class="fct-r"><span>💧 <b>' + (r >= 0.1 ? nf(r, r < 10 ? 1 : 0) + ' mm' : 'trocken') + '</b></span>' + (pr !== null ? '<span class="fct-bar"><i style="width:' + Math.max(2, pr) + '%"></i></span><span>' + pr + ' %</span>' : '') + '</div>';
+  var boe = '<div class="fct-r"><span>💨 ' + (d.gust !== null ? 'Böen bis <b>' + nf(d.gust, 0) + ' km/h</b>' : '–') + '</span>' + fcSicher(d.conf) + '</div>';
+  return '<div class="fct' + (akt ? ' on' : '') + '"><div class="fct-k"><b>' + esc(p.label) + '</b><span>' + esc(sub) + '</span></div><div class="fct-ic">' + wxIcon(d.icon) + '</div><div class="fct-t">' + tmp + '</div><div class="fct-s">' + esc(satz) + '</div>' + regen + boe + '</div>';
 }
 function renderOutlook() {
   if (FC_ORT === 'kreis' && FC.loaded) return renderOutlookKreis();
@@ -4068,8 +4107,10 @@ function renderOutlook() {
     chip.textContent = last.label === 'Morgen' ? 'gültig bis morgen Abend' : 'gültig bis ' + last.label + 'abend';
     chip.hidden = false;
   } else chip.hidden = true;
-  $('fcText').innerHTML = parts.length
-    ? parts.map(function (p) { return '<p><b>' + esc(p.label) + ':</b> ' + esc(dayText(p.d)) + '</p>'; }).join('')
+  // Moderne Kacheln (18.11.2026): je Abschnitt Symbol, Temperatur, kurzer Satz, Regen mit Wahrscheinlichkeit, Böen und Sicherheit als Punkte
+  var ft = $('fcText');
+  ft.setAttribute('data-satz', parts.length ? ((dayText(parts[0].d).match(/^[^.!?]*[.!?]/) || [''])[0]) : '');
+  ft.innerHTML = parts.length ? '<div class="fct-g">' + parts.map(function (p, i) { return fcKachel(p, i === 0); }).join('') + '</div>' + fcLegende()
     : '<p>Für die nächsten Stunden liegen gerade keine Vorhersagedaten vor.</p>';
 }
 
