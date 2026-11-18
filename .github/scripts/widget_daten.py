@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-"""Daten für das Wetter-Widget (w.html): alle 10 Minuten EIN Abruf bei Weather Underground,
-damit Widgets auf fremden Seiten nicht gegen das WU-Limit zählen und der API-Schlüssel verborgen bleibt.
-Ausgabe: data/widget.json"""
+"""Live-Werte der eigenen Station für die Website (data/live.json): alle 10 Minuten bei Weather Underground.
+(Das Wetter-Widget w.html / data/widget.json wurde am 18.11.2026 entfernt.)"""
 import json, os, sys, datetime as dt
 sys.path.insert(0, os.path.dirname(__file__))
 from fb_post import get, LAT, LON, STATION, WU_KEY, TZ
