@@ -3069,7 +3069,7 @@ def baue(segmente, heute, ziel, special, titel=None):
     MODS = {}
     lk0 = next((look_fuer(s['tag']) for s in segmente if s.get('tag')), 'kuehl' if heute.month in (11, 12, 1, 2, 3) else 'normal')   # ohne Tageswerte (z. B. Jahresrückblick): nach Jahreszeit
     def mods_fuer(look, prop, st=False):
-        if (look, prop, st) not in MODS: MODS[(look, prop, st)] = MaxFigur(look, prop, st, 1.2 if st else 1.12 if MORGEN_STUDIO[0] else 0.92)
+        if (look, prop, st) not in MODS: MODS[(look, prop, st)] = MaxFigur(look, prop, bool(st), 1.12 if st == 'ms' else 1.2 if st else 0.92)
         return MODS[(look, prop, st)]
     FX_LOOK = {'frost': ('winter', None), 'nebel': ('kuehl', None), 'schnee': ('winter', 'schippe'), 'regen': ('regen', 'schirm'), 'schauer': ('regen', None), 'gewitter': ('regen', None), 'sturm': ('sturm', None)}
     BAEUME = [baum(a_) for a_ in range(-14, 15, 2)]
@@ -3085,6 +3085,10 @@ def baue(segmente, heute, ziel, special, titel=None):
     if MORGEN_STUDIO[0]:   # Morgenmagazin-Studio: Wetterbild läuft auf der LED-Wand, Max steht am Stehtisch
         import morgenstudio as MSTUDIO
         MS = (MSTUDIO.basis(WEIHNACHT[0]), MSTUDIO.tisch(), MSTUDIO)
+        if not PULLI[0]:   # Outfit des Tages (Advent: Weihnachtspulli bleibt)
+            o_ = MSTUDIO.outfit_fuer(heute)
+            if o_: _PULLI_CACHE[o_] = MSTUDIO.muster(o_, sys.modules[__name__]); PULLI[0] = o_
+        globals()['pulli_anziehen'] = MSTUDIO.anziehen_voll(sys.modules[__name__])   # Ärmel mit umfärben (Max winkt/zeigt)
     kopf = kopfband(heute, special, titel)
     zeit = 0.0
     for k, s in enumerate(segmente):
@@ -3111,7 +3115,7 @@ def baue(segmente, heute, ziel, special, titel=None):
         if s['look'] == 'regen' and s['prop'] is None and fx == 'regen': s['prop'] = 'schirm'
         s['bgimg'] = bgs[bg]
         s['bg_key'] = bg
-        if bg == 'studio': s['look'], s['prop'] = 'normal', None   # drinnen: Softshell, keine Mütze, kein Schirm
+        if bg == 'studio' or MS: s['look'], s['prop'] = 'normal', None   # drinnen: kein Umziehen nach Wetter (Morgenstudio: Outfit des Tages)
         s['tafel'] = s['tafel_seq'][-1] if s.get('tafel_seq') else tafel_fuer(s, special)
         if s.get('grafiken') and s['tafel'] is not None:   # Wettergrafiken: Tafeln wechseln, während Max spricht
             gr_ = grafiken_fuer(s)
@@ -3209,8 +3213,8 @@ def baue(segmente, heute, ziel, special, titel=None):
             for (x, y, r_, ph) in flocken:
                 yy = (y + t * 60 * r_) % H; xx = (x + 20 * math.sin(t + ph)) % W
                 dr.ellipse([xx - r_, yy - r_, xx + r_, yy + r_], fill=(255, 255, 255, 230))
-        if MS and not studio:   # Morgenstudio: das Wetterbild samt Effekten kommt auf die LED-Wand
-            wb, wm, wp = MS[2].wand(fr); fr = MS[0].copy(); fr.paste(wb, wp, wm)
+        if MS and not studio:   # Morgenstudio: Wetterbild ganz eingepasst auf die LED-Wand, Effekte nur dort; bei Tafel abgedunkelt
+            wb, wm, wp = MS[2].wand(s['bgimg'], pk, t, p, dunkel=s['tafel'] is not None); fr = MS[0].copy(); fr.paste(wb, wp, wm)
         # Tafel: im Studio auf dem Bildschirm an der Wand, sonst rechts oben, schiebt sich herein
         tafel_seit = lt; tf_alt = None
         if s.get('tafel_wechsel'):   # Wettergrafiken: Tafeln wechseln gleichmäßig über den Abschnitt
@@ -3225,7 +3229,7 @@ def baue(segmente, heute, ziel, special, titel=None):
                 else: k_ = min(len(sq_) - 1, 1 + int((lt - erst_) / schritt_)); tafel_seit = lt - erst_ - (k_ - 1) * schritt_
             if k_ and tafel_seit < 0.3: tf_alt = sq_[k_ - 1]
             tf_wechsel = tafel_zeigen(sq_[k_], tafel_seit - 0.3 if k_ else tafel_seit)
-        if s['tafel'] is not None and studio:
+        if s['tafel'] is not None and (studio or MS):
             tf = s['tafel']
             sq = s.get('tafel_seq')
             if s.get('tafel_wechsel'):
@@ -3236,10 +3240,13 @@ def baue(segmente, heute, ziel, special, titel=None):
             elif sq:   # die Orte erscheinen nacheinander
                 schritt = max(0.55, (s['dauer'] - 1.4) / len(sq))
                 tf = sq[min(len(sq) - 1, int(lt / schritt))]
-            scl = W / cw
-            rx0, ry0, rx1, ry1 = STUDIO_SCREEN
-            rfx0, rfy0 = (rx0 - x0) * scl, (ry0 - y0) * scl
-            rfw, rfh = (rx1 - rx0) * scl, (ry1 - ry0) * scl
+            if MS and not studio:   # Morgenstudio: rechte Hälfte der LED-Wand (links steht Max davor)
+                wx0, wy0, wx1, wy1 = MS[2].WAND; rfx0, rfy0, rfw, rfh = 270, wy0 + 10, wx1 - 270 - 10, wy1 - wy0 - 20
+            else:
+                scl = W / cw
+                rx0, ry0, rx1, ry1 = STUDIO_SCREEN
+                rfx0, rfy0 = (rx0 - x0) * scl, (ry0 - y0) * scl
+                rfw, rfh = (rx1 - rx0) * scl, (ry1 - ry0) * scl
             fit = min(rfw / tf.width, rfh / tf.height) * 0.92
             tfr = tf.resize((max(1, int(tf.width * fit)), max(1, int(tf.height * fit))), Image.LANCZOS)
             ein = min(1, lt / 0.5)
@@ -3264,7 +3271,7 @@ def baue(segmente, heute, ziel, special, titel=None):
         elif s['art'] == 'tipp' and 0.6 < lt < 2.6: zeigt = 2
         zst, xoff = ANIM.schritt(i, t, s, lt, zeigt, ernst=bool(special) and s['art'] in ('special', 'tag', 'intro'), studio=studio,
                                  prop=s['prop'], erster=s is erstes_intro and i < 3 * FPS + int(s['t0'] * FPS), special=bool(special))
-        mm = mods_fuer(s['look'], s['prop'], studio).bild(**zst)
+        mm = mods_fuer(s['look'], s['prop'], 'ms' if MS and not studio else studio).bild(**zst)
         bob = int(4 * math.sin(t * 2.2))
         if pk == 'sturm': bob += int(5 * math.sin(t * 9))   # Max wackelt im Wind
         mx, my = -20, H - mm.height - 150 + bob
