@@ -56,6 +56,7 @@ def gefuehlt(m):
 # nächste private WU-Station mit aktuellen Werten, nicht schon von einem anderen Ort benutzt; die Wahl hält 24 Stunden.
 EXTRA = [('Erbach', 230, 49.657, 8.994), ('Reichelsheim', 215, 49.713, 8.838), ('Fränkisch-Crumbach', 200, 49.746, 8.858),
          ('Brombachtal', 250, 49.735, 8.946), ('Lützelbach', 230, 49.784, 9.077)]
+EXTRA_AN = False
 STATIONSWAHL = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'odenwald-stationen.json')
 
 
@@ -217,7 +218,8 @@ def main():
     verlauf = verlauf or {}
     orte = []
     belegt = set(x[3] for x in ORTE)
-    try: wahl = extra_stationen(jetzt, belegt)
+    # 18.11.2026 23 Uhr: WU-Schlüssel gedrosselt („API key is throttled“) – Zusatzorte pausiert, bis geklärt ist, wie viele Abrufe gehen
+    try: wahl = extra_stationen(jetzt, belegt) if EXTRA_AN else {}
     except Exception as e: print('Zusatzorte nicht möglich:', e); wahl = {}
     liste = [x + (False,) for x in ORTE] + [(n, el, 'wu', wahl[n]['id'], la, lo, True) for n, el, la, lo in EXTRA if n in wahl]
     alt_alle = alt.get('orte', []) + alt.get('extra', [])
