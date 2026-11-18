@@ -32,4 +32,4 @@ jobs:
           git add data/live.json data/odenwald-live.json data/odenwald-archiv
           git diff --cached --quiet && exit 0
           git commit -q -m "Widget-Daten $(TZ=Europe/Berlin date +'%d.%m.%Y %H:%M')"
-          for i in 1 2 3 4; do git pull --rebase -q && git push -q && break; sleep 7; done
+          for i in 1 2 3 4; do git pull --rebase -X theirs -q && git push -q && break; git rebase --abort 2>/dev/null; sleep 7; done
