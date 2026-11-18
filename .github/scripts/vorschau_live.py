@@ -53,12 +53,14 @@ JS = r'''
     if(r2) [].slice.call(r2.querySelectorAll('a')).forEach(function(a){vm.appendChild(a);});
     r1.appendChild(det); vm.addEventListener('click',function(){det.open=false;}); }
   function maxKarte(){
+    if(document.querySelector('.mxk')) return true;   // echte Seite hat die Max-Karte schon (seit 18.11.2026)
     var ob=document.querySelector('.dob'); if(!ob||document.querySelector('.vmax')) return !!document.querySelector('.vmax');
     var k=document.createElement('section'); k.className='vmax';
     k.innerHTML='<div class="mx"><div class="av"></div><div><b>Max sagt</b><p>Euer Wettersprecher für den Odenwald</p></div></div><div class="q" id="vmaxQ">…</div>';
     ob.parentNode.insertBefore(k, ob); return true;
   }
   function maxText(){
+    if(document.querySelector('.mxk')) return true;
     var q=document.getElementById('vmaxQ'), t=document.getElementById('fcText'); if(!q||!t) return false;
     var s=(t.textContent||'').replace(/\s+/g,' ').trim(); if(s.length<20) return false;
     var m=s.match(/^[^.!?]*[.!?]/); var x=(m?m[0]:s.slice(0,160)).trim().replace(/^(Heute|In der Nacht|Heute Nacht|Morgen|Am Abend|Heute Abend)\s*:\s*/,function(_,w){return w==='In der Nacht'||w==='Heute Nacht'?'Heute Nacht: ':''}); q.textContent='„'+x.charAt(0).toUpperCase()+x.slice(1)+'“'; return true;

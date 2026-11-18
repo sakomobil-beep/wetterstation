@@ -1294,6 +1294,31 @@ html[data-theme="dark"] .am-map .cty text{fill:#EEF3F7!important;stroke:#141B25!
 </style>
 
 <script src="theme.js"></script>
+<!-- MAX-KARTE ANFANG: „Max sagt“ statt Ausblick (18.11.2026, Kingmans Wunsch). Zurück: diesen Block bis „MAX-KARTE ENDE“ entfernen. -->
+<style id="maxKarte">
+.mxk{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;color:var(--ink)}
+.mxk .mx{display:flex;gap:12px;align-items:center}
+.mxk .av{width:54px;height:54px;border-radius:50%;background:#fff3e8 url(max-kopf.png) center 30%/86% no-repeat;border:2px solid #f97316;flex:none}
+html[data-theme="dark"] .mxk .av{background-color:#24324a}
+.mxk b{font-size:15px}.mxk p{margin:0;font-size:12.5px;color:var(--muted)}
+.mxk .q{margin-top:12px;font-size:15px;line-height:1.55}
+</style>
+<script>
+(function(){
+  var n=0, iv=setInterval(function(){
+    n++; var ob=document.querySelector('.dob'), t=document.getElementById('fcText');
+    if(ob && !document.querySelector('.mxk')){
+      var k=document.createElement('section'); k.className='mxk'; k.setAttribute('aria-label','Max sagt');
+      k.innerHTML='<div class="mx"><div class="av" role="img" aria-label="Max, der Wettersprecher"></div><div><b>Max sagt</b><p>Euer Wettersprecher für den Odenwald</p></div></div><div class="q" id="mxkQ">…</div>';
+      ob.parentNode.insertBefore(k,ob); ob.hidden=true;
+    }
+    var q=document.getElementById('mxkQ'), s=t?(t.textContent||'').replace(/\s+/g,' ').trim():'';
+    if(q && s.length>20){ var m=s.match(/^[^.!?]*[.!?]/); q.textContent='„'+(m?m[0]:s.slice(0,160)).trim()+'“'; }
+    if((q && q.textContent.length>3 && q.textContent!=='…') || n>80) clearInterval(iv);
+  },500);
+})();
+</script>
+<!-- MAX-KARTE ENDE -->
 <!-- STARTSEITE-D ANFANG: Drei-Spalten-Startseite „Jetzt / Heute / Was kommt“ (18.11.2026). Zurück zur alten Ansicht: diesen Block bis „STARTSEITE-D ENDE“ entfernen. -->
 <style id="startD">
 .dgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:stretch}
@@ -2217,7 +2242,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 18.11.2026, 21:56 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 18.11.2026, 22:30 Uhr</span></p>
 
 </div>
 
