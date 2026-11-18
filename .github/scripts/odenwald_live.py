@@ -35,8 +35,16 @@ def get_wu(url):
 
 
 def wu(sid):
+    if sid == 'IBADKN33':   # 18.11.2026: eigene Station nicht doppelt abrufen – der Live-Werte-Lauf hat sie gerade in data/live.json geholt
+        try:
+            o = json.load(open(os.path.join(os.path.dirname(DATEI), 'live.json'), encoding='utf-8'))['cur']['observations'][0]
+            if time.time() - o['epoch'] < 20 * 60: return wu_werte(o)
+        except Exception as e: print('live.json nicht nutzbar, rufe WU ab:', e)
     o = (get_wu('https://api.weather.com/v2/pws/observations/current?stationId=%s&format=json&units=m&numericPrecision=decimal&apiKey=%s' % (sid, WU_KEY)).get('observations') or [None])[0]
-    if not o: return None
+    return wu_werte(o) if o else None
+
+
+def wu_werte(o):
     m = o.get('metric') or {}
     return dict(t=r1(m.get('temp')), rh=o.get('humidity'), w=r1(m.get('windSpeed')), g=r1(m.get('windGust')), r=r1(m.get('precipTotal')),
                 rr=r1(m.get('precipRate')), sol=o.get('solarRadiation'), p=r1(m.get('pressure')),
