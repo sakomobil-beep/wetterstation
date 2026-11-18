@@ -92,9 +92,10 @@ def station_wache():
     except Exception: S = {'aus': False}
     alter = None
     try:
-        with urllib.request.urlopen(urllib.request.Request('https://wetter-badkoenig.sakomobil.workers.dev/roh', headers={'User-Agent': 'wetter-badkoenig.de'}), timeout=15) as r:
-            z = json.loads(r.read().decode()).get('zeit')
-        if z: alter = time.time() - dt.datetime.fromisoformat(z.replace('Z', '+00:00')).timestamp()
+        # Hauptadresse statt /roh: /roh liegt nur im Speicher des Rechenzentrums, das die Station anfunkt – GitHub läuft woanders (Fehlalarm 19.11.2026 0:37)
+        with urllib.request.urlopen(urllib.request.Request('https://wetter-badkoenig.sakomobil.workers.dev/', headers={'User-Agent': 'wetter-badkoenig.de'}), timeout=15) as r:
+            o = json.loads(r.read().decode())['observations'][0]
+        if o.get('quelle') == 'station': alter = time.time() - o['epoch']
     except Exception as e: print('Station-Wache: Empfänger nicht erreichbar:', e); return
     aus = alter is None or alter > 15 * 60
     topic = os.environ.get('NTFY_TOPIC')
