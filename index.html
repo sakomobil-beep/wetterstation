@@ -3093,7 +3093,7 @@ function eigenAbruf(url) {
     else { bis = heute; von = new Date(Date.now() - 6 * 864e5).toLocaleDateString('sv-SE'); }
     var jahre = []; for (var y = +von.slice(0, 4); y <= +bis.slice(0, 4); y++) jahre.push(y);
     return Promise.all(jahre.map(function (y) { return eigenJson('data/archiv/tage-' + y + '.json').then(function (j) { return j.tage || []; }); })).then(function (A) {
-      var L = [].concat.apply([], A).filter(function (t) { var d = String(t.obsTimeLocal).slice(0, 10); return d >= von && d <= bis && !t.quelle; });
+      var L = [].concat.apply([], A).filter(function (t) { var d = String(t.obsTimeLocal).slice(0, 10); return d >= von && d <= bis && d < heute && !t.quelle; });
       var gest = new Date(Date.now() - 864e5).toLocaleDateString('sv-SE');
       if (bis >= heute) return eigenHeute().then(function (H) { if (H.length) L.push(eigenTagesSumme(H, heute)); return L; });
       if (bis >= gest && !L.some(function (t) { return String(t.obsTimeLocal).slice(0, 10) === gest; })) throw new Error('fehlt');   // gestern noch nicht im Archiv

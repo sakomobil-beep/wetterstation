@@ -12,7 +12,7 @@ LIVE = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'live.json')
 H_KEYS = ('obsTimeLocal', 'epoch', 'humidityHigh', 'humidityLow', 'humidityAvg', 'winddirAvg', 'uvHigh', 'solarRadiationHigh')
 
 
-def tag_archivieren(L):
+def tag_archivieren(L, laufend=False):
     """19.11.2026: Abgeschlossenen Tag aus dem eigenen Tagesverlauf ins Archiv (data/archiv) schreiben, falls er dort fehlt –
     so bleibt das Archiv vollständig, auch wenn WU nachts nicht liefert. Das nächtliche WU-Archiv überspringt vorhandene Tage."""
     if not L: return
@@ -35,16 +35,18 @@ def tag_archivieren(L):
         ps = os.path.join(D, 'stunden-%s.json' % tag[:7])
         try: S = json.load(open(ps, encoding='utf-8'))
         except Exception: S = {'station': STATION, 'tage': {}}
-        if tag not in S['tage']:
+        if tag not in S['tage'] or (laufend and all(o.get('quelle_eigen') for o in S['tage'][tag])):
             std = {}
             for o in L: std.setdefault(str(o.get('obsTimeLocal'))[11:13], []).append(o)
             S['tage'][tag] = [zus(G, str(G[-1].get('obsTimeLocal'))) for h, G in sorted(std.items())]
             S['tage'] = dict(sorted(S['tage'].items())); json.dump(S, open(ps, 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
-            print('Archiv: Stundenwerte %s aus eigenen Daten (%d Stunden)' % (tag, len(S['tage'][tag])))
+            if not laufend: print('Archiv: Stundenwerte %s aus eigenen Daten (%d Stunden)' % (tag, len(S['tage'][tag])))
         pt = os.path.join(D, 'tage-%s.json' % tag[:4])
         try: T = json.load(open(pt, encoding='utf-8'))
         except Exception: T = {'station': STATION, 'tage': []}
-        if not any(str(t.get('obsTimeLocal'))[:10] == tag for t in T['tage']):
+        alt_t = [t for t in T['tage'] if str(t.get('obsTimeLocal'))[:10] == tag]
+        if laufend and alt_t and all(t.get('quelle_eigen') for t in alt_t): T['tage'] = [t for t in T['tage'] if t not in alt_t]; alt_t = []
+        if not alt_t:
             T['tage'].append(zus(L, tag + ' 23:59:59')); T['tage'].sort(key=lambda t: t['obsTimeLocal'])
             json.dump(T, open(pt, 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
             print('Archiv: Tageswerte %s aus eigenen Daten' % tag)
@@ -73,6 +75,8 @@ def live_speichern(cur):
                              'metric': {'tempAvg': m.get('temp'), 'tempHigh': m.get('temp'), 'tempLow': m.get('temp'), 'dewptAvg': m.get('dewpt'), 'windspeedAvg': m.get('windSpeed'),
                                         'windgustHigh': m.get('windGust'), 'pressureMax': m.get('pressure'), 'pressureMin': m.get('pressure'), 'precipRate': m.get('precipRate'), 'precipTotal': m.get('precipTotal')}})
         except Exception as e2: print('Kein alter Tagesverlauf:', e2); return
+    if cur['observations'][0].get('quelle') == 'station':   # 19.11.2026: Live-Daten laufend in die eigene Datenbank (heutiger Tag, alle 10 Min. erneuert)
+        tag_archivieren([x for x in hist if str(x.get('obsTimeLocal', ''))[:10] == dt.datetime.now(TZ).date().isoformat()], laufend=True)
     try:
         json.dump({'cur': cur, 'hist': {'observations': hist}, 'erstellt': dt.datetime.now(TZ).isoformat(timespec='seconds')},
                   open(LIVE, 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
