@@ -1,0 +1,4 @@
+:root{--bg:#0f172a;--hd:#0f172a;--cd:#1e293b;--bd:#2c3a52;--tx:#e2e8f0;--mu:#94a3b8;--sh:0 1px 0 rgba(255,255,255,.03) inset;--ok:#4ade80;--okb:#14361f;--wb:#6b5413;--wbg:#221d0c;--avb:#24324a;--bt:#243049;--wa:#3a2a1c;--ka:#1c2f4d;--sg:#162033;--blue:#7cb4ff}
+.titel{height:230px;background:url(schloss.jpg) center/cover;border-radius:14px;margin-bottom:18px}
+.hero .img{display:none}
+.hero{background:linear-gradient(135deg,#312e81,#1e293b 70%)}
