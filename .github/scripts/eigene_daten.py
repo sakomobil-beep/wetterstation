@@ -67,7 +67,7 @@ def ersatz(url):
             L = []
             for i in range(6, 0, -1): L += _stunden((heute - dt.timedelta(days=i)).isoformat()) or []
             L += _heute()
-            return {'observations': L} if len(L) >= 24 and _stunden(gestern) else None
+            return {'observations': L} if len(L) >= 48 else None
         if p in ('/v2/pws/history/hourly', '/v2/pws/history/all') and q.get('date'):
             t = _tag(q['date']); L = _heute() if t == heute.isoformat() else _stunden(t)
             return {'observations': L} if L else None
