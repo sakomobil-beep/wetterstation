@@ -2264,7 +2264,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 18.11.2026, 22:40 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 18.11.2026, 23:10 Uhr</span></p>
 
 </div>
 
@@ -6660,8 +6660,8 @@ document.addEventListener('click', function (e) { var b = e.target.closest && e.
   Array.prototype.forEach.call(document.querySelectorAll('#owBtns button'), function (x) { x.classList.toggle('on', x === b); }); owKarte(); });
 setInterval(function () { if (currentTab === 'odenwald' && !document.hidden) owLaden(true); }, 5 * 60000);
 
-/* ===== Aktuell Odenwald ausführlicher (18.11.2026) – zuerst nur in der Live-Vorschau /vorschau/odenwald/ (window.OW_NEU) ===== */
-if (window.OW_NEU) (function () {
+/* ===== Aktuell Odenwald ausführlicher (18.11.2026) – live seit 18.11.2026 ===== */
+(function () {
   OW_POS['Erbach'] = [10, 4]; OW_POS['Michelstadt'] = [10, -30]; OW_POS['Reichelsheim'] = [-92, -8]; OW_POS['Fränkisch-Crumbach'] = [-100, -26];
   OW_POS['Brombachtal'] = [-46, -42]; OW_POS['Lützelbach'] = [10, -16]; OW_POS['Bad König'] = [12, -2];
   OW_FARBEN = ['#e05a2b', '#e0a020', '#2f9e44', '#1f8fc0', '#3b5bdb', '#9c36b5', '#d6336c', '#0ca678', '#795548', '#f08c00', '#495057'];
