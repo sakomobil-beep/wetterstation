@@ -78,8 +78,9 @@ def basis(weihnacht=False):
             yb = ty - 40 - i * 70; d.polygon([(tx - bw, yb), (tx + bw, yb), (tx, yb - hh)], fill=(30, 120, 60), outline=(20, 70, 40))
         d.rectangle([tx - 12, ty - 40, tx + 12, ty], fill=(110, 70, 40))
         d.polygon([(tx, ty - 262), (tx + 9, ty - 244), (tx - 9, ty - 244)], fill=(255, 210, 60))
-        for k in range(14):
-            d.ellipse([tx - 70 + r.uniform(0, 140) - 5, ty - 220 + k * 13 - 5, tx - 70 + r.uniform(0, 140) + 5, ty - 220 + k * 13 + 5], fill=r.choice([(220, 40, 40), (255, 210, 60), (240, 240, 250)]))
+        for k in range(14):   # Kugeln (Breite des Baums je Höhe beachten)
+            yk = ty - 220 + k * 13; br = 12 + k * 5; xk = tx + r.uniform(-br, br)
+            d.ellipse([xk - 5, yk - 5, xk + 5, yk + 5], fill=r.choice([(220, 40, 40), (255, 210, 60), (240, 240, 250)]))
     return fr
 
 
@@ -104,12 +105,12 @@ def wand(bild, fx=None, t=0.0, p=0.0, dunkel=False):
     und Wetter-Effekten. dunkel=True: abgedunkelt als Hintergrund für eine Tafel."""
     x0, y0, x1, y1 = WAND; w, h = x1 - x0, y1 - y0
     m, raster = _maske()
-    key = (id(bild), w, h)
-    if key not in _C:
+    key = ('bild', id(bild))
+    if key not in _C or _C[key][0] is not bild:   # Bild selbst mit merken (id kann sonst neu vergeben werden)
         z = 1.08   # Platz für die Kamerafahrt
         s = max(w * z / bild.width, h * z / bild.height)
-        _C[key] = bild.convert('RGB').resize((int(bild.width * s) + 1, int(bild.height * s) + 1), Image.BILINEAR)
-    b = _C[key]
+        _C[key] = (bild, bild.convert('RGB').resize((int(bild.width * s) + 1, int(bild.height * s) + 1), Image.BILINEAR))
+    b = _C[key][1]
     ox = int((b.width - w) * (0.2 + 0.6 * p)); oy = int((b.height - h) * 0.5)
     im = b.crop((ox, oy, ox + w, oy + h)).convert('RGBA')
     d = ImageDraw.Draw(im)
