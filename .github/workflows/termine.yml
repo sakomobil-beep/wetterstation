@@ -38,4 +38,4 @@ jobs:
           git config user.name "wetter-bot"; git config user.email "actions@users.noreply.github.com"
           git add data/termine.json; git diff --cached --quiet && exit 0
           git commit -m "Termine für Max: ${{ inputs.aktion }} ${{ inputs.name }}${{ inputs.tid }}"
-          for i in 1 2 3; do git pull --rebase -X theirs -q && git push && break; git rebase --abort 2>/dev/null; sleep 5; done
+          for i in 1 2 3; do git pull --rebase -X theirs -q && git push && break; git rebase --abort 2>/dev/null || true; sleep 5; done

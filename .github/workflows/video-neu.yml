@@ -32,6 +32,10 @@ jobs:
       - uses: FedericoCarboni/setup-ffmpeg@v3
         if: inputs.art != 'mittag'
         timeout-minutes: 5
+        continue-on-error: true
+      - name: ffmpeg-Reserve (falls die Einrichtung oben ausfällt, 19.11.2026)
+        if: inputs.art != 'mittag'
+        run: command -v ffprobe >/dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg; }
       - run: pip install pillow numpy edge-tts
       - name: Mittagsbeitrag neu (Karte des Kreises, ohne Video)
         if: inputs.art == 'mittag'
@@ -69,4 +73,4 @@ jobs:
           git add -A fb
           git diff --cached --quiet && exit 0
           git commit -m "${{ inputs.art == 'mittag' && 'Mittagswetter' || 'Wettervideo' }} neu erstellt (von Hand) $(TZ=Europe/Berlin date +'%d.%m.%Y %H:%M')"
-          for i in 1 2 3; do git pull --rebase -X theirs -q && git push && break; git rebase --abort 2>/dev/null; sleep 5; done
+          for i in 1 2 3; do git pull --rebase -X theirs -q && git push && break; git rebase --abort 2>/dev/null || true; sleep 5; done

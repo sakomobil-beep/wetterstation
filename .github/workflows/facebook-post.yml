@@ -52,6 +52,9 @@ jobs:
         if: github.event_name != 'schedule' || contains(fromJSON('["30 4 * * *","30 5 * * *","20 10 * * *","20 11 * * *","20 15 * * *","20 17 * * 1-6","20 18 * * 1-6","20 5 * * 1-5","20 6 * * 1-5","20 6 * * 0,6","20 7 * * 0,6","20 18 * * 0","20 19 * * 0"]'), github.event.schedule)
         timeout-minutes: 5
         continue-on-error: true   # fällt die ffmpeg-Einrichtung aus, wird trotzdem gepostet (Morgen: Video von 6:30 Uhr)
+      - name: ffmpeg-Reserve (falls die Einrichtung oben ausfällt, 19.11.2026)
+        if: github.event_name != 'schedule' || contains(fromJSON('["30 4 * * *","30 5 * * *","20 10 * * *","20 11 * * *","20 15 * * *","20 17 * * 1-6","20 18 * * 1-6","20 5 * * 1-5","20 6 * * 1-5","20 6 * * 0,6","20 7 * * 0,6","20 18 * * 0","20 19 * * 0"]'), github.event.schedule)
+        run: command -v ffprobe >/dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg; }
       - run: pip install pillow numpy edge-tts
       - name: Morgens – Bild, Text und Wettervideo
         if: github.event.schedule == '30 4 * * *' || github.event.schedule == '30 5 * * *' || github.event_name != 'schedule'
@@ -153,7 +156,7 @@ jobs:
           git add -A fb
           git diff --cached --quiet && exit 0
           git commit -m "Wetter-Beitrag $(TZ=Europe/Berlin date +'%d.%m.%Y %H:%M')"
-          for i in 1 2 3 4 5 6 7 8; do git pull --rebase -X theirs -q && git push && break; git rebase --abort 2>/dev/null; sleep $((i*6)); done   # mehr Versuche (15.11.2026: Wochenausblick ging verloren)
+          for i in 1 2 3 4 5 6 7 8; do git pull --rebase -X theirs -q && git push && break; git rebase --abort 2>/dev/null || true; sleep $((i*6)); done   # mehr Versuche (15.11.2026: Wochenausblick ging verloren)
       - name: Automatisch auf Facebook posten (direkt über Facebook)
         env:
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
@@ -192,6 +195,6 @@ jobs:
           git add fb/gepostet.json 2>/dev/null || true
           git diff --cached --quiet && exit 0
           git commit -m "Facebook: gepostet $(TZ=Europe/Berlin date +'%d.%m. %H:%M')"
-          ok=0; for i in 1 2 3 4 5 6; do git pull --rebase -X theirs -q && git push && ok=1 && break; git rebase --abort 2>/dev/null; sleep $((i*5)); done
+          ok=0; for i in 1 2 3 4 5 6; do git pull --rebase -X theirs -q && git push && ok=1 && break; git rebase --abort 2>/dev/null || true; sleep $((i*5)); done
           # Merker darf nie verloren gehen, sonst wird doppelt gepostet (16.11.2026: Dauerregen-Warnung 2x)
           if [ "$ok" != 1 ]; then python .github/scripts/merk_sichern.py || python .github/scripts/fb_senden.py merkfehler || true; fi
