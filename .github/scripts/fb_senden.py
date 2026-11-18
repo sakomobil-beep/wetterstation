@@ -356,7 +356,8 @@ def main():
         jetzt = dt.datetime.now(TZ)
         try: j = json.load(open(os.path.join(FB, 'wissen.json'), encoding='utf-8'))
         except Exception: print('Kein Wetterwissen vorhanden.'); return
-        if not j.get('autopost'): print('Wetterwissen wird von Hand geteilt.'); return
+        if not j.get('autopost') or j.get('probe'): print('Wetterwissen wird von Hand geteilt.'); return
+        if jetzt.weekday() >= 5 and not j.get('premiere'): print('Wetterwissen kommt nur Montag bis Freitag – am Wochenende kein Autopost.'); return   # 18.11.2026
         if j.get('datum') != heute or jetzt.hour < 15: print('Wetterwissen-Autopost erst am %s ab 15 Uhr.' % j.get('datum')); return
         if M.get('wissen') == heute: print('Wetterwissen heute schon gepostet.'); return
         if frisch_gepostet('wissen', heute): return

@@ -279,6 +279,9 @@ def vorrat_berechnen(log, ab):
 
 def main():
     heute = dt.date.fromisoformat(PREMIERE) if PREMIERE else dt.date.today()
+    # Probe am Wochenende (18.11.2026): „Wetterwissen neu erstellen (ohne Posten)“ am Sa/So ist nur zum Ansehen –
+    # kein Autopost, kein Thema verbraucht, keine Folgennummer vergeben, nicht in die Wetterwissen-Videothek.
+    PROBE_WE = '--neu' in sys.argv and not PREMIERE and heute.weekday() >= 5
     if not PREMIERE and not DEMO and '--neu' not in sys.argv:
         if heute.weekday() >= 5: print('Wetterwissen nur Montag bis Freitag.'); return
         try:
@@ -413,14 +416,14 @@ def main():
                          'Jeden Montag bis Freitag erklärt Max ein Stück Wetter – folgt uns, um nichts zu verpassen!',
                          '🌦️ Live-Werte aus Bad König: https://wetter-badkoenig.de', '', '#Wetterwissen #Odenwald #BadKönig #Wetter #MaxErklärt'])
     json.dump(dict(erstellt=dt.datetime.now().astimezone().isoformat(timespec='minutes'), datum=heute.isoformat(), titel=x['t'], kategorie=x['k'],
-                   kleidung=V.PULLI[0], dauer=round(gesamt, 1), stimme=echt, autopost=True, premiere=bool(PREMIERE), folge=folge, skript=' '.join(t['text'] for t in dat), beitrag=beitrag),
+                   kleidung=V.PULLI[0], dauer=round(gesamt, 1), stimme=echt, autopost=not PROBE_WE, probe=PROBE_WE, premiere=bool(PREMIERE), folge=folge, skript=' '.join(t['text'] for t in dat), beitrag=beitrag),
               open(os.path.join(FB, 'wissen.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
-    if not DEMO: json.dump(log[-400:], open(LOG, 'w', encoding='utf-8'), ensure_ascii=False)
-    if not DEMO:
+    if not DEMO and not PROBE_WE: json.dump(log[-400:], open(LOG, 'w', encoding='utf-8'), ensure_ascii=False)
+    if not DEMO and not PROBE_WE:
         try: vorrat_berechnen(log, heute)
         except Exception as e: print('Vorrat nicht berechnet:', e)
     if not DEMO: V.saetze_speichern()
-    if not DEMO:   # Website (17.11.2026): Folge 7 Tage für den Video-Tab aufbewahren – darf den Bau nie stoppen
+    if not DEMO and not PROBE_WE:   # Website (17.11.2026): Folge 7 Tage für den Video-Tab aufbewahren – darf den Bau nie stoppen
         try:
             import wissen_archiv; wissen_archiv.ablegen()
         except Exception as e: print('Wetterwissen-Archiv nicht geschrieben:', e)
