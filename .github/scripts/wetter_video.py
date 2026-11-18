@@ -45,7 +45,7 @@ def warn_txt(warn):
 
 
 def art(d):
-    w = wort(d['code'])
+    w = wort_tag(d)
     if w == 'neblig' and d.get('sonne', 0) >= 3: return 'nach Nebel am Morgen auch Sonne'
     return {'sonnig': 'viel Sonne', 'heiter bis wolkig': 'einen Mix aus Sonne und Wolken', 'bedeckt': 'viele Wolken',
             'neblig': 'Nebel', 'Nieselregen': 'Nieselregen', 'Regen': 'Regen', 'Schnee': 'Schnee',
@@ -68,6 +68,13 @@ def stufe(d):
     N = d.get('nied')
     if N: return N['stufe']
     return 'trocken' if d['rp'] < 10 else 'vereinzelt' if d['rp'] < 30 else 'regen' if d['rp'] >= 60 and d.get('regen', 0) >= 1 else 'schauer'
+
+
+def wort_tag(d):
+    """Wetterwort für den Tag. (18.11.2026) „Nieselregen“ untertreibt, wenn die gemeinsame Einstufung „Regen“ sagt und 3 l/m² oder mehr fallen."""
+    w = wort(d['code'])
+    if w == 'Nieselregen' and stufe(d) == 'regen' and (d.get('regen') or 0) >= 3: return 'Regen'
+    return w
 
 
 def N_vm_nass(d):
@@ -187,7 +194,7 @@ def vergleich_gestern(d, rnd):
 def reaktion(d, rnd):
     """Kurze, menschliche Reaktion vorneweg – sparsam (etwa jedes dritte Mal, wenn es passt)."""
     if rnd.random() > 0.33: return ''
-    w = wort(d['code'])
+    w = wort_tag(d)
     if d['tmax'] <= 3 or d.get('frost_min', d['tmin']) <= -3: return frisch(rnd, 'r_kalt', ['Brrr! ', 'Puh, das wird frisch. ', 'Tja, der Winter klopft an. '])
     if w in ('Regen', 'Gewitter') or nass_tag(d): return frisch(rnd, 'r_nass', ['Puh. ', 'Tja, ', 'Na ja, '])
     if w == 'sonnig' or (d['sonne'] >= 6 and stufe(d) == 'trocken'): return frisch(rnd, 'r_sonne', ['Herrlich! ', 'Na, das kann sich sehen lassen! ', 'Also, '])
@@ -197,7 +204,7 @@ def reaktion(d, rnd):
 def mundart(d, rnd):
     """Ab und zu ein Odenwälder Satz – sehr sparsam (etwa jedes fünfte Video)."""
     if rnd.random() > 0.2: return ''
-    w = wort(d['code'])
+    w = wort_tag(d)
     if w in ('Regen', 'Schauer', 'Nieselregen', 'Gewitter') or nass_tag(d):
         opt = ['Des werd e nass Sach!', 'Do bleibt mer liewer drinne.']
     elif d['tmax'] <= 5:
@@ -271,7 +278,7 @@ def kein_ausflug(rnd):
 
 def frage_fuer(d, heute, rnd):
     """Frage an die Zuschauer zum Schluss – passend zum Wetter, gleiche Frage frühestens nach 10 Tagen."""
-    w = wort(d['code']); opt = []
+    w = wort_tag(d); opt = []
     if d.get('frost_min', d['tmin']) <= 0: opt += ['Wer musste heute früh schon Scheiben kratzen? Schreibt’s in die Kommentare!',
                                                   'Wie kalt war es heute Morgen bei euch? Schreibt mir eure Temperatur und euren Ort!']
     if w in ('Regen', 'Schauer', 'Nieselregen', 'Gewitter') or nass_tag(d): opt += ['Regnet es bei euch schon? Schreibt mir euren Ort in die Kommentare!',
@@ -349,7 +356,7 @@ def tipp(d, rnd, heute, zusatz=True):
         try: return tipp(d, rnd, heute)
         finally: abend_tipp = _alt
     m, tag = heute.month, heute.day
-    w = wort(d['code'])
+    w = wort_tag(d)
     trocken = not nass_tag(d) and w not in ('Regen', 'Gewitter', 'Schnee')
     if w == 'Schnee' or d['schnee'] >= 1:
         return wahl(rnd, ['Erst durch den Schnee stapfen, dann ab ins warme Thermalbad der Odenwald-Therme Bad König – besser geht Winter nicht!',
@@ -451,6 +458,12 @@ def lage(d):
     return dict(dict(nebel='keiner', nebel_bis=None, glaette='keine', glaette_hoch='keine', kaltluft=False, kalt_diff=0), **(d.get('lage') or {}))
 
 
+def nebel_wind(d):
+    """Zu windig für Nebel? Böen in Bad König zwischen 3 und 9 Uhr ab 35 km/h; ohne Stundenwerte: Tagesböe im Kreis ab 60 km/h."""
+    st = [x['boe'] for x in d.get('stunden') or [] if 3 <= x['h'] <= 9]
+    return (max(st) >= 35) if st else (d.get('boe') or 0) >= 60
+
+
 def winter_saetze(d, wann, rnd):
     """Nebel am Morgen, Kaltluft in den Tälern, Glätte – nur wenn die Einstufung es hergibt."""
     L = lage(d); out = []
@@ -468,12 +481,14 @@ def winter_saetze(d, wann, rnd):
         out.append(frisch(rnd, 'glaette_s', ['Mit dem Schnee wird es %s auch in den Tälern glatt – lieber etwas früher losfahren.' % morgens]))
     elif L['glaette_hoch'] in ('naesse', 'reif', 'glatteis') and not (d.get('hoch') or {}).get('schnee'):
         out.append(frisch(rnd, 'glaette_h', ['Oben auf den Höhen, Richtung Beerfelden, kann es %s glatt sein.' % morgens]))
+    if L['nebel'] != 'keiner' and nebel_wind(d):   # (18.11.2026) bei kräftigem Wind hält sich kein Nebel – nicht ansagen
+        L = dict(L, nebel='keiner')
     if L['nebel'] == 'wahrscheinlich':
-        bis = (' bis etwa %d Uhr' % L['nebel_bis']) if L['nebel_bis'] and L['nebel_bis'] <= 13 else ''
+        bis = (' bis etwa %d Uhr' % L['nebel_bis']) if L['nebel_bis'] and 7 <= L['nebel_bis'] <= 13 else ''
         out.append(frisch(rnd, 'nebel_w', ['%s liegt in den Tälern Nebel%s – Licht an beim Autofahren!' % (morgens.capitalize(), bis),
                                            'Im Mümlingtal hängt %s der Nebel%s. Also: Licht an und mit Abstand fahren.' % (morgens, bis),
                                            '%s gibt es in den Tälern Nebel%s, oben auf den Höhen ist es oft klarer.' % (morgens.capitalize(), bis)]))
-    elif L['nebel'] == 'moeglich' and wort(d['code']) != 'neblig':   # Nebel schon im Wettersatz genannt → nicht nochmal „vielleicht“
+    elif L['nebel'] == 'moeglich' and wort_tag(d) != 'neblig':   # Nebel schon im Wettersatz genannt → nicht nochmal „vielleicht“
         out.append(frisch(rnd, 'nebel_m', ['%s ist in den Tälern stellenweise Nebel möglich.' % morgens.capitalize(),
                                            'Hier und da kann sich %s in den Tälern Nebel bilden.' % morgens]))
     if L['kaltluft'] and d.get('frost_min', d['tmin']) <= 3:
@@ -488,10 +503,10 @@ def winter_saetze(d, wann, rnd):
     return (' ' + ' '.join(out)) if out else ''
 
 
-def tagtext(d, wann, nachtfrost=True):
+def tagtext(d, wann, nachtfrost=True, hoch_temp=True):
     """Tagesvorhersage in wechselnden, gesprochen klingenden Formulierungen (pro Tag fest, damit Tests gleich bleiben)."""
     rnd = random.Random('tag' + str(d['datum']) + wann)
-    W, w, t = wann, wort(d['code']), zahl(d['tmax'])
+    W, w, t = wann, wort_tag(d), zahl(d['tmax'])
     Wk = W.rstrip(',')
     adj = ADJ.get(w, 'wechselhaft')
     if w == 'neblig' and d.get('sonne', 0) >= 3: adj = 'nach Nebel am Morgen freundlich'
@@ -548,7 +563,7 @@ def tagtext(d, wann, nachtfrost=True):
             s += ' ' + rnd.choice(['Auf den Höhen, etwa rund um Beerfelden, kann es dabei schneien – da wird es glatt.',
                                     'Oben auf den Höhen, Richtung Oberzent, fällt das Ganze als Schnee. Also vorsichtig fahren!',
                                     'Und wer hoch hinaus muss: Auf den Odenwaldhöhen ist Schnee drin, bei rund %s Grad.' % zahl(H['tmax'])])
-        elif d['tmax'] - H['tmax'] >= 2:
+        elif hoch_temp and d['tmax'] - H['tmax'] >= 2:   # entfällt, wenn gleich danach die Kreiskarte die Orte nennt
             s += ' ' + rnd.choice(['Auf den Höhen, etwa in Oberzent, sind es nur rund %s Grad.' % zahl(H['tmax']),
                                     'Oben auf den Höhen wird es mit etwa %s Grad %s frischer als in den Tälern.' % (zahl(H['tmax']), 'deutlich' if d['tmax'] - H['tmax'] >= 4 else 'etwas'),
                                     'Richtung Beerfelden und Mossautal bleibt es kühler, um %s Grad.' % zahl(H['tmax'])])
@@ -564,14 +579,14 @@ def tagtext(d, wann, nachtfrost=True):
     # (18.11.2026) Böen: Tageswert = stärkster Ort im Odenwaldkreis (meist die Höhen) – das sagt Max jetzt dazu,
     # samt Tageszeit, wenn die Spitze nachts liegt; „frischt auf“ nur, wenn der Wind gegenüber dem Vortag wirklich zunimmt.
     b = round(d['boe']); bz = boe_zeit(d)
-    if d['boe'] >= 60:
+    if d['boe'] >= 65:   # DWD: Sturmböen 65–89 km/h
         s += ' ' + rnd.choice(['Vorsicht, im Odenwaldkreis sind%s Sturmböen bis %d Kilometer pro Stunde möglich, am stärksten auf den Höhen!' % (bz, b),
                                'Vorsicht beim Wind: Im Odenwaldkreis sind%s Sturmböen bis %d Kilometer pro Stunde drin, am stärksten auf den Höhen.' % (bz, b)])
     elif d['boe'] >= 45:
         vor = d.get('boe_vor')
-        if vor is not None and d['boe'] >= vor + 10: s += ' Und der Wind frischt auf, Böen um %d Kilometer pro Stunde.' % b
-        elif vor is not None and d['boe'] <= vor - 10: s += ' Der Wind lässt nach, es bleibt aber windig mit Böen um %d Kilometer pro Stunde.' % b
-        else: s += ' Dazu frischer Wind mit Böen um %d Kilometer pro Stunde.' % b
+        if vor is not None and d['boe'] >= vor + 10: s += ' Und der Wind frischt auf, im Odenwaldkreis sind Böen um %d Kilometer pro Stunde drin.' % b
+        elif vor is not None and d['boe'] <= vor - 10: s += ' Der Wind lässt nach, es bleibt aber windig – im Odenwaldkreis mit Böen um %d Kilometer pro Stunde.' % b
+        else: s += ' Dazu frischer Wind, im Odenwaldkreis mit Böen um %d Kilometer pro Stunde.' % b
     return s
 
 
@@ -678,7 +693,7 @@ def woche(tage, rnd):
     hn = sum(1 for d in hinten if d['code'] in NASS or nass_tag(d))
     t += ' Zum Ende der Woche zeigt die Tendenz: %s%s.' % ({'milder': 'eher milder', 'kühler': 'eher kühler', 'ähnlich': 'ähnliche Temperaturen'}[tr],
                                                           ', und eher nass' if hn == 2 else ', mit etwas Regen' if hn == 1 else ', und eher trocken')
-    zeilen = ['%s  %s  %d° / %d°' % (KURZ[d['datum'].weekday()], wort(d['code']).replace('heiter bis wolkig', 'heiter'), d['tmax'], d['tmin']) for d in vorn]
+    zeilen = ['%s  %s  %d° / %d°' % (KURZ[d['datum'].weekday()], wort_tag(d).replace('heiter bis wolkig', 'heiter'), d['tmax'], d['tmin']) for d in vorn]
     zeilen.append('Do–Fr: Tendenz %s' % {'milder': 'milder', 'kühler': 'kühler', 'ähnlich': 'gleichbleibend'}[tr])
     return t, zeilen
 
@@ -751,7 +766,7 @@ def skript_abend(days, warn, heute, orte=None):
     WARMER_ABEND[0] = a['tmax'] >= 25
     wochenende = heute.weekday() == 4   # Freitag
     paar = days[1:3]
-    seg = [dict(art='intro', bg='studio', tafel_img=tafel_text('GUTEN ABEND', ['%s, %d. %s' % (TAGE[heute.weekday()], heute.day, MONATE[heute.month - 1]), '• Der Tag in Zahlen', '• Das Wochenende' if wochenende else '• Morgen und übermorgen'], (40, 30, 100)), text=frisch(rnd, 'abend_gruss',
+    seg = [dict(art='intro', bg='studio', tafel_img=tafel_text('GUTEN ABEND', ['%s, %d. %s' % (TAGE[heute.weekday()], heute.day, MONATE[heute.month - 1]), '• Der Tag in Zahlen', '• Das Wochenende' if wochenende else '• Morgen und übermorgen'], (40, 30, 100)), text=(frisch(rnd, 'abend_gruss',
         ['Guten Abend, Odenwald! Euer Max meldet sich aus dem Studio.',
          'Ei gude wie, Odenwald – hier ist euer Abendwetter mit Max.',
          'Schön, dass ihr einschaltet: Max hier mit dem Odenwald-Wetter am Abend.',
@@ -759,6 +774,7 @@ def skript_abend(days, warn, heute, orte=None):
          'Hallo zusammen und guten Abend! Hier ist Max im Studio – schauen wir, was der Tag gebracht hat.',
          'Feierabend im Odenwald – und Zeit für euer Abendwetter. Max hier, schön, dass ihr dabei seid!',
          'Guten Abend aus dem Studio in Bad König! Max hier – los geht’s mit dem Tag in Zahlen.'])
+        ).replace(' – los geht’s mit dem Tag in Zahlen.', '.' if warn else ' – los geht’s mit dem Tag in Zahlen.')
         + ((' ' + dwd_satz(rnd, warn_txt(warn))) if warn else ''))]
     hm = a.get('heute_mess')   # gemessen an der Station Bad König (sonst Vorhersage als Rückfall)
     if hm:
@@ -800,9 +816,9 @@ def skript_abend(days, warn, heute, orte=None):
         seg.append(dict(art='wochenende', bg='studio', tage=paar, tafel_img=tafel_wochenende(paar),
                         text='Und jetzt der Blick aufs Wochenende: ' + tagtext(paar[0], 'Samstag', nachtfrost=False) + ' ' + tagtext(paar[1], 'Sonntag')))
     else:
-        seg.append(dict(art='tag', bg='studio', titel='MORGEN', tag=paar[0], grafiken=(['regen'] if paar[0]['rp'] >= 30 else []),
-                        tafel_img=tafel_tag('MORGEN', paar[0]), text=tagtext(paar[0], 'Morgen', nachtfrost=False) + grafik_saetze(paar[0], (['regen'] if paar[0]['rp'] >= 30 else []), rnd, 'morgen')))
         kt = karten_txt(orte or {}, 1, rnd)
+        seg.append(dict(art='tag', bg='studio', titel='MORGEN', tag=paar[0], grafiken=(['regen'] if paar[0]['rp'] >= 30 else []),
+                        tafel_img=tafel_tag('MORGEN', paar[0]), text=tagtext(paar[0], 'Morgen', nachtfrost=False, hoch_temp=not kt) + grafik_saetze(paar[0], (['regen'] if paar[0]['rp'] >= 30 else []), rnd, 'morgen')))
         if kt:   # Reliefkarte des Kreises: die Orte erscheinen nacheinander, während Max spricht
             seg.append(dict(art='tag', bg='studio', titel='MORGEN IM KREIS',
                             tafel_seq=karten_folge(orte, 1), text=kt))
@@ -828,12 +844,12 @@ def skript_abend(days, warn, heute, orte=None):
 def special_grund(days, warn):
     a = days[0]; g = []
     if warn: g.append('warn')
-    if wort(a['code']) == 'Schnee' or a['schnee'] >= 1 or wort(days[1]['code']) == 'Schnee': g.append('schnee')
+    if wort_tag(a) == 'Schnee' or a['schnee'] >= 1 or wort_tag(days[1]) == 'Schnee': g.append('schnee')
     if a['boe'] >= 60: g.append('sturm')
     if a['tmin'] <= -5: g.append('kaelte')
     if a['tmax'] >= 30: g.append('hitze')
     if a['regen'] >= 20: g.append('regen')
-    if wort(a['code']) == 'Gewitter': g.append('gewitter')
+    if wort_tag(a) == 'Gewitter': g.append('gewitter')
     return g
 
 
@@ -842,7 +858,7 @@ def special_grund(days, warn):
 def max_privat(d, rnd, heute):
     """Kleine persönliche Bemerkung – nur an etwa jedem dritten Tag."""
     if rnd.random() > 0.35: return ''
-    w = wort(d['code'])
+    w = wort_tag(d)
     nass = w in ('Regen', 'Nieselregen', 'Schauer', 'Gewitter') or nass_tag(d)
     if w == 'Schnee' or d['schnee'] >= 1:
         opt = ['Ich geb’s zu: Beim Schnee freu ich mich jedes Jahr wie ein Kind.',
@@ -887,7 +903,7 @@ def advent_gruss(heute, rnd):
 
 
 def abschied(d, rnd):
-    w = wort(d['code'])
+    w = wort_tag(d)
     if w == 'Gewitter' or d['boe'] >= 60:
         return 'Heute lieber drinnen bleiben – passt auf euch auf!'
     if w == 'Schnee' or d['schnee'] >= 1:
@@ -911,7 +927,7 @@ def abschied(d, rnd):
 def lage_fx(d):
     """Wetterlage für Hintergrund-Effekte: schnee, gewitter, sturm, regen oder None."""
     if not d: return None
-    w = wort(d['code'])
+    w = wort_tag(d)
     if w == 'Schnee' or d['schnee'] >= 1: return 'schnee'
     if w == 'Gewitter': return 'gewitter'
     if d['boe'] >= 55: return 'sturm'
@@ -973,7 +989,7 @@ def wetterwissen(a, heute, rnd):
     if heute.weekday() not in (0, 2, 4, 5): return None
     try: L = json.load(open(WISSEN, encoding='utf-8'))
     except Exception: return None
-    w = wort(a['code']); m = heute.month
+    w = wort_tag(a); m = heute.month
     kat = []
     if a['code'] in (45, 48): kat.append('nebel')
     if w == 'Schnee' or a.get('schnee', 0) >= 1: kat.append('schnee')
@@ -1079,7 +1095,7 @@ def skript(days, warn, heute, nur_special=False):
                 nass = (51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 71, 73, 75, 77, 80, 81, 82, 85, 86, 95, 96, 99)
                 gut = [n for n, d in (('Samstag', sa), ('Sonntag', so)) if not nass_tag(d) and d['code'] not in nass]
                 grau = any(d['code'] in (45, 48) or d['code'] == 3 for d in (sa, so))
-                def kurz_(d): return 'nach Nebel freundlich' if wort(d['code']) == 'neblig' and d.get('sonne', 0) >= 3 else wort(d['code'])
+                def kurz_(d): return 'nach Nebel freundlich' if wort_tag(d) == 'neblig' and d.get('sonne', 0) >= 3 else wort_tag(d)
                 t = '%s Im Odenwald Samstag %s bei %s Grad, Sonntag %s bei %s Grad.' % (rnd.choice(['Ein Blick aufs Wochenende:', 'Und das Wochenende?', 'Kurz noch zum Wochenende:']), kurz_(sa), zahl(sa['tmax']), kurz_(so), zahl(so['tmax']))
                 t += (' %s bleibt es trocken, %s wird es nass.' % (gut[0], 'Sonntag' if gut[0] == 'Samstag' else 'Samstag')) if len(gut) == 1 else ((' Beide Tage bleiben wohl trocken – zieht euch aber warm an.' if grau else ' Beide Tage sehen gut aus für draußen!') if gut else ' Plant lieber etwas für drinnen ein.')
                 if heute.weekday() == 4:   # freitags: kurze Glätte-/Nebel-Hinweise für Samstagfrüh (eigener Samstag-Teil entfällt)
@@ -1665,7 +1681,7 @@ HAUT, HAAR, JACKE, JACKE2, HOSE, LINIE = (247, 205, 170), (95, 60, 35), (30, 130
 
 def look_fuer(d):
     """Kleidung nach Wetterlage: winter, regen, kuehl, normal, warm, sonne."""
-    w = wort(d['code'])
+    w = wort_tag(d)
     if w == 'Schnee' or d['schnee'] >= 1 or d['tmax'] <= 4: return 'winter'
     if w in ('Regen', 'Gewitter', 'Nieselregen', 'Schauer') or nass_tag(d): return 'regen'
     if d['tmax'] <= 11: return 'kuehl'
@@ -2551,7 +2567,7 @@ def tafel_tag(titel, d):
     icon(dr, w / 2, 200, 130, d['code'])
     dr.text((w / 2 - 20, 345), '%d°' % d['tmax'], font=F(88), fill=(230, 100, 40), anchor='rm')
     dr.text((w / 2 + 20, 352), '%d°' % d['tmin'], font=F(58), fill=(60, 120, 200), anchor='lm')
-    dr.text((w / 2, 425), wort(d['code']).capitalize(), font=F(32), fill=(35, 50, 70), anchor='mm')
+    dr.text((w / 2, 425), wort_tag(d).capitalize(), font=F(32), fill=(35, 50, 70), anchor='mm')
     dr.text((w / 2, 470), ('Regen %d %%  ·  Böen %d km/h' % (d['rp'], round(d['boe']))), font=F(22, False), fill=(90, 105, 125), anchor='mm')
     if d.get('hoch'):
         H = d['hoch']
@@ -2807,7 +2823,7 @@ def tafel_wind(d, titel='HEUTE', von=6, bis=23):
         y = y1 - (y1 - y0) * v / top
         dr.line([x0, y, x1, y], fill=(225, 230, 238), width=1)
         dr.text((x0 - 8, y), str(v), font=F(15, False), fill=(130, 140, 155), anchor='rm')
-    y60 = y1 - (y1 - y0) * 60 / top
+    y60 = y1 - (y1 - y0) * 65 / top
     dr.line([x0, y60, x1, y60], fill=(220, 60, 60), width=2); dr.text((x1, y60 - 12), 'Sturmböen', font=F(15), fill=(200, 40, 40), anchor='rm')
     bw = (x1 - x0) / len(st)
     for k, x in enumerate(st):
@@ -2815,7 +2831,7 @@ def tafel_wind(d, titel='HEUTE', von=6, bis=23):
     leer = im.copy()
     for k, x in enumerate(st):
         b = x['boe']; xa = x0 + bw * k + 2; xb = xa + bw - 4; y = y1 - (y1 - y0) * b / top
-        c = (120, 190, 140) if b < 40 else (240, 180, 50) if b < 60 else (220, 60, 60)
+        c = (120, 190, 140) if b < 40 else (240, 180, 50) if b < 65 else (220, 60, 60)
         dr.rounded_rectangle([xa, y, xb, y1], radius=4, fill=c)
     km = max(st, key=lambda x: x['boe'])
     dr.text((GW / 2, 490), 'Stärkste Böen: %d km/h (%d Uhr)' % (km['boe'], km['h']), font=F(22), fill=(70, 75, 95), anchor='mm')
@@ -3280,7 +3296,7 @@ def pruefen(segs):
         sf = stufe(d); schutz = tuple(a for v in GRAFIK_ANFANG.values() for a in v)
         saetze = re.split(r'(?<=[.!?])\s+', sg['text']); neu = []
         for x in saetze:
-            L = lage(d); schnee_ = (d.get('hoch') or {}).get('schnee') or d.get('schnee', 0) >= 0.5 or wort(d['code']) == 'Schnee'
+            L = lage(d); schnee_ = (d.get('hoch') or {}).get('schnee') or d.get('schnee', 0) >= 0.5 or wort_tag(d) == 'Schnee'
             falsch_w = ('Nebel' in x and L['nebel'] == 'keiner' and d['code'] not in (45, 48)) \
                        or (any(w_ in x for w_ in ('glatt', 'Glätte', 'Glatteis', 'rutschig')) and L['glaette'] == 'keine' and L['glaette_hoch'] == 'keine' and not schnee_) \
                        or ('Glatteis' in x and L['glaette'] != 'glatteis') \

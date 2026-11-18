@@ -867,7 +867,7 @@ def hinweise(d):
     if L.get('nebel') == 'wahrscheinlich': h.append('morgens Nebel in den Tälern')
     if fm <= 0: h.append('Frost bis %d °C – Scheiben kratzen!' % fm)
     elif fm <= 3 and d.get('nacht_klar'): h.append('Bodenfrost möglich')   # nur klare, windstille Nacht
-    if d['boe'] >= 60: h.append('Sturmböen bis %d km/h' % round(d['boe']))
+    if d['boe'] >= 65: h.append('Sturmböen bis %d km/h' % round(d['boe']))   # DWD: Sturmböen ab 65 km/h
     elif d['boe'] >= 45: h.append('Windböen bis %d km/h' % round(d['boe']))
     if d['regen'] >= 10: h.append('viel Regen (%.0f l/m²)' % d['regen'])
     H = d.get('hoch')
