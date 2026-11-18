@@ -1,6 +1,8 @@
 name: Wettervideo neu erstellen (ohne Posten)
 # Von Hand über den Knopf im Bereich „Facebook“ der Zentrale: erstellt Vorhersagedaten und das Wettervideo mit Max neu.
 # Postet NICHTS auf Facebook – nur zum Ansehen von Änderungen.
+# Seit 18.11.2026: Probe-Videos kommen NICHT mehr in die Videothek der Website (PROBE=1), sondern in Google Drive
+# („Wetterstation – Videos / Probevideos / <Art> / <Datum Uhrzeit>“). Ansehen weiter in der Zentrale.
 on:
   workflow_dispatch:
     inputs:
@@ -21,6 +23,8 @@ jobs:
   video:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    env:
+      PROBE: '1'   # wetter_video.py archiv(): Probe-Videos nicht in die Videothek
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -45,6 +49,19 @@ jobs:
           python .github/scripts/fb_post.py
           cp /tmp/post.txt /tmp/post.json fb/ 2>/dev/null || true
           if [ "${{ inputs.art }}" = "wissen" ]; then python .github/scripts/wissen_video.py; elif [ "${{ inputs.art }}" = "thema" ]; then python .github/scripts/themen_video.py; elif [ "${{ inputs.art }}" = "woche" ]; then python .github/scripts/wetter_video.py --woche; elif [ "${{ inputs.art }}" = "warnbild" ]; then python .github/scripts/unwetter_check.py --bild; elif [ "${{ inputs.art }}" = "special-test" ]; then python .github/scripts/wetter_video.py --test-gewitter; elif [ "${{ inputs.art }}" = "abend" ]; then python .github/scripts/fb_post.py --abend && python .github/scripts/wetter_video.py --abend; else python .github/scripts/wetter_video.py; fi
+      - name: Probe-Video in Google Drive ablegen (statt Videothek)
+        if: contains(fromJSON('["tag","woche","abend","monat","wissen","special-test"]'), inputs.art)
+        continue-on-error: true
+        env:
+          GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
+          GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+          GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: |
+          case "${{ inputs.art }}" in
+            tag) D=wetter.mp4 ;; woche) D=woche.mp4 ;; abend) D=abendvideo.mp4 ;; monat) D=monat.mp4 ;; wissen) D=wissen.mp4 ;; special-test) D=special-test.mp4 ;;
+          esac
+          python .github/scripts/drive_ablage.py --probe "$D" || echo "Drive-Ablage des Probe-Videos nicht gelungen"
       - name: Speichern
         run: |
           git config user.name "wetter-bot"

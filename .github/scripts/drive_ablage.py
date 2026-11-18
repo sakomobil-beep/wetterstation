@@ -9,6 +9,9 @@ Secrets: GDRIVE_CLIENT_ID, GDRIVE_CLIENT_SECRET, GDRIVE_REFRESH_TOKEN (fehlen si
 Fehler beim Ablegen stoppen nie das Posten – es gibt nur eine Push-Nachricht.
 
 Von Hand:  drive_ablage.py <datei.mp4 in fb/> [JJJJ-MM-TTTHH:MM]   (z. B. zum Nachtragen)
+
+Probe-Videos (seit 18.11.2026): „Video neu erstellen (ohne Posten)“ legt das Video nicht mehr in die Videothek der Website,
+sondern hier ab:  Wetterstation – Videos / Probevideos / <Art> / <JJJJ-MM-TT HH-MM> / …   Aufruf: drive_ablage.py --probe <datei.mp4>
 """
 import json, os, sys, urllib.request, urllib.parse, datetime as dt
 from zoneinfo import ZoneInfo
@@ -22,6 +25,8 @@ ARTEN = {'wetter.mp4': 'Morgenvideo', 'abendvideo.mp4': 'Abendvideo', 'woche.mp4
 BILDER = {'story.jpg': 'Morgen-Story', 'mittagstory.jpg': 'Mittags-Story', 'abendstory.jpg': 'Abend-Story',
           'mittag.jpg': 'Mittagskarte', 'post.jpg': 'Tagesbild', 'special-story.jpg': 'Unwetter-Storys',
           'warn2-story.jpg': 'Warn-Storys (Stufe 2)', 'warn2-post.jpg': 'Warn-Beiträge (Stufe 2)'}   # 15.11.2026
+PROBE_ORDNER = 'Probevideos'
+PROBE_ARTEN = dict(ARTEN, **{'special-test.mp4': 'Unwetter-Specials'})   # was als Probe abgelegt werden darf
 WURZEL_BILD = 'Wetterstation – Bilder'
 API = 'https://www.googleapis.com/drive/v3/files'
 ORDNER = 'application/vnd.google-apps.folder'
@@ -78,10 +83,11 @@ def push(titel, text):
     except Exception as e: print('Push fehlgeschlagen:', e)
 
 
-def ablegen(datei, text='', zeit=None):
-    """Video fb/<datei> mit Beitragstext in Drive ablegen. Gibt True/False zurück, wirft nie."""
+def ablegen(datei, text='', zeit=None, probe=False):
+    """Video fb/<datei> mit Beitragstext in Drive ablegen. Gibt True/False zurück, wirft nie.
+    probe=True: nicht gepostetes Probe-Video → Unterordner „Probevideos“."""
     bild = datei in BILDER
-    art = BILDER.get(datei) if bild else ARTEN.get(datei)
+    art = BILDER.get(datei) if bild else (PROBE_ARTEN if probe else ARTEN).get(datei)
     wurzel = WURZEL_BILD if bild else WURZEL
     pfad = os.path.join(FB, datei)
     if not art or not os.path.exists(pfad): return False
@@ -90,25 +96,32 @@ def ablegen(datei, text='', zeit=None):
         if not tok: print('Google Drive nicht eingerichtet (GDRIVE_* fehlen) – keine Ablage.'); return False
         zeit = zeit or dt.datetime.now(TZ)
         stempel = zeit.strftime('%Y-%m-%d %H-%M')
-        w = ordner(tok, wurzel); a = ordner(tok, art, w); u = ordner(tok, stempel, a)
+        w = ordner(tok, wurzel)
+        if probe: w = ordner(tok, PROBE_ORDNER, w)
+        a = ordner(tok, art, w); u = ordner(tok, stempel, a)
+        if probe: art = 'Probe ' + art
         if bild: hochladen(tok, pfad, '%s %s.jpg' % (art, stempel), u, 'image/jpeg')
         else: hochladen(tok, pfad, '%s %s.mp4' % (art, stempel), u, 'video/mp4')
         tf = '/tmp/beitragstext.txt'
-        open(tf, 'w', encoding='utf-8').write('%s · live gegangen am %s Uhr\n\n%s\n' % (art, zeit.strftime('%d.%m.%Y %H:%M'), text or ''))
+        open(tf, 'w', encoding='utf-8').write('%s · %s am %s Uhr\n\n%s\n' % (art, 'von Hand neu erstellt (NICHT gepostet)' if probe else 'live gegangen', zeit.strftime('%d.%m.%Y %H:%M'), text or ''))
         hochladen(tok, tf, 'Beitragstext.txt', u, 'text/plain')
-        print('Google Drive: %s / %s / %s abgelegt.' % (wurzel, art, stempel))
+        print('Google Drive: %s / %s%s / %s abgelegt.' % (wurzel, PROBE_ORDNER + ' / ' if probe else '', art, stempel))
         return True
     except Exception as e:
         print('Google Drive: Ablage fehlgeschlagen:', e)
-        push('Drive-Ablage fehlgeschlagen', '%s konnte nicht in Google Drive abgelegt werden (%s). Gepostet wurde trotzdem.' % (art, str(e)[:150]))
+        push('Drive-Ablage fehlgeschlagen', '%s konnte nicht in Google Drive abgelegt werden (%s). %s' % (art, str(e)[:150], 'Das Probe-Video liegt trotzdem in der Zentrale.' if probe else 'Gepostet wurde trotzdem.'))
         return False
 
 
 if __name__ == '__main__':
+    PROBE = '--probe' in sys.argv
+    sys.argv = [x for x in sys.argv if x != '--probe']
     if len(sys.argv) < 2: print(__doc__); sys.exit(1)
     z = dt.datetime.fromisoformat(sys.argv[2]).replace(tzinfo=TZ) if len(sys.argv) > 2 else None
     txt = ''
     try:
         if sys.argv[1] == 'wetter.mp4': txt = json.load(open(os.path.join(FB, 'post.json'), encoding='utf-8')).get('text', '')
+        elif PROBE:
+            txt = json.load(open(os.path.join(FB, sys.argv[1].replace('.mp4', '.json')), encoding='utf-8')).get('skript', '')
     except Exception: pass
-    sys.exit(0 if ablegen(sys.argv[1], txt, z) else 1)
+    sys.exit(0 if ablegen(sys.argv[1], txt, z, probe=PROBE) else 1)

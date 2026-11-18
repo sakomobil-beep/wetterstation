@@ -3417,7 +3417,11 @@ def archiv_sortierung(e):
 
 
 def archiv(name, heute, special, warn, gesamt, tage=7):
-    """Videothek: Kopie + Vorschaubild nach fb/archiv/, alles älter als 7 Tage wird gelöscht."""
+    """Videothek: Kopie + Vorschaubild nach fb/archiv/, alles älter als 7 Tage wird gelöscht.
+    Probe-Videos („Video neu erstellen (ohne Posten)“, video-neu.yml setzt PROBE=1) kommen seit 18.11.2026 NICHT in die
+    Videothek – sie werden stattdessen in Google Drive abgelegt (drive_ablage.py --probe)."""
+    if os.environ.get('PROBE') == '1':
+        print('Probe-Video: nicht in die Videothek (Ablage in Google Drive unter Probevideos).'); return
     import shutil
     ad = os.path.join(FB, 'archiv'); os.makedirs(ad, exist_ok=True)
     art_ = {'special': 'special', 'woche': 'woche', 'abendvideo': 'abend', 'monat': 'monat'}.get(name, 'morgen')
