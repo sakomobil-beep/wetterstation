@@ -20,8 +20,22 @@ DATEI = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'odenwald-li
 r1 = lambda v: None if v is None else round(float(v), 1)
 
 
+import time, urllib.request
+START = time.time()
+
+
+def get_wu(url):
+    """Schneller Abruf für Weather Underground: 2 Versuche à 12 s statt 5 à 45 s, damit der 10-Minuten-Lauf nie abbricht (18.11.2026)."""
+    for v in range(2):
+        try:
+            with urllib.request.urlopen(urllib.request.Request(url, headers={'User-Agent': 'wetter-badkoenig.de'}), timeout=12) as r: return json.loads(r.read().decode())
+        except Exception as e:
+            if v: raise
+            time.sleep(2)
+
+
 def wu(sid):
-    o = (get('https://api.weather.com/v2/pws/observations/current?stationId=%s&format=json&units=m&numericPrecision=decimal&apiKey=%s' % (sid, WU_KEY)).get('observations') or [None])[0]
+    o = (get_wu('https://api.weather.com/v2/pws/observations/current?stationId=%s&format=json&units=m&numericPrecision=decimal&apiKey=%s' % (sid, WU_KEY)).get('observations') or [None])[0]
     if not o: return None
     m = o.get('metric') or {}
     return dict(t=r1(m.get('temp')), rh=o.get('humidity'), w=r1(m.get('windSpeed')), g=r1(m.get('windGust')), r=r1(m.get('precipTotal')),
@@ -51,9 +65,10 @@ def extra_stationen(jetzt, belegt):
     neu = False
     for n, el, la, lo in EXTRA:
         w = W.get(n)
+        if time.time() - START > 90: break   # Zeit reicht nicht mehr – nächster Lauf sucht weiter
         if w and (jetzt - dt.datetime.fromisoformat(w['gewaehlt'])).total_seconds() < 86400: belegt.add(w['id']); continue
         try:
-            L = get('https://api.weather.com/v3/location/near?geocode=%s,%s&product=pws&format=json&apiKey=%s' % (la, lo, WU_KEY)).get('location') or {}
+            L = get_wu('https://api.weather.com/v3/location/near?geocode=%s,%s&product=pws&format=json&apiKey=%s' % (la, lo, WU_KEY)).get('location') or {}
             ids, km = L.get('stationId') or [], L.get('distanceKm') or []
         except Exception as e: print('Stationssuche %s:' % n, e); continue
         for sid, k in zip(ids, km):
@@ -62,6 +77,8 @@ def extra_stationen(jetzt, belegt):
             except Exception: v = None
             if v and v.get('t') is not None and (jetzt - dt.datetime.fromisoformat(v['zeit'])).total_seconds() < 3600:
                 W[n] = dict(id=sid, km=k, gewaehlt=jetzt.isoformat(timespec='minutes')); belegt.add(sid); neu = True; print('Station für %s: %s (%s km)' % (n, sid, k)); break
+            if time.time() - START > 90: break
+        if n not in W and w: W[n] = w   # alte Wahl behalten, falls die Suche nichts bringt
     if neu: json.dump(W, open(STATIONSWAHL, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     return W
 

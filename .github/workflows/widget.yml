@@ -17,14 +17,14 @@ concurrency:
 jobs:
   daten:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
       - run: pip install pillow
       - run: python .github/scripts/widget_daten.py
-      - run: python .github/scripts/odenwald_live.py || echo "Odenwald-Live nicht aktualisiert"
+      - run: timeout 240 python .github/scripts/odenwald_live.py || echo "Odenwald-Live nicht aktualisiert"
       - name: Speichern
         run: |
           git config user.name "wetter-bot"
