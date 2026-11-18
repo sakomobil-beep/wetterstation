@@ -1294,6 +1294,82 @@ html[data-theme="dark"] .am-map .cty text{fill:#EEF3F7!important;stroke:#141B25!
 </style>
 
 <script src="theme.js"></script>
+<!-- STARTSEITE-D ANFANG: Drei-Spalten-Startseite „Jetzt / Heute / Was kommt“ (18.11.2026). Zurück zur alten Ansicht: diesen Block bis „STARTSEITE-D ENDE“ entfernen. -->
+<style id="startD">
+.dgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:stretch}
+.dcol{display:flex;flex-direction:column;gap:14px;min-width:0}
+.dcol>.dgrow,.dcol>.vj,.dcol>.factscard,.dcol>.outlook2{flex:1 1 auto}
+.dcol>.vj{display:flex;flex-direction:column}.dcol>.vj[hidden]{display:none}.dcol>.vj .vj-grid{flex:1}.dcol>.vj .vj-more{text-align:left}
+.dcol>.outlook2 .tvcol{grid-auto-rows:minmax(0,1fr)}
+.dcol>h2.sec{margin:0 0 -2px}
+.dcol .nowgrid.nga{grid-template-columns:repeat(2,minmax(0,1fr))}
+.dcol .nga .ngh{grid-column:span 2;grid-row:auto}
+.dcol .vj .vj-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.dcol .outlook2{grid-template-columns:minmax(0,1fr)}
+.dob{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px 20px}
+.dob .label{font:500 11px/1.3 var(--font-data);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.dob .ngh-ob{margin-top:0;padding-top:0;border-top:0;--hc:var(--accent)}
+.drain .drow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:6px}
+.drain .drow>div+div{border-left:1px solid var(--line);padding-left:12px}
+.drain small{font-size:12.5px;color:var(--muted)}
+.drain .big .v{font-size:1.9rem}
+.dcol .windrow{gap:8px}.dcol .windrow>div{min-width:0}.dcol .compass{width:60px;height:60px;flex:0 0 60px}
+.dcol .nga .windrow .big{display:flex;flex-wrap:wrap;align-items:baseline}
+.dcol .nga .windrow .big .v{font-size:1.9rem}.dcol .nga .windrow .big .u{font-size:.8rem;margin-left:2px}
+.dchart{margin-top:18px}
+.dfollow{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:18px}
+@media (min-width:1001px) and (max-width:1220px){.dcol .compass{width:48px;height:48px;flex-basis:48px}.dcol .nga .windrow .big .v{font-size:1.6rem}.dcol .nga .tile{padding:14px}}
+@media (max-width:1000px){.dgrid{grid-template-columns:minmax(0,1fr)}.dfollow{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:460px){.drain .big .v{font-size:1.45rem}.drain .drow{gap:8px}.drain .drow>div+div{padding-left:8px}}
+</style>
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  try{
+  var P=document.getElementById('panel-aktuell');if(!P)return;
+  var ng=P.querySelector('.nowgrid.nga'),secs=[].slice.call(P.querySelectorAll('h2.sec'));
+  var day=document.getElementById('nowHi'),rn=document.getElementById('rain24'),sm=P.querySelector('.ngsun'),ch=P.querySelector('.ngchart'),vj=document.getElementById('vj'),fa=P.querySelector('.factscard'),ho=document.getElementById('heroOb'),o2=P.querySelector('.outlook2');
+  if(!ng||secs.length<3||!day||!rn||!sm||!ch||!vj||!fa||!ho||!o2)return;
+  day=day.closest('.tile');var rt=rn.closest('.tile');if(!day||!rt)return;
+  var hJ=secs[0],hH=secs[1],hW=secs[2];
+  var g=document.createElement('div');g.className='dgrid';
+  ng.parentNode.insertBefore(g,hJ);
+  function col(h){var c=document.createElement('div');c.className='dcol';c.appendChild(h);g.appendChild(c);return c}
+  var c1=col(hJ),c2=col(hH),c3=col(hW);
+  ng.classList.add('dgrow');c1.appendChild(ng);
+  var w=document.createElement('div');w.className='nowgrid nga';w.style.gridTemplateColumns='minmax(0,1fr)';
+  w.appendChild(day);sm.style.gridColumn='auto';w.appendChild(sm);
+  c2.appendChild(w);c2.appendChild(vj);c2.appendChild(fa);
+  rt.style.gridColumn='span 2';rt.classList.add('drain');
+  var lb=rt.querySelector('.label'),bg=rt.querySelector('.big'),rl=document.getElementById('rainLine');
+  if(lb&&bg&&rl){
+    lb.textContent='Regen';
+    var rw=document.createElement('div');rw.className='drow';
+    var b0=document.createElement('div');b0.innerHTML='<small>heute</small>';b0.appendChild(bg);b0.appendChild(rl);rw.appendChild(b0);
+    rw.insertAdjacentHTML('beforeend','<div><small>diesen Monat</small><div class="big"><span class="v" id="dRM">–</span><span class="u">mm</span></div><div class="line" id="dRMt"></div></div><div><small>dieses Jahr</small><div class="big"><span class="v" id="dRY">–</span><span class="u">mm</span></div><div class="line" id="dRYt"></div></div>');
+    rt.appendChild(rw);
+    var arch=null;
+    function p2(n){return (n<10?'0':'')+n}
+    function f1(x){return x.toFixed(1).replace('.',',')}
+    function rsum(){
+      if(!arch)return;
+      var n=new Date(),td=n.getFullYear()+'-'+p2(n.getMonth()+1)+'-'+p2(n.getDate()),ym=td.slice(0,7),m=0,y=0,mt=0,yt=0;
+      arch.forEach(function(t){var d=String(t.obsTimeLocal||'').slice(0,10);if(d===td||d.slice(0,4)!==td.slice(0,4))return;var v=(t.metric&&t.metric.precipTotal)||0;y+=v;if(v>=0.1)yt++;if(d.slice(0,7)===ym){m+=v;if(v>=0.1)mt++}});
+      var h=parseFloat(String(rn.textContent||'').replace(',','.'));if(isNaN(h))h=0;if(h>=0.1){mt++;yt++}
+      document.getElementById('dRM').textContent=f1(m+h);document.getElementById('dRY').textContent=f1(y+h);
+      document.getElementById('dRMt').textContent=mt+(mt===1?' Regentag':' Regentage');document.getElementById('dRYt').textContent=yt+(yt===1?' Regentag':' Regentage');
+    }
+    fetch('data/archiv/tage-'+new Date().getFullYear()+'.json',{cache:'no-cache'}).then(function(r){return r.json()}).then(function(j){arch=(j&&j.tage)||[];rsum();setInterval(rsum,60000)}).catch(function(){});
+    if(window.MutationObserver)new MutationObserver(rsum).observe(rn,{childList:true,characterData:true,subtree:true});
+  }
+  var ob=document.createElement('section');ob.className='dob';ob.innerHTML='<div class="label">Ausblick</div>';ob.appendChild(ho);
+  c3.appendChild(ob);c3.appendChild(o2);
+  ch.classList.add('dchart');g.parentNode.insertBefore(ch,g.nextSibling);
+  var f=document.createElement('div');f.className='dfollow';[].slice.call(o2.querySelectorAll('.fbfollow')).forEach(function(a){f.appendChild(a)});
+  ch.parentNode.insertBefore(f,ch.nextSibling);
+  }catch(e){}
+});
+</script>
+<!-- STARTSEITE-D ENDE -->
 </head>
 <body>
 <div class="sky" id="sky" aria-hidden="true"></div>
@@ -2136,7 +2212,7 @@ html[data-theme="dark"] .am-map .cty text{fill:#EEF3F7!important;stroke:#141B25!
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 17.11.2026, 23:50 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 18.11.2026, 11:45 Uhr</span></p>
 
 </div>
 
