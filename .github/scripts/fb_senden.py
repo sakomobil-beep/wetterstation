@@ -223,6 +223,20 @@ def frisch_gepostet(schluessel, heute):
     return False
 
 
+def abends_gebaut(j, jetzt, ab=18):
+    """True, wenn der Beitrag heute am Abend (ab 18 Uhr Ortszeit) und nicht als Probe gebaut wurde (18.11.2026).
+    Sonst könnte ein morgens von Hand erstelltes Probe-Abendvideo oder eine nach einer Code-Änderung neu gebaute
+    Abend-Story um 19 Uhr gepostet werden, wenn der frische Bau ausfällt oder der Weckruf zu spät kommt."""
+    if j.get('probe'): return False
+    try:
+        e = dt.datetime.fromisoformat(j['erstellt'])
+        if e.tzinfo is None: e = e.replace(tzinfo=TZ)
+        e = e.astimezone(TZ)
+        return e.date() == jetzt.date() and e.hour >= ab
+    except Exception:
+        return False
+
+
 def main():
     seiten_token()
     modus = sys.argv[1] if len(sys.argv) > 1 else 'tag'
@@ -248,6 +262,7 @@ def main():
         try: v = json.load(open(os.path.join(FB, 'abendvideo.json'), encoding='utf-8'))
         except Exception: print('Kein Abendvideo vorhanden.'); return
         if v.get('datum') != heute: print('Abendvideo ist nicht von heute.'); return
+        if not abends_gebaut(v, jetzt): print('Abendvideo ist eine Probe oder nicht von heute Abend – wird nicht gepostet.'); return
         if M.get('abend') == heute: print('Abendvideo heute schon gepostet.'); return
         time.sleep(int(os.environ.get('FB_WARTEN', '90')))
         if frisch_gepostet('abend', heute): return
@@ -301,6 +316,7 @@ def main():
         try: j = json.load(open(os.path.join(FB, 'abendstory.json'), encoding='utf-8'))
         except Exception: print('Keine Abend-Story vorhanden.'); return
         if j.get('datum') != heute: print('Abend-Story ist nicht von heute.'); return
+        if not abends_gebaut(j, jetzt): print('Abend-Story ist nicht von heute Abend – wird nicht gepostet.'); return
         if M.get('abendstory') == heute and M.get('fb_abendstory') == heute: print('Abend-Story heute schon gepostet.'); return
         time.sleep(int(os.environ.get('FB_WARTEN', '90')))
         story_beide(M, 'abendstory', 'abendstory.jpg', heute, jetzt, 'Abend-Story gepostet', 'Die Story mit dem Wetter für morgen.', 'camera,crescent_moon')
@@ -319,9 +335,9 @@ def main():
         try: j = json.load(open(os.path.join(FB, 'jahr.json'), encoding='utf-8'))
         except Exception: print('Kein Jahresrückblick vorhanden.'); return
         if j.get('jahr') != jetzt.year or not j.get('datum', '').startswith(str(jetzt.year) + '-12-3'): print('Jahresrückblick ist nicht aktuell.'); return
-        if M.get('jahr') == heute: print('Jahresrückblick schon gepostet.'); return
+        if (M.get('jahr') or '')[:4] == str(jetzt.year): print('Jahresrückblick dieses Jahr schon gepostet.'); return   # 18.11.2026: einmal pro Jahr (vorher pro Tag -> wäre am 31.12. erneut gepostet worden)
         time.sleep(int(os.environ.get('FB_WARTEN', '90')))
-        if frisch_gepostet('jahr', heute): return
+        if frisch_gepostet('jahr', heute) or frisch_gepostet('jahr', str(jetzt.year) + '-12-30'): return
         if video_senden('jahr.mp4', j['text']):
             M['jahr'] = heute; M['jahr_zeit'] = jetzt.isoformat(timespec='minutes'); push('Jahresrückblick gepostet', 'Max mit dem Wetterjahr %d ist jetzt auf Facebook und Instagram online.' % j['jahr'], tags='fireworks,white_check_mark')
     elif modus == 'monat':   # Monatsrückblick aus dem Studio: am 1. des Monats ab 17 Uhr (seit 15.11.2026, vorher 15 Uhr – kollidierte mit Wetterwissen), einmal je Monat
@@ -352,6 +368,7 @@ def main():
         if jetzt.weekday() != 6 or jetzt.hour < 20: print('Wochenausblick nur sonntags ab 20 Uhr.'); return
         j = json.load(open(os.path.join(FB, 'woche.json'), encoding='utf-8'))
         if j.get('datum') != heute: print('Wochenausblick ist nicht von heute.'); return
+        if not abends_gebaut(j, jetzt, 19): print('Wochenausblick ist eine Probe oder nicht von heute Abend – wird nicht gepostet.'); return
         if M.get('woche') == heute: print('Wochenausblick heute schon gepostet.'); return
         time.sleep(int(os.environ.get('FB_WARTEN', '90')))
         if frisch_gepostet('woche', heute): return
@@ -365,7 +382,10 @@ def main():
         jetzt = dt.datetime.now(TZ)
         try: j = json.load(open(os.path.join(FB, 'special.json'), encoding='utf-8'))
         except Exception: return
-        if not j.get('autopost') or j.get('erstellt', '')[:10] < (jetzt - dt.timedelta(hours=6)).isoformat()[:10]: print('Kein Unwetter-Special zum Posten.'); return
+        if not j.get('autopost'): print('Kein Unwetter-Special zum Posten.'); return
+        try:   # 18.11.2026: höchstens 3 Stunden alt (wie die Warn-Story) – vorher zählte nur das Datum, ein Special vom Vortag konnte noch rausgehen
+            if (jetzt - dt.datetime.fromisoformat(j['erstellt'])).total_seconds() > 3 * 3600: print('Unwetter-Special ist älter als 3 Stunden – wird nicht mehr gepostet.'); return
+        except Exception: print('Unwetter-Special ohne gültige Erstellzeit – übersprungen.'); return
         if M.get('special_erstellt') == j.get('erstellt'): print('Unwetter-Special schon gepostet.'); return
         time.sleep(int(os.environ.get('FB_WARTEN', '90')))
         if frisch_gepostet('special_erstellt', j.get('erstellt')): return

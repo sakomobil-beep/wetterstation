@@ -3383,6 +3383,7 @@ def main():
         except Exception as e: print('Unwetter-Story nicht gebaut:', e)
     json.dump({'erstellt': dt.datetime.now().astimezone().isoformat(timespec='minutes'), 'datum': heute.isoformat(),
                'special': special, 'warn': warn, 'warn_roh': roh, 'stufe': stufe, 'autopost': bool(special and stufe >= 3 and not test),
+               'probe': os.environ.get('PROBE') == '1',   # von Hand neu erstellt (video-neu.yml) – Abendvideo/Wochenausblick werden so nie gepostet (18.11.2026)
                'dauer': round(gesamt, 1), 'stimme': echt, 'skript': text, 'frage': FRAGE[0],
                **({'zeilen': next((x['zeilen'] for x in segs if x['art'] == 'woche'), [])} if wochen else {})},
               open(os.path.join(FB, name + '.json'), 'w', encoding='utf-8'), ensure_ascii=False)
