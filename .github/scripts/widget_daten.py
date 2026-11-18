@@ -84,6 +84,36 @@ def live_speichern(cur):
         print('Live-Datei nicht geschrieben:', e)
 
 
+def station_wache():
+    """19.11.2026: Push, wenn die Station seit über 15 Minuten nichts mehr direkt sendet (Strom/WLAN weg), und wenn sie wieder da ist."""
+    import urllib.request, time
+    p = os.path.join(os.path.dirname(LIVE), 'station-status.json')
+    try: S = json.load(open(p, encoding='utf-8'))
+    except Exception: S = {'aus': False}
+    alter = None
+    try:
+        with urllib.request.urlopen(urllib.request.Request('https://wetter-badkoenig.sakomobil.workers.dev/roh', headers={'User-Agent': 'wetter-badkoenig.de'}), timeout=15) as r:
+            z = json.loads(r.read().decode()).get('zeit')
+        if z: alter = time.time() - dt.datetime.fromisoformat(z.replace('Z', '+00:00')).timestamp()
+    except Exception as e: print('Station-Wache: Empfänger nicht erreichbar:', e); return
+    aus = alter is None or alter > 15 * 60
+    topic = os.environ.get('NTFY_TOPIC')
+    def push(titel, txt, tags):
+        if not topic: return
+        try: urllib.request.urlopen(urllib.request.Request('https://ntfy.sh/' + topic, data=txt.encode('utf-8'), headers={'Title': titel.encode('utf-8').decode('latin-1'), 'Tags': tags, 'Priority': 'high' if tags == 'warning' else 'default'}), timeout=20).read()
+        except Exception as e: print('Push fehlgeschlagen:', e)
+    if aus and not S.get('aus'):
+        push('Station sendet nicht', 'Deine Wetterstation hat seit %s keine Werte mehr geschickt. Strom oder WLAN prüfen. Die Website nutzt solange Weather Underground als Reserve.'
+             % ('%d Minuten' % (alter // 60) if alter else 'einiger Zeit'), 'warning')
+        S = {'aus': True, 'seit': dt.datetime.now(TZ).isoformat(timespec='minutes')}
+    elif not aus and S.get('aus'):
+        push('Station wieder da', 'Deine Wetterstation sendet wieder (ausgefallen seit %s Uhr).' % str(S.get('seit', ''))[11:16], 'white_check_mark')
+        S = {'aus': False}
+    else: return
+    json.dump(S, open(p, 'w', encoding='utf-8'), ensure_ascii=False)
+    print('Station-Wache:', S)
+
+
 def main():
     now = dt.datetime.now(TZ)
     d = {'stand': None, 'live': None, 'tage': [], 'warn': []}
@@ -105,3 +135,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+    station_wache()

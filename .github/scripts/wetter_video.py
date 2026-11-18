@@ -1045,6 +1045,23 @@ def skript_unwetter(warn, roh, info, heute):
         if fx: x['fx'] = fx
     return seg
 
+def station_jetzt_satz(rnd):
+    """Satz mit dem aktuellen Messwert der eigenen Station (höchstens 10 Min. alt), sonst leer."""
+    try:
+        from fb_post import station_direkt
+        j = station_direkt(max_alter=600)
+        if not j: return ''
+        o = j['observations'][0]; t = (o.get('metric') or {}).get('temp')
+        if t is None: return ''
+        z = dt.datetime.fromtimestamp(o['epoch'], ZoneInfo('Europe/Berlin'))
+        gr = ('%.1f' % t).replace('.', ',').replace('-', 'minus ')
+        return rnd.choice(['Gerade eben, um %s Uhr, zeigt unsere Station in Bad König %s Grad.',
+                           'Ganz frisch von unserer Station in Bad König: %s Uhr, %s Grad.',
+                           'Ein Blick auf unsere Station in Bad König – um %s Uhr waren es %s Grad.']) % ('%d:%02d' % (z.hour, z.minute), gr)
+    except Exception as e:
+        print('Jetzt-Wert der Station nicht verfügbar:', e); return ''
+
+
 def skript(days, warn, heute, nur_special=False):
     rnd = random.Random(heute.isoformat())
     a, b = days[0], days[1]
@@ -1069,6 +1086,9 @@ def skript(days, warn, heute, nur_special=False):
     else:
         hinweis = (' ' + dwd_satz(rnd, warn_txt(warn))) if warn else ''
         seg.append(dict(art='intro', bg='schloss', text=gruss + (' Für alle, die neu dabei sind: Ich bin Max, euer Wettersprecher für den Odenwald.' if heute.weekday() == 0 else '') + ' Das ist euer Odenwald-Wetter für %s.' % TAGE[heute.weekday()] + hinweis))
+    if not nur_special:   # 19.11.2026: echter Minutenwert der Station direkt vor dem Bau (Cloudflare-Empfänger)
+        jetzt_satz = station_jetzt_satz(rnd)
+        if jetzt_satz: seg[-1]['text'] += ' ' + jetzt_satz
     if not nur_special and a.get('gestern'):
         seg.append(dict(art='rueckblick', bg='schloss', tafel_img=tafel_gestern(a['gestern'], heute - dt.timedelta(days=1)),
                         text=gestern_txt(a['gestern'], rnd)))
