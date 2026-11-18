@@ -3084,7 +3084,7 @@ def baue(segmente, heute, ziel, special, titel=None):
     MS = None
     if MORGEN_STUDIO[0]:   # Morgenmagazin-Studio: Wetterbild läuft auf der LED-Wand, Max steht am Stehtisch
         import morgenstudio as MSTUDIO
-        MS = (MSTUDIO.basis(WEIHNACHT[0]), MSTUDIO.tisch(), MSTUDIO)
+        MS = (MSTUDIO.basis(WEIHNACHT[0]), MSTUDIO.tisch(WEIHNACHT[0], ADVENT_KERZEN[0] or 0), MSTUDIO)
         if not PULLI[0]:   # Outfit des Tages (Advent: Weihnachtspulli bleibt)
             o_ = MSTUDIO.outfit_fuer(heute)
             if o_: _PULLI_CACHE[o_] = MSTUDIO.muster(o_, sys.modules[__name__]); PULLI[0] = o_
@@ -3214,7 +3214,8 @@ def baue(segmente, heute, ziel, special, titel=None):
                 yy = (y + t * 60 * r_) % H; xx = (x + 20 * math.sin(t + ph)) % W
                 dr.ellipse([xx - r_, yy - r_, xx + r_, yy + r_], fill=(255, 255, 255, 230))
         if MS and not studio:   # Morgenstudio: Wetterbild ganz eingepasst auf die LED-Wand, Effekte nur dort; bei Tafel abgedunkelt
-            wb, wm, wp = MS[2].wand(s['bgimg'], pk, t, p, dunkel=s['tafel'] is not None); fr = MS[0].copy(); fr.paste(wb, wp, wm)
+            fx_w = pk or ('schnee' if WEIHNACHT[0] and (s.get('bg_name') or '').endswith('_advent') else None)   # Advent: Schneefall auf Advents-Bildern
+            wb, wm, wp = MS[2].wand(s['bgimg'], fx_w, t, p, dunkel=s['tafel'] is not None); fr = MS[0].copy(); fr.paste(wb, wp, wm)
         # Tafel: im Studio auf dem Bildschirm an der Wand, sonst rechts oben, schiebt sich herein
         tafel_seit = lt; tf_alt = None
         if s.get('tafel_wechsel'):   # Wettergrafiken: Tafeln wechseln gleichmäßig über den Abschnitt

@@ -141,8 +141,9 @@ def wand(bild, fx=None, t=0.0, p=0.0, dunkel=False):
     return im, m, (x0, y0)
 
 
-def tisch():
-    """Stehtisch Variante C (Kingmans Wahl 18.11.2026): warme Holzfront, dunkelblaue Platte, blaues Schild."""
+def tisch(weihnacht=False, kerzen=0):
+    """Stehtisch Variante C (Kingmans Wahl 18.11.2026): warme Holzfront, dunkelblaue Platte, blaues Schild.
+    Weihnachtszeit: Tannengirlande mit Lichtern, Adventskranz (kerzen 0–4), Geschenke, Glühwein-Becher statt Kaffee."""
     im = Image.new('RGBA', (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(im); top = TISCH; O = (25, 30, 40, 255)
     d.polygon([(0, top), (560, top), (530, H), (0, H)], fill=(120, 82, 50, 255))
     for k in range(0, 560, 28): d.line([(k, top + 8), (k - 10, H)], fill=(100, 68, 40, 255), width=3)
@@ -153,6 +154,15 @@ def tisch():
     d.rounded_rectangle([444, top - 74, 496, top - 22], radius=6, fill=(255, 255, 255, 255), outline=O, width=3)   # Kaffeebecher
     d.rectangle([446, top - 60, 494, top - 46], fill=ORANGE + (255,))
     d.rounded_rectangle([330, top - 36, 420, top - 22], radius=4, fill=(40, 46, 60, 255))                        # Tablet
+    if weihnacht:
+        r = random.Random(4)
+        for k in range(0, 590, 14): d.ellipse([k - 12, top - 26 + 5 * math.sin(k / 30), k + 12, top - 6 + 5 * math.sin(k / 30)], fill=(30, 110, 55, 255))
+        for k in range(10, 590, 46): d.ellipse([k - 5, top - 18, k + 5, top - 8], fill=r.choice([(255, 80, 80, 255), (255, 215, 90, 255), (140, 210, 255, 255)]))
+        d.rounded_rectangle([444, top - 74, 496, top - 22], radius=6, fill=(178, 34, 40, 255), outline=O, width=3)   # Glühwein-Becher
+        for k in range(4): d.ellipse([450 + k * 11, top - 52, 455 + k * 11, top - 47], fill=(255, 255, 255, 255))
+        try:
+            import studio_weihnacht; studio_weihnacht.tisch(im, top - 6, kerzen)   # Adventskranz + Geschenke wie im Abendstudio
+        except Exception as e: print('Adventskranz im Morgenstudio nicht gezeichnet:', e)
     return im
 
 
