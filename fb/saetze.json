@@ -1,21 +1,6 @@
 [
 {
 "d": "2026-11-15",
-"g": "folgen",
-"k": "Helft mir, den ganzen Odenwald zu erreic"
-},
-{
-"d": "2026-11-15",
-"g": "ueberg_heute",
-"k": ""
-},
-{
-"d": "2026-11-15",
-"g": "tag",
-"k": "Was bringt der Tag heute? Regen, und das"
-},
-{
-"d": "2026-11-15",
 "g": "gestern_nass",
 "k": "Anders als gestern wird es heute nass."
 },
@@ -1998,5 +1983,20 @@
 "d": "2026-11-18",
 "g": "folgen",
 "k": "Noch kein Follower? Ein Klick auf Folgen"
+},
+{
+"d": "2026-11-18",
+"g": "wissen_intro",
+"k": "Willkommen zu Wetterwissen mit Max!"
+},
+{
+"d": "2026-11-18",
+"g": "wissen_ende",
+"k": "Morgen gibt’s das nächste Wetterwissen –"
+},
+{
+"d": "2026-11-18",
+"g": "wissen_thema",
+"k": "Unser Thema heute: %s"
 }
 ]
