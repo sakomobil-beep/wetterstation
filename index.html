@@ -2254,7 +2254,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 18.11.2026, 23:58 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 00:25 Uhr</span></p>
 
 </div>
 
@@ -3049,7 +3049,65 @@ function lsGet(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e
 function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 function wuIdle() { return Date.now() - lastActivity > WU_IDLE_MS; }
 function wuBlockedUntil() { var b = lsGet('wu-pause'); return b && b > Date.now() ? b : 0; }
+/* 18.11.2026: Eigene Daten statt Weather Underground für die eigene Station.
+   Aktuell → Cloudflare-Empfänger (Station sendet direkt), heute → data/live.json, früher → eigenes Archiv data/archiv (seit 20.01.2026).
+   Fehlt etwas, geht der Abruf wie bisher an WU. */
+var EIGEN = { cache: {} };
+function eigenJson(p) {
+  if (!EIGEN.cache[p] || Date.now() - EIGEN.cache[p].t > 5 * 60000)
+    EIGEN.cache[p] = { t: Date.now(), p: fetch(p + (p.indexOf('?') < 0 ? '?' : '&') + 'v=' + Math.floor(Date.now() / 300000), { cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error('fehlt'); return r.json(); }) };
+  return EIGEN.cache[p].p.catch(function (e) { delete EIGEN.cache[p]; throw e; });
+}
+function eigenTag(d) { return d.slice(0, 4) + '-' + d.slice(4, 6) + '-' + d.slice(6, 8); }
+function eigenStunden(tag) {
+  return eigenJson('data/archiv/stunden-' + tag.slice(0, 7) + '.json').then(function (j) { var L = (j.tage || {})[tag]; if (!L || !L.length) throw new Error('fehlt'); return L; });
+}
+function eigenHeute() { return eigenJson('data/live.json').then(function (j) { return ((j.hist || {}).observations) || []; }); }
+function eigenTagesSumme(L, tag) {   // Tageszusammenfassung für heute aus dem laufenden Tagesverlauf
+  var w = function (k, f) { var v = L.map(function (o) { return (o.metric || {})[k]; }).filter(function (v) { return typeof v === 'number'; }); return v.length ? f(v) : null; };
+  var mx = function (v) { return Math.max.apply(null, v); }, mn = function (v) { return Math.min.apply(null, v); }, av = function (v) { return v.reduce(function (s, x) { return s + x; }, 0) / v.length; };
+  var h = L.map(function (o) { return o.humidityAvg; }).filter(function (v) { return typeof v === 'number'; });
+  return { obsTimeLocal: tag + ' 23:59:59', epoch: L.length ? L[L.length - 1].epoch : 0, humidityHigh: h.length ? mx(h) : null, humidityLow: h.length ? mn(h) : null, humidityAvg: h.length ? av(h) : null,
+    metric: { tempHigh: w('tempHigh', mx), tempLow: w('tempLow', mn), tempAvg: w('tempAvg', av), dewptAvg: w('dewptAvg', av), windgustHigh: w('windgustHigh', mx), windspeedAvg: w('windspeedAvg', av),
+      pressureMax: w('pressureMax', mx), pressureMin: w('pressureMin', mn), precipTotal: w('precipTotal', mx), precipRate: w('precipRate', mx) } };
+}
+function eigenAbruf(url) {
+  var u; try { u = new URL(url); } catch (e) { return null; }
+  if (u.hostname !== 'api.weather.com' || u.searchParams.get('stationId') !== 'IBADKN33') return null;
+  var p = u.pathname, heute = todayStr(), q = u.searchParams;
+  if (p === '/v2/pws/observations/current') return fetch(LIVE_CF_URL, { cache: 'no-store' }).then(function (r) { if (!r.ok) throw new Error('fehlt'); return r.json(); });
+  if (p === '/v2/pws/observations/all/1day') return eigenHeute().then(function (L) { return { observations: L }; });
+  if ((p === '/v2/pws/history/all' || p === '/v2/pws/history/hourly') && q.get('date')) {
+    var tg = eigenTag(q.get('date'));
+    return tg === heute ? eigenHeute().then(function (L) { return { observations: L }; }) : eigenStunden(tg).then(function (L) { return { observations: L }; });
+  }
+  if (p === '/v2/pws/observations/hourly/7day') {
+    var tage = []; for (var i = 6; i >= 1; i--) tage.push(new Date(Date.now() - i * 864e5).toLocaleDateString('sv-SE'));
+    return Promise.all(tage.map(function (t) { return eigenStunden(t).catch(function () { return []; }); }).concat([eigenHeute()])).then(function (A) {
+      var L = [].concat.apply([], A); if (L.length < 24) throw new Error('fehlt'); return { observations: L };
+    });
+  }
+  if (p === '/v2/pws/history/daily' || p === '/v2/pws/dailysummary/7day') {
+    var von, bis;
+    if (p === '/v2/pws/history/daily') { von = eigenTag(q.get('startDate') || q.get('date')); bis = eigenTag(q.get('endDate') || q.get('date')); }
+    else { bis = heute; von = new Date(Date.now() - 6 * 864e5).toLocaleDateString('sv-SE'); }
+    var jahre = []; for (var y = +von.slice(0, 4); y <= +bis.slice(0, 4); y++) jahre.push(y);
+    return Promise.all(jahre.map(function (y) { return eigenJson('data/archiv/tage-' + y + '.json').then(function (j) { return j.tage || []; }); })).then(function (A) {
+      var L = [].concat.apply([], A).filter(function (t) { var d = String(t.obsTimeLocal).slice(0, 10); return d >= von && d <= bis && !t.quelle; });
+      var gest = new Date(Date.now() - 864e5).toLocaleDateString('sv-SE');
+      if (bis >= heute) return eigenHeute().then(function (H) { if (H.length) L.push(eigenTagesSumme(H, heute)); return L; });
+      if (bis >= gest && !L.some(function (t) { return String(t.obsTimeLocal).slice(0, 10) === gest; })) throw new Error('fehlt');   // gestern noch nicht im Archiv
+      return L;
+    }).then(function (L) { if (!L.length) throw new Error('fehlt'); return p === '/v2/pws/dailysummary/7day' ? { summaries: L } : { observations: L }; });
+  }
+  return null;
+}
 function wuFetch(url) {
+  var eigen = null; try { eigen = eigenAbruf(url); } catch (e) {}
+  if (eigen) return eigen.catch(function () { return wuFetchWU(url); });
+  return wuFetchWU(url);
+}
+function wuFetchWU(url) {
   var until = wuBlockedUntil();
   if (until) return Promise.reject(new Error('Weather Underground hat den Abruf abgelehnt, neuer Versuch um ' + hhmm(new Date(until)) + ' Uhr'));
   var day = todayStr(), c = lsGet('wu-calls') || {};

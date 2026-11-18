@@ -24,6 +24,11 @@ NASS = 0.1                 # mm pro Stunde: ab hier zählt eine Stunde als nass
 
 
 def get(url):
+    try:   # 19.11.2026: eigene Station aus eigenen Daten statt WU
+        from eigene_daten import ersatz
+        e = ersatz(url)
+        if e is not None: return e
+    except ImportError: pass
     req = urllib.request.Request(url, headers={'User-Agent': 'wetter-badkoenig.de lernen'})
     with urllib.request.urlopen(req, timeout=40) as r:
         return json.loads(r.read().decode())

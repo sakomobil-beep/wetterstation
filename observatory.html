@@ -706,7 +706,7 @@ ul.facts li { border-left: 3px solid var(--violet); padding: 2px 0 2px 12px; fon
   }).catch(function () { document.getElementById('nightVerdict').textContent = 'Die Vorhersage konnte gerade nicht geladen werden.'; document.getElementById('hCloud').textContent = '–'; });
   var cfg = window.WETTER_CONFIG;
   if (cfg && cfg.apiKey && cfg.stationId) {
-    fetch('https://api.weather.com/v2/pws/observations/current?stationId=' + encodeURIComponent(cfg.stationId) + '&format=json&units=m&numericPrecision=decimal&apiKey=' + encodeURIComponent(cfg.apiKey)).then(function (r) { return r.json(); }).then(function (j) {
+    fetch('https://wetter-badkoenig.sakomobil.workers.dev/', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
       var o = j.observations[0], m = o.metric; document.getElementById('stnNow').textContent = '· jetzt: ' + fmt(m.temp, 1) + ' °C, ' + Math.round(o.humidity) + ' % Luftfeuchte' + (o.humidity > 92 ? ' (Nebel oder Dunst möglich)' : '');
     }).catch(function () {});
   }

@@ -93,6 +93,11 @@ def reserve_push(zeit, alter):
 
 
 def get(url):
+    try:   # 19.11.2026: eigene Station aus eigenen Daten statt WU
+        from eigene_daten import ersatz
+        e = ersatz(url)
+        if e is not None: return e
+    except ImportError: pass
     req = urllib.request.Request(url, headers={'User-Agent': 'wetter-badkoenig.de facebook-bot'})
     om = 'api.open-meteo.com' in url
     versuche = 1 if (om and OM_AUS) else 5
