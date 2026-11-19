@@ -1,61 +1,6 @@
 [
 {
 "d": "2026-11-17",
-"g": "folgen",
-"k": "Kennt ihr jemanden im Odenwald, der imme"
-},
-{
-"d": "2026-11-17",
-"g": "dwd",
-"k": "Ein Hinweis vorab: Für unsere Gegend gil"
-},
-{
-"d": "2026-11-17",
-"g": "ueberg_heute",
-"k": "So, jetzt zum Wetter. "
-},
-{
-"d": "2026-11-17",
-"g": "tag",
-"k": "Heute heißt es: Regen, bei etwa 15 Grad."
-},
-{
-"d": "2026-11-17",
-"g": "gestern_waermer",
-"k": "Damit wird es rund 3 Grad wärmer als ges"
-},
-{
-"d": "2026-11-17",
-"g": "klima_mild",
-"k": "Das sind einige Grad mehr, als um diese "
-},
-{
-"d": "2026-11-17",
-"g": "ueberg_tipp",
-"k": "Max-Tipp des Tages: "
-},
-{
-"d": "2026-11-17",
-"g": "ueberg_morgen",
-"k": "Schauen wir auf morgen. "
-},
-{
-"d": "2026-11-17",
-"g": "tag",
-"k": "Am Mittwoch ist Regen angesagt, bei bis "
-},
-{
-"d": "2026-11-17",
-"g": "frage",
-"k": "Aus welchem Ort im Odenwald schaut ihr z"
-},
-{
-"d": "2026-11-17",
-"g": "folgen",
-"k": "Kennt ihr jemanden im Odenwald, der imme"
-},
-{
-"d": "2026-11-17",
 "g": "dwd",
 "k": "Ein Hinweis vorab: Für unsere Gegend gel"
 },
@@ -1863,6 +1808,61 @@
 "d": "2026-11-19",
 "g": "klima_mild",
 "k": "Ganz schön mild für Mitte November!"
+},
+{
+"d": "2026-11-19",
+"g": "kein_ausflug",
+"k": "Pläne für draußen? Die hebt ihr euch bes"
+},
+{
+"d": "2026-11-19",
+"g": "ueberg_morgen",
+"k": ""
+},
+{
+"d": "2026-11-19",
+"g": "tag",
+"k": "Am Freitag ist Regen angesagt, bei bis z"
+},
+{
+"d": "2026-11-19",
+"g": "frage",
+"k": "Wie sieht’s gerade bei euch draußen aus?"
+},
+{
+"d": "2026-11-19",
+"g": "folgen",
+"k": "Ihr schaut gerade zum ersten Mal zu? Dan"
+},
+{
+"d": "2026-11-19",
+"g": "dwd",
+"k": "Erst das Wichtige: Der Deutsche Wetterdi"
+},
+{
+"d": "2026-11-19",
+"g": "r_nass",
+"k": "Tja, "
+},
+{
+"d": "2026-11-19",
+"g": "ueberg_heute",
+"k": "Und nun zum Tag. "
+},
+{
+"d": "2026-11-19",
+"g": "tag",
+"k": "Heute: Regen, und das Thermometer klette"
+},
+{
+"d": "2026-11-19",
+"g": "gestern_kaelter",
+"k": "Kühler als gestern, um etwa 3 Grad."
+},
+{
+"d": "2026-11-19",
+"g": "klima_mild",
+"k": "Für Mitte November ist das übrigens unge"
 },
 {
 "d": "2026-11-19",
