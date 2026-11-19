@@ -2257,7 +2257,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 17:02 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 17:06 Uhr</span></p>
 
 </div>
 
@@ -6712,7 +6712,7 @@ function owKarte() {
     var r = 7, kp = 'M' + (bx + r) + ',' + by + 'h' + (bw - 2 * r) + 'a' + r + ',' + r + ' 0 0 1 ' + r + ',' + r + 'v' + (bh - 2 * r) + 'a' + r + ',' + r + ' 0 0 1 -' + r + ',' + r + 'h-' + (bw - 2 * r) + 'a' + r + ',' + r + ' 0 0 1 -' + r + ',-' + r + 'v-' + (bh - 2 * r) + 'a' + r + ',' + r + ' 0 0 1 ' + r + ',-' + r + 'z';
     return '<g data-ow="' + esc(o.name) + '" style="cursor:pointer"><circle cx="' + p[0].toFixed(0) + '" cy="' + p[1].toFixed(0) + '" r="4" fill="#12252E" stroke="#fff" stroke-width="1.5"/>' +
       '<line x1="' + p[0].toFixed(1) + '" y1="' + p[1].toFixed(1) + '" x2="' + ax.toFixed(1) + '" y2="' + ay.toFixed(1) + '" stroke="#12252E" stroke-width="1.2" opacity=".55"/>' +
-      '<path d="' + kp + '" fill="#fff" fill-opacity=".95" stroke="' + (sel ? '#ffd400' : 'rgba(18,37,46,.18)') + '" stroke-width="' + (sel ? 3.5 : 1) + '"/>' +
+      '<path class="owk-k" d="' + kp + '" fill="#fff" fill-opacity=".95" stroke="' + (sel ? '#ffd400' : 'rgba(18,37,46,.18)') + '" stroke-width="' + (sel ? 3.5 : 1) + '"/>' +
       '<rect x="' + (bx + 4).toFixed(0) + '" y="' + (by + 4).toFixed(0) + '" width="4" height="' + (bh - 8) + '" rx="2" fill="' + f + '"/>' +
       (wx ? '<text x="' + (bx + 17).toFixed(0) + '" y="' + (by + 18).toFixed(0) + '" text-anchor="middle" font-size="12"><title>' + wx[1] + '</title>' + wx[0] + '</text>' : '') +
       '<text x="' + (bx + tx).toFixed(0) + '" y="' + (by + 14).toFixed(0) + '" font-size="13" font-weight="700" fill="#12252E" class="owk-v">' + wt + '</text>' +
@@ -6998,7 +6998,7 @@ setInterval(function () { if (currentTab === 'odenwald' && !document.hidden) owL
     if (!schnee.hidden && /kein Schnee zu erwarten/.test(schnee.textContent)) schnee.hidden = true;
   }).observe(schnee, { childList: true, subtree: true });
   var css = document.createElement('style');
-  css.textContent = '#owMap .owk-v{fill:#12252E!important;stroke:none!important}#owMap .owk-n{fill:#5F5E5A!important;stroke:none!important}#owMap .owk-w{fill:#fff!important;stroke:none!important}.ow-grid{grid-template-columns:minmax(0,62fr) minmax(0,38fr)!important}.ow-mapc{order:0!important}.ow-mapc #owMap svg{max-height:640px}' +
+  css.textContent = '#owMap .owk-v{fill:#12252E!important;stroke:none!important}#owMap .owk-n{fill:#5F5E5A!important;stroke:none!important}html[data-theme="dark"] #owMap .owk-v{fill:#000!important}html[data-theme="dark"] #owMap .owk-n{fill:#1f1f1f!important;font-weight:700}html[data-theme="dark"] #owMap .owk-k{fill-opacity:1!important}#owMap .owk-w{fill:#fff!important;stroke:none!important}.ow-grid{grid-template-columns:minmax(0,62fr) minmax(0,38fr)!important}.ow-mapc{order:0!important}.ow-mapc #owMap svg{max-height:640px}' +
     '.ow-chips{grid-template-columns:repeat(4,1fr)!important}.ow-chips .ow-chip:nth-child(-n+2){display:none}' +
     '.owa-z{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;padding:6px 4px;border-bottom:1px solid var(--line);cursor:pointer;font-size:14px}.owa-z:last-child{border-bottom:0}' +
     '.owa-z.sel{background:rgba(255,214,0,.25);border-radius:8px}.owa-nr{color:var(--muted);font-size:12px;text-align:right}.owa-z b{color:#fff;border-radius:8px;padding:2px 8px;font-size:13px;min-width:62px;text-align:center}' +
