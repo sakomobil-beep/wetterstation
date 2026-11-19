@@ -2257,7 +2257,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 17:16 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 17:20 Uhr</span></p>
 
 </div>
 
@@ -4614,7 +4614,7 @@ function renderRegion() {
     }
     var tt = d ? nf(d.tmax, 0) + '°' : '–', tl = d ? ' / ' + nf(d.tmin, 0) + '°' : '';
     marks += '<circle class="dot" data-ort="' + RG_TOWNS.indexOf(t) + '" cx="' + q[0].toFixed(1) + '" cy="' + q[1].toFixed(1) + '" r="5"/>' +
-      '<g class="lbl ly-wert' + (t.home ? ' home' : '') + '" data-ort="' + RG_TOWNS.indexOf(t) + '" transform="translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ') scale(.8)">' +
+      '<g class="lbl ly-wert' + (t.home ? ' home' : '') + '" data-ort="' + RG_TOWNS.indexOf(t) + '" transform="translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ') scale(.7)">' +
       '<rect width="' + (t.w || 112) + '" height="40" rx="10"/>' +
       (d ? '<svg x="4" y="4" width="32" height="32" viewBox="0 0 48 48">' + wxIcon(d.icon).replace(/^<svg[^>]*>|<\/svg>$/g, '') + '</svg>' : '') +
       '<text class="tn" x="40" y="16">' + esc(t.n.replace(' i. Odw.', '').replace('Station ', '')) + '</text>' +
