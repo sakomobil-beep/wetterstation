@@ -19,6 +19,13 @@ jobs:
         with: { python-version: '3.12' }
       - name: Archiv ergänzen
         run: python .github/scripts/archiv.py
+      - name: Threads-Schlüssel verlängern (montags, 19.11.2026)
+        if: always()
+        continue-on-error: true
+        env:
+          THREADS_TOKEN: ${{ secrets.THREADS_TOKEN }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: if [ "$(TZ=Europe/Berlin date +%u)" = "1" ]; then python .github/scripts/threads_token.py; fi
       - name: Speichern
         run: |
           git config user.name "wetter-bot"; git config user.email "actions@users.noreply.github.com"

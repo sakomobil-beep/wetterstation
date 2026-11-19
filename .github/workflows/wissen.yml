@@ -52,6 +52,7 @@ jobs:
         name: Autopost (nur Videos mit autopost, ab 15 Uhr)
         env:
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          THREADS_TOKEN: ${{ secrets.THREADS_TOKEN }}
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
           GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
           GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}

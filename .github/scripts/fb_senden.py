@@ -122,6 +122,48 @@ def instagram(datei, text, video=False, story=False):
     return False
 
 
+TH_GRAPH = 'https://graph.threads.net/v1.0/'
+
+
+def th_text(text):
+    """Threads-Text: ohne Hashtag-Zeilen, höchstens 500 Zeichen (sicherheitshalber nach Bytes gekürzt), mit Link."""
+    z = [l for l in text.rstrip().split('\n') if not (l.strip().startswith('#') and all(w.startswith('#') for w in l.split()))]
+    t = '\n'.join(z).strip()
+    zus = '\n\nwetter-badkoenig.de'
+    if len((t + zus).encode('utf-8')) <= 490: return t + zus
+    while len((t + '…' + zus).encode('utf-8')) > 490:
+        k = max(t.rfind('. ', 0, len(t) - 1), t.rfind('\n', 0, len(t) - 1))
+        t = t[:k + 1].rstrip() if k > 80 else t[:-20]
+    return t + ' …' + zus
+
+
+def threads(datei, text, video=False):
+    """Postet dasselbe zusätzlich auf Threads (19.11.2026). Ohne Secret THREADS_TOKEN still übersprungen;
+    Variable TH_AUTO=aus schaltet Threads ab. Fehler stoppen Facebook/Instagram nie."""
+    tok = os.environ.get('THREADS_TOKEN')
+    if not tok or (os.environ.get('TH_AUTO') or '').lower() == 'aus': return False
+    try:
+        url = BASIS + datei + '?v=' + str(int(time.time()))
+        d = {'media_type': 'VIDEO' if video else 'IMAGE', ('video_url' if video else 'image_url'): url, 'text': th_text(text), 'access_token': tok}
+        with urllib.request.urlopen(TH_GRAPH + 'me/threads', data=urllib.parse.urlencode(d).encode(), timeout=120) as r:
+            cid = json.loads(r.read().decode())['id']
+        for _ in range(60):   # Threads verarbeitet Medien erst (Videos dauern)
+            time.sleep(10)
+            with urllib.request.urlopen(TH_GRAPH + cid + '?fields=status,error_message&access_token=' + tok, timeout=30) as r:
+                st = json.loads(r.read().decode())
+            if st.get('status') == 'FINISHED': break
+            if st.get('status') in ('ERROR', 'EXPIRED'): print('Threads: Verarbeitung fehlgeschlagen:', st.get('error_message')); return False
+        q = urllib.parse.urlencode({'creation_id': cid, 'access_token': tok}).encode()
+        with urllib.request.urlopen(TH_GRAPH + 'me/threads_publish', data=q, timeout=60) as r:
+            print('Threads direkt:', r.status, r.read().decode()[:200])
+        return True
+    except urllib.error.HTTPError as e:
+        print('Threads-Fehler:', e.code, e.read().decode()[:300])
+    except Exception as e:
+        print('Threads-Fehler:', e)
+    return False
+
+
 def video_senden(datei, text):
     if not ist_live(datei): return False
     url = BASIS + datei + '?v=' + str(int(time.time()))
@@ -131,6 +173,7 @@ def video_senden(datei, text):
         with urllib.request.urlopen('https://graph-video.facebook.com/v21.0/%s/videos' % page, data=q, timeout=300) as r:
             print('Facebook-Video direkt:', r.status, r.read().decode()[:200])
         instagram(datei, text, video=True)
+        threads(datei, text, video=True)
         try:   # live gegangenes Video zusätzlich in Google Drive ablegen (15.11.2026)
             sys.path.insert(0, os.path.dirname(__file__)); import drive_ablage; drive_ablage.ablegen(datei, text)
         except Exception as e: print('Drive-Ablage übersprungen:', e)
@@ -149,6 +192,7 @@ def senden(bild, text, art):
         with urllib.request.urlopen('https://graph.facebook.com/v21.0/%s/photos' % page, data=q, timeout=60) as r:
             print('Facebook direkt:', r.status, r.read().decode()[:200])
         instagram(bild, text)
+        threads(bild, text)
         try: sys.path.insert(0, os.path.dirname(__file__)); import drive_ablage; drive_ablage.ablegen(bild, text)   # Bild in Google Drive (15.11.2026)
         except Exception as e: print('Drive-Ablage Bild:', e)
         return True
@@ -440,6 +484,8 @@ def main():
             try:
                 if senden('warn2-post.jpg', j['text'], 'warn2'): M['warn2_post'] = j.get('erstellt'); M['warn2_post_zeit'] = jetzt.isoformat(timespec='minutes')
             except Exception as e: print('Warn-Beitrag nicht gepostet:', e)
+        if not os.path.exists(os.path.join(FB, 'warn2-post.jpg')) and M.get('warn2_threads') != j.get('erstellt'):   # Threads kennt keine Stories → Bildbeitrag (19.11.2026)
+            if threads('warn2-story.jpg', j.get('text') or ('⚠️ DWD-Warnung für den Odenwaldkreis: ' + '; '.join(j.get('warn', [])[:2]) + '.')): M['warn2_threads'] = j.get('erstellt')
         if M.get('warn2_story') == j.get('erstellt') or M.get('fb_warn2_story') == j.get('erstellt'):
             M['warn2_erstellt'] = j.get('erstellt'); M['warn2_zeit'] = jetzt.isoformat(timespec='minutes'); M['warn2_titel'] = '; '.join(j.get('warn', [])[:2])
             uw_merken(M, j.get('merk'))   # erst jetzt als erledigt merken (18.11.2026)
