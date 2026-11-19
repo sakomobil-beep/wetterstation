@@ -23,7 +23,9 @@ await sleep(1500);
 const r = await ev(`(function(){try{var W=${werte};
  OW.k='t'; OW.sel=null; window.owNacht=function(){return false};
  var F=function(L){return (L||[]).filter(function(o){return W[o.name]}).map(function(o){var w=W[o.name];o.t=w.t;o.wx=w.wx;o.zeit=new Date().toISOString();return o})};
- OW.d.orte=F(OW.d.orte); OW.d.extra=F(OW.d.extra); owKarte();
+ OW.d.orte=F(OW.d.orte); OW.d.extra=F(OW.d.extra);
+ if(parseFloat('${gross || 1}')>1){OW_POS['Höchst i. Odw.']=[-72,-34];OW_POS['Brombachtal']=[-34,8];OW_POS['Bad König']=[12,-14];OW_POS['Michelstadt']=[10,-2];}   // Stories: größere Felder ohne Überlappung
+ owKarte();
  document.querySelectorAll('#owMap .owk-v').forEach(function(t){t.textContent=t.textContent.replace(/,0°$/,'°')});
  var G=parseFloat('${gross || 1}'); if(G>1) document.querySelectorAll('#owMap g[data-ow]').forEach(function(g){var c=g.querySelector('circle');var x=+c.getAttribute('cx'),y=+c.getAttribute('cy');var dy=0;g.setAttribute('transform','translate('+x+' '+(y+dy)+') scale('+G+') translate('+(-x)+' '+(-y)+')')}); document.querySelector('#owMap svg').setAttribute('viewBox','-125 0 560 505');
  var leg=document.querySelector('#owMap .ow-wxleg'); if(leg) leg.remove();
