@@ -1,5 +1,5 @@
 {
- "stand": "2026-11-19T21:37",
+ "stand": "2026-11-19T21:38",
  "tests": {
   "zugang": {
    "ok": true,
@@ -27,45 +27,40 @@
     "id": "1434135673111385"
    }
   },
+  "seiten_zugang": "geholt",
   "kennzahl_page_follows": {
-   "ok": false,
-   "fehler": 400,
-   "meldung": "(#190) This method must be called with a Page Access Token"
+   "ok": true,
+   "letzte_werte": []
   },
   "kennzahl_page_daily_follows_unique": {
-   "ok": false,
-   "fehler": 400,
-   "meldung": "(#190) This method must be called with a Page Access Token"
+   "ok": true,
+   "letzte_werte": []
   },
   "kennzahl_page_media_view": {
-   "ok": false,
-   "fehler": 400,
-   "meldung": "(#190) This method must be called with a Page Access Token"
+   "ok": true,
+   "letzte_werte": []
   },
   "kennzahl_page_total_media_view_unique": {
-   "ok": false,
-   "fehler": 400,
-   "meldung": "(#190) This method must be called with a Page Access Token"
+   "ok": true,
+   "letzte_werte": []
   },
   "kennzahl_page_views_total": {
-   "ok": false,
-   "fehler": 400,
-   "meldung": "(#190) This method must be called with a Page Access Token"
+   "ok": true,
+   "letzte_werte": []
   },
   "kennzahl_page_post_engagements": {
-   "ok": false,
-   "fehler": 400,
-   "meldung": "(#190) This method must be called with a Page Access Token"
+   "ok": true,
+   "letzte_werte": []
   },
   "kennzahl_page_video_views": {
-   "ok": false,
-   "fehler": 400,
-   "meldung": "(#190) This method must be called with a Page Access Token"
+   "ok": true,
+   "letzte_werte": []
   },
   "beitrag": {
-   "ok": false,
-   "fehler": 400,
-   "meldung": "Invalid OAuth 2.0 Access Token"
+   "ok": true,
+   "zeit": "2026-11-19T18:09:16+0000",
+   "text": "Guten Abend Odenwald! 🌙 Hier kommt der Wetterausblick für mo",
+   "ergebnis": null
   },
   "instagram_konto": {
    "ok": true,
