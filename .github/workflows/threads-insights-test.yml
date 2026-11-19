@@ -1,0 +1,22 @@
+name: Threads-Statistik testen (ohne Posten)
+on:
+  workflow_dispatch:
+  push:
+    paths: ['.github/scripts/threads_probe.py']
+concurrency: nebenarbeiten
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions: {contents: write}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Threads-Kennzahlen prüfen (nur lesen)
+        env:
+          THREADS_TOKEN: ${{ secrets.THREADS_TOKEN }}
+        run: python3 .github/scripts/threads_probe.py
+      - name: Ergebnis speichern
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add fb/threads-test.json
+          git commit -m "Threads-Statistik-Testlauf $(TZ=Europe/Berlin date +'%d.%m.%Y %H:%M')" || exit 0
+          for i in 1 2 3 4 5; do git pull --rebase -X theirs -q && git push -q && break; sleep 5; done
