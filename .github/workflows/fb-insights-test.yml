@@ -1,4 +1,5 @@
 name: Facebook/Instagram-Statistik testen (ohne Posten)
+# Lauf 2: mit Seiten-Zugang
 on:
   workflow_dispatch:
   push:
@@ -32,6 +33,9 @@ jobs:
               x=d['daten'].get('data',{}); d={'ok':True,'gueltig':x.get('is_valid'),'laeuft_ab':x.get('expires_at'),'daten_zugriff_bis':x.get('data_access_expires_at'),'rechte':x.get('scopes')}
           out['tests']['zugang']=d
           out['tests']['seite']=get(pid,fields='name,followers_count,fan_count,instagram_business_account')
+          pt=get(pid,fields='access_token')
+          if pt['ok'] and pt['daten'].get('access_token'): t=pt['daten']['access_token']; out['tests']['seiten_zugang']='geholt'
+          else: out['tests']['seiten_zugang']=pt
           for m in ['page_follows','page_daily_follows_unique','page_media_view','page_total_media_view_unique','page_views_total','page_post_engagements','page_video_views']:
               r=get(pid+'/insights',metric=m,period='day')
               if r['ok']:
@@ -49,7 +53,7 @@ jobs:
               r=get(ig+'/insights',metric='reach,views,profile_views,follower_count',period='day')
               out['tests']['instagram_kennzahlen']={'ok':True,'werte':[{'name':x['name'],'wert':(x.get('values') or [{}])[-1].get('value')} for x in r['daten'].get('data',[])]} if r['ok'] else r
           s=json.dumps(out,ensure_ascii=False,indent=1)
-          assert t not in s
+          assert t not in s and os.environ['FB_PAGE_TOKEN'] not in s
           open('fb/insights-test.json','w').write(s); print(s)
           PY
       - name: Ergebnis speichern
