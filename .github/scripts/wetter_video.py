@@ -2947,7 +2947,10 @@ def kopfband(heute, special, titel=None):
     farbe = (200, 40, 40, 235) if special else (40, 30, 100, 235) if titel else (20, 60, 120, 230)
     dr.rectangle([0, 30, W, 120], fill=farbe)
     dr.rectangle([0, 120, W, 128], fill=(245, 175, 40, 255))
-    schatten_text(dr, (28, 75), titel or ('WETTER-SPECIAL' if special else 'ODENWALD-WETTER'), F(40), anchor='lm')
+    if titel or special: schatten_text(dr, (28, 75), titel or 'WETTER-SPECIAL', F(40), anchor='lm')
+    else:   # 19.11.2026: Zusatz je nach Tageszeit
+        schatten_text(dr, (28, 62), 'ODENWALD-WETTER', F(36), anchor='lm')
+        dr.text((30, 100), 'ABENDAUSBLICK' if '--abend' in sys.argv else 'WOCHENAUSBLICK' if '--woche' in sys.argv else 'MORGENAUSBLICK', font=F(22), fill=(255, 210, 110), anchor='lm')
     jetzt = dt.datetime.now(ZoneInfo('Europe/Berlin'))
     dr.text((W - 30, 60), '%d.%d.%d' % (heute.day, heute.month, heute.year), font=F(24, False), fill=(230, 238, 250), anchor='rm')
     dr.text((W - 30, 93), jetzt.strftime('%H:%M') + ' Uhr', font=F(22, False), fill=(200, 215, 240), anchor='rm')

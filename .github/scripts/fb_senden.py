@@ -370,7 +370,7 @@ def main():
         if frisch_gepostet('video', heute): return
         d = dt.date.fromisoformat(heute)
         tage = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
-        kopf = ('⚠️ Wetter-Special' if j.get('special') else '🎬 Euer Odenwald-Wetter') + ' für %s, %d.%d. – mit Max, eurem Wettersprecher!' % (tage[d.weekday()], d.day, d.month)
+        kopf = ('⚠️ Wetter-Special' if j.get('special') else '🎬 Morgenausblick: Euer Odenwald-Wetter') + ' für %s, %d.%d. – mit Max, eurem Wettersprecher!' % (tage[d.weekday()], d.day, d.month)
         if j.get('frage'): kopf += '\n\n💬 ' + j['frage']   # Frage an die Zuschauer – bringt Kommentare
         kopf += '\n👉 Folg uns, dann verpasst du kein Wetter aus dem Odenwald!'
         if video_senden('wetter.mp4', '\n'.join([kopf] + zeilen).strip() + ' #Wettervideo'):

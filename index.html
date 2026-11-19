@@ -2260,7 +2260,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 21:10 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 21:20 Uhr</span></p>
 
 </div>
 
@@ -6731,7 +6731,7 @@ function owKarte() {
       '<text x="' + (bx + tx).toFixed(0) + '" y="' + (by + 23.5).toFixed(0) + '" font-size="7.5" fill="#5F5E5A" class="owk-n">' + esc(nm) + '</text></g>';
   }).join('');
   $('owMap').innerHTML = '<svg viewBox="-60 0 420 500" width="100%" role="img" aria-label="Reliefkarte des Odenwaldkreises mit Live-Werten"><defs><clipPath id="owClip"><polygon points="' + poly + '"/></clipPath></defs>' +
-    '<image href="data/odenwald-relief.png" x="20" y="30.9" width="300" height="469.2" preserveAspectRatio="none" clip-path="url(#owClip)"/><polygon points="' + poly + '" fill="none" stroke="#12252E" stroke-width="2.2" stroke-dasharray="6 4"/>' + marks + '</svg>';
+    '<image href="data/odenwald-relief.png" x="20" y="30.9" width="300" height="469.2" preserveAspectRatio="none" clip-path="url(#owClip)"/><polygon points="' + poly + '" fill="none" stroke="#12252E" stroke-width="2.2" stroke-dasharray="6 4" stroke-linejoin="round"/>' + marks + '</svg>';
   var da = {}; d.orte.forEach(function (o) { var w = owWx(o); if (w) da[o.wx] = w; });
   var lg = Object.keys(da).map(function (key) { return '<span>' + owIc(da[key]) + ' ' + da[key][1] + '</span>'; }).join('');
   if (lg) $('owMap').insertAdjacentHTML('beforeend', '<div class="ow-leg ow-wxleg">' + lg + '</div>');

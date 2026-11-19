@@ -1077,7 +1077,7 @@ def tipp(d):
 
 def text_abend(paar, wochenende, warn, rest=()):
     a, b = paar
-    zeilen = ['Guten Abend Odenwald! 🌙 ' + ('Euer Wochenendwetter für den Odenwald:' if wochenende else 'Hier kommt der Wetterausblick für morgen:'), '']
+    zeilen = ['Guten Abend Odenwald! 🌙 Abendausblick – ' + ('euer Wochenendwetter für den Odenwald:' if wochenende else 'hier kommt das Wetter für morgen:'), '']
     zeilen.append('🌃 Heute Nacht: in den Tälern um %d °C%s%s.' % (a['tmin'], ' – Frost!' if a['tmin'] <= 0 else ', Bodenfrost möglich' if a['tmin'] <= 3 and a.get('nacht_klar') else '',
                   (', auf den Höhen um %d °C' % a['hoch']['tmin']) if a.get('hoch') else ''))
     zeilen.append('')
@@ -1199,7 +1199,7 @@ def mittagskarte(days, warn, path):
         dr.line([0, y, W, y], fill=(int(22 + 16 * y / 170), int(70 + 22 * y / 170), int(130 + 30 * y / 170)))
     dr.rectangle([0, 170, W, 178], fill=(245, 175, 40))
     dr.text((40, 58), 'NACHMITTAG IM ODENWALDKREIS', font=font(52, True), fill=(255, 255, 255))
-    dr.text((40, 118), '%s, %d. %s' % (TAGE[d['datum'].weekday()], d['datum'].day, MONATE[d['datum'].month - 1]), font=font(36), fill=(205, 222, 245))
+    dr.text((40, 118), 'Mittagsausblick · %s, %d. %s' % (TAGE[d['datum'].weekday()], d['datum'].day, MONATE[d['datum'].month - 1]), font=font(36), fill=(205, 222, 245))
     if web is not None:   # 19.11.2026: echte Website-Karte (9 Orte)
         sk = min(790 / web.width, 870 / web.height); web = web.resize((int(web.width * sk), int(web.height * sk)), Image.LANCZOS)
         im.paste(web, (400 + (790 - web.width) // 2, 195), web)
@@ -1276,7 +1276,7 @@ def mittagskarte(days, warn, path):
 
 def text_mittag(days, rest, live, warn):
     d = days[0]
-    z = ['🗺️ Nachmittag im Odenwaldkreis – so geht der Tag weiter:', '']
+    z = ['🗺️ Mittagsausblick: Nachmittag im Odenwaldkreis – so geht der Tag weiter:', '']
     if live: z += ['🌡️ Jetzt an unserer Station in Bad König: %s °C (%s Uhr)' % (('%.1f' % live['temp']).replace('.', ','), live['zeit']), '']
     teile = ['%s %d°' % (n, rest[n]['tmax']) for n, *_ in ORTE_KARTE if rest.get(n)]
     if teile: z += ['📍 Höchstwerte bis zum Abend: ' + ' · '.join(teile), '']
@@ -1343,7 +1343,7 @@ def story(days, warn, path, abends=False):
         for i, x in enumerate(z[:3]): mitte(y + 40 + i * 95, x, font(56, True), (30, 60, 110))
         yw = 1610
     else:
-        mitte(110, 'ODENWALD-WETTER', font(56, True), (255, 230, 150))
+        mitte(112, 'ODENWALD-WETTER · ' + ('ABENDAUSBLICK' if abends else 'MORGENAUSBLICK'), font(44, True), (255, 230, 150))
         mitte(185, ('Morgen, ' if abends else '') + '%s, %d. %s' % (TAGE[d['datum'].weekday()], d['datum'].day, MONATE[d['datum'].month - 1]), font(46))
         icon(dr, 250, 380, 230, d['code'], tropfen=(150, 200, 255))
         dr.text((440, 270), wt, font=font(58, True), fill=(255, 255, 255))
@@ -1489,7 +1489,7 @@ def jetzt_story(days, path):
     hd.ellipse([-300, 1480, 1500, 2500], fill=(79, 127, 74, 150)); hd.ellipse([-500, 1600, 860, 2600], fill=(62, 107, 59, 170))
     im = Image.alpha_composite(im.convert('RGBA'), hug).convert('RGB'); dr = ImageDraw.Draw(im)
     WT = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
-    dr.text((72, 90), 'ODENWALD-WETTER', font=font(30, True), fill=(255, 255, 255))
+    dr.text((72, 90), 'ODENWALD-WETTER · MITTAGSAUSBLICK', font=font(30, True), fill=(255, 230, 150))
     dr.text((68, 136), 'Jetzt im Odenwald', font=font(80, True), fill=(255, 255, 255))
     dr.text((72, 236), '%s, %d. %s · %s Uhr' % (WT[jetzt.weekday()], jetzt.day, MONATE[jetzt.month - 1], jetzt.strftime('%H:%M')), font=font(34), fill=(235, 244, 252))
     def karte(y0, h):
