@@ -32,14 +32,20 @@ def post_json(url, daten):
         return r.status, r.read().decode()[:300]
 
 
+FB_LETZT = IG_LETZT = None   # Ergebnis des letzten Feed-Posts (für die Push-Bestätigung)
 TH_LETZT = None   # True/False = letzter Feed-Post auf Threads geklappt/nicht, None = kein Threads-Versuch
 
 
 def push(titel, text, prio='default', tags='white_check_mark'):
     """Handy-Push über ntfy (Secret NTFY_TOPIC) – Fehler stoppen das Posten nie."""
-    global TH_LETZT
-    if TH_LETZT is not None:   # Ergebnis des zugehörigen Threads-Posts anhängen (19.11.2026)
-        text = text.rstrip() + ('\n✅ Auch auf Threads online.' if TH_LETZT else '\n⚠️ Auf Threads hat es nicht geklappt.'); TH_LETZT = None
+    global TH_LETZT, IG_LETZT, FB_LETZT
+    if FB_LETZT:   # Feed-Post: Ergebnis je Plattform anhängen (19.11.2026)
+        for alt in (' auf Facebook und Instagram', ' auf Facebook'): text = text.replace(alt, '')
+        z = ['✅ Facebook', ('✅' if IG_LETZT else '⚠️') + ' Instagram' if IG_LETZT is not None else None,
+             ('✅' if TH_LETZT else '⚠️') + ' Threads' if TH_LETZT is not None else None]
+        text = text.rstrip() + '\n' + ' · '.join(x for x in z if x)
+        if IG_LETZT is False or TH_LETZT is False: text += '\n(⚠️ = dort nicht geklappt)'
+    TH_LETZT = IG_LETZT = FB_LETZT = None
     topic = os.environ.get('NTFY_TOPIC')
     if not topic: return
     try:
@@ -180,7 +186,9 @@ def video_senden(datei, text):
         q = urllib.parse.urlencode({'file_url': url, 'description': text, 'access_token': tok}).encode()
         with urllib.request.urlopen('https://graph-video.facebook.com/v21.0/%s/videos' % page, data=q, timeout=300) as r:
             print('Facebook-Video direkt:', r.status, r.read().decode()[:200])
-        instagram(datei, text, video=True)
+        global IG_LETZT, FB_LETZT
+        FB_LETZT = True
+        if (os.environ.get('IG_AUTO') or '').lower() != 'aus': IG_LETZT = instagram(datei, text, video=True)
         global TH_LETZT
         if os.environ.get('THREADS_TOKEN') and (os.environ.get('TH_AUTO') or '').lower() != 'aus': TH_LETZT = threads(datei, text, video=True)
         try:   # live gegangenes Video zusätzlich in Google Drive ablegen (15.11.2026)
@@ -200,7 +208,9 @@ def senden(bild, text, art):
         q = urllib.parse.urlencode({'url': url, 'caption': text, 'access_token': tok}).encode()
         with urllib.request.urlopen('https://graph.facebook.com/v21.0/%s/photos' % page, data=q, timeout=60) as r:
             print('Facebook direkt:', r.status, r.read().decode()[:200])
-        instagram(bild, text)
+        global IG_LETZT, FB_LETZT
+        FB_LETZT = True
+        if (os.environ.get('IG_AUTO') or '').lower() != 'aus': IG_LETZT = instagram(bild, text)
         global TH_LETZT
         if os.environ.get('THREADS_TOKEN') and (os.environ.get('TH_AUTO') or '').lower() != 'aus': TH_LETZT = threads(bild, text)
         try: sys.path.insert(0, os.path.dirname(__file__)); import drive_ablage; drive_ablage.ablegen(bild, text)   # Bild in Google Drive (15.11.2026)
@@ -249,8 +259,9 @@ def story_beide(M, key, datei, heute, jetzt, titel, text, tags):
     if key in TH_STORY and M.get(tk) != heute and not frisch_gepostet(tk, heute):
         if threads(datei, TH_STORY[key]):
             M[tk] = heute; M[tk + '_zeit'] = jetzt.isoformat(timespec='minutes'); wo.append('Threads')
-    if wo:
-        push(titel, text + ' Jetzt online auf ' + ' und '.join(wo) + '.', tags=tags)
+    if wo:   # Bestätigung je Plattform (19.11.2026)
+        plat = ['Instagram', 'Facebook'] + (['Threads'] if key in TH_STORY else [])
+        push(titel, text + '\n' + ' · '.join(('✅ ' if p_ in wo else '⚠️ ') + p_ for p_ in plat) + ('\n(⚠️ = dort nicht geklappt)' if len(wo) < len(plat) else ''), tags=tags)
         try: sys.path.insert(0, os.path.dirname(__file__)); import drive_ablage; drive_ablage.ablegen(datei, titel)   # Story in Google Drive (15.11.2026)
         except Exception as e: print('Drive-Ablage Story:', e)
 
