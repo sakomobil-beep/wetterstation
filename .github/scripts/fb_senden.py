@@ -221,6 +221,10 @@ def fb_story(datei):
     return False
 
 
+TH_STORY = {'story': '🌤️ Das Wetter für heute in Bad König und im Odenwald.',
+            'abendstory': '🌙 So wird das Wetter morgen im Odenwald.'}
+
+
 def story_beide(M, key, datei, heute, jetzt, titel, text, tags):
     """Postet eine Story auf Instagram (Schlüssel key) und Facebook (Schlüssel fb_key), jede höchstens 1x pro Tag."""
     wo = []
@@ -231,6 +235,10 @@ def story_beide(M, key, datei, heute, jetzt, titel, text, tags):
     if M.get(fk) != heute and not frisch_gepostet(fk, heute):
         if fb_story(datei):
             M[fk] = heute; M[fk + '_zeit'] = jetzt.isoformat(timespec='minutes'); wo.append('Facebook')
+    tk = 'th_' + key   # Threads kennt keine Stories: Morgen- und Abend-Story dort als Bildbeitrag (19.11.2026)
+    if key in TH_STORY and M.get(tk) != heute and not frisch_gepostet(tk, heute):
+        if threads(datei, TH_STORY[key]):
+            M[tk] = heute; M[tk + '_zeit'] = jetzt.isoformat(timespec='minutes'); wo.append('Threads')
     if wo:
         push(titel, text + ' Jetzt online auf ' + ' und '.join(wo) + '.', tags=tags)
         try: sys.path.insert(0, os.path.dirname(__file__)); import drive_ablage; drive_ablage.ablegen(datei, titel)   # Story in Google Drive (15.11.2026)
