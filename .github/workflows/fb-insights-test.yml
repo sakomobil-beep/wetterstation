@@ -3,7 +3,7 @@ name: Facebook/Instagram-Statistik testen (ohne Posten)
 on:
   workflow_dispatch:
   push:
-    paths: ['.github/workflows/fb-insights-test.yml']
+    paths: ['.github/workflows/fb-insights-test.yml','.github/scripts/insights_probe.py']
 concurrency: nebenarbeiten
 jobs:
   test:
@@ -11,51 +11,11 @@ jobs:
     permissions: {contents: write}
     steps:
       - uses: actions/checkout@v4
-      - name: Statistik abfragen (nur lesen)
+      - name: Kennzahlen prüfen (nur lesen)
         env:
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
-        run: |
-          python3 - <<'PY'
-          import os, json, urllib.request, urllib.parse, datetime
-          G='https://graph.facebook.com/v21.0/'; t=os.environ.get('FB_PAGE_TOKEN',''); pid=os.environ.get('FB_PAGE_ID','')
-          out={'stand':datetime.datetime.now().isoformat(timespec='minutes'),'tests':{}}
-          def get(path, **p):
-              p['access_token']=t
-              try:
-                  with urllib.request.urlopen(G+path+'?'+urllib.parse.urlencode(p),timeout=30) as r: return {'ok':True,'daten':json.loads(r.read().decode())}
-              except urllib.error.HTTPError as e:
-                  try: m=json.loads(e.read().decode()).get('error',{}).get('message','')
-                  except Exception: m=''
-                  return {'ok':False,'fehler':e.code,'meldung':m[:300]}
-          d=get('debug_token',input_token=t)
-          if d['ok']:
-              x=d['daten'].get('data',{}); d={'ok':True,'gueltig':x.get('is_valid'),'laeuft_ab':x.get('expires_at'),'daten_zugriff_bis':x.get('data_access_expires_at'),'rechte':x.get('scopes')}
-          out['tests']['zugang']=d
-          out['tests']['seite']=get(pid,fields='name,followers_count,fan_count,instagram_business_account')
-          pt=get(pid,fields='access_token')
-          if pt['ok'] and pt['daten'].get('access_token'): t=pt['daten']['access_token']; out['tests']['seiten_zugang']='geholt'
-          else: out['tests']['seiten_zugang']=pt
-          for m in ['page_follows','page_daily_follows_unique','page_media_view','page_total_media_view_unique','page_views_total','page_post_engagements','page_video_views']:
-              r=get(pid+'/insights',metric=m,period='day')
-              if r['ok']:
-                  v=[(w.get('end_time','')[:10],w.get('value')) for x in r['daten'].get('data',[]) for w in x.get('values',[])][-3:]
-                  r={'ok':True,'letzte_werte':v}
-              out['tests']['kennzahl_'+m]=r
-          p=get(pid+'/posts',fields='id,created_time,message',limit=3)
-          if p['ok'] and p['daten'].get('data'):
-              po=p['daten']['data'][0]; r=get(po['id']+'/insights',metric='post_media_view,post_total_media_view_unique,post_reactions_by_type_total,post_clicks')
-              out['tests']['beitrag']={'ok':r['ok'],'zeit':po.get('created_time'),'text':(po.get('message') or '')[:60],'ergebnis':r.get('daten',{}).get('data') and [{'name':x['name'],'wert':x['values'][0]['value']} for x in r['daten']['data']] or r.get('meldung')}
-          else: out['tests']['beitrag']=p
-          ig=((out['tests']['seite'].get('daten') or {}).get('instagram_business_account') or {}).get('id')
-          if ig:
-              out['tests']['instagram_konto']=get(ig,fields='username,followers_count,media_count')
-              r=get(ig+'/insights',metric='reach,views,profile_views,follower_count',period='day')
-              out['tests']['instagram_kennzahlen']={'ok':True,'werte':[{'name':x['name'],'wert':(x.get('values') or [{}])[-1].get('value')} for x in r['daten'].get('data',[])]} if r['ok'] else r
-          s=json.dumps(out,ensure_ascii=False,indent=1)
-          assert t not in s and os.environ['FB_PAGE_TOKEN'] not in s
-          open('fb/insights-test.json','w').write(s); print(s)
-          PY
+        run: python3 .github/scripts/insights_probe.py
       - name: Ergebnis speichern
         run: |
           git config user.name "github-actions[bot]"; git config user.email "github-actions[bot]@users.noreply.github.com"
