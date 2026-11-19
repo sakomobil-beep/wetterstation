@@ -20,14 +20,26 @@ heute=dt.date.today(); out={'stand':dt.datetime.now(dt.timezone.utc).isoformat(t
 s=get(pid,fields='name,followers_count,instagram_business_account') or {}
 out['fb']['follower']=s.get('followers_count')
 tage=alt.get('fb',{}).get('tage',{})
-M=['page_follows','page_daily_follows_unique','page_media_view','page_total_media_view_unique','page_video_views','page_post_engagements']
+M=['page_follows','page_daily_follows_unique','page_daily_unfollows_unique','page_media_view','page_total_media_view_unique','page_video_views','page_post_engagements','page_video_view_time','page_video_complete_views_30s','page_actions_post_reactions_total']
 for m in M:
     r=get(pid+'/insights',metric=m,period='day',since=str(heute-dt.timedelta(days=90)),until=str(heute))
     for x in (r or {}).get('data',[]):
         for v in x.get('values',[]):
             d=(dt.datetime.fromisoformat(v['end_time'].replace('+0000','+00:00'))-dt.timedelta(days=1)).date().isoformat()
-            val=v.get('value'); val=sum(val.values()) if isinstance(val,dict) else val
+            val=v.get('value')
+            if isinstance(val,dict) and m!='page_actions_post_reactions_total': val=sum(val.values())
             tage.setdefault(d,{})[m.replace('page_','')]=val
+r=get(pid+'/insights',metric='page_media_view',period='day',breakdown='is_from_followers',since=str(heute-dt.timedelta(days=90)),until=str(heute))
+for x in (r or {}).get('data',[]):
+    for v in x.get('values',[]):
+        d=(dt.datetime.fromisoformat(v['end_time'].replace('+0000','+00:00'))-dt.timedelta(days=1)).date().isoformat()
+        tage.setdefault(d,{})['views_follower' if str(v.get('is_from_followers'))=='1' else 'views_andere']=v.get('value')
+for m,key in [('page_follows_city','orte'),('page_follows_country','laender')]:
+    r=get(pid+'/insights',metric=m,period='day')
+    try:
+        v=r['data'][0]['values'][-1]['value']
+        if v: out['fb'][key]=v
+    except Exception: pass
 out['fb']['tage']=dict(sorted(tage.items()))  # dauerhaft, keine Begrenzung (19.11.2026)
 def art(t,h):
     t=(t or '').strip(); k=t[:60].lower()
@@ -44,14 +56,22 @@ def art(t,h):
 posts=[]
 r=get(pid+'/posts',fields='id,created_time,message,full_picture,permalink_url',limit=60,since=str(heute-dt.timedelta(days=35)))
 for p in (r or {}).get('data',[]):
-    i=get(p['id']+'/insights',metric='post_media_view,post_total_media_view_unique,post_reactions_by_type_total,post_clicks') or {}
+    i=get(p['id']+'/insights',metric='post_media_view,post_total_media_view_unique,post_reactions_by_type_total,post_clicks,post_clicks_by_type,post_activity_by_action_type,post_video_views,post_video_avg_time_watched,post_video_view_time,post_video_complete_views_30s,post_video_length,post_video_retention_graph') or {}
     w={}
     for x in i.get('data',[]):
         if x.get('values') and x['name'] not in w: w[x['name']]=x['values'][0]['value']
     ct=dt.datetime.fromisoformat(p['created_time'].replace('+0000','+00:00')).astimezone(dt.timezone(dt.timedelta(hours=1)))
     rk=w.get('post_reactions_by_type_total') or {}
     posts.append({'id':p['id'],'p':'fb','zeit':ct.isoformat(timespec='minutes'),'text':(p.get('message') or '')[:120],'bild':p.get('full_picture'),'link':p.get('permalink_url'),
-      'art':art(p.get('message'),ct.hour),'views':w.get('post_media_view'),'personen':w.get('post_total_media_view_unique'),'likes':sum(rk.values()) if isinstance(rk,dict) else rk,'klicks':w.get('post_clicks')})
+      'art':art(p.get('message'),ct.hour),'views':w.get('post_media_view'),'personen':w.get('post_total_media_view_unique'),'likes':sum(rk.values()) if isinstance(rk,dict) else rk,'klicks':w.get('post_clicks'),
+      'reaktionen':rk if isinstance(rk,dict) else None,'klickarten':w.get('post_clicks_by_type') or None,
+      'geteilt':(w.get('post_activity_by_action_type') or {}).get('share',0),'kommentare':(w.get('post_activity_by_action_type') or {}).get('comment',0)})
+    vl=w.get('post_video_length') or 0
+    if vl:
+        rg=w.get('post_video_retention_graph') or {}
+        posts[-1].update({'video':{'laenge':round(vl/1000,1),'aufrufe':w.get('post_video_views'),'sehdauer':round((w.get('post_video_avg_time_watched') or 0)/1000,1),
+          'sehzeit_min':round((w.get('post_video_view_time') or 0)/60000,1),'voll30':w.get('post_video_complete_views_30s'),
+          'verlauf':[round(float(rg[k]),3) for k in sorted(rg,key=lambda z:int(z))] if isinstance(rg,dict) else None}})
 # Instagram
 ig=(s.get('instagram_business_account') or {}).get('id')
 if ig:
@@ -65,6 +85,18 @@ if ig:
                 d=(dt.datetime.fromisoformat(v['end_time'].replace('+0000','+00:00'))-dt.timedelta(days=1)).date().isoformat()
                 it.setdefault(d,{})[m]=v.get('value')
     out['ig']['tage']=dict(sorted(it.items()))
+    for back in range(1,8):
+        d0=heute-dt.timedelta(days=back)
+        r=get(ig+'/insights',metric='views,accounts_engaged,total_interactions,likes,comments,shares,saves,profile_links_taps',period='day',metric_type='total_value',since=str(d0),until=str(d0+dt.timedelta(days=1)))
+        for x in (r or {}).get('data',[]):
+            it.setdefault(str(d0),{})[x['name']]=(x.get('total_value') or {}).get('value')
+    out['ig']['tage']=dict(sorted(it.items()))
+    for b in ['city','age','gender']:
+        r=get(ig+'/insights',metric='follower_demographics',period='lifetime',metric_type='total_value',breakdown=b)
+        try:
+            R=r['data'][0]['total_value']['breakdowns'][0]['results']
+            if R: out['ig'].setdefault('demografie',{})[b]={x['dimension_values'][0]:x['value'] for x in R}
+        except Exception: pass
     on=get(ig+'/insights',metric='online_followers',period='lifetime')
     try: out['ig']['online']=on['data'][0]['values'][-1]['value']
     except Exception: pass
@@ -72,15 +104,17 @@ if ig:
     for p in r.get('data',[]):
         ct=dt.datetime.fromisoformat(p['timestamp'].replace('+0000','+00:00')).astimezone(dt.timezone(dt.timedelta(hours=1)))
         if ct.date()<heute-dt.timedelta(days=35): continue
-        i=get(p['id']+'/insights',metric='views,reach,likes,comments,saved') or {}
+        i=get(p['id']+'/insights',metric='views,reach,likes,comments,saved,shares'+(',ig_reels_avg_watch_time,ig_reels_video_view_total_time' if p.get('media_product_type')=='REELS' else '')) or {}
+        if not i: i=get(p['id']+'/insights',metric='views,reach,likes,comments,saved') or {}
         w={x['name']:(x.get('values') or [{}])[0].get('value', x.get('total_value',{}).get('value')) for x in i.get('data',[])}
         posts.append({'id':p['id'],'p':'ig','zeit':ct.isoformat(timespec='minutes'),'text':(p.get('caption') or '')[:120],'bild':p.get('thumbnail_url') or p.get('media_url'),'link':p.get('permalink'),
-          'art':art(p.get('caption'),ct.hour),'views':w.get('views'),'personen':w.get('reach'),'likes':w.get('likes'),'klicks':w.get('comments')})
+          'art':art(p.get('caption'),ct.hour),'views':w.get('views'),'personen':w.get('reach'),'likes':w.get('likes'),'klicks':w.get('comments'),'kommentare':w.get('comments'),'geteilt':w.get('shares'),'gespeichert':w.get('saved')})
+        if w.get('ig_reels_avg_watch_time') is not None: posts[-1]['video']={'sehdauer':round(w['ig_reels_avg_watch_time']/1000,1),'sehzeit_min':round((w.get('ig_reels_video_view_total_time') or 0)/60000,1),'aufrufe':w.get('views')}
 # Beitrags-Archiv: jeder Beitrag bleibt für immer, Zahlen werden fortgeschrieben (19.11.2026)
 arch={b['p']+b['zeit']:b for b in alt.get('beitraege',[])}
 for b in posts:
     k=b['p']+b['zeit']; a=arch.get(k,{})
-    for f in ('views','personen','likes','klicks'):
+    for f in ('views','personen','likes','klicks','geteilt','kommentare','video','reaktionen','klickarten'):
         if b.get(f) is None and a.get(f) is not None: b[f]=a[f]
     b['stand']=heute.isoformat(); arch[k]=b
 out['beitraege']=sorted(arch.values(),key=lambda x:x['zeit'],reverse=True)
