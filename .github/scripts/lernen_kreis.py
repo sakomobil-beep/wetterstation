@@ -96,7 +96,7 @@ def main():
         # Stationsprüfung: weicht die Station im Mittel > 4 °C von allen Modellen ab, ist sie unbrauchbar (Sonne, Hauswand …)
         mit = [v['st'] - sum(v['m'].values()) / len(v['m']) for v in H.values()]
         if abs(sum(mit) / len(mit)) > 4: out['orte'][ort] = {'unbrauchbar': True, 'n': len(H)}; continue
-        E = {'n': len(H), 'tage': len({k[:10] for k in H}), 'bias': {}, 'mae': {}}
+        E = {'n': len(H), 'tage': len({k[:10] for k in H}), 'bias': {}, 'mae': {}, 'mae_roh': {}}   # mae_roh = Fehler reines Modell ohne Korrektur (19.11.2026)
         for m in MODELLE:
             s = [[0.0, 0.0] for _ in range(6)]
             for k, v in H.items():
@@ -106,6 +106,8 @@ def main():
             bias = [round(max(-5, min(5, a / g)), 2) if g else 0.0 for a, g in s]
             fe = [abs(v['st'] - (v['m'][m] + bias[int(k[11:13]) // 4])) for k, v in H.items() if m in v['m']]
             if fe: E['bias'][m] = bias; E['mae'][m] = round(sum(fe) / len(fe), 2)
+            fr = [abs(v['st'] - v['m'][m]) for v in H.values() if m in v['m']]
+            if fr: E['mae_roh'][m] = round(sum(fr) / len(fr), 2)
         out['orte'][ort] = E
     json.dump(out, open(os.path.join(ROOT, 'data', 'lernen-kreis.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     print(json.dumps(out, ensure_ascii=False)[:1500])
