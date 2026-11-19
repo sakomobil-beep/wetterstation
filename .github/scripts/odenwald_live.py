@@ -62,7 +62,8 @@ def gefuehlt(m):
 
 # 18.11.2026: fünf weitere Orte für „Aktuell Odenwald“ (erst in der Live-Vorschau). Die Station wird automatisch gesucht:
 # nächste private WU-Station mit aktuellen Werten, nicht schon von einem anderen Ort benutzt; die Wahl hält 24 Stunden.
-EXTRA = [('Erbach', 230, 49.657, 8.994), ('Reichelsheim', 215, 49.713, 8.838), ('Fränkisch-Crumbach', 200, 49.746, 8.858),
+# 19.11.2026: Erbach raus (zu nah an Michelstadt)
+EXTRA = [('Reichelsheim', 215, 49.713, 8.838), ('Fränkisch-Crumbach', 200, 49.746, 8.858),
          ('Brombachtal', 250, 49.735, 8.946), ('Lützelbach', 230, 49.784, 9.077)]
 EXTRA_AN = True   # 18.11.2026 23:50: wieder an – eigene Station braucht keine WU-Abrufe mehr; Zusatzorte nur alle 30 Minuten
 STATIONSWAHL = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'odenwald-stationen.json')
