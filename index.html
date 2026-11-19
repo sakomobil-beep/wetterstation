@@ -229,6 +229,13 @@ button { font: inherit; color: inherit; }
 .ngh .temp { margin-top: 0; }
 .ngh .temp .v, .ngh .temp .u { color: color-mix(in srgb, var(--hc) 55%, var(--ink)); }
 .ngh .sub { color: color-mix(in srgb, var(--hc) 45%, var(--muted)); margin-top: 0; }
+.ngh-live { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin-top: 10px; padding: 6px 10px; border-radius: 10px; font-size: 14px; background: rgba(46,154,94,.12); color: #1d7a47; width: fit-content; }
+.ngh-live b { letter-spacing: .06em; }
+.ngh-live .lv-dot { width: 10px; height: 10px; border-radius: 50%; background: #2e9a5e; box-shadow: 0 0 0 0 rgba(46,154,94,.6); animation: lvPuls 1.6s infinite; }
+.ngh-live.spaet { background: rgba(214,150,30,.15); color: #8a5a00; } .ngh-live.spaet .lv-dot { background: #d6961e; animation: none; }
+.ngh-live.alt { background: rgba(196,80,42,.13); color: #a33a18; } .ngh-live.alt .lv-dot { background: #c4502a; animation: none; }
+@keyframes lvPuls { 0% { box-shadow: 0 0 0 0 rgba(46,154,94,.6); } 70% { box-shadow: 0 0 0 8px rgba(46,154,94,0); } 100% { box-shadow: 0 0 0 0 rgba(46,154,94,0); } }
+@media (prefers-reduced-motion: reduce) { .ngh-live .lv-dot { animation: none; } }
 .ngh-ob { margin-top: auto; padding-top: 12px; border-top: 1px solid color-mix(in srgb, var(--hc) 30%, var(--surface)); display: grid; gap: 8px; }
 .ngh-ob .or { display: grid; grid-template-columns: 8em 3.2em 30px 1fr; align-items: center; gap: 6px; font-size: 15px; color: color-mix(in srgb, var(--hc) 60%, var(--ink)); }
 .ngh-ob .or b { font: 600 1.25rem/1 var(--font-display); font-variant-numeric: tabular-nums; }
@@ -1497,6 +1504,7 @@ document.addEventListener('DOMContentLoaded',function(){
       <span>Gefühlt <b id="feels" class="num">–</b> °C</span>
       <span>Taupunkt <b id="dew" class="num">–</b> °C</span>
     </div>
+    <div class="ngh-live" id="heroLive" hidden><span class="lv-dot"></span><b id="heroLiveT">LIVE</b><span id="heroLiveS"></span></div>
     <div class="ngh-ob" id="heroOb" aria-label="Ausblick"></div>
   </section>
   <section class="tile ngsun" aria-label="Sonne und Mond heute">
@@ -2257,7 +2265,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 11:43 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 11:58 Uhr</span></p>
 
 </div>
 
@@ -2378,6 +2386,7 @@ function adapt(raw) {
 
   return {
     updated: cur.obsTimeUtc,
+    quelle: cur.quelle || 'wu',
     temp: num(m.temp),
     humidity: num(cur.humidity),
     windSpeed: num(m.windSpeed),
@@ -2487,6 +2496,23 @@ var HIST_KEYS = ['temp', 'dew', 'humidity', 'pressure', 'wind', 'gust', 'rain', 
 function $(id) { return document.getElementById(id); }
 
 /* ---------- Anzeige der Werte ---------- */
+/* LIVE-Anzeige an der Außentemperatur (19.11.2026): zeigt, ob der Wert direkt von der Station kommt und wie alt er ist – zählt sekündlich mit */
+var HL_T = null;
+function heroLive() {
+  var box = $('heroLive'), d = state.data; if (!box || !d || !d.updated) return;
+  var t = Date.parse(d.updated); if (isNaN(t)) { box.hidden = true; return; }
+  function zeig() {
+    var s = Math.max(0, Math.round((Date.now() - t) / 1000)), direkt = d.quelle === 'station';
+    var alter = s < 60 ? 'vor ' + s + ' Sek.' : s < 3600 ? 'vor ' + Math.floor(s / 60) + ' Min.' : 'vor über einer Stunde';
+    var uhr = new Date(t).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    var kl = s <= 180 ? '' : s <= 900 ? 'spaet' : 'alt';
+    box.className = 'ngh-live' + (kl ? ' ' + kl : '');
+    $('heroLiveT').textContent = kl === 'alt' ? 'NICHT AKTUELL' : kl === 'spaet' ? 'VERZÖGERT' : 'LIVE';
+    $('heroLiveS').textContent = (direkt ? 'direkt von der Station' : 'über Weather Underground') + ' · gemessen ' + uhr + ' Uhr (' + alter + ')';
+    box.hidden = false;
+  }
+  zeig(); if (HL_T) clearInterval(HL_T); HL_T = setInterval(zeig, 1000);
+}
 function render() {
   var d = state.data;
   var hist = d.history;
@@ -2506,6 +2532,7 @@ function render() {
 
   $('temp').textContent = nf(d.temp, 1);
   $('feels').textContent = nf(feels, 1);
+  heroLive();
   $('dew').textContent = nf(dew, 1);
   $('tmax').textContent = nf(d.tempMax != null ? d.tempMax : Math.max.apply(null, temps), 1) + ' °C';
   $('tmin').textContent = nf(d.tempMin != null ? d.tempMin : Math.min.apply(null, temps), 1) + ' °C';
