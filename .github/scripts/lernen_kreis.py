@@ -19,6 +19,7 @@ ORTE = {
     'michelstadt': (49.678, 9.004, 208, 'dwd:03284'),
     'mossautal':   (49.667, 8.937, 380, 'dwd:03287'),   # Michelstadt-Vielbrunn, 453 m
     'oberzent':    (49.567, 8.976, 430, 'dwd:00330'),   # Oberzent-Beerfelden, 455 m
+    'reichelsheim': (49.713, 8.838, 215, 'wu:IREICH180'),   # 19.11.2026: private Station, 0,3 km von der Ortsmitte
 }
 TAGE_HALTEN, GUETE_TAGE, HALBWERT = 120, 21, 14.0
 
