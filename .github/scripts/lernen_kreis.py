@@ -23,7 +23,7 @@ ORTE = {
     'brombachtal': (49.733, 8.945, 250, 'wu:IBROMB4'),   # 19.11.2026: private Station, 1,6 km von der Ortsmitte
 }
 # Verzögerung: Messungen werden sofort gesammelt, die Korrektur wird erst ab diesem Tag verwendet (Kingman 19.11.2026: 6 Tage)
-LERNEN_AB = {'brombachtal': '2026-11-25'}
+LERNEN_AB = {'brombachtal': '2026-11-25', 'reichelsheim': '2026-11-25'}
 TAGE_HALTEN, GUETE_TAGE, HALBWERT = 120, 21, 14.0
 
 
