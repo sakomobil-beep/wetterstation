@@ -10,7 +10,7 @@ on:
         description: 'Welches Video? (tag = Morgenvideo, woche = Wochenausblick, thema = Themenvideo Max erklärt, mittag = Mittagsbeitrag mit der Kreiskarte, abend = Abendvideo aus dem Studio, special-test = Probe-Special bei extremem Gewitter (fb/special-test.mp4, nie gepostet), monat = Monatsrückblick, wissen = Wetterwissen mit Max)'
         default: 'tag'
         type: choice
-        options: [tag, woche, thema, mittag, abend, monat, wissen, premiere, polarwirbel, vulkan, special-test, warnbild]
+        options: [tag, woche, thema, mittag, abend, monat, wissen, premiere, polarwirbel, vulkan, sommer, special-test, warnbild]
 
 permissions:
   contents: write
@@ -48,6 +48,7 @@ jobs:
           if [ "${{ inputs.art }}" = "wissen" ]; then python .github/scripts/wissen_video.py --neu; exit 0; fi
           if [ "${{ inputs.art }}" = "polarwirbel" ]; then python .github/scripts/polarwirbel_video.py; exit 0; fi   # Themenvideo Polarwirbel (kein Autopost)
           if [ "${{ inputs.art }}" = "vulkan" ]; then python .github/scripts/vulkan_video.py; exit 0; fi   # Themenvideo Vulkane (kein Autopost)
+          if [ "${{ inputs.art }}" = "sommer" ]; then python .github/scripts/sommer_video.py; exit 0; fi   # Themenvideo Sommer 2026 (kein Autopost)
           if [ "${{ inputs.art }}" = "premiere" ]; then python .github/scripts/wissen_video.py --premiere=2026-11-15; exit 0; fi   # Premiere Wetterwissen (Autopost So 15.11. 15 Uhr)   # Wetterwissen braucht keine neuen Vorhersagedaten
           cp fb/post.txt fb/post.json /tmp/ 2>/dev/null || true
           python .github/scripts/fb_post.py

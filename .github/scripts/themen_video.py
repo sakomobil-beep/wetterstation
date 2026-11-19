@@ -84,6 +84,7 @@ KAPITEL = [
 TITEL = 'Max erklärt: Der Rekord-El-Niño 2026'
 ZIEL = 'thema'
 STATISCH = ('odenwald',)
+LOOK = 'kuehl'   # Kleidung von Max (19.11.2026: Sommer-Video mit 'sonne' = T-Shirt, Kappe, Sonnenbrille)
 KARTE_TITEL = ('Der Rekord-El-Niño 2026', 'Max erklärt · Private Wetterstation Bad König')
 LINK = 'wetter-badkoenig.de/elnino.html'
 INTRO = 'Der El Niño 2026 bricht Rekorde: Was passiert gerade im Pazifik, wie stark ist er im Vergleich zu 1997 und 2015, welche Folgen hat er weltweit – und was bedeutet das für Europa und den Odenwald?'
@@ -362,7 +363,7 @@ def main():
     for m in range(4):
         for b_ in (0, 1):
             for z in (0, 1, 2):
-                im_ = moderator(m, b_, z, 0, 'kuehl'); MODS[(m, b_, z)] = im_.resize((int(im_.width * 0.5), int(im_.height * 0.5)), Image.LANCZOS)
+                im_ = moderator(m, b_, z, 0, LOOK); MODS[(m, b_, z)] = im_.resize((int(im_.width * 0.5), int(im_.height * 0.5)), Image.LANCZOS)
     KARTEN = {}; KOPF = {}; SZ = {}
     ziel = os.path.join(FB, ZIEL + '.mp4')
     ff = subprocess.Popen(['ffmpeg', '-y', '-loglevel', 'error', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', '%dx%d' % (W, H), '-r', str(FPS), '-i', '-',
