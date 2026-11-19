@@ -67,7 +67,7 @@ EXTRA = [('Reichelsheim', 215, 49.713, 8.838), ('Fränkisch-Crumbach', 200, 49.7
          ('Brombachtal', 250, 49.735, 8.946), ('Lützelbach', 230, 49.784, 9.077)]
 EXTRA_AN = True   # 18.11.2026 23:50: wieder an – eigene Station braucht keine WU-Abrufe mehr; Zusatzorte nur alle 30 Minuten
 # 19.11.2026: unplausible Stationen nie wieder wählen (IBROMB9: Regenmesser 0 mm bei Dauerregen, Luftdruck ~10 hPa zu tief)
-SPERRE = {'IBROMB9'}
+SPERRE = {'IBROMB9', 'IBROMB18'}   # IBROMB18: 8 mm Regen, wo alle anderen 1–2 mm haben
 STATIONSWAHL = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'odenwald-stationen.json')
 
 
