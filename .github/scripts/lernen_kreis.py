@@ -20,7 +20,10 @@ ORTE = {
     'mossautal':   (49.667, 8.937, 380, 'dwd:03287'),   # Michelstadt-Vielbrunn, 453 m
     'oberzent':    (49.567, 8.976, 430, 'dwd:00330'),   # Oberzent-Beerfelden, 455 m
     'reichelsheim': (49.713, 8.838, 215, 'wu:IREICH180'),   # 19.11.2026: private Station, 0,3 km von der Ortsmitte
+    'brombachtal': (49.733, 8.945, 250, 'wu:IBROMB4'),   # 19.11.2026: private Station, 1,6 km von der Ortsmitte
 }
+# Verzögerung: Messungen werden sofort gesammelt, die Korrektur wird erst ab diesem Tag verwendet (Kingman 19.11.2026: 6 Tage)
+LERNEN_AB = {'brombachtal': '2026-11-25'}
 TAGE_HALTEN, GUETE_TAGE, HALBWERT = 120, 21, 14.0
 
 
@@ -89,6 +92,7 @@ def main():
     for ort, R in rows.items():
         H = {k: v for k, v in R.items() if k >= seit}
         if not H: continue
+        if jetzt.date().isoformat() < LERNEN_AB.get(ort, ''): print(ort, 'sammelt noch, lernt ab', LERNEN_AB[ort]); continue
         # Stationsprüfung: weicht die Station im Mittel > 4 °C von allen Modellen ab, ist sie unbrauchbar (Sonne, Hauswand …)
         mit = [v['st'] - sum(v['m'].values()) / len(v['m']) for v in H.values()]
         if abs(sum(mit) / len(mit)) > 4: out['orte'][ort] = {'unbrauchbar': True, 'n': len(H)}; continue
