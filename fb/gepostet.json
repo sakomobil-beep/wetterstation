@@ -21,13 +21,19 @@
  "fb_abendstory_zeit": "2026-11-18T19:09+01:00",
  "wissen": "2026-11-18",
  "wissen_zeit": "2026-11-18T15:05+01:00",
- "warn2_story": "2026-11-18T14:07+01:00",
- "warn2_story_zeit": "2026-11-18T14:07+01:00",
- "fb_warn2_story": "2026-11-18T14:07+01:00",
- "fb_warn2_story_zeit": "2026-11-18T14:07+01:00",
- "warn2_post": "2026-11-18T14:07+01:00",
- "warn2_post_zeit": "2026-11-18T14:07+01:00",
- "warn2_erstellt": "2026-11-18T14:07+01:00",
- "warn2_zeit": "2026-11-18T14:07+01:00",
- "warn2_titel": "Amtliche WARNUNG vor STARKEM GEWITTER für Bad König, Brensbach, Brombachtal, Erbach, Fränkisch-Crumbach, Höchst, Lützelbach, Michelstadt, Mossautal, Reichelsheim"
+ "warn2_story": "2026-11-19T11:45+01:00",
+ "warn2_story_zeit": "2026-11-19T11:45+01:00",
+ "fb_warn2_story": "2026-11-19T11:45+01:00",
+ "fb_warn2_story_zeit": "2026-11-19T11:45+01:00",
+ "warn2_post": "2026-11-19T11:45+01:00",
+ "warn2_post_zeit": "2026-11-19T11:45+01:00",
+ "warn2_erstellt": "2026-11-19T11:45+01:00",
+ "warn2_zeit": "2026-11-19T11:45+01:00",
+ "warn2_titel": "Amtliche WARNUNG vor DAUERREGEN für Bad König, Brensbach, Brombachtal, Erbach, Fränkisch-Crumbach, Höchst, Michelstadt, Mossautal, Oberzent, Reichelsheim",
+ "uw_merk": {
+  "regen": {
+   "stufe": 2,
+   "bis": "2026-11-21T00:00:00+01:00"
+  }
+ }
 }
