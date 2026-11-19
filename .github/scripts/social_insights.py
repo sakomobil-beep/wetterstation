@@ -110,6 +110,38 @@ if ig:
         posts.append({'id':p['id'],'p':'ig','zeit':ct.isoformat(timespec='minutes'),'text':(p.get('caption') or '')[:120],'bild':p.get('thumbnail_url') or p.get('media_url'),'link':p.get('permalink'),
           'art':art(p.get('caption'),ct.hour),'views':w.get('views'),'personen':w.get('reach'),'likes':w.get('likes'),'klicks':w.get('comments'),'kommentare':w.get('comments'),'geteilt':w.get('shares'),'gespeichert':w.get('saved')})
         if w.get('ig_reels_avg_watch_time') is not None: posts[-1]['video']={'sehdauer':round(w['ig_reels_avg_watch_time']/1000,1),'sehzeit_min':round((w.get('ig_reels_video_view_total_time') or 0)/60000,1),'aufrufe':w.get('views')}
+# Threads (20.11.2026)
+TT=os.environ.get('THREADS_TOKEN')
+if TT:
+    def tget(path, **p):
+        p['access_token']=TT
+        try:
+            with urllib.request.urlopen('https://graph.threads.net/v1.0/'+path+'?'+urllib.parse.urlencode(p),timeout=40) as r: return json.loads(r.read().decode())
+        except urllib.error.HTTPError as e:
+            print('Threads-Hinweis', path, e.code); return None
+    import time
+    out['th']={}; tt=alt.get('th',{}).get('tage',{})
+    me=tget('me',fields='username') or {}; out['th']['name']=me.get('username')
+    fc=tget('me/threads_insights',metric='followers_count') or {}
+    try: out['th']['follower']=fc['data'][0]['total_value']['value']; tt.setdefault((heute-dt.timedelta(days=1)).isoformat(),{})['follower']=out['th']['follower']
+    except Exception: pass
+    for back in range(1,8):
+        d0=heute-dt.timedelta(days=back); a0=int(dt.datetime(d0.year,d0.month,d0.day,tzinfo=dt.timezone(dt.timedelta(hours=1))).timestamp())
+        r=tget('me/threads_insights',metric='views,likes,replies,reposts,quotes,clicks',since=a0,until=a0+86400) or {}
+        for x in r.get('data',[]):
+            if x['name']=='views': v=sum(w.get('value',0) for w in x.get('values',[]))
+            elif x['name']=='clicks': v=sum(w.get('value',0) for w in x.get('link_total_values',[]))
+            else: v=(x.get('total_value') or {}).get('value')
+            tt.setdefault(str(d0),{})[x['name']]=v
+    out['th']['tage']=dict(sorted(tt.items()))
+    L=tget('me/threads',fields='id,timestamp,text,media_type,permalink,media_url,thumbnail_url',limit=60,since=int(time.time())-35*86400) or {}
+    for p in L.get('data',[]):
+        i=tget(p['id']+'/insights',metric='views,likes,replies,reposts,quotes,shares') or {}
+        w={x['name']:((x.get('values') or [{}])[0].get('value') if x.get('values') else (x.get('total_value') or {}).get('value')) for x in i.get('data',[])}
+        ct=dt.datetime.fromisoformat(p['timestamp'].replace('+0000','+00:00')).astimezone(dt.timezone(dt.timedelta(hours=1)))
+        tx=p.get('text') or ''
+        posts.append({'id':p['id'],'p':'th','zeit':ct.isoformat(timespec='minutes'),'text':tx[:120],'bild':p.get('thumbnail_url') or (p.get('media_url') if p.get('media_type')=='IMAGE' else None),'link':p.get('permalink'),
+          'art':art(tx,ct.hour) if 'so wird das wetter morgen' not in tx[:60].lower() else 'abend','views':w.get('views'),'likes':w.get('likes'),'klicks':w.get('replies'),'kommentare':w.get('replies'),'geteilt':(w.get('reposts') or 0)+(w.get('shares') or 0),'zitate':w.get('quotes')})
 # Beitrags-Archiv: jeder Beitrag bleibt für immer, Zahlen werden fortgeschrieben (19.11.2026)
 arch={b['p']+b['zeit']:b for b in alt.get('beitraege',[])}
 for b in posts:
@@ -119,6 +151,6 @@ for b in posts:
     b['stand']=heute.isoformat(); arch[k]=b
 out['beitraege']=sorted(arch.values(),key=lambda x:x['zeit'],reverse=True)
 t=json.dumps(out,ensure_ascii=False)
-assert tok not in t and tok0 not in t
+assert tok not in t and tok0 not in t and (not TT or TT not in t)
 open(P,'w').write(t)
 print('Facebook-Follower',out['fb'].get('follower'),'· Tage',len(out['fb']['tage']),'· Beiträge',len(posts),'· Instagram',out['ig'].get('follower'))

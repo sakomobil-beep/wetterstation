@@ -20,6 +20,7 @@ jobs:
         env:
           FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
           FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          THREADS_TOKEN: ${{ secrets.THREADS_TOKEN }}
         run: python3 .github/scripts/social_insights.py
       - name: Speichern
         run: |
