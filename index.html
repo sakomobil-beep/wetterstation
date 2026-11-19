@@ -2257,7 +2257,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 16:45 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 16:52 Uhr</span></p>
 
 </div>
 
@@ -6715,8 +6715,8 @@ function owKarte() {
       '<path d="' + kp + '" fill="#fff" fill-opacity=".95" stroke="' + (sel ? '#ffd400' : 'rgba(18,37,46,.18)') + '" stroke-width="' + (sel ? 3.5 : 1) + '"/>' +
       '<rect x="' + (bx + 4).toFixed(0) + '" y="' + (by + 5).toFixed(0) + '" width="5" height="' + (bh - 10) + '" rx="2.5" fill="' + f + '"/>' +
       (wx ? '<text x="' + (bx + 20).toFixed(0) + '" y="' + (by + 22).toFixed(0) + '" text-anchor="middle" font-size="14"><title>' + wx[1] + '</title>' + wx[0] + '</text>' : '') +
-      '<text x="' + (bx + tx).toFixed(0) + '" y="' + (by + 17).toFixed(0) + '" font-size="15" font-weight="700" fill="#12252E">' + wt + '</text>' +
-      '<text x="' + (bx + tx).toFixed(0) + '" y="' + (by + 28).toFixed(0) + '" font-size="8.5" fill="#5F5E5A">' + esc(nm) + '</text></g>';
+      '<text x="' + (bx + tx).toFixed(0) + '" y="' + (by + 17).toFixed(0) + '" font-size="15" font-weight="700" fill="#12252E" class="owk-v">' + wt + '</text>' +
+      '<text x="' + (bx + tx).toFixed(0) + '" y="' + (by + 28).toFixed(0) + '" font-size="8.5" fill="#5F5E5A" class="owk-n">' + esc(nm) + '</text></g>';
   }).join('');
   $('owMap').innerHTML = '<svg viewBox="-60 0 420 500" width="100%" role="img" aria-label="Reliefkarte des Odenwaldkreises mit Live-Werten"><defs><clipPath id="owClip"><polygon points="' + poly + '"/></clipPath></defs>' +
     '<image href="data/odenwald-relief.png" x="20" y="30.9" width="300" height="469.2" preserveAspectRatio="none" clip-path="url(#owClip)"/><polygon points="' + poly + '" fill="none" stroke="#12252E" stroke-width="2.2" stroke-dasharray="6 4"/>' + marks + '</svg>';
@@ -6874,7 +6874,7 @@ setInterval(function () { if (currentTab === 'odenwald' && !document.hidden) owL
       g.insertAdjacentHTML('afterbegin', '<g transform="translate(' + cx + ',' + cy + ') rotate(' + (o.wd + 180) + ')"><line x1="0" y1="10" x2="0" y2="-12" stroke="#12252E" stroke-width="2.4"/><path d="M-5,-8 L0,-16 L5,-8 Z" fill="#12252E"/></g>');
     });
     var W = warnJetzt(), poly = $('owMap').querySelector('svg polygon[fill="none"]');
-    if (W.length && poly) { poly.setAttribute('stroke', WFARBE[Math.min(4, W[0].st)]); poly.setAttribute('stroke-width', '6');
+    if (W.length && poly) { poly.setAttribute('stroke', '#000'); poly.setAttribute('stroke-width', '3');
       $('owMap').insertAdjacentHTML('afterbegin', '<div class="owx-wtag" style="background:' + WFARBE[Math.min(4, W[0].st)] + '">⚠️ DWD-Warnung: ' + esc(W[0].t.charAt(0) + W[0].t.slice(1).toLowerCase()) + '</div>'); }
   }
   function owxWert(o, k) {
@@ -6889,16 +6889,17 @@ setInterval(function () { if (currentTab === 'odenwald' && !document.hidden) owL
       var f = a ? '#9aa5ab' : k === 'p' ? '#5c7cfa' : k === 'dt' ? (v > 2 ? '#c92a2a' : v > 0.5 ? '#e8590c' : v < -2 ? '#3b5bdb' : v < -0.5 ? '#1f8fc0' : '#868e96') : owFarbe(k === 'gf' ? 't' : k, v);
       var txt = a ? '–' : (k === 'dt' && v > 0 ? '+' : '') + owNf(v, dez);
       h += '<g data-ow="' + esc(o.name) + '" style="cursor:pointer"><title>' + esc(o.name) + ': ' + (a ? 'kein aktueller Wert' : txt + { t: ' °C', gf: ' °C gefühlt', dt: ' ° zu gestern', g: ' km/h Böe', r: ' mm heute', rh: ' % Feuchte', p: ' hPa' }[k]) + '</title>' +
-        (function () { var w = Math.max(28, txt.length * 6.6 + 10), x = p[0] - w / 2, y = p[1] - 30;   // Stil B: Fähnchen mit Spitze (19.11.2026)
-          return '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + w.toFixed(1) + '" height="19" rx="6" fill="' + f + '" stroke="' + (sel ? '#ffd400' : '#fff') + '" stroke-width="' + (sel ? 2.5 : 1.5) + '"/>' +
-            '<path d="M' + (p[0] - 5).toFixed(1) + ',' + (y + 18).toFixed(1) + ' L' + p[0].toFixed(1) + ',' + (p[1] - 5).toFixed(1) + ' L' + (p[0] + 5).toFixed(1) + ',' + (y + 18).toFixed(1) + ' Z" fill="' + f + '"/>' +
+        (function () { var nm = o.name.replace(' i. Odw.', ''), w = Math.max(30, txt.length * 6.6 + 10, nm.length * 4.4 + 10), x = p[0] - w / 2, y = p[1] - 38;   // Stil B: Fähnchen mit Wert + Ortsname (19.11.2026)
+          return '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + w.toFixed(1) + '" height="27" rx="6" fill="' + f + '" stroke="' + (sel ? '#ffd400' : '#fff') + '" stroke-width="' + (sel ? 2.5 : 1.5) + '"/>' +
+            '<path d="M' + (p[0] - 5).toFixed(1) + ',' + (y + 26).toFixed(1) + ' L' + p[0].toFixed(1) + ',' + (p[1] - 5).toFixed(1) + ' L' + (p[0] + 5).toFixed(1) + ',' + (y + 26).toFixed(1) + ' Z" fill="' + f + '"/>' +
             '<circle cx="' + p[0].toFixed(0) + '" cy="' + p[1].toFixed(0) + '" r="3.5" fill="#fff" stroke="#12252E" stroke-width="1.8"/>' +
-            '<text x="' + p[0].toFixed(1) + '" y="' + (y + 13.5).toFixed(1) + '" text-anchor="middle" font-size="10.5" font-weight="700" fill="#fff">' + txt + '</text>'; })() +
-        (sel ? '<text x="' + p[0].toFixed(0) + '" y="' + (p[1] + 16).toFixed(0) + '" text-anchor="middle" font-size="9" font-weight="700" fill="#12252E" stroke="#fff" stroke-width="3" paint-order="stroke">' + esc(o.name) + '</text>' : '') + '</g>';
+            '<text class="owk-w" x="' + p[0].toFixed(1) + '" y="' + (y + 12.5).toFixed(1) + '" text-anchor="middle" font-size="10.5" font-weight="700" fill="#fff">' + txt + '</text>' +
+            '<text class="owk-w" x="' + p[0].toFixed(1) + '" y="' + (y + 22.5).toFixed(1) + '" text-anchor="middle" font-size="7.5" fill="#fff">' + esc(nm) + '</text>'; })() +
+        '</g>';
     });
     if (!h) return;
     svg.insertAdjacentHTML('beforeend', h);
-    $('owMap').insertAdjacentHTML('beforeend', '<p class="ow-hint" style="text-align:center;margin-top:2px">Kleine Fähnchen = weitere Orte (Reichelsheim, Fränkisch-Crumbach, Brombachtal, Lützelbach) – antippen zeigt den Namen. Werte alle 30 Minuten.</p>');
+    $('owMap').insertAdjacentHTML('beforeend', '<p class="ow-hint" style="text-align:center;margin-top:2px">Kleine Fähnchen = weitere Orte (Reichelsheim, Fränkisch-Crumbach, Brombachtal, Lützelbach) – Werte alle 30 Minuten.</p>');
     Array.prototype.forEach.call(svg.querySelectorAll('g[data-ow]'), function (g) { g.onclick = function () { OW.sel = OW.sel === g.dataset.ow ? null : g.dataset.ow; owZeichnen(); }; });
   }
   var altVerlauf = owVerlauf;
@@ -6999,7 +7000,7 @@ setInterval(function () { if (currentTab === 'odenwald' && !document.hidden) owL
     if (!schnee.hidden && /kein Schnee zu erwarten/.test(schnee.textContent)) schnee.hidden = true;
   }).observe(schnee, { childList: true, subtree: true });
   var css = document.createElement('style');
-  css.textContent = '.ow-grid{grid-template-columns:minmax(0,62fr) minmax(0,38fr)!important}.ow-mapc{order:0!important}.ow-mapc #owMap svg{max-height:640px}' +
+  css.textContent = '#owMap .owk-v{fill:#12252E!important;stroke:none!important}#owMap .owk-n{fill:#5F5E5A!important;stroke:none!important}#owMap .owk-w{fill:#fff!important;stroke:none!important}.ow-grid{grid-template-columns:minmax(0,62fr) minmax(0,38fr)!important}.ow-mapc{order:0!important}.ow-mapc #owMap svg{max-height:640px}' +
     '.ow-chips{grid-template-columns:repeat(4,1fr)!important}.ow-chips .ow-chip:nth-child(-n+2){display:none}' +
     '.owa-z{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;padding:6px 4px;border-bottom:1px solid var(--line);cursor:pointer;font-size:14px}.owa-z:last-child{border-bottom:0}' +
     '.owa-z.sel{background:rgba(255,214,0,.25);border-radius:8px}.owa-nr{color:var(--muted);font-size:12px;text-align:right}.owa-z b{color:#fff;border-radius:8px;padding:2px 8px;font-size:13px;min-width:62px;text-align:center}' +
