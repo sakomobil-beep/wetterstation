@@ -1,0 +1,85 @@
+{
+ "stand": "2026-11-19T21:37",
+ "tests": {
+  "zugang": {
+   "ok": true,
+   "gueltig": true,
+   "laeuft_ab": 0,
+   "daten_zugriff_bis": 1801932856,
+   "rechte": [
+    "pages_show_list",
+    "instagram_basic",
+    "instagram_content_publish",
+    "pages_read_engagement",
+    "pages_manage_posts",
+    "public_profile"
+   ]
+  },
+  "seite": {
+   "ok": true,
+   "daten": {
+    "name": "Private Wetterstation Bad König",
+    "followers_count": 22,
+    "fan_count": 22,
+    "instagram_business_account": {
+     "id": "17841460357057222"
+    },
+    "id": "1434135673111385"
+   }
+  },
+  "kennzahl_page_follows": {
+   "ok": false,
+   "fehler": 400,
+   "meldung": "(#190) This method must be called with a Page Access Token"
+  },
+  "kennzahl_page_daily_follows_unique": {
+   "ok": false,
+   "fehler": 400,
+   "meldung": "(#190) This method must be called with a Page Access Token"
+  },
+  "kennzahl_page_media_view": {
+   "ok": false,
+   "fehler": 400,
+   "meldung": "(#190) This method must be called with a Page Access Token"
+  },
+  "kennzahl_page_total_media_view_unique": {
+   "ok": false,
+   "fehler": 400,
+   "meldung": "(#190) This method must be called with a Page Access Token"
+  },
+  "kennzahl_page_views_total": {
+   "ok": false,
+   "fehler": 400,
+   "meldung": "(#190) This method must be called with a Page Access Token"
+  },
+  "kennzahl_page_post_engagements": {
+   "ok": false,
+   "fehler": 400,
+   "meldung": "(#190) This method must be called with a Page Access Token"
+  },
+  "kennzahl_page_video_views": {
+   "ok": false,
+   "fehler": 400,
+   "meldung": "(#190) This method must be called with a Page Access Token"
+  },
+  "beitrag": {
+   "ok": false,
+   "fehler": 400,
+   "meldung": "Invalid OAuth 2.0 Access Token"
+  },
+  "instagram_konto": {
+   "ok": true,
+   "daten": {
+    "id": "17841460357057222",
+    "followers_count": 4,
+    "media_count": 45,
+    "username": "wetterstation_badkoenig"
+   }
+  },
+  "instagram_kennzahlen": {
+   "ok": false,
+   "fehler": 400,
+   "meldung": "(#10) Application does not have permission for this action"
+  }
+ }
+}
