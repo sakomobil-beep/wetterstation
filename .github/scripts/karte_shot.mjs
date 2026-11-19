@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os'; import { join } from 'node:path';
 const [url, werte, out] = process.argv.slice(2);
 const bin = process.env.CHROME_BIN || 'google-chrome', port = 9300 + Math.floor(Math.random() * 500);
 const ch = spawn(bin, ['--headless=new', '--no-sandbox', '--disable-gpu', '--remote-debugging-port=' + port, '--user-data-dir=' + mkdtempSync(join(tmpdir(), 'ks-')),
-  '--window-size=1400,1800', '--force-device-scale-factor=2', 'about:blank'], { stdio: 'ignore' });
+  '--window-size=1400,2400', '--force-device-scale-factor=2', 'about:blank'], { stdio: 'ignore' });
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const ende = (c, t) => { if (t) console.error(t); try { ch.kill(); } catch (e) {} process.exit(c); };
 setTimeout(() => ende(1, 'Zeitüberschreitung'), 90000);
@@ -30,7 +30,7 @@ const r = await ev(`(function(){try{var W=${werte};
  Array.from(document.body.querySelectorAll('*')).forEach(function(e){var sv=document.querySelector('#owMap svg');if(!sv.contains(e)&&!e.contains(sv))e.style.visibility='hidden'});
  document.documentElement.style.background='transparent'; document.body.style.background='transparent'; document.body.style.backgroundImage='none';
  var p=document.getElementById('owMap'); while(p){p.style.background='transparent';p.style.boxShadow='none';p.style.border='0';p=p.parentElement;}
- var s=document.querySelector('#owMap svg'); s.scrollIntoView(); var b=s.getBoundingClientRect();
+ var s=document.querySelector('#owMap svg'); s.style.maxHeight='none'; s.style.height='auto'; s.style.width='760px'; s.setAttribute('height','905'); s.scrollIntoView(); var b=s.getBoundingClientRect();
  return JSON.stringify({x:b.x,y:b.y,w:b.width,h:b.height,n:OW.d.orte.length+OW.d.extra.length});}catch(e){return 'FEHLER '+e}})()`);
 if (!r || r.startsWith('FEHLER')) ende(1, 'Karte nicht gezeichnet: ' + r);
 const b = JSON.parse(r); await sleep(600);
