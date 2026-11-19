@@ -123,6 +123,7 @@ def instagram(datei, text, video=False, story=False):
 
 
 TH_GRAPH = 'https://graph.threads.net/v1.0/'
+TH_LOG = {}   # erfolgreiche Threads-Posts dieses Laufs → gepostet.json als th_<datei> (für den Threads-Tagesplan, 19.11.2026)
 
 
 def th_text(text):
@@ -156,6 +157,7 @@ def threads(datei, text, video=False):
         q = urllib.parse.urlencode({'creation_id': cid, 'access_token': tok}).encode()
         with urllib.request.urlopen(TH_GRAPH + 'me/threads_publish', data=q, timeout=60) as r:
             print('Threads direkt:', r.status, r.read().decode()[:200])
+        TH_LOG[os.path.splitext(os.path.basename(datei))[0]] = dt.datetime.now(TZ).isoformat(timespec='minutes')
         return True
     except urllib.error.HTTPError as e:
         print('Threads-Fehler:', e.code, e.read().decode()[:300])
@@ -515,6 +517,7 @@ def main():
                 M['sonder-' + m['typ'] + '_titel'] = (m.get('emoji', '⚠️') + ' ' + m.get('titel', m['typ'])).strip()
                 push('Sondermeldung gepostet', m['text'].split('\n')[0][:200] + '\nAutomatisch auf Facebook veröffentlicht.',
                      prio='high' if m.get('amtlich') else 'default', tags='warning,white_check_mark')
+    for _k, _z in TH_LOG.items(): M['th_' + _k] = _z[:10]; M['th_' + _k + '_zeit'] = _z
     json.dump(M, open(MERK, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
 
 
