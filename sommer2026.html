@@ -279,6 +279,7 @@ dl.gloss dd { margin: 0; font-size: 15px; }
   </section>
 
   <nav class="toc" aria-label="Inhalt dieser Seite">
+    <a href="#maxvideo">Video: Max erklärt</a>
     <a href="#station">An unserer Station</a>
     <a href="#ablauf">So lief der Sommer</a>
     <a href="#rekorde">Rekorde</a>
@@ -289,6 +290,17 @@ dl.gloss dd { margin: 0; font-size: 15px; }
     <a href="#videos">Videos</a>
     <a href="#quellen">Links und Quellen</a>
   </nav>
+
+  <section class="card" id="maxvideo">
+    <div class="label">Video · Max erklärt</div>
+    <h2>Der Jahrhundertsommer 2026 – im Video erklärt</h2>
+    <p>Max, unser Wettersprecher, blickt in rund 13 Minuten auf den Sommer 2026 zurück: die Bilanz und die Rekorde in Deutschland, der Vergleich mit 2003, was unsere Station in Bad König gemessen hat, das historische Niedrigwasser am Rhein und was es für die Schifffahrt bedeutet hat – und welche Rolle der Klimawandel spielt.</p>
+    <video id="mxVid" controls playsinline preload="none" poster="video/max-erklaert-sommer2026.jpg" style="width:100%;border-radius:14px;background:#000;display:block" src="video/max-erklaert-sommer2026.mp4"></video>
+    <ol class="mxkap" style="margin:0;padding-left:0;list-style:none;display:flex;flex-wrap:wrap;gap:8px 16px;font-size:14px"><li><button type="button" data-t="3">0:03</button> Der Jahrhundertsommer 2026</li><li><button type="button" data-t="46">0:46</button> 1. Die Bilanz in Zahlen</li><li><button type="button" data-t="110">1:50</button> 2. So lief der Sommer</li><li><button type="button" data-t="175">2:55</button> 3. Die Rekorde</li><li><button type="button" data-t="221">3:41</button> 4. Schlimmer als 2003?</li><li><button type="button" data-t="270">4:30</button> 5. Was unsere Station gemessen hat</li><li><button type="button" data-t="391">6:31</button> 6. Ein Fluss ohne Wasser: die Schifffahrt</li><li><button type="button" data-t="571">9:31</button> 7. Was die Hitze angerichtet hat</li><li><button type="button" data-t="616">10:16</button> 8. Welche Rolle spielt der Klimawandel?</li><li><button type="button" data-t="657">10:57</button> 9. Kleines Sommer-Lexikon</li><li><button type="button" data-t="699">11:39</button> Fazit</li></ol>
+    <p class="asof" style="margin:0">Grafiken schematisch und selbst erstellt, der Pegelverlauf in Kaub nach gemeldeten Eckwerten. Quellen: DWD, Wasserstraßen- und Schifffahrtsverwaltung, BfG, dpa / ZDFheute / hessenschau, Robert Koch-Institut, Copernicus, eigene Messwerte der Station IBADKN33.</p>
+    <script>document.querySelectorAll('.mxkap button').forEach(function (b) { b.style.cssText = 'border:0;background:#e8f1fb;color:#1a5a96;border-radius:8px;padding:3px 8px;font-weight:700;cursor:pointer;margin-right:4px';
+      b.onclick = function () { var v = document.getElementById('mxVid'); v.currentTime = +b.dataset.t; v.play(); }; });</script>
+  </section>
 
   <section class="card" id="station">
     <div class="label">Eigene Messung</div>
