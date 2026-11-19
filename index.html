@@ -2257,7 +2257,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 17:06 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 17:12 Uhr</span></p>
 
 </div>
 
@@ -4342,6 +4342,7 @@ var RG_TOWNS = [
   { id: 'michelstadt', n: 'Michelstadt', lat: 49.678, lon: 9.004, el: 208, dx: 10, dy: -16, alt: 0 },
   { id: 'mossautal', n: 'Mossautal', lat: 49.667, lon: 8.937, el: 380, dx: -78, dy: 4, alt: -1.5 },
   { id: 'oberzent', n: 'Oberzent', lat: 49.567, lon: 8.976, el: 430, dx: 10, dy: -16, alt: -2.5 },
+  { id: 'brombachtal', n: 'Brombachtal', lat: 49.733, lon: 8.945, el: 250, dx: -98, dy: -44, alt: -0.5, w: 122 },   /* 19.11.2026: 8. Ort der Kreis-Vorhersage */
   { id: 'reichelsheim', n: 'Reichelsheim', lat: 49.713, lon: 8.838, el: 215, dx: 10, dy: -16, alt: 0, w: 126 }   /* 19.11.2026: 7. Ort der Kreis-Vorhersage (Gersprenztal), Lernen mit IREICH180 */
 ];
 function rgUrl(t) {
@@ -4613,7 +4614,7 @@ function renderRegion() {
     }
     var tt = d ? nf(d.tmax, 0) + '°' : '–', tl = d ? ' / ' + nf(d.tmin, 0) + '°' : '';
     marks += '<circle class="dot" data-ort="' + RG_TOWNS.indexOf(t) + '" cx="' + q[0].toFixed(1) + '" cy="' + q[1].toFixed(1) + '" r="5"/>' +
-      '<g class="lbl ly-wert' + (t.home ? ' home' : '') + '" data-ort="' + RG_TOWNS.indexOf(t) + '" transform="translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ')">' +
+      '<g class="lbl ly-wert' + (t.home ? ' home' : '') + '" data-ort="' + RG_TOWNS.indexOf(t) + '" transform="translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ') scale(.8)">' +
       '<rect width="' + (t.w || 112) + '" height="40" rx="10"/>' +
       (d ? '<svg x="4" y="4" width="32" height="32" viewBox="0 0 48 48">' + wxIcon(d.icon).replace(/^<svg[^>]*>|<\/svg>$/g, '') + '</svg>' : '') +
       '<text class="tn" x="40" y="16">' + esc(t.n.replace(' i. Odw.', '').replace('Station ', '')) + '</text>' +
