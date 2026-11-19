@@ -1,168 +1,146 @@
 {
- "stand": "2026-11-19T21:51",
+ "stand": "2026-11-19T22:10",
  "tests": {
-  "zugang": {
-   "ok": true,
-   "gueltig": true,
-   "laeuft_ab": 0,
-   "daten_zugriff_bis": 1802900773,
-   "rechte": [
-    "read_insights",
-    "pages_show_list",
-    "instagram_basic",
-    "instagram_manage_insights",
-    "instagram_content_publish",
-    "pages_read_engagement",
-    "pages_manage_posts",
-    "public_profile"
-   ]
-  },
-  "seite": {
-   "ok": true,
-   "daten": {
-    "name": "Private Wetterstation Bad König",
-    "followers_count": 22,
-    "fan_count": 22,
-    "instagram_business_account": {
-     "id": "17841460357057222"
-    },
-    "id": "1434135673111385"
+  "seite:page_daily_unfollows_unique": [
+   {
+    "page_daily_unfollows_unique/day": 0
    }
-  },
-  "seiten_zugang": "geholt",
-  "kennzahl_page_follows": {
-   "ok": true,
-   "letzte_werte": [
-    [
-     "2026-11-17",
-     20
-    ],
-    [
-     "2026-11-18",
-     21
-    ]
-   ]
-  },
-  "kennzahl_page_daily_follows_unique": {
-   "ok": true,
-   "letzte_werte": [
-    [
-     "2026-11-17",
-     0
-    ],
-    [
-     "2026-11-18",
-     1
-    ]
-   ]
-  },
-  "kennzahl_page_media_view": {
-   "ok": true,
-   "letzte_werte": [
-    [
-     "2026-11-17",
-     895
-    ],
-    [
-     "2026-11-18",
-     861
-    ]
-   ]
-  },
-  "kennzahl_page_total_media_view_unique": {
-   "ok": true,
-   "letzte_werte": [
-    [
-     "2026-11-17",
-     786
-    ],
-    [
-     "2026-11-18",
-     703
-    ]
-   ]
-  },
-  "kennzahl_page_views_total": {
-   "ok": true,
-   "letzte_werte": [
-    [
-     "2026-11-17",
-     12
-    ],
-    [
-     "2026-11-18",
-     0
-    ]
-   ]
-  },
-  "kennzahl_page_post_engagements": {
-   "ok": true,
-   "letzte_werte": [
-    [
-     "2026-11-17",
-     7
-    ],
-    [
-     "2026-11-18",
-     6
-    ]
-   ]
-  },
-  "kennzahl_page_video_views": {
-   "ok": true,
-   "letzte_werte": [
-    [
-     "2026-11-17",
-     116
-    ],
-    [
-     "2026-11-18",
-     126
-    ]
-   ]
-  },
-  "beitrag": {
-   "ok": true,
-   "zeit": "2026-11-19T18:09:16+0000",
-   "text": "Guten Abend Odenwald! 🌙 Hier kommt der Wetterausblick für mo",
-   "ergebnis": [
-    {
-     "name": "post_media_view",
-     "wert": 219
-    },
-    {
-     "name": "post_total_media_view_unique",
-     "wert": 208
-    },
-    {
-     "name": "post_reactions_by_type_total",
-     "wert": {
-      "like": 2
-     }
-    },
-    {
-     "name": "post_clicks",
-     "wert": 3
-    },
-    {
-     "name": "post_total_media_view_unique",
-     "wert": 0
+  ],
+  "seite:page_media_view": [
+   {
+    "page_media_view/day": 793
+   }
+  ],
+  "seite:page_video_view_time": [
+   {
+    "page_video_view_time/day": 2763505
+   }
+  ],
+  "seite:page_video_complete_views_30s": [
+   {
+    "page_video_complete_views_30s/day": 11
+   }
+  ],
+  "seite:page_video_views_organic": [
+   {
+    "page_video_views_organic/day": 116
+   }
+  ],
+  "seite:page_actions_post_reactions_total": [
+   {
+    "page_actions_post_reactions_total/day": {
+     "like": 5
     }
-   ]
-  },
-  "instagram_konto": {
-   "ok": true,
-   "daten": {
-    "id": "17841460357057222",
-    "followers_count": 4,
-    "media_count": 45,
-    "username": "wetterstation_badkoenig"
    }
-  },
-  "instagram_kennzahlen": {
-   "ok": false,
-   "fehler": 400,
-   "meldung": "(#100) The following metrics (views,profile_views) should be specified with parameter metric_type=total_value"
-  }
+  ],
+  "seite:page_follows_city": "leer",
+  "seite:page_follows_country": "leer",
+  "seite:page_media_view nach is_from_followers": [
+   {
+    "page_media_view/day": 735
+   }
+  ],
+  "videos": [
+   [
+    "9184",
+    107.72,
+    "2026-11-19T18:08:48+0000"
+   ],
+   [
+    "2551",
+    51.2,
+    "2026-11-19T14:02:54+0000"
+   ],
+   [
+    "3946",
+    151.2,
+    "2026-11-19T06:12:44+0000"
+   ]
+  ],
+  "video:total_video_views": "leer",
+  "video:total_video_avg_time_watched": "leer",
+  "video:total_video_view_total_time": "leer",
+  "video:total_video_complete_views": "leer",
+  "video:total_video_30s_views": "leer",
+  "video:total_video_retention_graph": "leer",
+  "video:total_video_reactions_by_type_total": "leer",
+  "video:total_video_views_unique": "FEHLER: (#100) The value must be a valid insights metric",
+  "beitrag:felder": "(#10) This endpoint requires the 'pages_read_user_content' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs",
+  "ig:reach": [
+   {
+    "reach/day": {
+     "value": 140
+    }
+   }
+  ],
+  "ig:views": [
+   {
+    "views/day": {
+     "value": 194
+    }
+   }
+  ],
+  "ig:accounts_engaged": [
+   {
+    "accounts_engaged/day": {
+     "value": 6
+    }
+   }
+  ],
+  "ig:total_interactions": [
+   {
+    "total_interactions/day": {
+     "value": 10
+    }
+   }
+  ],
+  "ig:likes": [
+   {
+    "likes/day": {
+     "value": 10
+    }
+   }
+  ],
+  "ig:comments": [
+   {
+    "comments/day": {
+     "value": 0
+    }
+   }
+  ],
+  "ig:shares": [
+   {
+    "shares/day": {
+     "value": 0
+    }
+   }
+  ],
+  "ig:saves": [
+   {
+    "saves/day": {
+     "value": 0
+    }
+   }
+  ],
+  "ig:profile_links_taps": [
+   {
+    "profile_links_taps/day": {
+     "value": 0
+    }
+   }
+  ],
+  "ig:follows_and_unfollows": "leer",
+  "ig:follower_demographics": "FEHLER: (#100) The following periods (day) are incompatible with the metric (follower_demographics)",
+  "ig-reel": [
+   {
+    "views/lifetime": 20
+   },
+   {
+    "reach/lifetime": 16
+   },
+   {
+    "likes/lifetime": 1
+   }
+  ]
  }
 }
