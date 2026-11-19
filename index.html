@@ -794,13 +794,16 @@ html[data-saison="weihnachten"][data-tab]:not([data-tab="aktuell"]) .top { borde
 .wa-snow circle:nth-child(4) { animation-delay: -.45s; } .wa-snow circle:nth-child(5) { animation-delay: -1.35s; }
 .wa-fog line { animation: waFog 4.5s ease-in-out infinite alternate; } .wa-fog line:nth-child(2) { animation-direction: alternate-reverse; }
 .wa-bolt { animation: waBolt 3.4s linear infinite; }
+.wa-wet { transform-box: fill-box; transform-origin: 50% 100%; animation: waWet 2.2s ease-in-out infinite; }
+@keyframes waWet { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08, .94); } }
+.wxi { display: inline-block; width: 1.35em; height: 1.35em; vertical-align: -.35em; } .wxi svg { width: 100%; height: 100%; display: block; }
 @keyframes waSpin { to { transform: rotate(360deg); } }
 @keyframes waDrift { from { transform: translateX(-1.2px); } to { transform: translateX(1.2px); } }
 @keyframes waDrop { 0% { transform: translateY(-3px); opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { transform: translateY(4px); opacity: 0; } }
 @keyframes waFlake { 0% { transform: translate(0, -3px); opacity: 0; } 25% { opacity: 1; } 75% { opacity: 1; } 100% { transform: translate(1.5px, 4px); opacity: 0; } }
 @keyframes waFog { from { transform: translateX(-2.5px); } to { transform: translateX(2.5px); } }
 @keyframes waBolt { 0%, 68% { opacity: .45; } 70% { opacity: 1; } 74% { opacity: .5; } 77% { opacity: 1; } 88%, 100% { opacity: .45; } }
-@media (prefers-reduced-motion: reduce) { .wa-rays, .wa-rain line, .wa-snow circle, .wa-fog line, .wa-cloud, .wa-wind, .wa-bolt { animation: none !important; opacity: 1 !important; } }
+@media (prefers-reduced-motion: reduce) { .wa-rays, .wa-rain line, .wa-snow circle, .wa-fog line, .wa-cloud, .wa-wind, .wa-bolt, .wa-wet { animation: none !important; opacity: 1 !important; } }
 /* Kreiskarte neu (15.11.2026): Karte rechts oben groß, Ebenen-Menü in der Karte, Tabelle mit Karte verknüpft */
 .region2 { display: grid; grid-template-columns: minmax(0, 58fr) minmax(0, 42fr); gap: 22px; align-items: start; margin-top: 4px; }
 .region2 h3 { margin: 0 0 4px; font: 600 1.1rem/1.3 var(--font-display); }
@@ -3521,7 +3524,7 @@ function icMoon(x, y, k) {
   return '<path transform="translate(' + x + ' ' + y + ') scale(' + k + ')" fill="#8FA2B6" d="M27 9a15 15 0 1 0 12 24A12 12 0 0 1 27 9z"/>';
 }
 function icCloud(x, y, k, fill) {
-  return '<g class="wa-cloud"><g transform="translate(' + x + ' ' + y + ') scale(' + k + ')" fill="' + fill + '"><circle cx="15" cy="22" r="7"/><circle cx="24" cy="16" r="9.5"/><circle cx="33" cy="22" r="6.5"/><rect x="8" y="21" width="32" height="9" rx="4.5"/></g></g>';
+  return '<g class="wa-cloud"><g transform="translate(' + x + ' ' + y + ') scale(' + k + ')" fill="' + fill + '"><circle cx="13.5" cy="23.5" r="6"/><circle cx="21.5" cy="17" r="8"/><circle cx="30.5" cy="16.5" r="6.5"/><circle cx="36" cy="24" r="5.5"/><rect x="7.5" y="22" width="34" height="8" rx="4"/></g></g>';
 }
 function wxIcon(name) {
   var b = '';
@@ -3539,6 +3542,7 @@ function wxIcon(name) {
     case 'snow': b = top + '<g class="wa-snow" fill="#7FA7C9"><circle cx="16" cy="35" r="2.5"/><circle cx="24" cy="38" r="2.5"/><circle cx="32" cy="35" r="2.5"/><circle cx="20" cy="43.5" r="2.5"/><circle cx="28" cy="43.5" r="2.5"/></g>'; break;
     case 'hail': b = top + '<g class="wa-snow" fill="#FFFFFF" stroke="#7FA7C9" stroke-width="2"><circle cx="17" cy="36" r="2.8"/><circle cx="25" cy="41" r="2.8"/><circle cx="33" cy="36" r="2.8"/></g>'; break;
     case 'thunderstorm': b = icCloud(0, -3, 1, '#7F909C') + '<polygon class="wa-bolt" fill="#F2B233" points="26,26 17,38 23,38 20,47 31,33 25,33 28,26"/>'; break;
+    case 'wet': b = '<path class="wa-wet" fill="#2F7FC1" d="M24 8C18 18 14.5 23 14.5 28.5a9.5 9.5 0 0 0 19 0C33.5 23 30 18 24 8z"/><ellipse cx="20" cy="29" rx="2" ry="3.5" fill="#fff" opacity=".45"/>'; break;
     case 'wind': b = '<g class="wa-wind" fill="none" stroke="#7C93A5" stroke-width="2.8" stroke-linecap="round"><path d="M6 17h24a5 5 0 1 0-5-5"/><path d="M6 25h32a5 5 0 1 1-5 5"/><path d="M6 33h18"/></g>'; break;
     default: b = icCloud(-4, 3, 1.15, '#A3B2BC');
   }
@@ -6670,8 +6674,13 @@ function owFarbe(k, v) {
   if (k === 'r') return v < 0.1 ? '#9aa5ab' : v < 2 ? '#74c0fc' : v < 10 ? '#1f8fc0' : '#1c3d8f';
   return v < 60 ? '#d9a010' : v < 85 ? '#2f9e44' : '#1f8fc0';
 }
-var OW_WX = { regen: ['🌧️', 'Regen'], schauer: ['🌦️', 'Schauer / leichter Regen'], nass: ['💧', 'Nass, gerade aufgehört'], schnee: ['🌨️', 'Schnee / Schneeregen'], nebel: ['🌫️', 'Nebel / Dunst'],
-  sonne: ['☀️', 'Sonnig'], wolkig: ['⛅', 'Wolkig'], bedeckt: ['☁️', 'Bedeckt'], tag: ['🌤️', 'Trocken'], nacht: ['🌙', 'Trocken (Nacht)'] };
+var OW_WX = { regen: ['rain', 'Regen'], schauer: ['showers-day', 'Schauer / leichter Regen'], nass: ['wet', 'Nass, gerade aufgehört'], schnee: ['snow', 'Schnee / Schneeregen'], nebel: ['fog', 'Nebel / Dunst'],
+  sonne: ['clear-day', 'Sonnig'], wolkig: ['partly-cloudy-day', 'Wolkig'], bedeckt: ['cloudy', 'Bedeckt'], tag: ['partly-cloudy-day', 'Trocken'], nacht: ['clear-night', 'Trocken (Nacht)'] };
+function owNacht() { var d = new Date(), n = (d - Date.UTC(d.getUTCFullYear(), 0, 0)) / 864e5, dk = -23.44 * Math.cos(2 * Math.PI * (n + 10) / 365) * Math.PI / 180,
+  h = ((d.getUTCHours() + d.getUTCMinutes() / 60 + 9 / 15 - 12) * 15) * Math.PI / 180, la = 49.7 * Math.PI / 180;
+  return Math.sin(la) * Math.sin(dk) + Math.cos(la) * Math.cos(dk) * Math.cos(h) < 0; }
+function owIcName(n) { return owNacht() ? n.replace('showers-day', 'showers-night').replace('partly-cloudy-day', 'partly-cloudy-night') : n; }
+function owIc(w) { return '<span class="wxi" title="' + w[1] + '">' + wxIcon(owIcName(w[0])) + '</span>'; }   /* 19.11.2026: animierte Symbole statt Emojis */
 function owWx(o) { return !owAlt(o) && OW_WX[o.wx] ? OW_WX[o.wx] : null; }
 function owAlt(o) { return !o.zeit || (Date.now() - new Date(o.zeit).getTime()) > 75 * 60000; }
 function owMin(o) { return o.zeit ? Math.max(0, Math.round((Date.now() - new Date(o.zeit).getTime()) / 60000)) : null; }
@@ -6698,7 +6707,7 @@ function owZeichnen() {
   $('owTab').innerHTML = '<tr><th>Ort</th><th>Höhe</th><th>Temperatur</th><th>Feuchte</th><th>Wind / Böe</th><th>Regen heute</th><th>Quelle</th><th>Messung</th></tr>' +
     d.orte.map(function (o) {
       var m = owMin(o), a = owAlt(o);
-      return '<tr data-ow="' + esc(o.name) + '" class="' + (a ? 'alt' : '') + (OW.sel === o.name ? ' sel' : '') + '"><td>' + (owWx(o) ? '<span title="' + owWx(o)[1] + '">' + owWx(o)[0] + '</span> ' : '') + '<b>' + esc(o.name) + '</b></td><td>' + o.el + ' m</td><td><b style="color:' + (a ? 'inherit' : owFarbe('t', o.t)) + '">' + owNf(o.t, 1) + ' °C</b></td><td>' + owNf(o.rh, 0) + ' %</td><td>' + owNf(o.w, 0) + ' / ' + owNf(o.g, 0) + ' km/h</td><td>' + owRegen(o) + '</td><td><span class="ow-q">' + esc(o.quelle) + '</span></td><td>' + (m === null ? '–' : m < 1 ? 'gerade eben' : m < 60 ? 'vor ' + m + ' Min.' : 'vor ' + Math.round(m / 60) + ' Std.') + '</td></tr>';
+      return '<tr data-ow="' + esc(o.name) + '" class="' + (a ? 'alt' : '') + (OW.sel === o.name ? ' sel' : '') + '"><td>' + (owWx(o) ? owIc(owWx(o)) + ' ' : '') + '<b>' + esc(o.name) + '</b></td><td>' + o.el + ' m</td><td><b style="color:' + (a ? 'inherit' : owFarbe('t', o.t)) + '">' + owNf(o.t, 1) + ' °C</b></td><td>' + owNf(o.rh, 0) + ' %</td><td>' + owNf(o.w, 0) + ' / ' + owNf(o.g, 0) + ' km/h</td><td>' + owRegen(o) + '</td><td><span class="ow-q">' + esc(o.quelle) + '</span></td><td>' + (m === null ? '–' : m < 1 ? 'gerade eben' : m < 60 ? 'vor ' + m + ' Min.' : 'vor ' + Math.round(m / 60) + ' Std.') + '</td></tr>';
     }).join('');
   owKarte(); owVerlauf();
   Array.prototype.forEach.call(document.querySelectorAll('#owTab tr[data-ow]'), function (tr) { tr.onclick = function () { OW.sel = OW.sel === tr.dataset.ow ? null : tr.dataset.ow; owZeichnen(); }; });
@@ -6717,14 +6726,14 @@ function owKarte() {
       '<line x1="' + p[0].toFixed(1) + '" y1="' + p[1].toFixed(1) + '" x2="' + ax.toFixed(1) + '" y2="' + ay.toFixed(1) + '" stroke="#12252E" stroke-width="1.2" opacity=".55"/>' +
       '<path class="owk-k" d="' + kp + '" fill="#fff" fill-opacity=".95" stroke="' + (sel ? '#ffd400' : 'rgba(18,37,46,.18)') + '" stroke-width="' + (sel ? 3.5 : 1) + '"/>' +
       '<rect x="' + (bx + 4).toFixed(0) + '" y="' + (by + 4).toFixed(0) + '" width="4" height="' + (bh - 8) + '" rx="2" fill="' + f + '"/>' +
-      (wx ? '<text x="' + (bx + 17).toFixed(0) + '" y="' + (by + 18).toFixed(0) + '" text-anchor="middle" font-size="12"><title>' + wx[1] + '</title>' + wx[0] + '</text>' : '') +
+      (wx ? '<svg x="' + (bx + 8).toFixed(0) + '" y="' + (by + 4).toFixed(0) + '" width="19" height="19" viewBox="0 0 48 48"><title>' + wx[1] + '</title>' + wxIcon(owIcName(wx[0])).replace(/^<svg[^>]*>|<\/svg>$/g, '') + '</svg>' : '') +
       '<text x="' + (bx + tx).toFixed(0) + '" y="' + (by + 14).toFixed(0) + '" font-size="13" font-weight="700" fill="#12252E" class="owk-v">' + wt + '</text>' +
       '<text x="' + (bx + tx).toFixed(0) + '" y="' + (by + 23.5).toFixed(0) + '" font-size="7.5" fill="#5F5E5A" class="owk-n">' + esc(nm) + '</text></g>';
   }).join('');
   $('owMap').innerHTML = '<svg viewBox="-60 0 420 500" width="100%" role="img" aria-label="Reliefkarte des Odenwaldkreises mit Live-Werten"><defs><clipPath id="owClip"><polygon points="' + poly + '"/></clipPath></defs>' +
     '<image href="data/odenwald-relief.png" x="20" y="30.9" width="300" height="469.2" preserveAspectRatio="none" clip-path="url(#owClip)"/><polygon points="' + poly + '" fill="none" stroke="#12252E" stroke-width="2.2" stroke-dasharray="6 4"/>' + marks + '</svg>';
   var da = {}; d.orte.forEach(function (o) { var w = owWx(o); if (w) da[o.wx] = w; });
-  var lg = Object.keys(da).map(function (key) { return '<span>' + da[key][0] + ' ' + da[key][1] + '</span>'; }).join('');
+  var lg = Object.keys(da).map(function (key) { return '<span>' + owIc(da[key]) + ' ' + da[key][1] + '</span>'; }).join('');
   if (lg) $('owMap').insertAdjacentHTML('beforeend', '<div class="ow-leg ow-wxleg">' + lg + '</div>');
   Array.prototype.forEach.call(document.querySelectorAll('#owMap g[data-ow]'), function (g) { g.onclick = function () { OW.sel = OW.sel === g.dataset.ow ? null : g.dataset.ow; owZeichnen(); }; });
 }
@@ -6831,7 +6840,7 @@ setInterval(function () { if (currentTab === 'odenwald' && !document.hidden) owL
     $('owTab').innerHTML = '<tr><th>Ort</th><th>Temperatur</th><th>gefühlt</th><th>zu gestern</th><th>Tief / Hoch heute</th><th>Taupunkt</th><th>Feuchte</th><th>Wind / Böe</th><th>Luftdruck</th><th>Regen heute</th><th>UV</th><th>Achtung</th><th>Messung</th></tr>' +
       d.orte.map(function (o) {
         var m = owMin(o), a = owAlt(o), th = tiefHoch(o.name), dg = o.t !== null && o.t !== undefined && o.t_gestern !== undefined ? o.t - o.t_gestern : null, gz = gefahren(o);
-        return '<tr data-ow="' + esc(o.name) + '" class="' + (a ? 'alt' : '') + (OW.sel === o.name ? ' sel' : '') + '"><td>' + (owWx(o) ? '<span title="' + owWx(o)[1] + '">' + owWx(o)[0] + '</span> ' : '') +
+        return '<tr data-ow="' + esc(o.name) + '" class="' + (a ? 'alt' : '') + (OW.sel === o.name ? ' sel' : '') + '"><td>' + (owWx(o) ? owIc(owWx(o)) + ' ' : '') +
           '<b>' + esc(kurz(o.name)) + '</b> <small class="ow-mut" title="' + esc(o.quelle + (o.station ? ' ' + o.station : '')) + '">' + o.el + ' m</small></td>' +
           '<td><b>' + owNf(o.t, 1) + ' °C</b></td><td>' + owNf(o.gf, 1) + ' °C</td>' +
           '<td>' + (dg === null ? '–' : '<span style="color:' + (dg > 0.5 ? '#e8590c' : dg < -0.5 ? '#1f8fc0' : 'inherit') + '">' + (dg > 0.5 ? '▲ ' : dg < -0.5 ? '▼ ' : '● ') + (dg > 0 ? '+' : '') + owNf(dg, 1) + '°</span>') + '</td>' +
@@ -8333,7 +8342,8 @@ function tqHtml(T){
 <script>/* 19.11.2026: Wetter an meinem Ort */
 window.addEventListener("load",function(){if(!document.getElementById("moIn"))return;
 (function(){
-var WX={0:['☀️','klar'],1:['🌤️','überwiegend klar'],2:['⛅','teils bewölkt'],3:['☁️','bedeckt'],45:['🌫️','Nebel'],48:['🌫️','Reifnebel'],51:['🌦️','leichter Niesel'],53:['🌦️','Niesel'],55:['🌧️','starker Niesel'],56:['🧊','gefrierender Niesel'],57:['🧊','gefrierender Niesel'],61:['🌧️','leichter Regen'],63:['🌧️','Regen'],65:['🌧️','starker Regen'],66:['🧊','gefrierender Regen'],67:['🧊','gefrierender Regen'],71:['🌨️','leichter Schnee'],73:['🌨️','Schnee'],75:['❄️','starker Schnee'],77:['🌨️','Schneegriesel'],80:['🌦️','Schauer'],81:['🌧️','Schauer'],82:['⛈️','heftige Schauer'],85:['🌨️','Schneeschauer'],86:['❄️','Schneeschauer'],95:['⛈️','Gewitter'],96:['⛈️','Gewitter mit Hagel'],99:['⛈️','Gewitter mit Hagel']};
+var WX={0:['clear-day','klar'],1:['partly-cloudy-day','überwiegend klar'],2:['partly-cloudy-day','teils bewölkt'],3:['cloudy','bedeckt'],45:['fog','Nebel'],48:['fog','Reifnebel'],51:['showers-day','leichter Niesel'],53:['showers-day','Niesel'],55:['rain','starker Niesel'],56:['sleet','gefrierender Niesel'],57:['sleet','gefrierender Niesel'],61:['rain','leichter Regen'],63:['rain','Regen'],65:['rain','starker Regen'],66:['sleet','gefrierender Regen'],67:['sleet','gefrierender Regen'],71:['snow','leichter Schnee'],73:['snow','Schnee'],75:['snow','starker Schnee'],77:['snow','Schneegriesel'],80:['showers-day','Schauer'],81:['rain','Schauer'],82:['thunderstorm','heftige Schauer'],85:['snow','Schneeschauer'],86:['snow','Schneeschauer'],95:['thunderstorm','Gewitter'],96:['hail','Gewitter mit Hagel'],99:['hail','Gewitter mit Hagel']};
+function moIc(n,tag){if(!n)return '';if(!tag)n=n.replace('clear-day','clear-night').replace('partly-cloudy-day','partly-cloudy-night').replace('showers-day','showers-night');return wxIcon(n)}
 var inp=document.getElementById('moIn'),vs=document.getElementById('moVs'),erg=document.getElementById('moErg'),tmr;
 function f1(x){return (Math.round(x*10)/10).toLocaleString('de-DE')}
 inp.addEventListener('input',function(){clearTimeout(tmr);var q=inp.value.trim();if(q.length<2){vs.hidden=true;return}
@@ -8343,10 +8353,10 @@ inp.addEventListener('input',function(){clearTimeout(tmr);var q=inp.value.trim()
 document.addEventListener('click',function(e){if(!e.target.closest('.mo-in'))vs.hidden=true});
 function waehle(o){vs.hidden=true;inp.value=o.n;try{localStorage.setItem('meinOrt',JSON.stringify(o))}catch(e){}laden(o)}
 function laden(o){erg.style.display='block';erg.innerHTML='<span class="ow-mut">Lade Wetter für '+o.n+' …</span>';
- fetch('https://api.open-meteo.com/v1/forecast?latitude='+o.la+'&longitude='+o.lo+'&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,wind_gusts_10m&hourly=temperature_2m,weather_code,precipitation_probability&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum&timezone=Europe%2FBerlin&forecast_days=2&models=best_match').then(r=>r.json()).then(function(d){
-  var c=d.current,w=WX[c.weather_code]||['🌡️',''],dy=d.daily,h=d.hourly,i0=h.time.findIndex(t=>t>=c.time.slice(0,13)+':00'),std='';
-  for(var i=i0+1;i<=i0+6&&i<h.time.length;i++){var s=WX[h.weather_code[i]]||['',''];std+='<div>'+h.time[i].slice(11,13)+' Uhr<br><span style="font-size:18px">'+s[0]+'</span><br><b>'+Math.round(h.temperature_2m[i])+'°</b></div>'}
-  erg.innerHTML='<div class="mo-kopf"><span class="mo-sym">'+w[0]+'</span><div><div class="mo-ort">'+o.n+(o.el!=null?' <small class="ow-mut">'+Math.round(o.el)+' m</small>':'')+'</div><div><span class="mo-t">'+f1(c.temperature_2m)+' °C</span></div><div class="mo-wx">'+w[1]+' · gefühlt '+f1(c.apparent_temperature)+' °C</div></div></div>'+
+ fetch('https://api.open-meteo.com/v1/forecast?latitude='+o.la+'&longitude='+o.lo+'&current=temperature_2m,apparent_temperature,weather_code,is_day,wind_speed_10m,wind_gusts_10m&hourly=temperature_2m,weather_code,precipitation_probability,is_day&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum&timezone=Europe%2FBerlin&forecast_days=2&models=best_match').then(r=>r.json()).then(function(d){
+  var c=d.current,w=WX[c.weather_code]||['',''],dy=d.daily,h=d.hourly,i0=h.time.findIndex(t=>t>=c.time.slice(0,13)+':00'),std='';
+  for(var i=i0+1;i<=i0+6&&i<h.time.length;i++){var s=WX[h.weather_code[i]]||['',''];std+='<div>'+h.time[i].slice(11,13)+' Uhr<br><span class="wxi" style="font-size:20px">'+moIc(s[0],h.is_day?h.is_day[i]:1)+'</span><br><b>'+Math.round(h.temperature_2m[i])+'°</b></div>'}
+  erg.innerHTML='<div class="mo-kopf"><span class="mo-sym"><span class="wxi">'+moIc(w[0],c.is_day!==0)+'</span></span><div><div class="mo-ort">'+o.n+(o.el!=null?' <small class="ow-mut">'+Math.round(o.el)+' m</small>':'')+'</div><div><span class="mo-t">'+f1(c.temperature_2m)+' °C</span></div><div class="mo-wx">'+w[1]+' · gefühlt '+f1(c.apparent_temperature)+' °C</div></div></div>'+
   '<div class="mo-chips"><div>Tief/Hoch<b>'+Math.round(dy.temperature_2m_min[0])+'° / '+Math.round(dy.temperature_2m_max[0])+'°</b></div><div>Regenrisiko<b>'+dy.precipitation_probability_max[0]+' %</b></div><div>Regen heute<b>'+f1(dy.precipitation_sum[0])+' mm</b></div><div>Wind/Böen<b>'+Math.round(c.wind_speed_10m)+'/'+Math.round(c.wind_gusts_10m)+'</b></div></div>'+
   '<div class="mo-std">'+std+'</div><p class="ow-hint" style="margin-top:6px">Morgen: '+Math.round(dy.temperature_2m_min[1])+'° / '+Math.round(dy.temperature_2m_max[1])+'°, Regenrisiko '+dy.precipitation_probability_max[1]+' %</p>';
  }).catch(function(){erg.innerHTML='<span class="ow-mut">Wetter gerade nicht erreichbar.</span>'})}

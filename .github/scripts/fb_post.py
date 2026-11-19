@@ -937,10 +937,12 @@ def icon(dr, cx, cy, s, c):
     w = wort(c)
     sun, cloud, dark = (250, 190, 50), (255, 255, 255), (150, 165, 185)
     def wolke(x, y, k, col):
-        dr.ellipse([x - 0.9 * k, y - 0.2 * k, x - 0.1 * k, y + 0.5 * k], fill=col)
-        dr.ellipse([x - 0.45 * k, y - 0.6 * k, x + 0.45 * k, y + 0.4 * k], fill=col)
-        dr.ellipse([x + 0.05 * k, y - 0.25 * k, x + 0.85 * k, y + 0.5 * k], fill=col)
-        dr.rounded_rectangle([x - 0.9 * k, y + 0.05 * k, x + 0.85 * k, y + 0.5 * k], radius=0.22 * k, fill=col)
+        # gleiche Wolkenform wie die Website (19.11.2026): vier Bögen auf rundem Sockel
+        u = 1.75 * k / 34
+        for cx0, cy0, r0 in ((13.5, 23.5, 6), (21.5, 17, 8), (30.5, 16.5, 6.5), (36, 24, 5.5)):
+            X, Y = x + (cx0 - 24.5) * u, y + (cy0 - 21) * u
+            dr.ellipse([X - r0 * u, Y - r0 * u, X + r0 * u, Y + r0 * u], fill=col)
+        dr.rounded_rectangle([x - 17 * u, y + 1 * u, x + 17 * u, y + 9 * u], radius=4 * u, fill=col)
     if w == 'sonnig':
         r = s * 0.42
         for k in range(12):
