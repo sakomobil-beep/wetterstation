@@ -32,8 +32,14 @@ def post_json(url, daten):
         return r.status, r.read().decode()[:300]
 
 
+TH_LETZT = None   # True/False = letzter Feed-Post auf Threads geklappt/nicht, None = kein Threads-Versuch
+
+
 def push(titel, text, prio='default', tags='white_check_mark'):
     """Handy-Push über ntfy (Secret NTFY_TOPIC) – Fehler stoppen das Posten nie."""
+    global TH_LETZT
+    if TH_LETZT is not None:   # Ergebnis des zugehörigen Threads-Posts anhängen (19.11.2026)
+        text = text.rstrip() + ('\n✅ Auch auf Threads online.' if TH_LETZT else '\n⚠️ Auf Threads hat es nicht geklappt.'); TH_LETZT = None
     topic = os.environ.get('NTFY_TOPIC')
     if not topic: return
     try:
@@ -175,7 +181,8 @@ def video_senden(datei, text):
         with urllib.request.urlopen('https://graph-video.facebook.com/v21.0/%s/videos' % page, data=q, timeout=300) as r:
             print('Facebook-Video direkt:', r.status, r.read().decode()[:200])
         instagram(datei, text, video=True)
-        threads(datei, text, video=True)
+        global TH_LETZT
+        if os.environ.get('THREADS_TOKEN') and (os.environ.get('TH_AUTO') or '').lower() != 'aus': TH_LETZT = threads(datei, text, video=True)
         try:   # live gegangenes Video zusätzlich in Google Drive ablegen (15.11.2026)
             sys.path.insert(0, os.path.dirname(__file__)); import drive_ablage; drive_ablage.ablegen(datei, text)
         except Exception as e: print('Drive-Ablage übersprungen:', e)
@@ -194,7 +201,8 @@ def senden(bild, text, art):
         with urllib.request.urlopen('https://graph.facebook.com/v21.0/%s/photos' % page, data=q, timeout=60) as r:
             print('Facebook direkt:', r.status, r.read().decode()[:200])
         instagram(bild, text)
-        threads(bild, text)
+        global TH_LETZT
+        if os.environ.get('THREADS_TOKEN') and (os.environ.get('TH_AUTO') or '').lower() != 'aus': TH_LETZT = threads(bild, text)
         try: sys.path.insert(0, os.path.dirname(__file__)); import drive_ablage; drive_ablage.ablegen(bild, text)   # Bild in Google Drive (15.11.2026)
         except Exception as e: print('Drive-Ablage Bild:', e)
         return True
