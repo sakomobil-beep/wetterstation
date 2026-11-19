@@ -1,66 +1,6 @@
 [
 {
 "d": "2026-11-18",
-"g": "dwd",
-"k": "Kurz vorweg: Vom Deutschen Wetterdienst "
-},
-{
-"d": "2026-11-18",
-"g": "ueberg_heute",
-"k": "Kommen wir zum Wetter. "
-},
-{
-"d": "2026-11-18",
-"g": "tag",
-"k": "Heute wird es nass, bei rund 13 Grad."
-},
-{
-"d": "2026-11-18",
-"g": "gestern_gleich",
-"k": "Kaum anders als gestern."
-},
-{
-"d": "2026-11-18",
-"g": "klima_mild",
-"k": "Normal wären jetzt eher 6 Grad – also de"
-},
-{
-"d": "2026-11-18",
-"g": "mundart",
-"k": "Des werd e nass Sach!"
-},
-{
-"d": "2026-11-18",
-"g": "kein_ausflug",
-"k": "Heute pustet es ordentlich. Was ihr drau"
-},
-{
-"d": "2026-11-18",
-"g": "ueberg_morgen",
-"k": "Werfen wir noch einen Blick auf morgen. "
-},
-{
-"d": "2026-11-18",
-"g": "tag",
-"k": "Morgen, am Donnerstag: Regen, und das Th"
-},
-{
-"d": "2026-11-18",
-"g": "frage",
-"k": "Passt meine Vorhersage bei euch? Sagt’s "
-},
-{
-"d": "2026-11-18",
-"g": "folgen",
-"k": "Noch kein Follower? Ein Klick auf Folgen"
-},
-{
-"d": "2026-11-18",
-"g": "dwd",
-"k": "Kurz vorweg: Vom Deutschen Wetterdienst "
-},
-{
-"d": "2026-11-18",
 "g": "ueberg_heute",
 "k": "Kommen wir zum Wetter. "
 },
@@ -1873,6 +1813,66 @@
 "d": "2026-11-19",
 "g": "frage",
 "k": "Aus welchem Ort im Odenwald schaut ihr z"
+},
+{
+"d": "2026-11-19",
+"g": "folgen",
+"k": "Das Wetter kommt hier direkt von unserer"
+},
+{
+"d": "2026-11-19",
+"g": "dwd",
+"k": "Erst das Wichtige: Der Deutsche Wetterdi"
+},
+{
+"d": "2026-11-19",
+"g": "r_nass",
+"k": "Tja, "
+},
+{
+"d": "2026-11-19",
+"g": "ueberg_heute",
+"k": "Und nun zum Tag. "
+},
+{
+"d": "2026-11-19",
+"g": "tag",
+"k": "Heute: Regen, und das Thermometer klette"
+},
+{
+"d": "2026-11-19",
+"g": "gestern_kaelter",
+"k": "Kühler als gestern, um etwa 3 Grad."
+},
+{
+"d": "2026-11-19",
+"g": "klima_mild",
+"k": "Ganz schön mild für Mitte November!"
+},
+{
+"d": "2026-11-19",
+"g": "mundart",
+"k": "Des werd e nass Sach!"
+},
+{
+"d": "2026-11-19",
+"g": "kein_ausflug",
+"k": "Normalerweise schicke ich euch jetzt rau"
+},
+{
+"d": "2026-11-19",
+"g": "ueberg_morgen",
+"k": "Und wie geht’s morgen weiter? "
+},
+{
+"d": "2026-11-19",
+"g": "tag",
+"k": "Am Freitag ist Regen angesagt, bei bis z"
+},
+{
+"d": "2026-11-19",
+"g": "frage",
+"k": "Was macht ihr an so einem Regentag? Verr"
 },
 {
 "d": "2026-11-19",
