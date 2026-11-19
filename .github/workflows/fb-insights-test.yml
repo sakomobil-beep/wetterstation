@@ -1,5 +1,5 @@
 name: Facebook/Instagram-Statistik testen (ohne Posten)
-# Lauf 2: mit Seiten-Zugang
+# Lauf 3: neuer Zugang 19.11.2026
 on:
   workflow_dispatch:
   push:
