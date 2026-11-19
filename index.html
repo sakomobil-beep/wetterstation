@@ -1683,8 +1683,8 @@ document.addEventListener('DOMContentLoaded',function(){
       <div class="tabs" id="grRange">
         <button class="tab" type="button" data-r="24h" aria-pressed="true">24 Stunden</button>
         <button class="tab" type="button" data-r="7d" aria-pressed="false">7 Tage</button>
-        <button class="tab" type="button" data-r="14d" aria-pressed="false">14 Tage</button>
-        <button class="tab" type="button" data-r="30d" aria-pressed="false">1 Monat</button>
+        <button class="tab" type="button" data-r="14d" aria-pressed="false" style="display:none">14 Tage</button>
+        <button class="tab" type="button" data-r="30d" aria-pressed="false" style="display:none">1 Monat</button>
       </div>
     </div>
     <p class="fc-daytext">Alle Messwerte der Station im Verlauf, wahlweise für die letzten 24 Stunden, 7 Tage, 14 Tage oder den letzten Monat. Fahren Sie mit der Maus oder dem Finger über ein Diagramm, um die Werte zu sehen.</p>
@@ -2257,7 +2257,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 07:35 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 07:39 Uhr</span></p>
 
 </div>
 
@@ -5831,6 +5831,7 @@ function grDemo(range) {
 function grFetch(range) {
   if (!CONFIG.stationId) return Promise.resolve(grDemo(range));
   if (needKey()) return Promise.reject(new Error('Der API-Key fehlt noch in der Datei config.js'));
+  if (range === '14d' || range === '30d') return grEigen(grDays(range));   // 19.11.2026: nur eigene Datenbank, kein WU-Abruf
   if (range !== '24h') {
     var recent = wuFetch(wuUrl('/v2/pws/observations/hourly/7day')).then(function (j) { return ((j && j.observations) || []).map(grPoint); });
     if (range === '7d') return recent.then(grClean);
@@ -5848,12 +5849,31 @@ function grFetch(range) {
   /* Stundenwerte als Lückenfüller zwischen Ende der Historie und Mitternacht */
   var hP = wuFetch(wuUrl('/v2/pws/observations/hourly/7day')).then(function (j) { return ((j && j.observations) || []).map(grPoint); }).catch(function () { return []; });
   return Promise.all([yP, tP, hP]).then(function (r) {
+    /* 19.11.2026: Vortag aus dem eigenen Archiv liegt nur stündlich vor – als Stundenwerte markieren, sonst zerfällt die Linie in Einzelpunkte */
+    if (r[0].length > 1 && (r[0][r[0].length - 1].t - r[0][0].t) / (r[0].length - 1) > 30 * 60e3) r[0].forEach(function (p) { p.h = true; });
     var cut = Date.now() - 86400e3, fine = grClean(r[0].concat(r[1]));
     var fill = r[2].filter(function (h) {
       h.h = true;
       return !fine.some(function (p) { return Math.abs(p.t - h.t) < 20 * 60e3; });
     });
     return grClean(fine.concat(fill)).filter(function (p) { return p.t >= cut - 300e3; });
+  });
+}
+/* 14 Tage / 1 Monat ausschließlich aus der eigenen Datenbank (data/archiv + data/live.json) – ohne WU */
+function grEigen(n) {
+  var tage = []; for (var i = n; i >= 1; i--) tage.push(addDays(todayStr(), -i));
+  return Promise.all(tage.map(function (t) { return eigenStunden(t).catch(function () { return []; }); }).concat([eigenHeute().catch(function () { return []; })])).then(function (A) {
+    var voll = 0; for (var k = 0; k < tage.length; k++) if (A[k].length >= 18) voll++;
+    if (voll < tage.length - 1) throw new Error('eigene Datenbank noch unvollständig');
+    return grClean([].concat.apply([], A).map(grPoint));
+  });
+}
+/* Prüft einmal, ob die eigene Datenbank 14 bzw. 30 Tage abdeckt – sonst Button ausblenden */
+function grEigenPruefen() {
+  ['14d', '30d'].forEach(function (r) {
+    var b = document.querySelector('#grRange [data-r="' + r + '"]'); if (!b) return;
+    grEigen(grDays(r)).then(function (pts) { GR.data[r] = pts; GR.at[r] = Date.now(); b.style.display = ''; })
+      .catch(function () { b.style.display = 'none'; if (GR.range === r) { GR.range = '7d'; loadGraphs(); } });
   });
 }
 function grDays(r) { return { '7d': 7, '14d': 14, '30d': 30 }[r] || 1; }
@@ -6201,6 +6221,7 @@ function drawGraphs() {
   drawLines($('grUv'), { series: [ser('uv', 'UV-Index', GR_COL.uv)], unit: '', dec: 1, zero: true, minSpan: 2, area: true, aria: 'UV-Index' });
 }
 function setupGraphs() {
+  grEigenPruefen();
   $('grRange').addEventListener('click', function (e) {
     var b = e.target.closest('.tab');
     if (!b) return;
@@ -8198,7 +8219,7 @@ setInterval(renderSaison, 600000);
       g.appendChild(b);
     });
     el('wwThekL').textContent = liste.length + (liste.length === 1 ? ' Folge' : ' Folgen') + ' von Wetterwissen mit Max · neu Montag bis Freitag um 15 Uhr';
-    if (liste.length > ZEIGE) { var m = el('wwMehr'); m.hidden = false; m.textContent = 'Alle ' + liste.length + ' Folgen anzeigen'; m.onclick = function () { Array.prototype.forEach.call(g.children, function (b) { b.hidden = false; }); m.hidden = true; }; }
+    if (liste.length > ZEIGE) { var m = el('wwMehr'); m.hidden = false; m.textContent = 'Alle ' + liste.length + ' Folgen anzeigen'; m.onclick = function () { Array.prototype.forEach.call(g.children, function (b) { b.style.display = ''; }); m.hidden = true; }; }
     el('wwThek').hidden = false;
     el('wwCard').hidden = false;
     wwSpiele(liste[0], false);
