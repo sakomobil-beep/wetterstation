@@ -1,61 +1,6 @@
 [
 {
 "d": "2026-11-17",
-"g": "dwd",
-"k": "Ein Hinweis vorab: Für unsere Gegend gel"
-},
-{
-"d": "2026-11-17",
-"g": "ueberg_heute",
-"k": "So, jetzt zum Wetter. "
-},
-{
-"d": "2026-11-17",
-"g": "tag",
-"k": "Heute heißt es: Regen, bei etwa 15 Grad."
-},
-{
-"d": "2026-11-17",
-"g": "gestern_waermer",
-"k": "Damit wird es rund 3 Grad wärmer als ges"
-},
-{
-"d": "2026-11-17",
-"g": "klima_mild",
-"k": "Das sind einige Grad mehr, als um diese "
-},
-{
-"d": "2026-11-17",
-"g": "ueberg_tipp",
-"k": "Max-Tipp des Tages: "
-},
-{
-"d": "2026-11-17",
-"g": "ueberg_morgen",
-"k": "So, und jetzt der Blick nach vorn. "
-},
-{
-"d": "2026-11-17",
-"g": "tag",
-"k": "Am Mittwoch ist Regen angesagt, bei bis "
-},
-{
-"d": "2026-11-17",
-"g": "frage",
-"k": "Aus welchem Ort im Odenwald schaut ihr z"
-},
-{
-"d": "2026-11-17",
-"g": "folgen",
-"k": "Kennt ihr jemanden im Odenwald, der imme"
-},
-{
-"d": "2026-11-17",
-"g": "dwd",
-"k": "Bevor es losgeht – vom Deutschen Wetterd"
-},
-{
-"d": "2026-11-17",
 "g": "ueberg_heute",
 "k": "Kommen wir zum Wetter. "
 },
@@ -1998,5 +1943,60 @@
 "d": "2026-11-19",
 "g": "folgen",
 "k": "Ihr schaut gerade zum ersten Mal zu? Dan"
+},
+{
+"d": "2026-11-19",
+"g": "abend_gruss",
+"k": "Schön, dass ihr einschaltet: Max hier mi"
+},
+{
+"d": "2026-11-19",
+"g": "dwd",
+"k": "Erst das Wichtige: Der Deutsche Wetterdi"
+},
+{
+"d": "2026-11-19",
+"g": "tag",
+"k": "Morgen wird es nass, und mehr als 10 Gra"
+},
+{
+"d": "2026-11-19",
+"g": "tag",
+"k": "Dann wird es freundlich mit ein paar Wol"
+},
+{
+"d": "2026-11-19",
+"g": "frost",
+"k": "In der Nacht zum Samstag geht es runter "
+},
+{
+"d": "2026-11-19",
+"g": "glaette_h",
+"k": "Oben auf den Höhen, Richtung Beerfelden,"
+},
+{
+"d": "2026-11-19",
+"g": "nebel_w",
+"k": "Morgens liegt in den Tälern Nebel – Lich"
+},
+{
+"d": "2026-11-19",
+"g": "folgen_abend",
+"k": "Folgt ihr uns eigentlich schon? Dann ver"
+},
+{
+"d": "2026-11-19",
+"g": "abend_ende",
+"k": "Das war der Tag in Zahlen."
+},
+{
+"d": "2026-11-19",
+"g": "abend_gute_nacht",
+"k": "Macht’s gut und gute Nacht – wir sehen u"
+},
+{
+"d": "2026-11-19",
+"g": "abend_live",
+"k": "Die aktuellen Messwerte findet ihr jeder"
 }
 ]
