@@ -30,20 +30,24 @@ for m in M:
             tage.setdefault(d,{})[m.replace('page_','')]=val
 out['fb']['tage']=dict(sorted(tage.items())[-400:])
 def art(t,h):
-    t=(t or '').lower()
-    if re.search(r'warnung|unwetter',t): return 'warnung'
-    if 'wetterwissen' in t or 'wusstest du' in t: return 'wissen'
-    if 'wochenausblick' in t or 'woche' in t and h>=19: return 'woche'
-    if re.search(r'rückblick',t): return 'rueckblick'
-    if 'guten morgen' in t or h<11: return 'morgen'
-    if 'guten abend' in t or h>=18: return 'abend'
-    if h<14: return 'mittag'
+    t=(t or '').strip(); k=t[:60].lower()
+    if 'wetterwissen' in k: return 'wissen'
+    if 'wochenausblick' in k: return 'woche'
+    if 'rückblick' in k: return 'rueckblick'
+    if 'guten abend' in k: return 'abend'
+    if 'guten morgen' in k or 'euer odenwald-wetter' in k: return 'morgen'
+    if 'nachmittag im odenwald' in k or 'mittag' in k: return 'mittag'
+    if re.search(r'warnung|unwetter|dwd',k): return 'warnung'
+    if h<11: return 'morgen'
+    if h>=18: return 'abend'
     return 'sonst'
 posts=[]
 r=get(pid+'/posts',fields='id,created_time,message,full_picture,permalink_url',limit=60,since=str(heute-dt.timedelta(days=35)))
 for p in (r or {}).get('data',[]):
     i=get(p['id']+'/insights',metric='post_media_view,post_total_media_view_unique,post_reactions_by_type_total,post_clicks') or {}
-    w={x['name']:x['values'][0]['value'] for x in i.get('data',[]) if x.get('values')}
+    w={}
+    for x in i.get('data',[]):
+        if x.get('values') and x['name'] not in w: w[x['name']]=x['values'][0]['value']
     ct=dt.datetime.fromisoformat(p['created_time'].replace('+0000','+00:00')).astimezone(dt.timezone(dt.timedelta(hours=1)))
     rk=w.get('post_reactions_by_type_total') or {}
     posts.append({'p':'fb','zeit':ct.isoformat(timespec='minutes'),'text':(p.get('message') or '')[:120],'bild':p.get('full_picture'),'link':p.get('permalink_url'),
