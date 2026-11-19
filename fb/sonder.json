@@ -1,5 +1,5 @@
 {
- "erstellt": "2026-11-19T21:01+01:00",
+ "erstellt": "2026-11-20T00:28+01:00",
  "meldungen": [
   {
    "typ": "sturm",
@@ -8,7 +8,7 @@
    "amtlich": true,
    "stufe": "Stufe 1 – Wetterwarnung",
    "bild": "sonder-sturm.jpg",
-   "text": "🌪️ WETTER-SONDERMELDUNG für den Odenwald: Sturm 🌪️\n\n⚠️ Stufe 1 – Wetterwarnung\n📍 Gilt für: Bad König, Brombachtal, Erbach, Fränkisch-Crumbach, Lützelbach, Michelstadt, Mossautal, Oberzent, Reichelsheim\n• DWD: Amtliche WARNUNG vor WINDBÖEN\n🕒 Gültig von heute 20:00 Uhr bis morgen 09:00 Uhr\n\n👉 Hinweis auf: umherfliegende leichte Gegenstände. \n\nLive-Werte, Radar & Warnungen 👉 https://wetter-badkoenig.de\n#Odenwald #Odenwaldkreis #BadKönig #Wetter #Sturm #Unwetter"
+   "text": "🌪️ WETTER-SONDERMELDUNG für den Odenwald: Sturm 🌪️\n\n⚠️ Stufe 1 – Wetterwarnung\n📍 Gilt für: Bad König, Brombachtal, Erbach, Fränkisch-Crumbach, Lützelbach, Michelstadt, Mossautal, Oberzent, Reichelsheim\n• DWD: Amtliche WARNUNG vor WINDBÖEN\n🕒 Gültig von Donnerstag 20:00 Uhr bis heute 09:00 Uhr\n\n👉 Hinweis auf: umherfliegende leichte Gegenstände. \n\nLive-Werte, Radar & Warnungen 👉 https://wetter-badkoenig.de\n#Odenwald #Odenwaldkreis #BadKönig #Wetter #Sturm #Unwetter"
   },
   {
    "typ": "starkregen",
@@ -17,7 +17,7 @@
    "amtlich": true,
    "stufe": "Stufe 2 – Markantes Wetter",
    "bild": "sonder-starkregen.jpg",
-   "text": "🌧️ WETTER-SONDERMELDUNG für den Odenwald: Starkregen 🌧️\n\n⚠️ Stufe 2 – Markantes Wetter\n📍 Gilt für: Bad König, Brensbach, Brombachtal, Erbach, Fränkisch-Crumbach, Höchst, Michelstadt, Mossautal, Oberzent, Reichelsheim\n• DWD: Amtliche WARNUNG vor DAUERREGEN\n🕒 Gültig von morgen 00:00 Uhr bis Samstag 00:00 Uhr\n\n👉 Gefahr durch: vereinzelte Überflutungen von Straßen/Unterführungen. \n\nLive-Werte, Radar & Warnungen 👉 https://wetter-badkoenig.de\n#Odenwald #Odenwaldkreis #BadKönig #Wetter #Starkregen #Unwetter"
+   "text": "🌧️ WETTER-SONDERMELDUNG für den Odenwald: Starkregen 🌧️\n\n⚠️ Stufe 2 – Markantes Wetter\n📍 Gilt für: Bad König, Brensbach, Brombachtal, Erbach, Fränkisch-Crumbach, Höchst, Michelstadt, Mossautal, Oberzent, Reichelsheim\n• DWD: Amtliche WARNUNG vor DAUERREGEN\n🕒 Gültig von heute 00:00 Uhr bis morgen 00:00 Uhr\n\n👉 Gefahr durch: vereinzelte Überflutungen von Straßen/Unterführungen. \n\nLive-Werte, Radar & Warnungen 👉 https://wetter-badkoenig.de\n#Odenwald #Odenwaldkreis #BadKönig #Wetter #Starkregen #Unwetter"
   }
  ]
 }
