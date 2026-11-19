@@ -491,6 +491,7 @@ def main():
             if M.get('uw3_erstellt') and M.get('uw3_erstellt') == u3.get('erstellt'): print('Unwetter-Story ist schon vorab gepostet.')
             elif os.path.exists(os.path.join(FB, 'special-story.jpg')):   # Story mit Warnung, Zeitraum und DWD-Hinweisen (15.11.2026)
                 story_beide(M, 'special_story', 'special-story.jpg', j.get('erstellt'), jetzt, 'Unwetter-Story gepostet', 'Story zur Unwetterwarnung.', 'warning')
+                if M.get('uw3_threads') != u3.get('erstellt') and threads('special-story.jpg', '⚠️ Unwetterwarnung für den Odenwald: ' + '; '.join((j.get('warn') or [])[:2]) + '.'): M['uw3_threads'] = u3.get('erstellt')   # 19.11.2026
             push('Unwetter-Special gepostet', 'Max warnt jetzt auf Facebook und Instagram: ' + '; '.join((j.get('warn') or [])[:2]), prio='high', tags='warning,movie_camera')
     elif modus == 'uw3story':   # DWD-Stufe 3/4: Story sofort, das Video mit Max folgt (18.11.2026)
         jetzt = dt.datetime.now(TZ)
@@ -499,6 +500,8 @@ def main():
         if M.get('uw3_erstellt') == j.get('erstellt'): return
         if (jetzt - dt.datetime.fromisoformat(j['erstellt'])).total_seconds() > 3 * 3600: return
         story_beide(M, 'uw3_story', 'special-story.jpg', j.get('erstellt'), jetzt, 'Unwetter-Story gepostet', 'UNWETTER: ' + '; '.join(j.get('warn', [])[:2]) + '. Das Video mit Max folgt.', 'warning')
+        if M.get('uw3_threads') != j.get('erstellt'):   # Threads kennt keine Stories → Unwetter-Story als Bildpost (19.11.2026)
+            if threads('special-story.jpg', '⚠️ UNWETTER im Odenwald: ' + '; '.join(j.get('warn', [])[:2]) + '. Das Video mit Max folgt.'): M['uw3_threads'] = j.get('erstellt')
         if M.get('uw3_story') == j.get('erstellt') or M.get('fb_uw3_story') == j.get('erstellt'):
             M['uw3_erstellt'] = j.get('erstellt'); uw_merken(M, j.get('merk'))
             if not str(M.get('special_zeit', '')).startswith(jetzt.date().isoformat()): M['special_zeit'] = jetzt.isoformat(timespec='minutes')   # Tagesplan der Zentrale
