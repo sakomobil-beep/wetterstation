@@ -2257,7 +2257,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 17:24 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 17:40 Uhr</span></p>
 
 </div>
 
@@ -6713,7 +6713,7 @@ function owKarte() {
     var bx = p[0] + off[0] - (wx && off[0] < 0 ? 18 : 0), by = p[1] + off[1], f = a ? '#9aa5ab' : owFarbe(k, v);
     var ax = Math.max(bx, Math.min(bx + bw, p[0])), ay = Math.max(by, Math.min(by + bh, p[1]));
     var r = 7, kp = 'M' + (bx + r) + ',' + by + 'h' + (bw - 2 * r) + 'a' + r + ',' + r + ' 0 0 1 ' + r + ',' + r + 'v' + (bh - 2 * r) + 'a' + r + ',' + r + ' 0 0 1 -' + r + ',' + r + 'h-' + (bw - 2 * r) + 'a' + r + ',' + r + ' 0 0 1 -' + r + ',-' + r + 'v-' + (bh - 2 * r) + 'a' + r + ',' + r + ' 0 0 1 ' + r + ',-' + r + 'z';
-    return '<g data-ow="' + esc(o.name) + '" style="cursor:pointer"><circle cx="' + p[0].toFixed(0) + '" cy="' + p[1].toFixed(0) + '" r="4" fill="#12252E" stroke="#fff" stroke-width="1.5"/>' +
+    return '<g class="dm-keep" data-ow="' + esc(o.name) + '" style="cursor:pointer"><circle cx="' + p[0].toFixed(0) + '" cy="' + p[1].toFixed(0) + '" r="4" fill="#12252E" stroke="#fff" stroke-width="1.5"/>' +
       '<line x1="' + p[0].toFixed(1) + '" y1="' + p[1].toFixed(1) + '" x2="' + ax.toFixed(1) + '" y2="' + ay.toFixed(1) + '" stroke="#12252E" stroke-width="1.2" opacity=".55"/>' +
       '<path class="owk-k" d="' + kp + '" fill="#fff" fill-opacity=".95" stroke="' + (sel ? '#ffd400' : 'rgba(18,37,46,.18)') + '" stroke-width="' + (sel ? 3.5 : 1) + '"/>' +
       '<rect x="' + (bx + 4).toFixed(0) + '" y="' + (by + 4).toFixed(0) + '" width="4" height="' + (bh - 8) + '" rx="2" fill="' + f + '"/>' +
