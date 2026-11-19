@@ -3,7 +3,7 @@
 import { spawn } from 'node:child_process';
 import { writeFileSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os'; import { join } from 'node:path';
-const [url, werte, out] = process.argv.slice(2);
+const [url, werte, out, gross] = process.argv.slice(2);   // gross: Faktor für die Ortsfelder (z. B. 1.5 für Stories)
 const bin = process.env.CHROME_BIN || 'google-chrome', port = 9300 + Math.floor(Math.random() * 500);
 const ch = spawn(bin, ['--headless=new', '--no-sandbox', '--disable-gpu', '--remote-debugging-port=' + port, '--user-data-dir=' + mkdtempSync(join(tmpdir(), 'ks-')),
   '--window-size=1400,2400', '--force-device-scale-factor=2', 'about:blank'], { stdio: 'ignore' });
@@ -17,14 +17,15 @@ const send = (method, params = {}) => new Promise(r => { const i = ++id; pend[i]
 const ev = async x => (await send('Runtime.evaluate', { expression: x, returnByValue: true })).result?.value;
 await send('Page.enable'); await send('Emulation.setDefaultBackgroundColorOverride', { color: { r: 0, g: 0, b: 0, a: 0 } });
 await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }, { name: 'prefers-color-scheme', value: 'light' }] });
-await send('Page.navigate', { url });
-for (let i = 0; i < 60; i++) { if (await ev("typeof OW!=='undefined'&&!!OW.d&&typeof owKarte==='function'")) break; await sleep(500); }
+await send('Page.navigate', { url: url.includes('#') ? url : url + '#odenwald' });
+for (let i = 0; i < 60; i++) { if (await ev("typeof OW!=='undefined'&&!!OW.d&&typeof owKarte==='function'")) break; if (i % 10 === 9) await ev("try{owLaden(true)}catch(e){}"); await sleep(500); }
 await sleep(1500);
 const r = await ev(`(function(){try{var W=${werte};
  OW.k='t'; OW.sel=null; window.owNacht=function(){return false};
  var F=function(L){return (L||[]).filter(function(o){return W[o.name]}).map(function(o){var w=W[o.name];o.t=w.t;o.wx=w.wx;o.zeit=new Date().toISOString();return o})};
  OW.d.orte=F(OW.d.orte); OW.d.extra=F(OW.d.extra); owKarte();
  document.querySelectorAll('#owMap .owk-v').forEach(function(t){t.textContent=t.textContent.replace(/,0°$/,'°')});
+ var G=parseFloat('${gross || 1}'); if(G>1) document.querySelectorAll('#owMap g[data-ow]').forEach(function(g){var c=g.querySelector('circle');var x=+c.getAttribute('cx'),y=+c.getAttribute('cy');var dy=0;g.setAttribute('transform','translate('+x+' '+(y+dy)+') scale('+G+') translate('+(-x)+' '+(-y)+')')}); document.querySelector('#owMap svg').setAttribute('viewBox','-125 0 560 505');
  var leg=document.querySelector('#owMap .ow-wxleg'); if(leg) leg.remove();
  document.querySelectorAll('#owMap p').forEach(function(p){p.remove()});
  Array.from(document.body.querySelectorAll('*')).forEach(function(e){var sv=document.querySelector('#owMap svg');if(!sv.contains(e)&&!e.contains(sv))e.style.visibility='hidden'});

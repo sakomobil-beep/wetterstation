@@ -937,7 +937,7 @@ def font(size, bold=False):
     return ImageFont.load_default(size)
 
 
-def icon(dr, cx, cy, s, c, auf_weiss=False):
+def icon(dr, cx, cy, s, c, auf_weiss=False, tropfen=(60, 130, 220)):
     w = wort(c)
     sun, cloud, dark = (250, 190, 50), ((178, 192, 201) if auf_weiss else (255, 255, 255)), (150, 165, 185)
     def wolke(x, y, k, col):
@@ -963,7 +963,7 @@ def icon(dr, cx, cy, s, c, auf_weiss=False):
     if w in ('Regen', 'Schauer', 'Nieselregen', 'Gewitter'):
         for k in range(-1, 2):
             x = cx + k * s * 0.25
-            dr.line([x, cy + s * 0.42, x - s * 0.08, cy + s * 0.62], fill=(60, 130, 220), width=int(s * 0.06))
+            dr.line([x, cy + s * 0.42, x - s * 0.08, cy + s * 0.62], fill=tropfen, width=int(s * 0.06))
     if w == 'Schnee':
         for k in range(-1, 2):
             x = cx + k * s * 0.25; dr.ellipse([x - s * 0.05, cy + s * 0.45, x + s * 0.05, cy + s * 0.55], fill=(120, 170, 230))
@@ -1169,16 +1169,16 @@ def wx_schluessel(c):
     return 'sonne' if c <= 1 else 'wolkig' if c == 2 else 'bedeckt'
 
 
-def web_karte(rest, d):
+def web_karte(rest, d, codef=None, gross=1):
     """Die echte Karte von wetter-badkoenig.de/#odenwald mit den Vorhersagewerten bis 19 Uhr und den Symbolen nach
     Variante B (Chrome ohne Bildschirm, karte_shot.mjs). Gibt ein RGBA-Bild zurück oder None (dann zeichnet Python selbst)."""
     try:
-        W = {WEB_NAMEN.get(n, n): dict(t=r['tmax'], wx=wx_schluessel(ort_code(r, d))) for n, r in rest.items()}
+        W = {WEB_NAMEN.get(n, n): dict(t=r['tmax'], wx=wx_schluessel((codef or ort_code)(r, d))) for n, r in rest.items()}
         if not W: return None
         import tempfile; ziel = os.path.join(tempfile.gettempdir(), 'mittag-karte.png')
         url = os.environ.get('KARTE_URL', 'https://wetter-badkoenig.de/') + '?karte=%d#odenwald' % int(time.time())
         subprocess.run(['node', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'karte_shot.mjs'), url,
-                        json.dumps(W, ensure_ascii=False), ziel], check=True, timeout=120)
+                        json.dumps(W, ensure_ascii=False), ziel, str(gross)], check=True, timeout=120)
         k = Image.open(ziel).convert('RGBA'); bb = k.getbbox()
         return k.crop(bb) if bb else None
     except Exception as e:
@@ -1290,10 +1290,34 @@ def text_mittag(days, rest, live, warn):
     return '\n'.join(z)
 
 
+def ort_code_tag(r, d):
+    """Symbol je Ort für einen ganzen Tag (Stories, Variante B): die gemeinsame Einstufung des Tages entscheidet,
+    nur bei Schauer/vereinzelt verteilen die Modellwerte des Ortes (rp >= 30 %), wo es nass wird."""
+    N = d.get('nied') or {}; st = N.get('stufe', 'trocken')
+    trocken = d['code'] if wort(d['code']) not in NASS_WORTE else (1 if d.get('sonne', 0) >= 7 else 2 if d.get('sonne', 0) >= 4 else 3)
+    nass = {'gewitter': 95, 'regen': 73 if N.get('schnee_tal') else (63 if N.get('mm', 0) >= 5 else 61), 'schauer': 85 if N.get('schnee_tal') else 80}.get(st)
+    if st in ('regen', 'gewitter'): return nass
+    if st in ('schauer', 'vereinzelt'): return (nass or 80) if r.get('rp', 0) >= 30 else trocken
+    return trocken
+
+
+def story_orte(days, n):
+    """Höchstwert und Regenanteil je Ort (9 Orte der Website-Karte) für Tag n – gleiche Mischung + Lernkurve wie die Vorhersage."""
+    out = {}
+    for o in list(TAELER + HOEHEN) + [x for x in MITTAG_EXTRA if x[0] not in [t[0] for t in TAELER]]:
+        try:
+            w = orte_mix([o], days)[n]
+            if w: out[o[0]] = dict(tmax=w['tmax'], rp=w['rp'])
+        except Exception as e:
+            print('Story-Ort %s nicht möglich:' % o[0], e)
+    return out
+
+
 def story(days, warn, path, abends=False):
     """Instagram-Story (1080x1920). morgens: das Wetter von heute (fb/story.jpg),
-    abends: der Ausblick auf morgen in Abendfarben (fb/abendstory.jpg)."""
-    d = days[1] if abends else days[0]
+    abends: der Ausblick auf morgen in Abendfarben (fb/abendstory.jpg).
+    Seit 19.11.2026 mit der Website-Kreiskarte (9 Orte, Höchstwerte, Symbole nach Variante B)."""
+    n = 1 if abends else 0; d = days[n]
     W, H = 1080, 1920
     im = Image.new('RGB', (W, H)); dr = ImageDraw.Draw(im)
     for y in range(H):   # Verlauf: morgens Morgenhimmel, abends Abendhimmel
@@ -1302,25 +1326,40 @@ def story(days, warn, path, abends=False):
                 else (int(40 + 90 * t), int(110 + 80 * t), int(200 + 30 * t)))
     def mitte(y, txt, f, col=(255, 255, 255)):
         w = dr.textlength(txt, font=f); dr.text(((W - w) / 2, y), txt, font=f, fill=col)
-    mitte(150, 'ODENWALD-WETTER', font(64, True), (255, 230, 150))
-    mitte(235, ('Morgen, ' if abends else '') + '%s, %d. %s' % (TAGE[d['datum'].weekday()], d['datum'].day, MONATE[d['datum'].month - 1]), font(52))
-    icon(dr, W / 2, 560, 380, d['code'])
-    mitte(830, wort(d['code']).capitalize() if wort(d['code'])[:1].islower() else wort(d['code']), font(64, True))
-    mitte(940, '%d° / %d°' % (d['tmax'], d['tmin']), font(170, True))
-    mitte(1135, 'Täler Höchst / Tiefst', font(40), (225, 235, 250))
-    y = 1240
-    dr.rounded_rectangle([90, y, W - 90, y + 330], radius=40, fill=(255, 255, 255))
-    zeilen = ['☔ Regenrisiko %d %%' % d['rp'] if d['rp'] >= 20 else '☀ meist trocken',
-              '💨 Böen bis %d km/h' % round(d['boe']) if d.get('boe') else '',
-              ('⛰ Höhen %d° / %d°' % (d['hoch']['tmax'], d['hoch']['tmin'])) if d.get('hoch') else '']
-    zeilen = [z for z in zeilen if z][:3]
-    for i, z in enumerate(zeilen):
-        z = z.replace('☔ ', '').replace('☀ ', '').replace('💨 ', '').replace('⛰ ', '')
-        mitte(y + 40 + i * 95, z, font(56, True), (30, 60, 110))
-    if d.get('frost_min', d['tmin']) <= 0: mitte(1610, 'Morgens Scheiben kratzen!', font(54, True), (255, 245, 200))
-    elif warn: mitte(1610, 'DWD-Warnung beachten!', font(54, True), (255, 220, 200))
-    mitte(1730, 'Live-Werte & Vorhersage', font(42), (230, 240, 255))
-    mitte(1790, 'wetter-badkoenig.de', font(58, True))
+    k = None
+    try: k = web_karte(story_orte(days, n), d, codef=ort_code_tag, gross=1.35)
+    except Exception as e: print('Story-Karte nicht möglich:', e)
+    wt = wort(d['code']).capitalize() if wort(d['code'])[:1].islower() else wort(d['code'])
+    z = ['Regen %d %%' % d['rp'] if d['rp'] >= 20 else 'meist trocken', 'Böen bis %d km/h' % round(d['boe']) if d.get('boe') else '',
+         ('Höhen %d° / %d°' % (d['hoch']['tmax'], d['hoch']['tmin'])) if d.get('hoch') else '']
+    z = [x for x in z if x]
+    if k is None:   # Reserve: bisheriger Aufbau ohne Karte
+        mitte(150, 'ODENWALD-WETTER', font(64, True), (255, 230, 150))
+        mitte(235, ('Morgen, ' if abends else '') + '%s, %d. %s' % (TAGE[d['datum'].weekday()], d['datum'].day, MONATE[d['datum'].month - 1]), font(52))
+        icon(dr, W / 2, 560, 380, d['code'], tropfen=(150, 200, 255))
+        mitte(830, wt, font(64, True)); mitte(940, '%d° / %d°' % (d['tmax'], d['tmin']), font(170, True))
+        mitte(1135, 'Täler Höchst / Tiefst', font(40), (225, 235, 250))
+        y = 1240; dr.rounded_rectangle([90, y, W - 90, y + 330], radius=40, fill=(255, 255, 255))
+        for i, x in enumerate(z[:3]): mitte(y + 40 + i * 95, x, font(56, True), (30, 60, 110))
+        yw = 1610
+    else:
+        mitte(110, 'ODENWALD-WETTER', font(56, True), (255, 230, 150))
+        mitte(185, ('Morgen, ' if abends else '') + '%s, %d. %s' % (TAGE[d['datum'].weekday()], d['datum'].day, MONATE[d['datum'].month - 1]), font(46))
+        icon(dr, 250, 380, 230, d['code'], tropfen=(150, 200, 255))
+        dr.text((440, 270), wt, font=font(58, True), fill=(255, 255, 255))
+        dr.text((440, 335), '%d° / %d°' % (d['tmax'], d['tmin']), font=font(120, True), fill=(255, 255, 255))
+        dr.text((446, 470), 'Täler Höchst / Tiefst', font=font(34), fill=(225, 235, 250))
+        sk = min(1000 / k.width, 960 / k.height); k = k.resize((int(k.width * sk), int(k.height * sk)), Image.LANCZOS)
+        y0 = 560; dr.rounded_rectangle([40, y0, W - 40, y0 + 990], radius=40, fill=(238, 243, 248))
+        im.paste(k, ((W - k.width) // 2, y0 + 15), k); dr = ImageDraw.Draw(im)
+        if len(z) >= 2: mitte(1572, z[0] + '  ·  ' + z[1], font(44, True))
+        if len(z) >= 3: mitte(1630, z[2], font(44, True))
+        elif len(z) == 1: mitte(1600, z[0], font(44, True))
+        yw = 1690
+    if d.get('frost_min', d['tmin']) <= 0: mitte(yw, 'Morgens Scheiben kratzen!', font(50, True), (255, 245, 200))
+    elif warn: mitte(yw, 'DWD-Warnung beachten!', font(50, True), (255, 220, 200))
+    mitte(1762, 'Live-Werte & Vorhersage', font(40), (230, 240, 255))
+    mitte(1812, 'wetter-badkoenig.de', font(56, True))
     im.save(path, quality=90)
 
 
