@@ -28,7 +28,7 @@ for m in M:
             d=(dt.datetime.fromisoformat(v['end_time'].replace('+0000','+00:00'))-dt.timedelta(days=1)).date().isoformat()
             val=v.get('value'); val=sum(val.values()) if isinstance(val,dict) else val
             tage.setdefault(d,{})[m.replace('page_','')]=val
-out['fb']['tage']=dict(sorted(tage.items())[-400:])
+out['fb']['tage']=dict(sorted(tage.items()))  # dauerhaft, keine Begrenzung (19.11.2026)
 def art(t,h):
     t=(t or '').strip(); k=t[:60].lower()
     if 'wetterwissen' in k: return 'wissen'
@@ -50,7 +50,7 @@ for p in (r or {}).get('data',[]):
         if x.get('values') and x['name'] not in w: w[x['name']]=x['values'][0]['value']
     ct=dt.datetime.fromisoformat(p['created_time'].replace('+0000','+00:00')).astimezone(dt.timezone(dt.timedelta(hours=1)))
     rk=w.get('post_reactions_by_type_total') or {}
-    posts.append({'p':'fb','zeit':ct.isoformat(timespec='minutes'),'text':(p.get('message') or '')[:120],'bild':p.get('full_picture'),'link':p.get('permalink_url'),
+    posts.append({'id':p['id'],'p':'fb','zeit':ct.isoformat(timespec='minutes'),'text':(p.get('message') or '')[:120],'bild':p.get('full_picture'),'link':p.get('permalink_url'),
       'art':art(p.get('message'),ct.hour),'views':w.get('post_media_view'),'personen':w.get('post_total_media_view_unique'),'likes':sum(rk.values()) if isinstance(rk,dict) else rk,'klicks':w.get('post_clicks')})
 # Instagram
 ig=(s.get('instagram_business_account') or {}).get('id')
@@ -64,7 +64,7 @@ if ig:
             for v in x.get('values',[]):
                 d=(dt.datetime.fromisoformat(v['end_time'].replace('+0000','+00:00'))-dt.timedelta(days=1)).date().isoformat()
                 it.setdefault(d,{})[m]=v.get('value')
-    out['ig']['tage']=dict(sorted(it.items())[-400:])
+    out['ig']['tage']=dict(sorted(it.items()))
     on=get(ig+'/insights',metric='online_followers',period='lifetime')
     try: out['ig']['online']=on['data'][0]['values'][-1]['value']
     except Exception: pass
@@ -74,9 +74,16 @@ if ig:
         if ct.date()<heute-dt.timedelta(days=35): continue
         i=get(p['id']+'/insights',metric='views,reach,likes,comments,saved') or {}
         w={x['name']:(x.get('values') or [{}])[0].get('value', x.get('total_value',{}).get('value')) for x in i.get('data',[])}
-        posts.append({'p':'ig','zeit':ct.isoformat(timespec='minutes'),'text':(p.get('caption') or '')[:120],'bild':p.get('thumbnail_url') or p.get('media_url'),'link':p.get('permalink'),
+        posts.append({'id':p['id'],'p':'ig','zeit':ct.isoformat(timespec='minutes'),'text':(p.get('caption') or '')[:120],'bild':p.get('thumbnail_url') or p.get('media_url'),'link':p.get('permalink'),
           'art':art(p.get('caption'),ct.hour),'views':w.get('views'),'personen':w.get('reach'),'likes':w.get('likes'),'klicks':w.get('comments')})
-out['beitraege']=sorted(posts,key=lambda x:x['zeit'],reverse=True)
+# Beitrags-Archiv: jeder Beitrag bleibt für immer, Zahlen werden fortgeschrieben (19.11.2026)
+arch={(b.get('id') or b['p']+b['zeit']):b for b in alt.get('beitraege',[])}
+for b in posts:
+    k=b.get('id') or b['p']+b['zeit']; a=arch.get(k,{})
+    for f in ('views','personen','likes','klicks'):
+        if b.get(f) is None and a.get(f) is not None: b[f]=a[f]
+    b['stand']=heute.isoformat(); arch[k]=b
+out['beitraege']=sorted(arch.values(),key=lambda x:x['zeit'],reverse=True)
 t=json.dumps(out,ensure_ascii=False)
 assert tok not in t and tok0 not in t
 open(P,'w').write(t)
