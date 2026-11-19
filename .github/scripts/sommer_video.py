@@ -186,11 +186,11 @@ def szene_s(name, t, p):
         return im
     if name == 's_bilanz':
         im = verlauf(W, H, *NACHT); d = ImageDraw.Draw(im)
-        d.text((520, 70), 'Deutschland · Sommer 2026 (DWD)', font=F(30), fill=(255, 255, 255), anchor='mm')
+        d.text((520, 88), 'Deutschland · Sommer 2026 (DWD)', font=F(30), fill=(255, 255, 255), anchor='mm')
         k = [('19,6 °C', 'Mittel · +3,3 Grad', ROT), ('Platz 2', 'seit 1881 · nur 2003 wärmer', GELB), ('72 %', 'des üblichen Regens', (120, 190, 255)), ('779 h', 'Sonnenschein', (255, 210, 60))]
         sicht = 1 + int(max(0, t - 3) / 9)
         for i, (a, b, c) in enumerate(k):
-            kachel(d, 40 + (i % 2) * 490, 120 + (i // 2) * 230, 460, 200, a, b, c, i < sicht)
+            kachel(d, 40 + (i % 2) * 490, 120 + (i // 2) * 190, 460, 170, a, b, c, i < sicht)
         return im
     if name == 's_chronik':
         im = verlauf(W, H, *NACHT); d = ImageDraw.Draw(im)
@@ -221,47 +221,47 @@ def szene_s(name, t, p):
              ('22', 'heiße Tage (früher 4)', (255, 220, 160)), ('21,3 °C', 'Saarland, wärmstes Land', (255, 190, 140))]
         sicht = 1 + int(max(0, t - 2) / 8)
         for i, (a, b, c) in enumerate(k):
-            kachel(d, 40 + (i % 2) * 490, 90 + (i // 2) * 230, 460, 200, a, b, c, i < sicht)
+            kachel(d, 40 + (i % 2) * 490, 90 + (i // 2) * 200, 460, 175, a, b, c, i < sicht)
         return im
     if name == 's_vergleich':
         im = verlauf(W, H, *NACHT); d = ImageDraw.Draw(im)
-        d.text((260, 80), 'Mittel Deutschland', font=F(26), fill=(255, 255, 255), anchor='mm')
+        d.text((260, 85), 'Mittel Deutschland', font=F(26), fill=(255, 255, 255), anchor='mm')
         f = min(1, t / 6)
-        balken(d, 120, 160, 110, 380, 19.7 * f, 20.5, (200, 120, 60), '2003', '19,7 °C')
-        balken(d, 290, 160, 110, 380, 19.6 * f, 20.5, ROT, '2026', '19,6 °C')
+        balken(d, 120, 150, 110, 300, 19.7 * f, 20.5, (200, 120, 60), '2003', '19,7 °C')
+        balken(d, 290, 150, 110, 300, 19.6 * f, 20.5, ROT, '2026', '19,6 °C')
         if t > 12:
-            d.text((750, 80), '2026 bei den Extremen vorn', font=F(26), fill=GELB, anchor='mm')
-            for i, s_ in enumerate(('höchster Wert: 41,8 °C', 'wärmste Nacht: 29,4 °C', 'meiste heiße Tage: 22', 'Hessen: wohl wärmster Sommer')):
+            d.text((750, 85), '2026 bei den Extremen vorn', font=F(26), fill=GELB, anchor='mm')
+            for i, s_ in enumerate(('höchster Wert: 41,8 °C', 'wärmste Nacht: 29,4 °C', 'meiste heiße Tage: 22', 'Hessen: wohl Rekordsommer')):
                 if t > 12 + i * 4:
                     d.rounded_rectangle([520, 130 + i * 100, 990, 210 + i * 100], radius=14, fill=(25, 40, 70), outline=GELB, width=3)
                     d.text((545, 170 + i * 100), '✓  ' + s_, font=F(25), fill=(255, 255, 255), anchor='lm')
         return im
     if name == 's_station':
         im = verlauf(W, H, *NACHT); d = ImageDraw.Draw(im)
-        d.text((520, 60), 'Station Bad König (IBADKN33) · Juni bis August 2026', font=F(26), fill=(255, 255, 255), anchor='mm')
+        d.text((520, 82), 'Station Bad König (IBADKN33) · Juni bis August 2026', font=F(26), fill=(255, 255, 255), anchor='mm')
         if t < 30:
             k = [('21,3 °C', 'Mittel', GELB), ('38,9 °C', 'am 27. Juni', ROT), ('39', 'Tage ab 30 °C', (255, 150, 90)), ('14', 'Tage ab 35 °C', ROT), ('70', 'Sommertage ab 25 °C', (255, 200, 120)), ('1', 'Tropennacht', (120, 190, 255))]
             sicht = 1 + int(max(0, t - 3) / 4)
             for i, (a, b, c) in enumerate(k):
-                kachel(d, 40 + (i % 3) * 325, 110 + (i // 3) * 230, 305, 200, a, b, c, i < sicht)
+                kachel(d, 40 + (i % 3) * 325, 115 + (i // 3) * 190, 305, 170, a, b, c, i < sicht)
         else:   # Hitzewelle Ende Juni als Säulen
-            d.text((520, 110), 'Hitzewelle Ende Juni in Bad König', font=F(24), fill=GELB, anchor='mm')
+            d.text((520, 118), 'Hitzewelle Ende Juni in Bad König', font=F(24), fill=GELB, anchor='mm')
             f = min(1, (t - 30) / 4)
             for i, (tag, v) in enumerate(ST['welle']):
-                balken(d, 110 + i * 175, 170, 120, 380, v * f, 40, ROT if v >= 35 else (255, 150, 90), tag, ('%.1f °C' % v).replace('.', ','))
-            y30 = 170 + 380 - 30 / 40 * 380
+                balken(d, 110 + i * 175, 165, 120, 290, v * f, 40, ROT if v >= 35 else (255, 150, 90), tag, ('%.1f °C' % v).replace('.', ','))
+            y30 = 165 + 290 - 30 / 40 * 290
             d.line([90, y30, 1000, y30], fill=GELB, width=2); d.text((1000, y30 - 14), '30 °C', font=F(18, False), fill=GELB, anchor='rm')
         return im
     if name == 's_regen':
         im = verlauf(W, H, *NACHT); d = ImageDraw.Draw(im)
-        d.text((520, 60), 'Regen in Bad König (l/m²)', font=F(28), fill=(255, 255, 255), anchor='mm')
+        d.text((520, 82), 'Regen in Bad König (l/m²)', font=F(28), fill=(255, 255, 255), anchor='mm')
         f = min(1, t / 6)
         for i, (m, mi, mx, r, h30) in enumerate(ST['monate']):
-            balken(d, 140 + i * 260, 140, 150, 400, r * f, 60, (120, 190, 255), m, ('%.1f' % r).replace('.', ','))
-        d.text((520, 640), 'Summe Juni–August: 94 l/m² · 25 Regentage ab 1 l/m²', font=F(22, False), fill=HELLT, anchor='mm')
+            balken(d, 140 + i * 260, 140, 150, 300, r * f, 60, (120, 190, 255), m, ('%.1f' % r).replace('.', ','))
+        d.text((640, 520), 'Summe Juni–August: 94 l/m² · 25 Regentage ab 1 l/m²', font=F(22, False), fill=HELLT, anchor='mm')
         if 8 < t < 22:   # Risse im Boden über dem Juli
             for k in range(7):
-                x = 430 + k * 14; d.line([x, 520, x + 8 * math.sin(k), 540, x - 6, 555], fill=(160, 110, 60), width=2)
+                x = 430 + k * 14; d.line([x, 440, x + 8 * math.sin(k), 455, x - 6, 468], fill=(160, 110, 60), width=2)
         return im
     if name in ('s_rhein', 's_schiff'):
         im = verlauf(W, H, (120, 180, 230), (200, 228, 248)); d = ImageDraw.Draw(im)
@@ -293,8 +293,8 @@ def szene_s(name, t, p):
         return im
     if name == 's_pegel':
         im = verlauf(W, H, *NACHT); d = ImageDraw.Draw(im)
-        d.text((520, 55), 'Pegel Kaub 2026 (schematisch, Zentimeter)', font=F(26), fill=(255, 255, 255), anchor='mm')
-        x0, x1, y0, y1 = 100, 990, 110, 560
+        d.text((520, 82), 'Pegel Kaub 2026 (schematisch, Zentimeter)', font=F(26), fill=(255, 255, 255), anchor='mm')
+        x0, x1, y0, y1 = 100, 990, 120, 460
         def Y(v): return y1 - (v + 20) / 220 * (y1 - y0)
         for v in (0, 50, 100, 150, 200):
             d.line([x0, Y(v), x1, Y(v)], fill=(70, 85, 110), width=1); d.text((x0 - 10, Y(v)), str(v), font=F(16, False), fill=HELLT, anchor='rm')
@@ -317,21 +317,21 @@ def szene_s(name, t, p):
              ('Natur', 'Waldbrände, Bäche trocken', (230, 120, 50)), ('Fische', 'warmes Wasser, wenig Sauerstoff', (120, 190, 255))]
         sicht = 1 + int(max(0, t - 1) / 10)
         for i, (a, b, c) in enumerate(k):
-            x = 40 + (i % 2) * 490; y = 100 + (i // 2) * 250; on = i < sicht
-            d.rounded_rectangle([x, y, x + 460, y + 220], radius=18, fill=(25, 40, 70), outline=c if on else (70, 80, 100), width=4)
+            x = 40 + (i % 2) * 490; y = 90 + (i // 2) * 200; on = i < sicht
+            d.rounded_rectangle([x, y, x + 460, y + 180], radius=18, fill=(25, 40, 70), outline=c if on else (70, 80, 100), width=4)
             if on:
-                d.text((x + 230, y + 80), a, font=F(38), fill=c, anchor='mm')
-                d.text((x + 230, y + 150), b, font=F(22, False), fill=HELLT, anchor='mm')
+                d.text((x + 230, y + 65), a, font=F(38), fill=c, anchor='mm')
+                d.text((x + 230, y + 125), b, font=F(22, False), fill=HELLT, anchor='mm')
         return im
     if name == 's_klima':
         im = verlauf(W, H, *NACHT); d = ImageDraw.Draw(im)
-        d.text((520, 60), 'Hitzetage ab 30 °C im Deutschlandmittel', font=F(26), fill=(255, 255, 255), anchor='mm')
+        d.text((520, 82), 'Hitzetage ab 30 °C im Deutschlandmittel', font=F(26), fill=(255, 255, 255), anchor='mm')
         f = min(1, t / 8)
-        balken(d, 220, 150, 170, 380, 4 * f, 24, (255, 170, 90), 'früher im Schnitt', '4')
-        balken(d, 620, 150, 170, 380, 22 * f, 24, ROT, 'Sommer 2026', '22')
+        balken(d, 220, 140, 170, 290, 4 * f, 24, (255, 170, 90), 'früher im Schnitt', '4')
+        balken(d, 620, 140, 170, 290, 22 * f, 24, ROT, 'Sommer 2026', '22')
         if t > 14:
-            d.rounded_rectangle([120, 600, 920, 670], radius=14, fill=(25, 40, 70), outline=GELB, width=3)
-            d.text((520, 635), 'Ohne Klimawandel statistisch unmöglich (DWD)', font=F(26), fill=GELB, anchor='mm')
+            d.rounded_rectangle([330, 500, 1010, 560], radius=14, fill=(25, 40, 70), outline=GELB, width=3)
+            d.text((670, 530), 'Ohne Klimawandel statistisch unmöglich (DWD)', font=F(22), fill=GELB, anchor='mm')
         return im
     if name == 's_glossar':
         im = verlauf(W, H, *NACHT); d = ImageDraw.Draw(im)
