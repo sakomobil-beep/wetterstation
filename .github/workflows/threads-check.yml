@@ -1,0 +1,20 @@
+name: Threads-Schlüssel prüfen (ohne Posten)
+on: workflow_dispatch
+jobs:
+  pruefen:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Profil und Post-Kontingent abfragen
+        env:
+          THREADS_TOKEN: ${{ secrets.THREADS_TOKEN }}
+        run: |
+          python3 - <<'PY'
+          import os, json, urllib.request
+          t = os.environ.get('THREADS_TOKEN')
+          if not t: raise SystemExit('Kein THREADS_TOKEN eingetragen.')
+          for u in ('https://graph.threads.net/v1.0/me?fields=id,username', 'https://graph.threads.net/v1.0/me/threads_publishing_limit?fields=quota_usage,config'):
+              try:
+                  with urllib.request.urlopen(u + '&access_token=' + t, timeout=30) as r: print('OK', json.loads(r.read().decode()))
+              except urllib.error.HTTPError as e:
+                  print('FEHLER', e.code, e.read().decode()[:300]); raise SystemExit(1)
+          PY
