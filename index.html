@@ -2257,7 +2257,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 00:50 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 07:35 Uhr</span></p>
 
 </div>
 
@@ -6919,6 +6919,63 @@ setInterval(function () { if (currentTab === 'odenwald' && !document.hidden) owL
   verl.insertAdjacentHTML('afterend', '<div class="ow-card"><b>Regen-Rangliste</b> <small class="ow-mut">alle Orte im Vergleich</small><div id="owxRegen"></div></div><div class="ow-card" id="owxSchnee" hidden></div>');
   var hint = document.querySelector('#owTab').parentNode.nextElementSibling;
   if (hint) hint.innerHTML = 'Ist eine Station länger als 75 Minuten still, wird ihr Wert grau. Antippen hebt den Ort in der Karte hervor. „Zu gestern“: Vergleich mit gestern um dieselbe Uhrzeit. Tief/Hoch mit Uhrzeit. Luftdruck-Pfeil: Änderung in 3 Stunden. „Achtung“ zeigt, was die Station gerade misst: 🧊 Glätte (nass bei höchstens 1 °C), ❄️ Frost, 🌫️ Nebel, 💨 starke Böen, 🌪️ Sturm, 🌧️ Starkregen. „Ersatz“ beim Regen: Wert einer Nachbarstation.';
+})();
+
+/* Aktuell Odenwald übersichtlicher – Entwurf A (19.11.2026): Karte groß links, Rangliste rechts, Tabelle/Verlauf/Regen eingeklappt */
+(function () {
+  var grid = document.querySelector('.ow-grid'), links = grid.children[0], karte = grid.querySelector('.ow-mapc');
+  var tabKarte = $('owTab').closest('.ow-card'), verl = $('owVerlauf').closest('.ow-card'), regen = $('owxRegen').closest('.ow-card'), schnee = $('owxSchnee');
+  var rechts = document.createElement('div');
+  rechts.className = 'owa-rechts';
+  rechts.innerHTML = '<div class="ow-card owa-rang"><b id="owaTitel">Rangliste</b> <small class="ow-mut" id="owaSub"></small><div id="owaListe"></div><p class="ow-hint">Antippen hebt den Ort in der Karte hervor.</p></div>';
+  rechts.appendChild(schnee);
+  grid.innerHTML = ''; grid.appendChild(karte); grid.appendChild(rechts);
+  var klapp = function (titel, sub, el) {
+    var d = document.createElement('details'); d.className = 'ow-card owa-klapp';
+    d.innerHTML = '<summary><b>' + titel + '</b> <small class="ow-mut">' + sub + '</small></summary>';
+    el.classList.remove('ow-card'); el.style.marginTop = '10px'; d.appendChild(el); return d;
+  };
+  var unten = document.createElement('div'); unten.className = 'owa-unten';
+  unten.appendChild(klapp('Alle Messwerte', 'Tabelle mit allen 11 Orten', tabKarte));
+  verl.removeChild(verl.firstChild); verl.removeChild(verl.firstChild); verl.removeChild(verl.firstChild);
+  unten.appendChild(klapp('Verlauf heute', 'Temperatur aller Orte seit Mitternacht', verl));
+  regen.removeChild(regen.firstChild); regen.removeChild(regen.firstChild); regen.removeChild(regen.firstChild);
+  unten.appendChild(klapp('Regen-Rangliste', '24 Stunden, 7 Tage, Monat', regen));
+  grid.parentNode.insertBefore(unten, grid.nextSibling);
+  var INFO = { t: ['Temperatur', 'wärmster Ort oben', ' °C', 1], gf: ['Gefühlte Temperatur', 'wärmster Ort oben', ' °C', 1], dt: ['Zu gestern', 'gleiche Uhrzeit wie gestern', '°', 1],
+    g: ['Stärkste Böen', 'zuletzt gemessen', ' km/h', 0], r: ['Regen heute', 'seit Mitternacht', ' mm', 1], rh: ['Luftfeuchte', 'feuchtester Ort oben', ' %', 0], p: ['Luftdruck', 'höchster Wert oben', ' hPa', 0] };
+  var wert = function (o, k) { return k === 'dt' ? (o.t !== null && o.t !== undefined && o.t_gestern !== undefined ? Math.round((o.t - o.t_gestern) * 10) / 10 : null) : o[k]; };
+  function rang() {
+    var d = OW.d; if (!d) return;
+    var k = OW.k || 't', I = INFO[k] || INFO.t;
+    $('owaTitel').textContent = I[0]; $('owaSub').textContent = '· ' + I[1];
+    var L = d.orte.map(function (o) { return { o: o, v: owAlt(o) ? null : wert(o, k) }; });
+    L.sort(function (a, b) { if (a.v === null || a.v === undefined) return 1; if (b.v === null || b.v === undefined) return -1; return b.v - a.v; });
+    $('owaListe').innerHTML = L.map(function (x, i) {
+      var o = x.o, leer = x.v === null || x.v === undefined, txt = leer ? '–' : (k === 'dt' && x.v > 0 ? '+' : '') + owNf(x.v, I[3]) + I[2];
+      var f = leer ? '#9aa5ab' : k === 'p' ? '#5c7cfa' : k === 'dt' ? (x.v > 0.5 ? '#e8590c' : x.v < -0.5 ? '#1f8fc0' : '#868e96') : owFarbe(k === 'gf' ? 't' : k, x.v);
+      return '<div class="owa-z' + (OW.sel === o.name ? ' sel' : '') + '" data-ow="' + esc(o.name) + '"><span class="owa-nr">' + (i + 1) + '</span><span>' + esc(o.name.replace(' i. Odw.', '')) +
+        ' <small class="ow-mut">' + o.el + ' m</small></span><b style="background:' + f + '">' + txt + '</b></div>';
+    }).join('');
+    Array.prototype.forEach.call(document.querySelectorAll('#owaListe [data-ow]'), function (z) { z.onclick = function () { OW.sel = OW.sel === z.dataset.ow ? null : z.dataset.ow; owZeichnen(); }; });
+  }
+  var altK = owKarte;   // Rangliste folgt dem Karten-Umschalter
+  window.owKarte = owKarte = function () { altK(); rang(); };
+  var quelle = $('owMap').nextElementSibling;   // Quellen-Text unter der Karte einklappen
+  if (quelle && quelle.classList.contains('ow-hint')) { var dq = document.createElement('details'); dq.className = 'owa-quelle';
+    dq.innerHTML = '<summary class="ow-hint">Woher kommen die Werte?</summary>'; quelle.parentNode.insertBefore(dq, quelle); dq.appendChild(quelle); }
+  new MutationObserver(function () {   // Schnee-Kasten nur zeigen, wenn Schnee in Sicht ist
+    if (!schnee.hidden && /kein Schnee zu erwarten/.test(schnee.textContent)) schnee.hidden = true;
+  }).observe(schnee, { childList: true, subtree: true });
+  var css = document.createElement('style');
+  css.textContent = '.ow-grid{grid-template-columns:minmax(0,62fr) minmax(0,38fr)!important}.ow-mapc{order:0!important}.ow-mapc #owMap svg{max-height:640px}' +
+    '.ow-chips{grid-template-columns:repeat(4,1fr)!important}.ow-chips .ow-chip:nth-child(-n+2){display:none}' +
+    '.owa-z{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;padding:6px 4px;border-bottom:1px solid var(--line);cursor:pointer;font-size:14px}.owa-z:last-child{border-bottom:0}' +
+    '.owa-z.sel{background:rgba(255,214,0,.25);border-radius:8px}.owa-nr{color:var(--muted);font-size:12px;text-align:right}.owa-z b{color:#fff;border-radius:8px;padding:2px 8px;font-size:13px;min-width:62px;text-align:center}' +
+    '.owa-quelle summary{cursor:pointer}.owa-rang{margin-top:0}.owa-klapp{padding:12px 14px}.owa-klapp summary{cursor:pointer;list-style:none}.owa-klapp summary::-webkit-details-marker{display:none}' +
+    '.owa-klapp summary::before{content:"▸";display:inline-block;width:16px;color:var(--muted);transition:transform .15s}.owa-klapp[open] summary::before{transform:rotate(90deg)}' +
+    '@media(max-width:760px){.ow-grid{grid-template-columns:1fr!important}.ow-chips{grid-template-columns:1fr 1fr!important}}';
+  document.head.appendChild(css);
 })();
 
 /* DWD-Warnungen auch in der Vorhersage zeigen (15.11.2026) – aus fb/daten.json (warn_info, alle 15 Min. aktualisiert) */
