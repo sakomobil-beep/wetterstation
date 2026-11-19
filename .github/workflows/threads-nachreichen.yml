@@ -1,0 +1,24 @@
+name: Threads nachreichen (von Hand)
+# 19.11.2026: postet einen schon auf Facebook/Instagram erschienenen Beitrag nachträglich auf Threads.
+on:
+  workflow_dispatch:
+    inputs:
+      bild: { description: 'Bild in fb/ (z. B. warn2-post.jpg)', default: 'warn2-post.jpg' }
+      text: { description: 'JSON in fb/ mit Feld "text" (z. B. warn2.json)', default: 'warn2.json' }
+jobs:
+  threads:
+    runs-on: ubuntu-latest
+    env:
+      THREADS_TOKEN: ${{ secrets.THREADS_TOKEN }}
+      NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Auf Threads posten
+        run: |
+          cd .github/scripts && python3 - <<'PY'
+          import json, os, fb_senden as s
+          j = json.load(open(os.path.join('..', '..', 'fb', '${{ inputs.text }}'), encoding='utf-8'))
+          ok = s.threads('${{ inputs.bild }}', j['text'])
+          print('Threads:', 'gepostet' if ok else 'FEHLER')
+          if not ok: raise SystemExit(1)
+          PY
