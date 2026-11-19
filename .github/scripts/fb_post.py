@@ -35,6 +35,8 @@ DEMO = '--demo' in sys.argv
 # Odenwaldkreis: Täler = Station Bad König (an die Messwerte angepasst), Höhen = Mischung der Modelle für die Höhe des Ortes
 HOEHEN = [('Oberzent', 49.567, 8.976, 430), ('Mossautal', 49.667, 8.937, 380)]
 TAELER = [('Breuberg', 49.818, 9.040, 160), ('Höchst', 49.799, 8.994, 170), ('Bad König', 49.743, 9.006, 185), ('Michelstadt', 49.678, 9.004, 208)]
+# 19.11.2026 (Kingman): ab 25.11.2026, wenn ihre Lernkurve greift, zählen Brombachtal und Reichelsheim mit zu den Tälern (wie die Vorhersage-Karte der Website)
+if dt.date.today() >= dt.date(2026, 11, 25): TAELER = TAELER + [('Brombachtal', 49.733, 8.945, 250), ('Reichelsheim', 49.713, 8.838, 215)]
 KREIS_PUNKTE = [(LAT, LON), (49.567, 8.976), (49.678, 9.004)]   # Bad König, Oberzent, Michelstadt
 MODELLE = ('icon_d2', 'meteofrance_arome_france_hd', 'ecmwf_ifs025', 'icon_eu')
 TAGE = ['Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag', 'Sonntag']
@@ -405,7 +407,7 @@ def gewicht(m, n):
 
 
 ORT_CACHE = {}
-ORT_KEY = {'Breuberg': 'breuberg', 'Höchst': 'hoechst', 'Bad König': 'badkoenig', 'Michelstadt': 'michelstadt', 'Oberzent': 'oberzent', 'Mossautal': 'mossautal'}
+ORT_KEY = {'Brombachtal': 'brombachtal', 'Reichelsheim': 'reichelsheim', 'Breuberg': 'breuberg', 'Höchst': 'hoechst', 'Bad König': 'badkoenig', 'Michelstadt': 'michelstadt', 'Oberzent': 'oberzent', 'Mossautal': 'mossautal'}
 
 
 def lern_kreis():
@@ -1330,6 +1332,24 @@ STORY_ORTE = [('Breuberg', 160, 'wu:IBREUB3', 49.818, 9.040), ('Höchst', 170, '
               ('Mossautal', 315, 'wu:IMOSSA13', 49.667, 8.937), ('Oberzent', 461, 'wu:IBEERFEL4', 49.567, 8.976)]   # 15.11.2026 WU statt DWD
 
 
+WX_CODE = {'regen': 61, 'schauer': 80, 'schnee': 73, 'nebel': 45, 'sonne': 0, 'wolkig': 2, 'bedeckt': 3, 'tag': 2, 'gewitter': 95}
+
+
+def live_orte():
+    """Messwerte der 9 Orte von „Jetzt im Odenwald“ (data/odenwald-live.json, alle 10 Min. erneuert): [(Name, Höhe, Temp, Wetter)].
+    Werte älter als 75 Minuten zählen nicht; Fränkisch-Crumbach ist wie auf der Website ausgeblendet."""
+    try:
+        d = json.load(open(os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'odenwald-live.json'), encoding='utf-8'))
+        jetzt = dt.datetime.now(TZ); out = []
+        for o in (d.get('orte') or []) + (d.get('extra') or []):
+            if 'Fränkisch-Crumbach' in o['name']: continue
+            alt = not o.get('zeit') or (jetzt - dt.datetime.fromisoformat(o['zeit'])).total_seconds() > 75 * 60
+            out.append((o['name'].replace(' i. Odw.', ''), o.get('el') or 0, None if alt else o.get('t'), None if alt else o.get('wx')))
+        return out if sum(1 for x in out if x[2] is not None) >= 4 else None
+    except Exception as e:
+        print('Live-Orte nicht lesbar:', e); return None
+
+
 def messwert_jetzt(q):
     """Aktuelle Temperatur einer Station (höchstens 75 Min. alt) oder None."""
     art, sid = q.split(':', 1); jetzt = dt.datetime.now(TZ)
@@ -1371,7 +1391,7 @@ def radar_satz():
     """Ein Satz für den ganzen Kreis (Regen jetzt / ab wann wo / trocken). None, wenn das Radar nicht abrufbar ist."""
     jetzt = dt.datetime.now(TZ); bis = jetzt + dt.timedelta(hours=2); S = 0.02
     jetzt_nass, start, ok = [], [], 0
-    for n, el, q, la, lo in STORY_ORTE:
+    for n, el, q, la, lo in STORY_ORTE + [('Reichelsheim', 215, '', 49.713, 8.838), ('Brombachtal', 250, '', 49.735, 8.946), ('Lützelbach', 230, '', 49.784, 9.077)]:   # 9 Orte (19.11.2026)
         R = radar_ort(la, lo)
         if not R: continue
         ok += 1
@@ -1439,19 +1459,26 @@ def jetzt_story(days, path):
         return base
     BL, DK, GR = (26, 107, 166), (18, 37, 46), (106, 122, 131)
     # 1) Gerade gemessen
-    werte = [(n, el, messwert_jetzt(q)) for n, el, q, la, lo in STORY_ORTE]
-    da = [(n, v) for n, el, v in werte if v is not None]
-    y = 300; h1 = 110 + 74 * len(werte) + 70
+    werte = live_orte()   # 19.11.2026: dieselben 9 Orte und Messwerte wie „Jetzt im Odenwald“ auf der Website
+    if not werte: werte = [(n, el, messwert_jetzt(q), None) for n, el, q, la, lo in STORY_ORTE]
+    werte.sort(key=lambda x: -(x[2] if x[2] is not None else -99))
+    da = [(n, v) for n, el, v, wx in werte if v is not None]
+    RZ = 66 if len(werte) > 6 else 74
+    y = 300; h1 = 110 + RZ * len(werte) + 70
     im = karte(y, h1); dr = ImageDraw.Draw(im)
     dr.text((112, y + 40), 'GERADE GEMESSEN', font=font(32, True), fill=BL)
     yy = y + 104
-    for i, (n, el, v) in enumerate(werte):
+    for i, (n, el, v, wx) in enumerate(werte):
         dr.text((112, yy), n, font=font(38), fill=DK); w_ = dr.textlength(n, font=font(38))
         dr.text((112 + w_ + 18, yy + 12), '%d m' % el, font=font(26), fill=GR)
         t = ('%d°' % round(v)) if v is not None else '–'; tw = dr.textlength(t, font=font(46, True))
         dr.text((W - 112 - tw, yy - 6), t, font=font(46, True), fill=DK)
-        if i < len(werte) - 1: dr.line([112, yy + 62, W - 112, yy + 62], fill=(232, 238, 242), width=2)
-        yy += 74
+        if wx == 'nass':   # Tropfen wie auf der Website
+            cx, cy = W - 112 - 150, yy + 22
+            dr.polygon([(cx, cy - 22), (cx - 13, cy + 2), (cx + 13, cy + 2)], fill=(47, 127, 193)); dr.ellipse([cx - 14, cy - 6, cx + 14, cy + 20], fill=(47, 127, 193))
+        elif WX_CODE.get(wx) is not None: icon(dr, W - 112 - 150, yy + 14, 50, WX_CODE[wx], auf_weiss=True)
+        if i < len(werte) - 1: dr.line([112, yy + RZ - 12, W - 112, yy + RZ - 12], fill=(220, 230, 238), width=2)
+        yy += RZ
     if len(da) >= 2:
         hi = max(da, key=lambda x: x[1]); lo_ = min(da, key=lambda x: x[1])
         satz = 'Überall ähnlich, um %d°.' % round(hi[1]) if hi[1] - lo_[1] < 1 else 'Am wärmsten in %s, am kühlsten in %s.' % (hi[0], lo_[0])
