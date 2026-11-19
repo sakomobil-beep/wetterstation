@@ -2257,7 +2257,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 17:20 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 17:24 Uhr</span></p>
 
 </div>
 
@@ -4607,13 +4607,15 @@ function renderRegion() {
   var marks = '', rows = '', zeilen = [], heute = ds === todayStr();
   if (heute && !OW.d && !OW.lade) { OW.lade = 1; fetch('data/odenwald-live.json?v=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) { OW.d = j; OW.t = Date.now(); if (FC.sel === todayStr()) renderRegion(); }).catch(function () {}); }
   RG_TOWNS.forEach(function (t) {
-    var d = rgDay(t, ds), q = rgXY(t.lon, t.lat), x = q[0] + t.dx, y = q[1] + t.dy;
+    var d = rgDay(t, ds), q = rgXY(t.lon, t.lat), lw = (t.w || 112) * .7, x = t.dx < 0 ? q[0] - lw - 9 : q[0] + t.dx, y = q[1] + t.dy;   /* 19.11.2026: linke Kacheln dicht an den Ort */
+    var sx = Math.max(x, Math.min(x + lw, q[0])), sy = Math.max(y, Math.min(y + 28, q[1]));
     if (heute && d && !t.home && OW.d && OW.d.datum === ds) {   /* wie bei Bad König: heute schon Gemessenes fließt in den Höchstwert ein (15.11.2026) */
       var L = (OW.d.verlauf || {})[t.n.replace('Station ', '')] || [], gm = L.length ? Math.max.apply(null, L.map(function (p) { return p[1]; })) : null;
       if (gm !== null && gm > d.tmax) d = Object.assign({}, d, { tmax: gm });
     }
     var tt = d ? nf(d.tmax, 0) + '°' : '–', tl = d ? ' / ' + nf(d.tmin, 0) + '°' : '';
-    marks += '<circle class="dot" data-ort="' + RG_TOWNS.indexOf(t) + '" cx="' + q[0].toFixed(1) + '" cy="' + q[1].toFixed(1) + '" r="5"/>' +
+    marks += '<line x1="' + q[0].toFixed(1) + '" y1="' + q[1].toFixed(1) + '" x2="' + sx.toFixed(1) + '" y2="' + sy.toFixed(1) + '" stroke="#12252E" stroke-width="1.3" opacity=".6" style="pointer-events:none"/>' +
+      '<circle class="dot" data-ort="' + RG_TOWNS.indexOf(t) + '" cx="' + q[0].toFixed(1) + '" cy="' + q[1].toFixed(1) + '" r="5"/>' +
       '<g class="lbl ly-wert' + (t.home ? ' home' : '') + '" data-ort="' + RG_TOWNS.indexOf(t) + '" transform="translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ') scale(.7)">' +
       '<rect width="' + (t.w || 112) + '" height="40" rx="10"/>' +
       (d ? '<svg x="4" y="4" width="32" height="32" viewBox="0 0 48 48">' + wxIcon(d.icon).replace(/^<svg[^>]*>|<\/svg>$/g, '') + '</svg>' : '') +
