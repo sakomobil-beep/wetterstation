@@ -1,145 +1,115 @@
 {
- "stand": "2026-11-19T22:10",
+ "stand": "2026-11-19T22:19 L6",
  "tests": {
-  "seite:page_daily_unfollows_unique": [
+  "folgerbreakdown": [
    {
-    "page_daily_unfollows_unique/day": 0
+    "name": "page_media_view",
+    "period": "day",
+    "values": [
+     {
+      "value": 52,
+      "end_time": "2026-11-18T08:00:00+0000",
+      "start_time": "2026-11-17T08:00:00+0000",
+      "is_from_followers": "1"
+     },
+     {
+      "value": 809,
+      "end_time": "2026-11-18T08:00:00+0000",
+      "start_time": "2026-11-17T08:00:00+0000",
+      "is_from_followers": "0"
+     },
+     {
+      "value": 58,
+      "end_time": "2026-11-19T08:00:00+0000",
+      "start_time": "2026-11-18T08:00:00+0000",
+      "is_from_followers": "1"
+     },
+     {
+      "value": 735,
+      "end_time": "2026-11-19T08:00:00+0000",
+      "start_time": "2026-11-18T08:00:00+0000",
+      "is_from_followers": "0"
+     }
+    ],
+    "title": "page_media_view",
+    "description": "So oft wurden Inhalte von deiner Seite auf dem Bildschirm von Nutzern angezeigt. Hierzu zählen Beiträge, Stories, Werbeanzeigen sowie andere Inhalte auf deiner Seite.",
+    "id": "1434135673111385_1434135673111385"
    }
   ],
-  "seite:page_media_view": [
-   {
-    "page_media_view/day": 793
+  "posts_ok": 12,
+  "beitraege": {
+   "2026-11-19T18:09 Guten Abend Odenwald! 🌙 H": {
+    "post_video_avg_time_watched": "2734",
+    "post_video_view_time": "582465",
+    "post_video_complete_views_30s": "2",
+    "post_video_views": "37",
+    "post_activity_by_action_type": "{'like': 2}",
+    "post_clicks_by_type": "{'other clicks': 3}",
+    "post_reactions_by_type_total": "{'like': 2}",
+    "post_video_retention_graph": "{'0': 1, '1': 1, '2': 0.2973, '3': 0.2432, '4': 0.1892, '5': 0.1622, '6': 0.1351, '7': 0.1351, '8': 0.1081, '9': 0.0811, '10': 0.0541, '11': 0.0541, '12': 0.054",
+    "post_video_length": "107720"
+   },
+   "2026-11-19T14:03 💡 Wetterwissen mit Max – ": {
+    "post_video_avg_time_watched": "2034",
+    "post_video_view_time": "2060672",
+    "post_video_complete_views_30s": "5",
+    "post_video_views": "127",
+    "post_activity_by_action_type": "{'like': 1}",
+    "post_clicks_by_type": "{}",
+    "post_reactions_by_type_total": "{'like': 1}",
+    "post_video_retention_graph": "{'0': 1, '1': 1, '2': 1, '3': 0.7165, '4': 0.4409, '5': 0.315, '6': 0.2205, '7': 0.1732, '8': 0.1575, '9': 0.1339, '10': 0.1024, '11': 0.0945, '12': 0.0866, '13",
+    "post_video_length": "51200"
+   },
+   "2026-11-19T11:04 🗺️ Nachmittag im Odenwald": {
+    "post_video_avg_time_watched": "leer",
+    "post_video_view_time": "leer",
+    "post_video_complete_views_30s": "0",
+    "post_video_views": "0",
+    "post_activity_by_action_type": "{}",
+    "post_clicks_by_type": "{}",
+    "post_reactions_by_type_total": "{}",
+    "post_video_retention_graph": "{}",
+    "post_video_length": "0"
+   },
+   "2026-11-19T10:47 ⚠️ DWD-Warnung für den Od": {
+    "post_video_avg_time_watched": "leer",
+    "post_video_view_time": "leer",
+    "post_video_complete_views_30s": "0",
+    "post_video_views": "0",
+    "post_activity_by_action_type": "{}",
+    "post_clicks_by_type": "{'photo view': 1}",
+    "post_reactions_by_type_total": "{}",
+    "post_video_retention_graph": "{}",
+    "post_video_length": "0"
    }
-  ],
-  "seite:page_video_view_time": [
+  },
+  "reels": [
    {
-    "page_video_view_time/day": 2763505
-   }
-  ],
-  "seite:page_video_complete_views_30s": [
-   {
-    "page_video_complete_views_30s/day": 11
-   }
-  ],
-  "seite:page_video_views_organic": [
-   {
-    "page_video_views_organic/day": 116
-   }
-  ],
-  "seite:page_actions_post_reactions_total": [
-   {
-    "page_actions_post_reactions_total/day": {
-     "like": 5
-    }
-   }
-  ],
-  "seite:page_follows_city": "leer",
-  "seite:page_follows_country": "leer",
-  "seite:page_media_view nach is_from_followers": [
-   {
-    "page_media_view/day": 735
-   }
-  ],
-  "videos": [
-   [
-    "9184",
-    107.72,
-    "2026-11-19T18:08:48+0000"
-   ],
-   [
-    "2551",
-    51.2,
-    "2026-11-19T14:02:54+0000"
-   ],
-   [
-    "3946",
-    151.2,
-    "2026-11-19T06:12:44+0000"
-   ]
-  ],
-  "video:total_video_views": "leer",
-  "video:total_video_avg_time_watched": "leer",
-  "video:total_video_view_total_time": "leer",
-  "video:total_video_complete_views": "leer",
-  "video:total_video_30s_views": "leer",
-  "video:total_video_retention_graph": "leer",
-  "video:total_video_reactions_by_type_total": "leer",
-  "video:total_video_views_unique": "FEHLER: (#100) The value must be a valid insights metric",
-  "beitrag:felder": "(#10) This endpoint requires the 'pages_read_user_content' permission or the 'Page Public Content Access' feature. Refer to https://developers.facebook.com/docs",
-  "ig:reach": [
-   {
-    "reach/day": {
-     "value": 140
-    }
-   }
-  ],
-  "ig:views": [
-   {
-    "views/day": {
-     "value": 194
-    }
-   }
-  ],
-  "ig:accounts_engaged": [
-   {
-    "accounts_engaged/day": {
-     "value": 6
-    }
-   }
-  ],
-  "ig:total_interactions": [
-   {
-    "total_interactions/day": {
-     "value": 10
-    }
-   }
-  ],
-  "ig:likes": [
-   {
-    "likes/day": {
-     "value": 10
-    }
-   }
-  ],
-  "ig:comments": [
-   {
-    "comments/day": {
-     "value": 0
-    }
-   }
-  ],
-  "ig:shares": [
-   {
-    "shares/day": {
-     "value": 0
-    }
-   }
-  ],
-  "ig:saves": [
-   {
-    "saves/day": {
-     "value": 0
-    }
-   }
-  ],
-  "ig:profile_links_taps": [
-   {
-    "profile_links_taps/day": {
-     "value": 0
-    }
-   }
-  ],
-  "ig:follows_and_unfollows": "leer",
-  "ig:follower_demographics": "FEHLER: (#100) The following periods (day) are incompatible with the metric (follower_demographics)",
-  "ig-reel": [
-   {
-    "views/lifetime": 20
+    "post_video_likes_by_reaction_type": "{'REACTION_LIKE': 2}"
    },
    {
-    "reach/lifetime": 16
+    "post_video_avg_time_watched": "2734"
    },
    {
-    "likes/lifetime": 1
+    "post_video_social_actions": "{}"
+   },
+   {
+    "post_video_view_time": "582465"
+   },
+   {
+    "blue_reels_play_count": "214"
+   },
+   {
+    "fb_reels_total_plays": "221"
+   },
+   {
+    "fb_reels_replay_count": "7"
+   },
+   {
+    "post_video_retention_graph": "{'0': 1, '1': 1, '2': 0.2973, '3': 0.2432, '4': 0.1892, '5': 0.1622, '6': 0.1351, '7': 0.1351, '8': 0.1081, '9': 0.0811,"
+   },
+   {
+    "post_video_followers": "0"
    }
   ]
  }
