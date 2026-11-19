@@ -2257,7 +2257,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 17:46 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 17:52 Uhr</span></p>
 
 </div>
 
@@ -6910,11 +6910,13 @@ setInterval(function () { if (currentTab === 'odenwald' && !document.hidden) owL
   };
   function owxRegen() {
     var Lb = { r24: 'letzte 24 Stunden', r7: 'letzte 7 Tage', rmon: 'dieser Monat' };
-    var L = OW.d.orte.filter(function (o) { return o[RR] !== undefined && o[RR] !== null; }).sort(function (a, b) { return b[RR] - a[RR]; });
-    var mx = L.length ? Math.max(1, L[0][RR]) : 1, seit = OW.d.orte.reduce(function (s, o) { return o.r_seit && (!s || o.r_seit < s) ? o.r_seit : s; }, null);
+    var rv = function (o) { return o[RR] !== undefined && o[RR] !== null ? o[RR] : RR === 'r24' && o.r !== undefined && o.r !== null ? o.r : null; };   /* 19.11.2026: neue Orte ohne Vortag – 24 h ersatzweise mit „heute“ */
+    var L = OW.d.orte.filter(function (o) { return rv(o) !== null; }).sort(function (a, b) { return rv(b) - rv(a); }), nurHeute = 0;
+    var mx = L.length ? Math.max(1, rv(L[0])) : 1, seit = OW.d.orte.reduce(function (s, o) { return o.r_seit && (!s || o.r_seit < s) ? o.r_seit : s; }, null);
     $('owxRegen').innerHTML = '<div class="ow-btns" id="owxRB">' + Object.keys(Lb).map(function (k) { return '<button data-r="' + k + '"' + (k === RR ? ' class="on"' : '') + '>' + Lb[k] + '</button>'; }).join('') + '</div>' +
-      (L.length ? L.map(function (o) { return '<div class="owx-rb"><span>' + esc(kurz(o.name)) + '</span><i><b style="width:' + Math.max(1.5, o[RR] / mx * 100).toFixed(1) + '%"></b></i><em>' + owNf(o[RR], 1) + ' mm</em></div>'; }).join('')
+      (L.length ? L.map(function (o) { return (function () { var v = rv(o), st = RR === 'r24' && (o.r24 === undefined || o.r24 === null); if (st) nurHeute = 1; return '<div class="owx-rb"><span>' + esc(kurz(o.name)) + (st ? '*' : '') + '</span><i><b style="width:' + Math.max(1.5, v / mx * 100).toFixed(1) + '%"></b></i><em>' + owNf(v, 1) + ' mm</em></div>'; })(); }).join('')
         : '<p class="ow-hint">Für diesen Zeitraum gibt es noch keine Werte.</p>') +
+      (nurHeute ? '<p class="ow-hint">* neu dabei: bisher nur der Regen seit Mitternacht, ab morgen volle 24 Stunden.</p>' : '') +
       (RR !== 'r24' && seit ? '<p class="ow-hint">Die Odenwald-Messwerte werden seit ' + new Date(seit).toLocaleDateString('de-DE') + ' gesammelt – davor fehlende Tage zählen noch nicht mit. Neue Orte haben erst ab ihrem Start Werte.</p>' : '');
     Array.prototype.forEach.call(document.querySelectorAll('#owxRB button'), function (b) { b.onclick = function () { RR = b.dataset.r; owxRegen(); }; });
   }
