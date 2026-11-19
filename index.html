@@ -2260,7 +2260,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 20:15 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 20:35 Uhr</span></p>
 
 </div>
 
@@ -6657,7 +6657,7 @@ $('wcLoad').addEventListener('click', function () {
 
 /* ===== Aktuell Odenwald: Live-Werte der 6 Kartenorte (15.11.2026) ===== */
 /* OW wird schon bei der Kreis-Vorhersage angelegt */
-var OW_POS = { 'Breuberg': [10, -30], 'Höchst i. Odw.': [-92, -8], 'Bad König': [10, -16], 'Michelstadt': [10, -16], 'Mossautal': [-90, -6], 'Oberzent': [10, -16] };
+var OW_POS = { 'Breuberg': [10, -30], 'Höchst i. Odw.': [-72, -10], 'Bad König': [10, -16], 'Michelstadt': [10, -16], 'Mossautal': [-90, -6], 'Oberzent': [10, -16] };
 var OW_FARBEN = ['#e05a2b', '#e0a020', '#2f9e44', '#1f8fc0', '#3b5bdb', '#9c36b5'];
 /* Regen heute je Ort; unplausible Werte (Regenmesser gestört) kommen als Ersatzwert einer Nachbarstation oder als „–“ (17.11.2026) */
 function owRegen(o) {
@@ -6675,7 +6675,7 @@ function owFarbe(k, v) {
   return v < 60 ? '#d9a010' : v < 85 ? '#2f9e44' : '#1f8fc0';
 }
 var OW_WX = { regen: ['rain', 'Regen'], schauer: ['showers-day', 'Schauer / leichter Regen'], nass: ['wet', 'Nass, gerade aufgehört'], schnee: ['snow', 'Schnee / Schneeregen'], nebel: ['fog', 'Nebel / Dunst'],
-  sonne: ['clear-day', 'Sonnig'], wolkig: ['partly-cloudy-day', 'Wolkig'], bedeckt: ['cloudy', 'Bedeckt'], tag: ['partly-cloudy-day', 'Trocken'], nacht: ['clear-night', 'Trocken (Nacht)'] };
+  sonne: ['clear-day', 'Sonnig'], wolkig: ['partly-cloudy-day', 'Wolkig'], bedeckt: ['cloudy', 'Bedeckt'], tag: ['partly-cloudy-day', 'Trocken'], nacht: ['clear-night', 'Trocken (Nacht)'], gewitter: ['thunderstorm', 'Gewitter'] };
 function owNacht() { var d = new Date(), n = (d - Date.UTC(d.getUTCFullYear(), 0, 0)) / 864e5, dk = -23.44 * Math.cos(2 * Math.PI * (n + 10) / 365) * Math.PI / 180,
   h = ((d.getUTCHours() + d.getUTCMinutes() / 60 + 9 / 15 - 12) * 15) * Math.PI / 180, la = 49.7 * Math.PI / 180;
   return Math.sin(la) * Math.sin(dk) + Math.cos(la) * Math.cos(dk) * Math.cos(h) < 0; }

@@ -4,6 +4,7 @@ Ausgabe: fb/post.txt, fb/post.json (Tagesbild post.jpg seit 15.11.2026 entfallen
 Quellen: Präzisions-Vorhersage wie auf der Website (0–48 h DWD ICON-D2 + MOSMIX, lernende Korrektur mit Messwerten der Station IBADKN33), danach DWD ICON (Open-Meteo),
 amtliche Warnungen des DWD (Bright Sky)."""
 import json, os, sys, math, statistics, time, textwrap, urllib.request, datetime as dt
+import subprocess
 from zoneinfo import ZoneInfo
 from PIL import Image, ImageDraw, ImageFont
 
@@ -496,14 +497,14 @@ def orte_einzeln(days):
     return out
 
 
-def orte_rest(heute, ab=None, bis=19):
+def orte_rest(heute, ab=None, bis=19, extra=()):
     """Werte je Ort für den Rest des Tages (Mittagskarte): höchste Stundentemperatur von jetzt bis `bis` Uhr
     und der Anteil der Modelle mit Regen in dem Fenster. Nutzt die schon abgerufenen Stundenwerte."""
     jetzt = dt.datetime.now(TZ)
     ab = ab if ab is not None else max(12, jetzt.hour)
     tag = heute.isoformat()
     out = {}
-    for name, la, lo, el in TAELER + HOEHEN:
+    for name, la, lo, el in list(TAELER + HOEHEN) + list(extra):
         O = ort_daten(name, la, lo, el)
         if not O or not O.get('hourly'): continue
         H = O['hourly']; idx = [k for k, t in enumerate(H['time']) if t[:10] == tag and ab <= int(t[11:13]) <= bis]
@@ -710,10 +711,11 @@ def niederschlag(days):
             return dict(stufe=stufe_aus(P, S, G), p=P, mm=round(S, 1),
                         schnee_tal=bool(nass) and sum(v['sn_t'] for v in nass) / len(nass) >= 0.5,
                         schnee_hoch=bool(nass) and sum(v['sn_h'] for v in nass) / len(nass) >= 0.5)
-        N = dict(tag=teil(6, 24), vm=teil(6, 12), nm=teil(12, 18), ab=teil(18, 24), nacht=teil(0, 6), fa=teil(16, 19))
+        N = dict(tag=teil(6, 24), vm=teil(6, 12), nm=teil(12, 18), ab=teil(18, 24), nacht=teil(0, 6), fa=teil(16, 19), mi=teil(12, 19))
         d['nied'] = dict(stufe=N['tag']['stufe'], vm=N['vm']['stufe'], nm=N['nm']['stufe'], ab=N['ab']['stufe'],
                          p=N['tag']['p'], mm=N['tag']['mm'], schnee_tal=N['tag'].get('schnee_tal', False), schnee_hoch=N['tag'].get('schnee_hoch', False),
-                         fa=N['fa']['stufe'], fa_schnee=N['fa'].get('schnee_tal', False))
+                         fa=N['fa']['stufe'], fa_schnee=N['fa'].get('schnee_tal', False),
+                         mi=N['mi']['stufe'], mi_p=N['mi']['p'], mi_mm=N['mi']['mm'], mi_schnee=N['mi'].get('schnee_tal', False))
         d['rp'], d['rp_vm'], d['rp_nm'], d['rp_ab'] = N['tag']['p'], N['vm']['p'], N['nm']['p'], N['ab']['p']
         d['regen'] = round(sum(v['mm'] for v in H_.values()), 1)
         st_ = d['nied']['stufe']; c = d['code']
@@ -933,9 +935,9 @@ def font(size, bold=False):
     return ImageFont.load_default(size)
 
 
-def icon(dr, cx, cy, s, c):
+def icon(dr, cx, cy, s, c, auf_weiss=False):
     w = wort(c)
-    sun, cloud, dark = (250, 190, 50), (255, 255, 255), (150, 165, 185)
+    sun, cloud, dark = (250, 190, 50), ((178, 192, 201) if auf_weiss else (255, 255, 255)), (150, 165, 185)
     def wolke(x, y, k, col):
         # gleiche Wolkenform wie die Website (19.11.2026): vier Bögen auf rundem Sockel
         u = 1.75 * k / 34
@@ -954,8 +956,8 @@ def icon(dr, cx, cy, s, c):
     if w in ('heiter bis wolkig', 'Schauer'):
         r = s * 0.32; dr.ellipse([cx - r + s * 0.18, cy - r - s * 0.22, cx + r + s * 0.18, cy + r - s * 0.22], fill=sun)
     col = dark if w in ('Regen', 'Gewitter', 'Nieselregen', 'bedeckt', 'neblig') else cloud
-    wolke(cx, cy, s * 0.6, (120, 135, 155))  # Schatten
-    wolke(cx - s * 0.03, cy - s * 0.04, s * 0.6, col if col != dark else (205, 212, 222))
+    if not auf_weiss: wolke(cx, cy, s * 0.6, (120, 135, 155))  # Schatten
+    wolke(cx - s * 0.03, cy - s * 0.04, s * 0.6, (col if col != dark else (205, 212, 222)) if not auf_weiss else ((151, 168, 179) if col == dark else col))
     if w in ('Regen', 'Schauer', 'Nieselregen', 'Gewitter'):
         for k in range(-1, 2):
             x = cx + k * s * 0.25
@@ -1124,50 +1126,120 @@ ORTE_KARTE = [('Breuberg', 49.818, 9.040, 'r'), ('Höchst', 49.799, 8.994, 'l'),
               ('Mossautal', 49.667, 8.937, 'l'), ('Michelstadt', 49.678, 9.004, 'r'), ('Oberzent', 49.567, 8.976, 'r')]
 
 
+NASS_WORTE = ('Regen', 'Schauer', 'Nieselregen', 'Gewitter', 'Schnee')
+
+
+def mittag_kreis(d):
+    """Kreis-Einstufung für die Mittagskarte (12–19 Uhr, bis zum Abendpost) aus der gemeinsamen Einstufung (19.11.2026)."""
+    N = d.get('nied') or {}
+    st, sn = N.get('mi') or N.get('nm') or 'trocken', N.get('mi_schnee', False)
+    trocken = d['code'] if wort(d['code']) not in NASS_WORTE else (1 if d.get('sonne', 0) >= 7 else 2 if d.get('sonne', 0) >= 4 else 3)
+    nass = {'gewitter': 95, 'regen': 73 if sn else (63 if N.get('mi_mm', 0) >= 5 else 61), 'schauer': 85 if sn else 80}.get(st)
+    return st, nass, trocken
+
+
+def ort_code(r, d):
+    """Symbol je Ort (Variante B): die gemeinsame Einstufung entscheidet; nur bei Schauer/vereinzelt
+    verteilen die Modellwerte des Ortes, wo es nass wird und wo es trocken bleibt."""
+    st, nass, trocken = mittag_kreis(d)
+    if st in ('regen', 'gewitter'): return nass
+    if st in ('schauer', 'vereinzelt'): return (nass or 80) if r.get('rp', 0) >= 30 else trocken
+    return trocken
+
+
+def t_farbe(v):
+    """Temperaturfarbe wie auf der Website (owFarbe)."""
+    return ((59, 91, 219) if v < 0 else (43, 123, 214) if v < 3 else (31, 143, 192) if v < 6 else (47, 158, 68) if v < 9
+            else (217, 160, 16) if v < 15 else (232, 89, 12) if v < 25 else (201, 42, 42))
+
+
+MITTAG_EXTRA = [('Reichelsheim', 49.713, 8.838, 215), ('Brombachtal', 49.735, 8.946, 250), ('Lützelbach', 49.784, 9.077, 230)]
+WEB_NAMEN = {'Höchst': 'Höchst i. Odw.'}
+
+
+def wx_schluessel(c):
+    """WMO-Code -> Wetter-Schlüssel der Website-Karte (OW_WX)."""
+    if c >= 95: return 'gewitter'
+    if 71 <= c <= 77 or c in (85, 86): return 'schnee'
+    if c >= 80: return 'schauer'
+    if 51 <= c <= 67: return 'regen'
+    if c in (45, 48): return 'nebel'
+    return 'sonne' if c <= 1 else 'wolkig' if c == 2 else 'bedeckt'
+
+
+def web_karte(rest, d):
+    """Die echte Karte von wetter-badkoenig.de/#odenwald mit den Vorhersagewerten bis 19 Uhr und den Symbolen nach
+    Variante B (Chrome ohne Bildschirm, karte_shot.mjs). Gibt ein RGBA-Bild zurück oder None (dann zeichnet Python selbst)."""
+    try:
+        W = {WEB_NAMEN.get(n, n): dict(t=r['tmax'], wx=wx_schluessel(ort_code(r, d))) for n, r in rest.items()}
+        if not W: return None
+        import tempfile; ziel = os.path.join(tempfile.gettempdir(), 'mittag-karte.png')
+        url = os.environ.get('KARTE_URL', 'https://wetter-badkoenig.de/') + '?karte=%d#odenwald' % int(time.time())
+        subprocess.run(['node', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'karte_shot.mjs'), url,
+                        json.dumps(W, ensure_ascii=False), ziel], check=True, timeout=120)
+        k = Image.open(ziel).convert('RGBA'); bb = k.getbbox()
+        return k.crop(bb) if bb else None
+    except Exception as e:
+        print('Website-Karte nicht verfügbar, zeichne selbst:', e)
+        return None
+
+
 def mittagskarte(days, warn, path):
     """Mittagsbeitrag (1200x1200): Reliefkarte des Odenwaldkreises mit den Werten für den Rest des Tages,
     dazu der aktuelle Messwert der eigenen Station in Bad König."""
     W = H = 1200
     d = days[0]
-    rest = orte_rest(d['datum'])
+    rest = orte_rest(d['datum'], extra=MITTAG_EXTRA)
     live = live_station()
+    web = web_karte(rest, d)
     im = Image.new('RGB', (W, H), (238, 242, 247)); dr = ImageDraw.Draw(im)
     for y in range(170):   # Kopfband
         dr.line([0, y, W, y], fill=(int(22 + 16 * y / 170), int(70 + 22 * y / 170), int(130 + 30 * y / 170)))
     dr.rectangle([0, 170, W, 178], fill=(245, 175, 40))
     dr.text((40, 58), 'NACHMITTAG IM ODENWALDKREIS', font=font(52, True), fill=(255, 255, 255))
     dr.text((40, 118), '%s, %d. %s' % (TAGE[d['datum'].weekday()], d['datum'].day, MONATE[d['datum'].month - 1]), font=font(36), fill=(205, 222, 245))
-    # Reliefkarte mittig
-    KW, KH = 520, 841
-    KX, KY = 410, 215
-    DAT = os.path.join(os.path.dirname(__file__), '..', '..', 'data')
-    G = json.load(open(os.path.join(DAT, 'odenwald-relief.json'), encoding='utf-8'))
-    (lo0, lo1), (la0, la1) = G['lo'], G['la']
-    try:   # Relief auf die echte Kreisgrenze zuschneiden (kein Rechteck)
-        grenze = json.load(open(os.path.join(DAT, 'odenwald-grenze.json'), encoding='utf-8'))['punkte']
-        rand = [((lo - lo0) / (lo1 - lo0) * KW, (la1 - la) / (la1 - la0) * KH) for lo, la in grenze]
-        rel = Image.open(os.path.join(DAT, 'odenwald-relief.png')).convert('RGBA').resize((KW, KH), Image.LANCZOS)
-        maske = Image.new('L', (KW, KH), 0); ImageDraw.Draw(maske).polygon(rand, fill=255)
-        rel.putalpha(maske)
-        im.paste(rel, (KX, KY), rel)
-        dr.line([(KX + x, KY + y) for x, y in rand] + [(KX + rand[0][0], KY + rand[0][1])],
-                fill=(70, 85, 105), width=4, joint='curve')
-    except Exception as e:
-        print('Reliefkarte nicht gezeichnet:', e)
-    fn, fw = font(26), font(40, True)
-    for name, la, lo, seite in ORTE_KARTE:
-        r = rest.get(name)
-        if not r: continue
-        x = KX + (lo - lo0) / (lo1 - lo0) * KW
-        y = KY + (la1 - la) / (la1 - la0) * KH
-        txt = '%d°' % r['tmax']
-        bw = max(dr.textlength(name, font=fn), dr.textlength(txt, font=fw)) + 36
-        bx = x + 22 if seite == 'r' else x - 22 - bw
-        bx = max(8, min(bx, W - bw - 8)); by = max(190, min(y - 44, H - 260))
-        dr.rounded_rectangle([bx, by, bx + bw, by + 88], radius=18, fill=(214, 88, 36))
-        dr.text((bx + bw / 2, by + 24), name, font=fn, fill=(255, 232, 220), anchor='mm')
-        dr.text((bx + bw / 2, by + 62), txt, font=fw, fill=(255, 255, 255), anchor='mm')
-        dr.ellipse([x - 10, y - 10, x + 10, y + 10], fill=(255, 255, 255), outline=(40, 50, 70), width=4)
+    if web is not None:   # 19.11.2026: echte Website-Karte (9 Orte)
+        sk = min(790 / web.width, 870 / web.height); web = web.resize((int(web.width * sk), int(web.height * sk)), Image.LANCZOS)
+        im.paste(web, (400 + (790 - web.width) // 2, 195), web)
+    else:
+        # Reliefkarte mittig
+        KW, KH = 520, 841
+        KX, KY = 465, 215
+        DAT = os.path.join(os.path.dirname(__file__), '..', '..', 'data')
+        G = json.load(open(os.path.join(DAT, 'odenwald-relief.json'), encoding='utf-8'))
+        (lo0, lo1), (la0, la1) = G['lo'], G['la']
+        try:   # Relief auf die echte Kreisgrenze zuschneiden (kein Rechteck)
+            grenze = json.load(open(os.path.join(DAT, 'odenwald-grenze.json'), encoding='utf-8'))['punkte']
+            rand = [((lo - lo0) / (lo1 - lo0) * KW, (la1 - la) / (la1 - la0) * KH) for lo, la in grenze]
+            rel = Image.open(os.path.join(DAT, 'odenwald-relief.png')).convert('RGBA').resize((KW, KH), Image.LANCZOS)
+            maske = Image.new('L', (KW, KH), 0); ImageDraw.Draw(maske).polygon(rand, fill=255)
+            rel.putalpha(maske)
+            im.paste(rel, (KX, KY), rel)
+            dr.line([(KX + x, KY + y) for x, y in rand] + [(KX + rand[0][0], KY + rand[0][1])],
+                    fill=(70, 85, 105), width=4, joint='curve')
+        except Exception as e:
+            print('Reliefkarte nicht gezeichnet:', e)
+        fn, fw = font(26), font(40, True)
+        for name, la, lo, seite in ORTE_KARTE:
+            r = rest.get(name)
+            if not r: continue
+            x = KX + (lo - lo0) / (lo1 - lo0) * KW
+            y = KY + (la1 - la) / (la1 - la0) * KH
+            txt = '%d°' % r['tmax']
+            fv, fnm = font(44, True), font(22, True)
+            bw = 92 + max(dr.textlength(txt, font=fv), dr.textlength(name, font=fnm)) + 18; bh = 84
+            bx = x + 26 if seite == 'r' else x - 26 - bw
+            if bx < 384: bx = x + 26   # nicht unter die Kästen links
+            bx = min(bx, W - bw - 8); by = max(190, min(y - 42, H - 260))
+            ax, ay = max(bx, min(bx + bw, x)), max(by, min(by + bh, y))
+            dr.line([x, y, ax, ay], fill=(18, 37, 46), width=3)
+            dr.rounded_rectangle([bx + 3, by + 4, bx + bw + 3, by + bh + 4], radius=20, fill=(190, 198, 208))
+            dr.rounded_rectangle([bx, by, bx + bw, by + bh], radius=20, fill=(255, 255, 255), outline=(205, 212, 220), width=2)
+            dr.rounded_rectangle([bx + 11, by + 12, bx + 22, by + bh - 12], radius=5, fill=t_farbe(r['tmax']))
+            icon(dr, bx + 56, by + 38, 50, ort_code(r, d), auf_weiss=True)
+            dr.text((bx + 92, by + 34), txt, font=fv, fill=(18, 37, 46), anchor='lm')
+            dr.text((bx + 92, by + 66), name, font=fnm, fill=(45, 55, 65), anchor='lm')
+            dr.ellipse([x - 10, y - 10, x + 10, y + 10], fill=(18, 37, 46), outline=(255, 255, 255), width=4)
     # Messwert der eigenen Station
     if live:
         dr.rounded_rectangle([40, 230, 380, 520], radius=28, fill=(255, 255, 255))
@@ -1178,7 +1250,9 @@ def mittagskarte(days, warn, path):
     y0 = 560 if live else 240
     dr.rounded_rectangle([40, y0, 380, y0 + 250], radius=28, fill=(255, 255, 255))
     dr.text((210, y0 + 40), 'REST DES TAGES', font=font(28, True), fill=(120, 135, 155), anchor='mm')
-    zz = [wort(d['code']).capitalize(), 'Regen %d %%' % d['rp'] if d['rp'] >= 20 else 'meist trocken']
+    st_m, nass_m, trocken_m = mittag_kreis(d); p_m = (d.get('nied') or {}).get('mi_p', d['rp'])
+    zz = [{'regen': 'Regen', 'gewitter': 'Gewitter', 'schauer': 'Schauer', 'vereinzelt': 'vereinzelt Schauer'}.get(st_m, wort(trocken_m).capitalize()),
+          'Regen %d %%' % p_m if p_m >= 20 else 'meist trocken']
     if d.get('hoch'): zz.append('Höhen bis %d°' % d['hoch']['tmax'])
     for i, z in enumerate(zz[:3]):
         dr.text((210, y0 + 100 + i * 52), z, font=font(32, True), fill=(35, 55, 85), anchor='mm')
