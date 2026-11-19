@@ -2257,7 +2257,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 07:50 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 08:27 Uhr</span></p>
 
 </div>
 
@@ -6948,7 +6948,8 @@ setInterval(function () { if (currentTab === 'odenwald' && !document.hidden) owL
   var tabKarte = $('owTab').closest('.ow-card'), verl = $('owVerlauf').closest('.ow-card'), regen = $('owxRegen').closest('.ow-card'), schnee = $('owxSchnee');
   var rechts = document.createElement('div');
   rechts.className = 'owa-rechts';
-  rechts.innerHTML = '<div class="ow-card owa-rang"><b id="owaTitel">Rangliste</b> <small class="ow-mut" id="owaSub"></small><div id="owaListe"></div><p class="ow-hint">Antippen hebt den Ort in der Karte hervor.</p></div>';
+  rechts.innerHTML = '<div class="ow-card owa-rang"><b id="owaTitel">Rangliste</b> <small class="ow-mut" id="owaSub"></small><div id="owaListe"></div><p class="ow-hint">Antippen hebt den Ort in der Karte hervor.</p></div>' +
+    '<div class="ow-card" id="moKarte">  <b>🔎 Wetter an meinem Ort</b> <small class="ow-mut">für jeden Ort in Deutschland</small>  <div class="mo-in"><input id="moIn" placeholder="Ort eingeben, z. B. Darmstadt" autocomplete="off"><div class="mo-vs" id="moVs" hidden></div></div>  <div class="mo-erg" id="moErg"></div>  <p class="ow-hint">Vorhersage-Werte von Open-Meteo (Modelle, keine Messung). Dein Ort wird nur in deinem Browser gemerkt.</p></div>';
   rechts.appendChild(schnee);
   grid.innerHTML = ''; grid.appendChild(karte); grid.appendChild(rechts);
   var klapp = function (titel, sub, el) {
@@ -8299,6 +8300,46 @@ function tqHtml(T){
     requestAnimationFrame(()=>{const w=tr.scrollWidth/2;el.style.setProperty('--tk-dur',Math.max(14,Math.round(w/45))+'s')});
   }).catch(()=>{});
 })();
+</script>
+<style>/* 19.11.2026: Wetter an meinem Ort (Open-Meteo) */
+.mo-in{position:relative;margin-top:10px}
+.mo-in input{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid #d7dde2;border-radius:10px;font-size:15px}
+.mo-vs{position:absolute;left:0;right:0;top:100%;background:#fff;border:1px solid #d7dde2;border-radius:10px;margin-top:4px;z-index:5;overflow:hidden}
+.mo-vs div{padding:8px 12px;cursor:pointer;font-size:14px}.mo-vs div:hover{background:#eef4ef}
+.mo-erg{margin-top:12px;display:none}
+.mo-kopf{display:flex;align-items:center;gap:12px}
+.mo-sym{font-size:38px;line-height:1}.mo-t{font-size:30px;font-weight:700}
+.mo-ort{font-weight:600}.mo-wx{font-size:13px;color:#6b7780}
+.mo-chips{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.mo-chips div{background:#f4f6f3;border-radius:10px;padding:6px;text-align:center;font-size:12px;color:#6b7780}
+.mo-chips b{display:block;font-size:15px;color:#1d2a33}
+.mo-std{display:flex;gap:4px;margin-top:10px;overflow-x:auto}
+.mo-std div{flex:1;min-width:44px;text-align:center;font-size:12px;background:#f4f6f3;border-radius:8px;padding:4px 2px}
+.mo-in input{background:var(--card,#fff);color:inherit}.mo-vs{background:var(--card,#fff)}
+</style>
+<script>/* 19.11.2026: Wetter an meinem Ort */
+window.addEventListener("load",function(){if(!document.getElementById("moIn"))return;
+(function(){
+var WX={0:['☀️','klar'],1:['🌤️','überwiegend klar'],2:['⛅','teils bewölkt'],3:['☁️','bedeckt'],45:['🌫️','Nebel'],48:['🌫️','Reifnebel'],51:['🌦️','leichter Niesel'],53:['🌦️','Niesel'],55:['🌧️','starker Niesel'],56:['🧊','gefrierender Niesel'],57:['🧊','gefrierender Niesel'],61:['🌧️','leichter Regen'],63:['🌧️','Regen'],65:['🌧️','starker Regen'],66:['🧊','gefrierender Regen'],67:['🧊','gefrierender Regen'],71:['🌨️','leichter Schnee'],73:['🌨️','Schnee'],75:['❄️','starker Schnee'],77:['🌨️','Schneegriesel'],80:['🌦️','Schauer'],81:['🌧️','Schauer'],82:['⛈️','heftige Schauer'],85:['🌨️','Schneeschauer'],86:['❄️','Schneeschauer'],95:['⛈️','Gewitter'],96:['⛈️','Gewitter mit Hagel'],99:['⛈️','Gewitter mit Hagel']};
+var inp=document.getElementById('moIn'),vs=document.getElementById('moVs'),erg=document.getElementById('moErg'),tmr;
+function f1(x){return (Math.round(x*10)/10).toLocaleString('de-DE')}
+inp.addEventListener('input',function(){clearTimeout(tmr);var q=inp.value.trim();if(q.length<2){vs.hidden=true;return}
+ tmr=setTimeout(function(){fetch('https://geocoding-api.open-meteo.com/v1/search?count=6&language=de&countryCode=DE&name='+encodeURIComponent(q)).then(r=>r.json()).then(function(d){
+  var L=d.results||[];vs.innerHTML='';if(!L.length){vs.innerHTML='<div style="cursor:default;color:#6b7780">Kein Ort gefunden</div>'}
+  L.forEach(function(o){var e=document.createElement('div');e.textContent=o.name+(o.admin3&&o.admin3!==o.name?' ('+o.admin3+')':'')+', '+(o.admin1||'');e.onclick=function(){waehle({n:o.name,la:o.latitude,lo:o.longitude,el:o.elevation})};vs.appendChild(e)});vs.hidden=false}).catch(function(){})},300)});
+document.addEventListener('click',function(e){if(!e.target.closest('.mo-in'))vs.hidden=true});
+function waehle(o){vs.hidden=true;inp.value=o.n;try{localStorage.setItem('meinOrt',JSON.stringify(o))}catch(e){}laden(o)}
+function laden(o){erg.style.display='block';erg.innerHTML='<span class="ow-mut">Lade Wetter für '+o.n+' …</span>';
+ fetch('https://api.open-meteo.com/v1/forecast?latitude='+o.la+'&longitude='+o.lo+'&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,wind_gusts_10m&hourly=temperature_2m,weather_code,precipitation_probability&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum&timezone=Europe%2FBerlin&forecast_days=2&models=best_match').then(r=>r.json()).then(function(d){
+  var c=d.current,w=WX[c.weather_code]||['🌡️',''],dy=d.daily,h=d.hourly,i0=h.time.findIndex(t=>t>=c.time.slice(0,13)+':00'),std='';
+  for(var i=i0+1;i<=i0+6&&i<h.time.length;i++){var s=WX[h.weather_code[i]]||['',''];std+='<div>'+h.time[i].slice(11,13)+' Uhr<br><span style="font-size:18px">'+s[0]+'</span><br><b>'+Math.round(h.temperature_2m[i])+'°</b></div>'}
+  erg.innerHTML='<div class="mo-kopf"><span class="mo-sym">'+w[0]+'</span><div><div class="mo-ort">'+o.n+(o.el!=null?' <small class="ow-mut">'+Math.round(o.el)+' m</small>':'')+'</div><div><span class="mo-t">'+f1(c.temperature_2m)+' °C</span></div><div class="mo-wx">'+w[1]+' · gefühlt '+f1(c.apparent_temperature)+' °C</div></div></div>'+
+  '<div class="mo-chips"><div>Tief/Hoch<b>'+Math.round(dy.temperature_2m_min[0])+'° / '+Math.round(dy.temperature_2m_max[0])+'°</b></div><div>Regenrisiko<b>'+dy.precipitation_probability_max[0]+' %</b></div><div>Regen heute<b>'+f1(dy.precipitation_sum[0])+' mm</b></div><div>Wind/Böen<b>'+Math.round(c.wind_speed_10m)+'/'+Math.round(c.wind_gusts_10m)+'</b></div></div>'+
+  '<div class="mo-std">'+std+'</div><p class="ow-hint" style="margin-top:6px">Morgen: '+Math.round(dy.temperature_2m_min[1])+'° / '+Math.round(dy.temperature_2m_max[1])+'°, Regenrisiko '+dy.precipitation_probability_max[1]+' %</p>';
+ }).catch(function(){erg.innerHTML='<span class="ow-mut">Wetter gerade nicht erreichbar.</span>'})}
+try{var m=JSON.parse(localStorage.getItem('meinOrt'));if(m){inp.value=m.n;laden(m)}}catch(e){}
+})();
+});
 </script>
 </body>
 
