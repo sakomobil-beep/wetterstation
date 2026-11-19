@@ -1,5 +1,5 @@
 {
- "erstellt": "2026-11-19T17:15+01:00",
+ "erstellt": "2026-11-19T17:16+01:00",
  "orte": {
   "badkoenig": {
    "n": 450,
@@ -263,50 +263,6 @@
     "meteofrance_arome_france_hd": 0.66,
     "ecmwf_ifs025": 0.65,
     "icon_eu": 0.61
-   }
-  },
-  "reichelsheim": {
-   "n": 162,
-   "tage": 7,
-   "bias": {
-    "icon_d2": [
-     -1.67,
-     -1.36,
-     -0.85,
-     -0.28,
-     -0.92,
-     -0.92
-    ],
-    "meteofrance_arome_france_hd": [
-     -1.55,
-     -1.13,
-     -0.77,
-     0.03,
-     -0.62,
-     -0.85
-    ],
-    "ecmwf_ifs025": [
-     -0.89,
-     -0.7,
-     -0.55,
-     0.55,
-     -0.26,
-     -0.01
-    ],
-    "icon_eu": [
-     -1.9,
-     -1.36,
-     -0.84,
-     0.21,
-     -1.01,
-     -1.45
-    ]
-   },
-   "mae": {
-    "icon_d2": 0.8,
-    "meteofrance_arome_france_hd": 0.89,
-    "ecmwf_ifs025": 1.25,
-    "icon_eu": 1.02
    }
   }
  }
