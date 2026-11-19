@@ -209,7 +209,7 @@ def szene_s(name, t, p):
             col = ROT if i in (0, 1, 3) else (120, 190, 255) if i == 4 else GELB
             if a == b:
                 d.ellipse([xa - 12, y - 12, xa + 12, y + 12], fill=col)
-                d.line([xa, y - 12, xa, y - 130], fill=col, width=3); d.text((xa, y - 150), txt, font=F(24), fill=col, anchor='mm')
+                d.line([xa, y - 12, xa, y - 180], fill=col, width=3); d.text((xa, y - 200), txt, font=F(24), fill=col, anchor='mm')
             else:
                 yy = y - 60 if i % 2 == 0 else y + 90
                 d.rounded_rectangle([xa, yy - 14, xb, yy + 14], radius=10, fill=col)
@@ -263,33 +263,64 @@ def szene_s(name, t, p):
             for k in range(7):
                 x = 430 + k * 14; d.line([x, 440, x + 8 * math.sin(k), 455, x - 6, 468], fill=(160, 110, 60), width=2)
         return im
-    if name in ('s_rhein', 's_schiff'):
-        im = verlauf(W, H, (120, 180, 230), (200, 228, 248)); d = ImageDraw.Draw(im)
-        sonne(d, 900, 90, 45, t)
-        # Hänge des Mittelrheintals
-        d.polygon([(0, 140), (200, 220), (320, 360), (330, 520), (0, 520)], fill=(90, 120, 60))
-        d.polygon([(W, 160), (860, 230), (740, 360), (720, 520), (W, 520)], fill=(80, 110, 55))
-        # Burg Pfalzgrafenstein (schematisch)
-        d.rectangle([600, 360, 680, 410], fill=(235, 230, 220), outline=(80, 80, 80)); d.polygon([(600, 360), (640, 330), (680, 360)], fill=(60, 60, 70))
-        # Wasser sinkt
-        fall = min(1, t / 20) if name == 's_rhein' else 1
-        wl = 430 + 60 * fall
-        d.rectangle([0, wl, W, H], fill=(50, 110, 160))           # Wasser
-        sand = int(fall * 300)                                          # trockenfallende Ufer
-        if sand:
-            d.polygon([(0, wl), (sand, wl), (sand + 60, 560), (0, 560)], fill=(185, 165, 120))
-            d.polygon([(W, wl), (W - sand, wl), (W - 60 - sand, 560), (W, 560)], fill=(185, 165, 120))
-        d.rectangle([380, 560, 650, 610], fill=(40, 95, 140))   # Fahrrinne
-        d.text((515, 630), 'Fahrrinne', font=F(18, False), fill=(60, 60, 60), anchor='mm')
-        # Schiff mit wenig Ladung
-        sx = 160 + (t * 22) % 420
-        schiff(d, sx, wl + 30, 0.9, tief=min(0.75, fall * 0.75) if name == 's_schiff' else fall * 0.5)
-        # Pegellatte
-        d.rectangle([60, 260, 110, 600], fill=(255, 255, 255), outline=(40, 40, 40), width=2)
-        for k in range(8):
-            yy = 600 - k * 42; d.line([60, yy, 85, yy], fill=(40, 40, 40), width=2); d.text((116, yy), '%d' % (k * 40), font=F(15, False), fill=(30, 30, 30), anchor='lm')
-        cm = int(120 - fall * 93) if name == 's_rhein' else 8   # Ende Juli 27 cm, Mitte August ca. 8 cm
-        d.text((85, 238), 'Kaub: %d cm' % cm, font=F(22), fill=(150, 20, 20), anchor='mm')
+    if name == 's_rhein':   # Querschnitt durch den Rhein bei Kaub: Wasserspiegel sinkt, Pegel ist nicht die Tiefe
+        im = verlauf(W, H, (120, 180, 230), (205, 230, 248)); d = ImageDraw.Draw(im)
+        sonne(d, 1010, 160, 36, t)
+        d.text((480, 82), 'Der Rhein bei Kaub im Querschnitt (schematisch)', font=F(26), fill=(20, 40, 70), anchor='mm')
+        cm = 200 - min(1, t / 18) * 173            # von normal ca. 2 m auf 27 cm (Ende Juli)
+        if t > 28: cm = 27
+        def PY(c): return 470 - c * 0.85           # Pegel 0 cm = y 470
+        lvl = PY(cm)
+        d.rectangle([0, lvl, W, H], fill=(50, 110, 165))                     # Wasser
+        boden = [(0, 200), (120, 220), (250, 330), (330, 450), (400, 480), (420, 530), (640, 530), (660, 480), (760, 450), (850, 330), (980, 230), (W, 210), (W, H), (0, H)]
+        d.polygon(boden, fill=(190, 168, 120))                                # Flussbett/Sand
+        d.polygon([(0, 200), (120, 220), (250, 330), (210, 330), (90, 250), (0, 240)], fill=(95, 130, 65))
+        d.polygon([(W, 210), (980, 230), (850, 330), (890, 330), (1000, 260), (W, 250)], fill=(85, 120, 60))
+        d.line([(420, 530), (640, 530)], fill=(150, 120, 80), width=3)
+        d.text((530, 552), 'Fahrrinne', font=F(18), fill=(90, 70, 40), anchor='mm')
+        # Schiff schwimmt auf dem Wasserspiegel in der Fahrrinne, liegt bei wenig Wasser höher (weniger Ladung)
+        last = max(0.25, min(1, (cm - 20) / 150))
+        tief = 18 + 32 * last
+        x0 = 400
+        d.polygon([(x0, lvl - 22), (x0 + 260, lvl - 22), (x0 + 245, lvl + tief), (x0 + 15, lvl + tief)], fill=(40, 55, 80), outline=(15, 20, 30))
+        d.rectangle([x0 + 205, lvl - 62, x0 + 252, lvl - 22], fill=(235, 235, 240), outline=(15, 20, 30))
+        d.rectangle([x0 + 213, lvl - 54, x0 + 244, lvl - 42], fill=(120, 170, 220))
+        for k in range(int(round(4 * last))):
+            d.rectangle([x0 + 18 + k * 45, lvl - 54, x0 + 58 + k * 45, lvl - 24], fill=[(200, 80, 50), (60, 130, 90), (230, 170, 40), (70, 110, 180)][k], outline=(15, 20, 30))
+        # Pegellatte rechts im Wasser
+        px = 760
+        d.rectangle([px - 14, PY(220), px + 14, PY(-10)], fill=(255, 255, 255), outline=(40, 40, 40), width=2)
+        for c in range(0, 221, 50):
+            d.line([px - 14, PY(c), px + 4, PY(c)], fill=(40, 40, 40), width=2); d.text((px + 20, PY(c)), '%d' % c, font=F(15, False), fill=(20, 20, 20), anchor='lm')
+        d.rounded_rectangle([px - 70, PY(220) - 48, px + 90, PY(220) - 10], radius=10, fill=(255, 255, 255), outline=(150, 20, 20), width=3)
+        d.text((px + 10, PY(220) - 29), 'Kaub: %d cm' % round(cm), font=F(22), fill=(150, 20, 20), anchor='mm')
+        if t > 22:   # Pegel ist nicht die Tiefe
+            pfeil(d, 680, lvl + 4, 680, 528, GELB, w=4, kopf=12); pfeil(d, 680, 528, 680, lvl + 4, GELB, w=4, kopf=12)
+            d.rounded_rectangle([860, 420, 1030, 500], radius=10, fill=(255, 250, 225), outline=GELB, width=3)
+            d.text((945, 445), 'Wassertiefe', font=F(18), fill=(90, 70, 20), anchor='mm')
+            d.text((945, 475), 'noch gut 1 m', font=F(20), fill=(90, 70, 20), anchor='mm')
+        return im
+    if name == 's_schiff':   # Vergleich: normal beladen vs. Niedrigwasser
+        im = verlauf(W, H, *NACHT); d = ImageDraw.Draw(im)
+        for i_, (tit, pegel, last, col) in enumerate((('Normaler Wasserstand', 'Kaub ca. 2 m', 1.0, (120, 190, 255)), ('Niedrigwasser 2026', 'Kaub ca. 8 cm', 0.25, ROT))):
+            x = 40 + i_ * 500
+            d.rounded_rectangle([x, 100, x + 460, 470], radius=18, fill=(25, 40, 70), outline=col, width=3)
+            d.text((x + 230, 130), tit, font=F(26), fill=col, anchor='mm')
+            d.text((x + 230, 162), pegel, font=F(19, False), fill=HELLT, anchor='mm')
+            wl = 330
+            d.rectangle([x + 10, wl, x + 450, 455], fill=(50, 110, 165))
+            tief = 12 + 48 * last
+            d.polygon([(x + 70, wl - 20), (x + 390, wl - 20), (x + 372, wl + tief), (x + 88, wl + tief)], fill=(45, 60, 85), outline=(10, 15, 25))
+            d.rectangle([x + 320, wl - 64, x + 382, wl - 20], fill=(235, 235, 240), outline=(10, 15, 25))
+            d.rectangle([x + 330, wl - 55, x + 372, wl - 42], fill=(120, 170, 220))
+            for k in range(int(round(5 * last))):
+                for r in range(2 if last > 0.5 else 1):
+                    d.rectangle([x + 80 + k * 46, wl - 52 - r * 30, x + 122 + k * 46, wl - 22 - r * 30], fill=[(200, 80, 50), (60, 130, 90), (230, 170, 40), (70, 110, 180), (160, 90, 160)][k], outline=(10, 15, 25))
+            d.rectangle([x + 10, wl, x + 450, wl + 3], fill=(170, 210, 240))
+            d.text((x + 230, 420), 'Ladung: %s' % ('100 %' if last == 1 else 'nur ca. ein Viertel'), font=F(22), fill=(255, 255, 255), anchor='mm')
+        if t > 10:
+            d.rounded_rectangle([300, 500, 1000, 560], radius=14, fill=(25, 40, 70), outline=GELB, width=3)
+            d.text((650, 530), 'Für dieselbe Menge: bis zu viermal so viele Fahrten', font=F(22), fill=GELB, anchor='mm')
         return im
     if name == 's_pegel':
         im = verlauf(W, H, *NACHT); d = ImageDraw.Draw(im)
