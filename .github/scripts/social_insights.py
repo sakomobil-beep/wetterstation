@@ -77,9 +77,9 @@ if ig:
         posts.append({'id':p['id'],'p':'ig','zeit':ct.isoformat(timespec='minutes'),'text':(p.get('caption') or '')[:120],'bild':p.get('thumbnail_url') or p.get('media_url'),'link':p.get('permalink'),
           'art':art(p.get('caption'),ct.hour),'views':w.get('views'),'personen':w.get('reach'),'likes':w.get('likes'),'klicks':w.get('comments')})
 # Beitrags-Archiv: jeder Beitrag bleibt für immer, Zahlen werden fortgeschrieben (19.11.2026)
-arch={(b.get('id') or b['p']+b['zeit']):b for b in alt.get('beitraege',[])}
+arch={b['p']+b['zeit']:b for b in alt.get('beitraege',[])}
 for b in posts:
-    k=b.get('id') or b['p']+b['zeit']; a=arch.get(k,{})
+    k=b['p']+b['zeit']; a=arch.get(k,{})
     for f in ('views','personen','likes','klicks'):
         if b.get(f) is None and a.get(f) is not None: b[f]=a[f]
     b['stand']=heute.isoformat(); arch[k]=b
