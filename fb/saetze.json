@@ -1,21 +1,6 @@
 [
 {
 "d": "2026-11-17",
-"g": "ueberg_heute",
-"k": "So, jetzt zum Wetter. "
-},
-{
-"d": "2026-11-17",
-"g": "tag",
-"k": "Heute heißt es: Regen, bei etwa 14 Grad."
-},
-{
-"d": "2026-11-17",
-"g": "klima_mild",
-"k": "Für Mitte November ist das übrigens unge"
-},
-{
-"d": "2026-11-17",
 "g": "ueberg_tipp",
 "k": "Max-Tipp des Tages: "
 },
@@ -1998,5 +1983,20 @@
 "d": "2026-11-19",
 "g": "folgen",
 "k": "Das Wetter kommt hier direkt von unserer"
+},
+{
+"d": "2026-11-19",
+"g": "wissen_intro",
+"k": "Hallo zusammen, hier ist Max – Zeit für "
+},
+{
+"d": "2026-11-19",
+"g": "wissen_ende",
+"k": "Wieder was gelernt? Dann folgt uns für m"
+},
+{
+"d": "2026-11-19",
+"g": "wissen_thema",
+"k": "Die Frage des Tages: %s"
 }
 ]
