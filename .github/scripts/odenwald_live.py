@@ -66,6 +66,8 @@ def gefuehlt(m):
 EXTRA = [('Reichelsheim', 215, 49.713, 8.838), ('Fränkisch-Crumbach', 200, 49.746, 8.858),
          ('Brombachtal', 250, 49.735, 8.946), ('Lützelbach', 230, 49.784, 9.077)]
 EXTRA_AN = True   # 18.11.2026 23:50: wieder an – eigene Station braucht keine WU-Abrufe mehr; Zusatzorte nur alle 30 Minuten
+# 19.11.2026: unplausible Stationen nie wieder wählen (IBROMB9: Regenmesser 0 mm bei Dauerregen, Luftdruck ~10 hPa zu tief)
+SPERRE = {'IBROMB9'}
 STATIONSWAHL = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'odenwald-stationen.json')
 
 
@@ -76,13 +78,14 @@ def extra_stationen(jetzt, belegt):
     for n, el, la, lo in EXTRA:
         w = W.get(n)
         if time.time() - START > 90: break   # Zeit reicht nicht mehr – nächster Lauf sucht weiter
+        if w and w['id'] in SPERRE: W.pop(n, None); w = None
         if w and (jetzt - dt.datetime.fromisoformat(w['gewaehlt'])).total_seconds() < 7 * 86400: belegt.add(w['id']); continue
         try:
             L = get_wu('https://api.weather.com/v3/location/near?geocode=%s,%s&product=pws&format=json&apiKey=%s' % (la, lo, WU_KEY)).get('location') or {}
             ids, km = L.get('stationId') or [], L.get('distanceKm') or []
         except Exception as e: print('Stationssuche %s:' % n, e); continue
         for sid, k in zip(ids, km):
-            if sid in belegt or k > 4: continue
+            if sid in belegt or sid in SPERRE or k > 4: continue
             try: v = wu(sid)
             except Exception: v = None
             if v and v.get('t') is not None and (jetzt - dt.datetime.fromisoformat(v['zeit'])).total_seconds() < 3600:

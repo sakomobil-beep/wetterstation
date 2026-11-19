@@ -1,9 +1,4 @@
 {
- "Erbach": {
-  "id": "IERBAC1",
-  "km": 0.26,
-  "gewaehlt": "2026-11-19T01:20+01:00"
- },
  "Reichelsheim": {
   "id": "IREICH180",
   "km": 0.28,
@@ -12,11 +7,6 @@
  "Fränkisch-Crumbach": {
   "id": "IFRNKI6",
   "km": 0.44,
-  "gewaehlt": "2026-11-19T01:20+01:00"
- },
- "Brombachtal": {
-  "id": "IBROMB9",
-  "km": 0.8,
   "gewaehlt": "2026-11-19T01:20+01:00"
  },
  "Lützelbach": {
