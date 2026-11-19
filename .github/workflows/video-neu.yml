@@ -10,7 +10,7 @@ on:
         description: 'Welches Video? (tag = Morgenvideo, woche = Wochenausblick, thema = Themenvideo Max erklärt, mittag = Mittagsbeitrag mit der Kreiskarte, abend = Abendvideo aus dem Studio, special-test = Probe-Special bei extremem Gewitter (fb/special-test.mp4, nie gepostet), monat = Monatsrückblick, wissen = Wetterwissen mit Max)'
         default: 'tag'
         type: choice
-        options: [tag, woche, thema, mittag, abend, monat, wissen, premiere, polarwirbel, vulkan, sommer, special-test, warnbild]
+        options: [tag, stories, woche, thema, mittag, abend, monat, wissen, premiere, polarwirbel, vulkan, sommer, special-test, warnbild]
 
 permissions:
   contents: write
@@ -30,20 +30,23 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: '3.12' }
       - uses: FedericoCarboni/setup-ffmpeg@v3
-        if: inputs.art != 'mittag'
+        if: inputs.art != 'mittag' && inputs.art != 'stories'
         timeout-minutes: 5
         continue-on-error: true
       - name: ffmpeg-Reserve (falls die Einrichtung oben ausfällt, 19.11.2026)
-        if: inputs.art != 'mittag'
+        if: inputs.art != 'mittag' && inputs.art != 'stories'
         run: command -v ffprobe >/dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg; }
       - run: pip install pillow numpy edge-tts
+      - name: Story-Bilder neu (Morgen-, Mittags-, Abend-Story, ohne Posten)
+        if: inputs.art == 'stories'
+        run: python .github/scripts/fb_post.py --nur-stories
       - name: Mittagsbeitrag neu (Karte des Kreises, ohne Video)
         if: inputs.art == 'mittag'
         run: python .github/scripts/fb_post.py --mittag
       - name: Monatsrückblick neu (Vormonat, ohne Posten)
         if: inputs.art == 'monat'
         run: python .github/scripts/monatsrueckblick.py
-      - if: inputs.art != 'mittag' && inputs.art != 'monat'
+      - if: inputs.art != 'mittag' && inputs.art != 'monat' && inputs.art != 'stories'
         run: |
           if [ "${{ inputs.art }}" = "wissen" ]; then python .github/scripts/wissen_video.py --neu; exit 0; fi
           if [ "${{ inputs.art }}" = "polarwirbel" ]; then python .github/scripts/polarwirbel_video.py; exit 0; fi   # Themenvideo Polarwirbel (kein Autopost)
@@ -73,5 +76,5 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git add -A fb
           git diff --cached --quiet && exit 0
-          git commit -m "${{ inputs.art == 'mittag' && 'Mittagswetter' || 'Wettervideo' }} neu erstellt (von Hand) $(TZ=Europe/Berlin date +'%d.%m.%Y %H:%M')"
+          git commit -m "${{ inputs.art == 'mittag' && 'Mittagswetter' || inputs.art == 'stories' && 'Story-Bilder' || 'Wettervideo' }} neu erstellt (von Hand) $(TZ=Europe/Berlin date +'%d.%m.%Y %H:%M')"
           for i in 1 2 3; do git pull --rebase -X theirs -q && git push && break; git rebase --abort 2>/dev/null || true; sleep 5; done

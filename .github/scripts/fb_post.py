@@ -1611,6 +1611,16 @@ def main():
             pass
     days, warn = demo() if DEMO else load()
     os.makedirs(OUT, exist_ok=True)
+    if '--nur-stories' in sys.argv:   # 19.11.2026: Knopf „Story-Bilder neu erstellen (ohne Posten)“ in der Zentrale
+        for name, f in (('story', lambda p: story(days, warn, p)), ('abendstory', lambda p: story(days, warn, p, abends=True)),
+                        ('mittagstory', lambda p: jetzt_story(days, p))):
+            try:
+                f(os.path.join(OUT, name + '.jpg'))
+                json.dump({'erstellt': now.isoformat(timespec='minutes'), 'datum': days[1 if name == 'abendstory' else 0]['datum'].isoformat()},
+                          open(os.path.join(OUT, name + '.json'), 'w', encoding='utf-8'))
+                print('Neu erstellt:', name)
+            except Exception as e: print('%s nicht erstellt:' % name, e)
+        return
     if not DEMO: treffer_merken(days, now)
     # post.jpg (Tagesbild) seit 15.11.2026 nicht mehr gebaut – post.txt/post.json bleiben (Beschreibung des Morgenvideos)
     try:
