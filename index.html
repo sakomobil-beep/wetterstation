@@ -772,8 +772,6 @@ html[data-saison="weihnachten"][data-tab]:not([data-tab="aktuell"]) .top { borde
 .rmap.relief .kreis { fill: none; stroke: #12252E; stroke-width: 2.2; stroke-dasharray: 6 4; }
 .rlegende { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; font: 400 11px/1.3 var(--font-data); color: #4a5a66; padding: 4px 6px 2px; }
 .rlegende span { display: inline-block; width: 14px; height: 10px; border-radius: 3px; margin-left: 4px; }
-.rgtopo { height: 470px; border-radius: 14px; overflow: hidden; }
-.rgmi { background: none; border: 0; }
 .rgm { display: flex; align-items: center; gap: 4px; background: rgba(255,255,255,.93); border: 1px solid rgba(18,37,46,.15); border-radius: 10px; padding: 2px 8px 2px 2px; width: max-content; box-shadow: 0 2px 6px rgba(0,0,0,.15); }
 .rgm svg { width: 30px; height: 30px; flex: none; }
 .rgm b { display: block; font: 600 11.5px/1.2 var(--font-body); color: #12252E; }
@@ -2272,7 +2270,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 20.11.2026, 12:47 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 20.11.2026, 12:59 Uhr</span></p>
 
 </div>
 
@@ -4668,40 +4666,6 @@ function renderRegion() {
     '<div class="rlegende"><span style="background:#78aa6e"></span>Tal ~150 m<span style="background:#c8cd8c"></span>300 m<span style="background:#b4966e"></span>ab 500 m · Höhenlinien alle 100 m · <b style="color:#1f6fc0">━</b> Mümling · <b style="color:#3d8fd8">⬬</b> Stausee<br><b style="color:#e8590c">▲</b> Messstation · <b style="color:#5b3b1f">▲</b> höchster Punkt · <b style="color:#d9822b">━</b> B45/B47 · <b>┅</b> Odenwaldbahn · <b style="color:#7a4b2a">┈</b> Limes · alle Lagen schematisch</div></div></div></div>';   /* 3-Tage-Text steht seit 15.11.2026 links unter der Tabelle */
   Array.prototype.forEach.call(box.querySelectorAll('.rtab th[data-s]'), function (h) { h.onclick = function () { var k = h.getAttribute('data-s'); if (!k) RGS = { k: null, r: 1 }; else RGS = { k: k, r: RGS.k === k ? -RGS.r : 1 }; renderRegion(); }; });
   rgInteraktiv();
-}
-/* Topografische Karte (OpenTopoMap) mit Höhenlinien und Schummerung; Leaflet wird erst bei Bedarf geladen, sonst bleibt die schematische Karte */
-var RGT = { L: null, map: null, el: null, marks: [], laden: null };
-function rgLeaflet() {
-  if (window.L) return Promise.resolve(window.L);
-  if (RGT.laden) return RGT.laden;
-  RGT.laden = new Promise(function (ok, no) {
-    var c = document.createElement('link'); c.rel = 'stylesheet'; c.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'; document.head.appendChild(c);
-    var sc = document.createElement('script'); sc.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'; sc.onload = function () { ok(window.L); }; sc.onerror = no; document.head.appendChild(sc);
-  });
-  return RGT.laden;
-}
-function rgTopo(ds) {
-  rgLeaflet().then(function (L) {
-    var slot = $('rgTopoSlot'); if (!slot) return;
-    if (!RGT.map) {
-      RGT.el = document.createElement('div'); RGT.el.className = 'rgtopo';
-      slot.appendChild(RGT.el);
-      RGT.map = L.map(RGT.el, { scrollWheelZoom: false, zoomControl: true, attributionControl: true });
-      L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', { maxZoom: 15, subdomains: 'abc',
-        attribution: 'Karte: © <a href="https://opentopomap.org" target="_blank" rel="noopener">OpenTopoMap</a> (CC-BY-SA) · Daten: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>-Mitwirkende, SRTM' }).addTo(RGT.map);
-      L.polygon(RG_OUTLINE.map(function (p) { return [p[1], p[0]]; }), { color: '#12252E', weight: 2, dashArray: '6 5', fill: false, interactive: false }).addTo(RGT.map);
-      RGT.map.fitBounds(L.latLngBounds(RG_OUTLINE.map(function (p) { return [p[1], p[0]]; })), { padding: [10, 10] });
-    } else slot.appendChild(RGT.el);
-    RGT.marks.forEach(function (m) { m.remove(); }); RGT.marks = [];
-    RG_TOWNS.forEach(function (t) {
-      var d = rgDay(t, ds), tt = d ? nf(d.tmax, 0) + '°' : '–', tl = d ? nf(d.tmin, 0) + '°' : '';
-      var html = '<div class="rgm' + (t.home ? ' home' : '') + '">' + (d ? wxIcon(d.icon) : '') + '<div><b>' + esc(t.n.replace(' i. Odw.', '').replace('Station ', '')) +
-        '</b><span style="color:' + (t.home ? '#fff' : tColor(d && d.tmax)) + '">' + tt + '</span> <i>/ ' + tl + '</i><small>' + t.el + ' m</small></div></div>';
-      RGT.marks.push(L.marker([t.lat, t.lon], { icon: L.divIcon({ className: 'rgmi', html: html, iconSize: [128, 46], iconAnchor: [10, 23] }), keyboard: false }).addTo(RGT.map));
-    });
-    setTimeout(function () { RGT.map.invalidateSize(); }, 50);
-    var sv = $('rgSvg'); if (sv) sv.style.display = 'none';
-  }).catch(function () { /* ohne Internet-Bibliothek bleibt die schematische Karte */ });
 }
 /* Anzeige: amtliche Warnungen */
 var SEV = {
