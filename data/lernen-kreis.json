@@ -1,8 +1,8 @@
 {
- "erstellt": "2026-11-20T20:36+01:00",
+ "erstellt": "2026-11-20T23:23+01:00",
  "orte": {
   "badkoenig": {
-   "n": 477,
+   "n": 480,
    "tage": 20,
    "bias": {
     "icon_d2": [
@@ -11,7 +11,7 @@
      -0.21,
      -0.15,
      -0.69,
-     -0.84
+     -0.82
     ],
     "meteofrance_arome_france_hd": [
      -0.67,
@@ -19,15 +19,15 @@
      -0.09,
      -0.11,
      -0.54,
-     -0.74
+     -0.71
     ],
     "ecmwf_ifs025": [
      -0.45,
      -0.38,
      -0.3,
-     0.45,
-     -0.31,
-     -0.2
+     0.44,
+     -0.33,
+     -0.21
     ],
     "icon_eu": [
      -1.16,
@@ -35,24 +35,24 @@
      -0.46,
      0.1,
      -0.72,
-     -1.22
+     -1.21
     ]
    },
    "mae": {
     "icon_d2": 0.84,
     "meteofrance_arome_france_hd": 1.14,
-    "ecmwf_ifs025": 1.31,
-    "icon_eu": 1.08
+    "ecmwf_ifs025": 1.3,
+    "icon_eu": 1.07
    },
    "mae_roh": {
     "icon_d2": 0.9,
     "meteofrance_arome_france_hd": 1.13,
-    "ecmwf_ifs025": 1.32,
+    "ecmwf_ifs025": 1.31,
     "icon_eu": 1.21
    }
   },
   "breuberg": {
-   "n": 477,
+   "n": 480,
    "tage": 20,
    "bias": {
     "icon_d2": [
@@ -61,7 +61,7 @@
      -0.81,
      -0.54,
      -1.44,
-     -1.61
+     -1.57
     ],
     "meteofrance_arome_france_hd": [
      -1.44,
@@ -69,15 +69,15 @@
      -0.8,
      -0.7,
      -1.33,
-     -1.35
+     -1.3
     ],
     "ecmwf_ifs025": [
      -1.35,
      -1.15,
      -1.02,
-     -0.19,
-     -1.17,
-     -1.03
+     -0.2,
+     -1.19,
+     -1.02
     ],
     "icon_eu": [
      -1.92,
@@ -85,24 +85,24 @@
      -0.81,
      -0.27,
      -1.32,
-     -1.81
+     -1.77
     ]
    },
    "mae": {
-    "icon_d2": 1.01,
+    "icon_d2": 1.0,
     "meteofrance_arome_france_hd": 1.14,
-    "ecmwf_ifs025": 1.45,
+    "ecmwf_ifs025": 1.44,
     "icon_eu": 1.13
    },
    "mae_roh": {
     "icon_d2": 1.39,
     "meteofrance_arome_france_hd": 1.43,
-    "ecmwf_ifs025": 1.58,
-    "icon_eu": 1.54
+    "ecmwf_ifs025": 1.57,
+    "icon_eu": 1.53
    }
   },
   "hoechst": {
-   "n": 477,
+   "n": 480,
    "tage": 20,
    "bias": {
     "icon_d2": [
@@ -111,7 +111,7 @@
      -0.25,
      0.46,
      -0.87,
-     -1.05
+     -1.04
     ],
     "meteofrance_arome_france_hd": [
      -1.3,
@@ -119,15 +119,15 @@
      -0.27,
      0.3,
      -0.97,
-     -1.15
+     -1.11
     ],
     "ecmwf_ifs025": [
      -0.98,
      -0.56,
      -0.4,
-     0.89,
-     -0.56,
-     -0.53
+     0.88,
+     -0.59,
+     -0.54
     ],
     "icon_eu": [
      -1.49,
@@ -135,7 +135,7 @@
      -0.24,
      0.78,
      -0.69,
-     -1.26
+     -1.24
     ]
    },
    "mae": {
@@ -146,13 +146,13 @@
    },
    "mae_roh": {
     "icon_d2": 1.14,
-    "meteofrance_arome_france_hd": 1.33,
-    "ecmwf_ifs025": 1.53,
-    "icon_eu": 1.37
+    "meteofrance_arome_france_hd": 1.32,
+    "ecmwf_ifs025": 1.52,
+    "icon_eu": 1.36
    }
   },
   "michelstadt": {
-   "n": 477,
+   "n": 480,
    "tage": 20,
    "bias": {
     "icon_d2": [
@@ -161,7 +161,7 @@
      -0.77,
      -0.43,
      -0.55,
-     -0.58
+     -0.57
     ],
     "meteofrance_arome_france_hd": [
      -0.58,
@@ -169,15 +169,15 @@
      -0.97,
      -0.53,
      -0.39,
-     -0.47
+     -0.45
     ],
     "ecmwf_ifs025": [
      0.11,
      0.03,
      -0.62,
-     0.31,
-     0.17,
-     0.43
+     0.3,
+     0.15,
+     0.41
     ],
     "icon_eu": [
      -0.4,
@@ -189,20 +189,20 @@
     ]
    },
    "mae": {
-    "icon_d2": 0.61,
-    "meteofrance_arome_france_hd": 0.99,
-    "ecmwf_ifs025": 0.9,
+    "icon_d2": 0.6,
+    "meteofrance_arome_france_hd": 0.98,
+    "ecmwf_ifs025": 0.89,
     "icon_eu": 0.87
    },
    "mae_roh": {
-    "icon_d2": 0.74,
+    "icon_d2": 0.73,
     "meteofrance_arome_france_hd": 1.05,
     "ecmwf_ifs025": 0.92,
     "icon_eu": 0.88
    }
   },
   "mossautal": {
-   "n": 477,
+   "n": 480,
    "tage": 20,
    "bias": {
     "icon_d2": [
@@ -211,7 +211,7 @@
      -0.97,
      -1.21,
      -0.46,
-     -0.14
+     -0.17
     ],
     "meteofrance_arome_france_hd": [
      0.35,
@@ -219,15 +219,15 @@
      -0.52,
      -1.1,
      -0.11,
-     0.48
+     0.43
     ],
     "ecmwf_ifs025": [
      0.75,
      0.65,
      -0.53,
      -0.72,
-     -0.07,
-     0.99
+     -0.08,
+     0.91
     ],
     "icon_eu": [
      0.44,
@@ -235,7 +235,7 @@
      -0.33,
      -0.48,
      0.11,
-     0.43
+     0.38
     ]
    },
    "mae": {
@@ -245,7 +245,7 @@
     "icon_eu": 0.77
    },
    "mae_roh": {
-    "icon_d2": 0.88,
+    "icon_d2": 0.87,
     "meteofrance_arome_france_hd": 1.09,
     "ecmwf_ifs025": 1.05,
     "icon_eu": 0.81
