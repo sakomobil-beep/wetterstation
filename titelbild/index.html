@@ -229,29 +229,32 @@ if(innerWidth<700)document.querySelectorAll('#rain line:nth-child(2n),#rain elli
 let GWARN=false,SAISON='',KP=0,kpAt=0,rainAt=0,erst=true;const cur={};try{rainAt=+sessionStorage.getItem('tbRain')||0}catch(e){}
 const SCHAUER=[[1,2,4],[4,21,23],[8,10,14],[10,20,22],[11,16,18],[12,12,15]];
 function setK(k,v){v=!!v;if(RUHE&&(k=='silvester'||k=='gewitter'||k=='sternschnuppen'||k=='sturm'))v=false;if(!!cur[k]===v)return;cur[k]=v;FX[k][1](v)}
-function steuern(){const now=new Date(),alt=sunAlt(Date.now()),dark=alt<-6?1:alt<2?(2-alt)/8:0,nacht=dark>.6;
+function steuern(){const now=new Date(),alt=OV&&OV.alt!=null?OV.alt:sunAlt(Date.now()),LV=OV?OV.live:live,dark=alt<-6?1:alt<2?(2-alt)/8:0,nacht=dark>.6;
  const v={night:.78*dark,grey:0,stars:nacht?1:0,lamps:Math.min(1,dark*1.2),fogl:0,rain:0,snow:0},t=[alt<-6?'Nacht':alt<4?'Dämmerung':'Tag'];
  let pr=0,T=null,hu=0,w=0,gust=0,sol=0;
- if(live&&live.metric&&(!live.epoch||Date.now()/1000-live.epoch<1800)){const m=live.metric;pr=m.precipRate||0;T=typeof m.temp=='number'?m.temp:null;hu=live.humidity||0;w=m.windSpeed||0;gust=m.windGust||0;sol=live.solarRadiation||0}
+ if(LV&&LV.metric&&(!LV.epoch||Date.now()/1000-LV.epoch<1800)){const m=LV.metric;pr=m.precipRate||0;T=typeof m.temp=='number'?m.temp:null;hu=LV.humidity||0;w=m.windSpeed||0;gust=m.windGust||0;sol=LV.solarRadiation||0}
  const schnee=pr>0&&T!==null&&T<=1.5,regen=pr>0&&!schnee,nebel=hu>=97&&w<6&&!pr,klar=!pr&&!nebel;
  if(schnee){v.snow=1;v.grey=.35;t.push('Schnee')}
  if(regen){v.rain=1;v.grey=.55;v.night=Math.max(v.night,.35);v.fogl=.4;v.lamps=Math.max(v.lamps,.5);t.push('Regen '+pr.toFixed(1).replace('.',',')+' mm/h')}
  if(nebel){v.fogl=1;v.grey=Math.max(v.grey,.6);t.push('Nebel')}
- if(pr>0){rainAt=Date.now();try{sessionStorage.setItem('tbRain',rainAt)}catch(e){}}
- setFx(v);op('moonL',nacht?1:0);
+ if(pr>0&&!OV){rainAt=Date.now();try{sessionStorage.setItem('tbRain',rainAt)}catch(e){}}
+ if(pr>0||nebel)v.stars=0;setFx(v);op('moonL',nacht&&!pr&&!nebel?1:0);
  const mo=now.getMonth()+1,d=now.getDate(),h=now.getHours()+now.getMinutes()/60,add=(c,k,txt)=>{setK(k,c);if(c&&txt)t.push(txt)};
  add(T!==null&&T<0,'frost','Frost');add(gust>=50,'sturm','Sturmböen');add(GWARN&&pr>0,'gewitter','Gewitter');add(alt>-6&&alt<4,'daemmerung');
- add(nacht&&klar&&SCHAUER.some(s=>s[0]==mo&&d>=s[1]&&d<=s[2]),'sternschnuppen','Sternschnuppen-Nacht');
+ add(!OV&&nacht&&klar&&SCHAUER.some(s=>s[0]==mo&&d>=s[1]&&d<=s[2]),'sternschnuppen','Sternschnuppen-Nacht');
  add(nacht&&klar&&KP>=7,'polarlicht','Polarlicht möglich (Kp '+KP+')');
- add(!pr&&Date.now()-rainAt<25*60000&&alt>3&&alt<40&&sol>120,'regenbogen','Regenbogen');
- add((mo==12&&d==31&&h>=23.92)||(mo==1&&d==1&&h<.5),'silvester','Frohes neues Jahr!');
- const xmas=mo==12&&d==24;   /* 20.11.2026: Weihnachtsbild nur an Heiligabend */add(xmas,'weihnachten');
- add(!xmas&&((mo==11&&d>=23)||(mo==12&&d<=28)),'markt','Nikolausmarkt-Bild');   /* 20.11.2026: 23.11.–23.12. und 25.–28.12. */
- if(T!==null)t.push('Station '+T.toFixed(1).replace('.',',')+' °C');document.getElementById('status').textContent=t.join(' · ');
- if(nacht&&Date.now()-kpAt>30*60000){kpAt=Date.now();fetch('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json').then(r=>r.json()).then(j=>{const x=j[j.length-1]||{};KP=Math.round(+(x.kp_index!=null?x.kp_index:x.estimated_kp)||0)}).catch(()=>{})}}
-if(ZEIGE.length){const B={tag:'day',nacht:'night',regen:'rain',schnee:'snow',nebel:'fog'},A={'dämmerung':'daemmerung',nikolausmarkt:'markt',feuerwerk:'silvester',weihnachtsbild:'weihnachten'};let basis=null;
- ZEIGE.forEach(z=>{if(B[z])basis=B[z]});const fxs=ZEIGE.map(z=>A[z]||z).filter(z=>FX[z]);if(!basis&&fxs.some(z=>['polarlicht','sternschnuppen','silvester','iss','mond','markt'].includes(z)))basis='night';
- setMode(basis||'day');fxs.forEach(z=>{ON[z]=true;FX[z][1](true)});document.getElementById('status').textContent='Test: '+ZEIGE.join(', ')}
+ add(!OV&&!pr&&Date.now()-rainAt<25*60000&&alt>3&&alt<40&&sol>120,'regenbogen','Regenbogen');
+ add(!OV&&((mo==12&&d==31&&h>=23.92)||(mo==1&&d==1&&h<.5)),'silvester','Frohes neues Jahr!');
+ const xmas=!OV&&mo==12&&d==24;   /* 20.11.2026: Weihnachtsbild nur an Heiligabend */add(xmas,'weihnachten');
+ add(!OV&&!xmas&&((mo==11&&d>=23)||(mo==12&&d<=28)),'markt','Nikolausmarkt-Bild');   /* 20.11.2026: 23.11.–23.12. und 25.–28.12. */
+ if(T!==null&&!OV)t.push('Station '+T.toFixed(1).replace('.',',')+' °C');document.getElementById('status').textContent=(OV?'Test: ':'')+t.join(' · ');
+ if(!OV&&nacht&&Date.now()-kpAt>30*60000){kpAt=Date.now();fetch('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json').then(r=>r.json()).then(j=>{const x=j[j.length-1]||{};KP=Math.round(+(x.kp_index!=null?x.kp_index:x.estimated_kp)||0)}).catch(()=>{})}}
+let OV=null;
+/* Testansicht (?zeige=…): Tageszeit (tag, daemmerung, nacht) und Wetter (regen, schnee, nebel, frost, sturm, gewitter) frei kombinierbar; ohne Tageszeit gilt die echte */
+if(ZEIGE.length){const A={'dämmerung':'daemmerung',nikolausmarkt:'markt',feuerwerk:'silvester',weihnachtsbild:'weihnachten'},Z=ZEIGE.map(z=>A[z]||z),has=k=>Z.includes(k),himmel=['polarlicht','sternschnuppen','silvester','iss','mond'].some(has);
+ OV={alt:has('nacht')?-20:has('daemmerung')?0:has('tag')?30:himmel?-20:null,live:{humidity:has('nebel')?99:75,solarRadiation:0,metric:{temp:has('frost')?-3:has('schnee')?0.5:8,precipRate:(has('regen')||has('schnee')||has('gewitter'))?3:0,windSpeed:has('nebel')?1:8,windGust:has('sturm')?65:10}}};
+ GWARN=has('gewitter');fade('1.2s');steuern();Z.filter(z=>FX[z]&&!['frost','sturm','gewitter','daemmerung'].includes(z)).forEach(z=>{ON[z]=true;FX[z][1](true);if(z=='mond')op('moonL',1)});
+ const s=document.getElementById('status'),x=Z.filter(z=>['polarlicht','sternschnuppen','silvester','iss','regenbogen','weihnachten','markt'].includes(z));if(x.length)s.textContent+=' · '+x.join(', ')}
 else{steuern();setInterval(()=>{fade('30s');steuern()},60000)}
 addEventListener('message',e=>{if(e.origin!==location.origin||!e.data||!e.data.tb)return;live=e.data.obs||null;GWARN=!!e.data.gewitter;SAISON=e.data.saison||'';if(!ZEIGE.length){fade(erst?'1.2s':'30s');erst=false;steuern()}});
 
