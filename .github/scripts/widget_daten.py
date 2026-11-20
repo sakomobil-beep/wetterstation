@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""Live-Werte der eigenen Station für die Website (data/live.json): alle 10 Minuten bei Weather Underground.
-(Das Wetter-Widget w.html / data/widget.json wurde am 18.11.2026 entfernt.)"""
+"""Live-Werte der eigenen Station für die Website (data/live.json) und Daten für das Wetter-Widget (w.html, data/widget.json) – alle 10 Minuten.
+(Widget am 18.11.2026 entfernt, am 20.11.2026 wiederhergestellt.)"""
 import json, os, sys, datetime as dt
 sys.path.insert(0, os.path.dirname(__file__))
 from fb_post import station_direkt, get, LAT, LON, STATION, WU_KEY, TZ
@@ -131,8 +131,31 @@ def main():
         if d['live']['temp'] is not None and d['live']['temp'] > 10: d['live']['gefuehlt'] = m.get('heatIndex')
     except Exception as e:
         print('WU nicht erreichbar:', e)
-    # 18.11.2026: Wetter-Widget (w.html, data/widget.json) entfernt – der Lauf schreibt nur noch data/live.json für die Website
-    print('Live-Datei aktualisiert:', d['stand'])
+    try:
+        om = get('https://api.open-meteo.com/v1/forecast?latitude=%s&longitude=%s&models=icon_seamless&current=weather_code,is_day'
+                 '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_days=3&timezone=Europe%%2FBerlin' % (LAT, LON))
+        d['code'], d['tag'] = om['current']['weather_code'], om['current']['is_day']
+        D = om['daily']
+        d['tage'] = [dict(datum=D['time'][i], code=D['weather_code'][i], max=round(D['temperature_2m_max'][i]),
+                          min=round(D['temperature_2m_min'][i]), rp=D['precipitation_probability_max'][i] or 0) for i in range(len(D['time']))]
+    except Exception as e:
+        print('Vorhersage nicht erreichbar:', e)
+    try:
+        for a in get('https://api.brightsky.dev/alerts?lat=%s&lon=%s' % (LAT, LON)).get('alerts') or []:
+            if a.get('event_de'): d['warn'].append(dict(text=a['event_de'], stufe=a.get('severity')))
+    except Exception as e:
+        print('Warnungen nicht abrufbar:', e)
+    if d['live'] is None and not d['tage']:
+        print('Keine Daten – alte Datei bleibt.'); return
+    if d['live'] is None:  # alte Live-Werte behalten statt leeren
+        try:
+            alt = json.load(open(OUT, encoding='utf-8')); d['live'], d['stand'] = alt.get('live'), alt.get('stand')
+        except Exception:
+            pass
+    d['erstellt'] = now.isoformat(timespec='minutes')
+    os.makedirs(os.path.dirname(OUT), exist_ok=True)
+    json.dump(d, open(OUT, 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
+    print(json.dumps(d, ensure_ascii=False))
 
 if __name__ == '__main__':
     main()
