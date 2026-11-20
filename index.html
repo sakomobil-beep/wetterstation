@@ -1353,6 +1353,7 @@ html[data-theme="dark"] .mxk .av{background-color:#24324a}
 .dcol{display:flex;flex-direction:column;gap:14px;min-width:0}
 .dcol>.dgrow,.dcol>.vj,.dcol>.factscard,.dcol>.outlook2{flex:1 1 auto}
 .dcol>.vj{display:flex;flex-direction:column}.dcol>.vj[hidden]{display:none}.dcol>.vj .vj-grid{flex:1}.dcol>.vj .vj-more{text-align:left}
+.vj .vj-grid[hidden],.vj-leer[hidden]{display:none!important}
 .dcol>.outlook2 .tvcol{grid-auto-rows:minmax(0,1fr)}
 .dcol>h2.sec{margin:0 0 -2px}
 .dcol .nowgrid.nga{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -1569,6 +1570,7 @@ document.addEventListener('DOMContentLoaded',function(){
       <div><dt>Stärkste Böe</dt><dd><span class="vj-now"><i>heute</i> <b id="vjNGu">–</b></span><span class="vj-was"><i>vor 1 Jahr</i> <b id="vjGu">–</b></span><small id="vjGuD"></small></dd></div>
       <div><dt>Niederschlag</dt><dd><span class="vj-now"><i>heute</i> <b id="vjNRa">–</b></span><span class="vj-was"><i>vor 1 Jahr</i> <b id="vjRa">–</b></span><small id="vjRaD"></small></dd></div>
     </dl>
+    <p class="vj-leer" id="vjLeer" hidden style="margin:10px 0;opacity:.75">Für diesen Tag gibt es keine Vergleichswerte – die Vergleichsstation hat damals nichts aufgezeichnet.</p>
     <a class="vj-more" href="#klima" onclick="showTab('klima');window.scrollTo(0,0);return false;">📊 Mehr im Klimavergleich &amp; alle Rekorde ansehen →</a>
   </section>
   <section class="factscard" aria-label="Tageswerte">
@@ -2260,7 +2262,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 20.11.2026, 07:45 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 20.11.2026, 08:10 Uhr</span></p>
 
 </div>
 
@@ -4941,6 +4943,14 @@ function vjLoad() {
   var cached = lsGet(key);
   if (cached) { VJ.last = cached; VJ.date = ds; VJ.src = station; vjRender(); return; }
   VJ.busy = true;
+  /* 20.11.2026: zuerst eigenes Archiv (data/archiv/tage-JJJJ.json, gleiches Format wie WU), WU nur noch, wenn der Tag dort fehlt */
+  fetch('data/archiv/tage-' + ds.slice(0, 4) + '.json', { cache: 'no-store' }).then(function (x) { return x.ok ? x.json() : null; }).catch(function () { return null; }).then(function (A) {
+    var r = A && A.tage ? monthRows({ observations: A.tage }).filter(function (x) { return x.d === ds; })[0] : null;
+    if (r) { var src = (A.tage.filter(function (o) { return String(o.obsTimeLocal).slice(0, 10) === ds; })[0] || {}).quelle || station;
+      VJ.last = r; VJ.date = ds; VJ.src = src; lsSet(key, r); VJ.busy = false; vjRender(); return; }
+    vjWu();
+  });
+  function vjWu() {
   var dc = ds.replace(/-/g, '');
   var url = 'https://api.weather.com/v2/pws/history/daily?stationId=' + encodeURIComponent(station) +
     '&format=json&units=m&numericPrecision=decimal&startDate=' + dc + '&endDate=' + dc + '&apiKey=' + encodeURIComponent(CONFIG.apiKey);
@@ -4950,7 +4960,8 @@ function vjLoad() {
     VJ.last = r; VJ.date = ds; VJ.src = station; lsSet(key, r);
     Object.keys(localStorage).forEach(function (k) { if (k.indexOf('wetter-vj-') === 0 && k !== key) try { localStorage.removeItem(k); } catch (e) {} });
     vjRender();
-  }).catch(function () { VJ.date = ds; }).then(function () { VJ.busy = false; });
+  }).catch(function () { VJ.date = ds; VJ.none = true; vjRender(); }).then(function () { VJ.busy = false; });
+  }
 }
 function vjDiff(el, now, then, dec, unit, words) {
   el.className = ''; el.textContent = '';
@@ -4966,7 +4977,14 @@ function vjRender() {
   var r = VJ.last, sec = $('vj');
   if (!sec) return;
   vjLoad();
-  if (!r) return;
+  var leer = $('vjLeer');
+  if (!r) {   /* 20.11.2026: Kasten bleibt sichtbar, wenn es für den Tag keine Vergleichswerte gibt */
+    if (!VJ.none) return;
+    sec.hidden = false;
+    var q = vjDate().split('-'); $('vjTitle').textContent = 'Heute vor 1 Jahr · ' + q[2] + '.' + q[1] + '.' + q[0]; $('vjSrc').textContent = '';
+    sec.querySelector('.vj-grid').hidden = true; if (leer) leer.hidden = false; return;
+  }
+  sec.querySelector('.vj-grid').hidden = false; if (leer) leer.hidden = true;
   sec.hidden = false;
   var p = VJ.date.split('-');
   $('vjTitle').textContent = 'Heute vor 1 Jahr · ' + p[2] + '.' + p[1] + '.' + p[0];
