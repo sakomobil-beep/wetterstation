@@ -1,61 +1,6 @@
 [
 {
 "d": "2026-11-18",
-"g": "wissen_thema",
-"k": "Unser Thema heute: %s"
-},
-{
-"d": "2026-11-18",
-"g": "abend_gruss",
-"k": "N’Abend, Odenwald! Kaffee steht bereit –"
-},
-{
-"d": "2026-11-18",
-"g": "dwd",
-"k": "Kurz vorweg: Vom Deutschen Wetterdienst "
-},
-{
-"d": "2026-11-18",
-"g": "tag",
-"k": "Und wie wird es morgen? Regen, bei rund "
-},
-{
-"d": "2026-11-18",
-"g": "tag",
-"k": "Dann bekommen wir Regen – und um die 10 "
-},
-{
-"d": "2026-11-18",
-"g": "folgen_abend",
-"k": "Bei Warnungen melden wir uns sofort – au"
-},
-{
-"d": "2026-11-18",
-"g": "abend_ende",
-"k": "Das war euer Odenwald-Wetter am Abend."
-},
-{
-"d": "2026-11-18",
-"g": "abend_gute_nacht",
-"k": "Schlaft gut – morgen früh bin ich mit de"
-},
-{
-"d": "2026-11-18",
-"g": "abend_live",
-"k": "Alle Live-Werte gibt es auf wetter-badko"
-},
-{
-"d": "2026-11-18",
-"g": "dwd",
-"k": "Kurz vorweg: Vom Deutschen Wetterdienst "
-},
-{
-"d": "2026-11-18",
-"g": "ueberg_heute",
-"k": "Kommen wir zum Wetter. "
-},
-{
-"d": "2026-11-18",
 "g": "tag",
 "k": "Heute wird es nass, bei rund 13 Grad."
 },
@@ -1973,6 +1918,61 @@
 "d": "2026-11-20",
 "g": "tag",
 "k": "Am Samstag gibt es einen Mix aus Sonne u"
+},
+{
+"d": "2026-11-20",
+"g": "frost",
+"k": "In der Nacht zum Samstag wird es frostig"
+},
+{
+"d": "2026-11-20",
+"g": "glaette_h",
+"k": "Oben auf den Höhen, Richtung Beerfelden,"
+},
+{
+"d": "2026-11-20",
+"g": "glaette_h",
+"k": "Oben auf den Höhen, Richtung Beerfelden,"
+},
+{
+"d": "2026-11-20",
+"g": "frage",
+"k": "Was habt ihr am Wochenende vor? Schreibt"
+},
+{
+"d": "2026-11-20",
+"g": "folgen",
+"k": "Folgt ihr uns eigentlich schon? Dann ver"
+},
+{
+"d": "2026-11-20",
+"g": "dwd",
+"k": "Bevor es losgeht – vom Deutschen Wetterd"
+},
+{
+"d": "2026-11-20",
+"g": "ueberg_heute",
+"k": ""
+},
+{
+"d": "2026-11-20",
+"g": "tag",
+"k": "Heute bleibt es kühl: Regen, höchstens 1"
+},
+{
+"d": "2026-11-20",
+"g": "kein_ausflug",
+"k": "Heute ist ein Tag für Museum, Therme ode"
+},
+{
+"d": "2026-11-20",
+"g": "ueberg_morgen",
+"k": "So, und jetzt der Blick nach vorn. "
+},
+{
+"d": "2026-11-20",
+"g": "tag",
+"k": "Am Samstag gibt es viele Wolken bei Höch"
 },
 {
 "d": "2026-11-20",
