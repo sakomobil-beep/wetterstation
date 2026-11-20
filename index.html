@@ -2287,7 +2287,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 20.11.2026, 22:48 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 20.11.2026, 22:53 Uhr</span></p>
 
 </div>
 
@@ -8392,7 +8392,9 @@ try{var m=JSON.parse(localStorage.getItem('meinOrt'));if(m){inp.value=m.n;laden(
   f.src='titelbild/'+(p.get('zeige')?'?zeige='+encodeURIComponent(p.get('zeige')):'');
   function send(){try{var o=window.rawCache&&rawCache.cur&&rawCache.cur.observations&&rawCache.cur.observations[0];var w=document.querySelector('.warntop');
    f.contentWindow.postMessage({tb:1,obs:o||null,gewitter:/gewitter/i.test(w?w.textContent:''),saison:document.documentElement.getAttribute('data-saison')||''},location.origin)}catch(e){}}
-  f.onload=function(){document.documentElement.classList.add('tb-neu');send();setTimeout(send,5000);setInterval(send,30000)};ph.appendChild(f)}
+  f.onload=function(){document.documentElement.classList.add('tb-neu');send();setTimeout(send,5000)};setInterval(send,30000);ph.appendChild(f);
+  /* Zentrale (eingebettete Testansicht) darf nur die gezeigte Stimmung wechseln */
+  window.addEventListener('message',function(e){if(e.origin!=='https://sakomobil-beep.github.io'||!e.data||typeof e.data.tbZeige!='string')return;var z=e.data.tbZeige.slice(0,200);f.src='titelbild/'+(z?'?zeige='+encodeURIComponent(z):'')})}
  if(q=='aus'||st=='0')return;if(q=='test'||st=='1')return start();
  fetch('data/titelbild.json?t='+Math.floor(Date.now()/300000),{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).then(function(j){if(j&&j.aktiv===true)start()}).catch(function(){})}catch(e){}})();
 </script>
