@@ -21,7 +21,7 @@ h1{font-size:22px;margin:4px 0}h2{font-size:13px;text-transform:uppercase;letter
 .phone{width:240px;height:200px;border-radius:24px;background:linear-gradient(160deg,#3b5b8a,#1e293b);display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:18px;box-sizing:border-box}
 .phone div{text-align:center;font-size:9px;color:#fff}.phone .ic{width:44px;height:44px;margin:0 auto 3px;border-radius:12px;background:#ffffff33}
 .round{width:150px;height:150px;border-radius:50%;overflow:hidden;background:#0d131f;margin:0 auto 8px}
-.note{background:#1e293b;border-left:3px solid #f59e0b;padding:10px 14px;border-radius:8px;font-size:13px;color:#cbd5e1;margin-top:20px}
+.dlb{display:flex;gap:6px;justify-content:center;margin-top:8px}.dlb button{background:#f59e0b;color:#111;border:0;border-radius:8px;padding:6px 10px;font-weight:700;cursor:pointer}.note{background:#1e293b;border-left:3px solid #f59e0b;padding:10px 14px;border-radius:8px;font-size:13px;color:#cbd5e1;margin-top:20px}
 </style></head><body><div class="wrap">
 <h1>Logo-Vorschau · Private Wetterstation Bad König</h1>
 <div style="color:#94a3b8;font-size:13px">Nur Vorschau – nichts davon ist auf der echten Seite. Farbschema umschalten:</div>
@@ -29,28 +29,28 @@ h1{font-size:22px;margin:4px 0}h2{font-size:13px;text-transform:uppercase;letter
 
 <h2>1 · Variante D – Logo im Seitenkopf (dunkel und hell)</h2>
 <div class="grid">
- <div><div class="site dark"><div class="head"><div class="logoD" id="dDark"></div></div><nav><span>Aktuell Bad König</span><span>Aktuell Odenwald</span><span>Vorhersage</span><span>Grafiken</span><span>Historie</span></nav><div class="img"></div></div><div class="lab">Dunkler Modus (abends)</div></div>
- <div><div class="site light"><div class="head"><div class="logoD" id="dLight"></div></div><nav><span>Aktuell Bad König</span><span>Aktuell Odenwald</span><span>Vorhersage</span><span>Grafiken</span><span>Historie</span></nav><div class="img"></div></div><div class="lab">Heller Modus (tagsüber) – Schrift automatisch dunkel</div></div>
+ <div><div class="site dark"><div class="head"><div class="logoD" id="dDark"></div></div><div class="img"></div></div><div class="lab">Dunkler Modus (abends)</div><div id="b1"></div></div>
+ <div><div class="site light"><div class="head"><div class="logoD" id="dLight"></div></div><div class="img"></div></div><div class="lab">Heller Modus (tagsüber) – Schrift automatisch dunkel</div><div id="b2"></div></div>
 </div>
 
 <h2>2 · Variante C – Tab-Symbol und App-Symbol</h2>
 <div class="row">
  <div><div class="tab"><span class="i" id="c16"></span>Private Wetterstation Bad K…</div><div class="lab">Browser-Tab (16 px) – siehe auch dein echter Tab oben</div></div>
  <div class="box"><div style="width:48px;height:48px;margin:0 auto 6px" id="c48"></div>48 px</div>
- <div class="box"><div style="width:120px;height:120px;margin:0 auto 6px" id="c120"></div>App-Symbol groß</div>
+ <div class="box"><div style="width:120px;height:120px;margin:0 auto 6px" id="c120"></div>App-Symbol groß<div id="b3"></div></div>
  <div><div class="phone"><div><div class="ic"></div>Kamera</div><div><div class="ic" id="cPh" style="background:none"></div>Wetter BK</div><div><div class="ic"></div>Karten</div><div><div class="ic"></div>Uhr</div></div><div class="lab">Am Handy-Startbildschirm</div></div>
 </div>
 
-<h2>3 · Variante A – Wappen als Profilbild (Facebook, Instagram, Threads)</h2>
+<h2>3 · Variante A – Profilbild mit „Private Wetterstation Bad König“ (Facebook, Instagram, Threads)</h2>
 <div class="row">
  <div class="box"><div class="round" id="aRound"></div>Rund zugeschnitten wie bei Facebook</div>
- <div class="box"><div style="width:220px;height:220px;margin:0 auto 6px" id="aBig"></div>Wappen groß</div>
+ <div class="box"><div style="width:220px;height:220px;margin:0 auto 6px" id="aBig"></div>Profilbild Social Media<div id="b4"></div></div>
 </div>
 
 <h2>4 · Variante B – Linien-Logo (z. B. Wasserzeichen)</h2>
-<div class="row"><div class="box"><div style="width:280px;height:204px;margin:0 auto 6px" id="bBig"></div>Linien-Logo</div></div>
+<div class="row"><div class="box"><div style="width:280px;height:204px;margin:0 auto 6px" id="bBig"></div>Linien-Logo<div id="b5"></div></div></div>
 
-<div class="note">Angepasst gegenüber deiner Datei: keine fremden Server (Tailwind/Google Fonts raus), Schrift = Seitenschrift, helle Version von Variante D für den Tag-Modus.</div>
+<div class="note">Angepasst gegenüber deiner Datei: keine fremden Server (Tailwind/Google Fonts raus), Schrift = Seitenschrift, helle Version von Variante D für den Tag-Modus. Downloads: PNG in 1080 px (für Facebook, Instagram, Threads) oder SVG (beliebig groß).</div>
 </div>
 <script>
 const palettes={goldNight:{bgTop:'#0f172a',bgBottom:'#1e293b',ring:'#f59e0b',primary:'#f8fafc',secondary:'#cbd5e1',accent:'#f59e0b',weather:'#38bdf8',facadeRed:'#334155',hill:'#1e3a5f',textMain:'#ffffff',textSub:'#38bdf8'},
@@ -221,21 +221,36 @@ function buildLogoSVG(variant, p, compactMode = false) {
   <line x1="98" y1="18" x2="98" y2="78" stroke="${p.ring}" stroke-opacity="0.35" stroke-width="1.5"/>
 
   <!-- Rechts: Klare Wortmarke -->
-  <text x="112" y="31" fill="${p.textSub}" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="11.5" font-weight="700" letter-spacing="2.2">PRIVATE WETTERSTATION</text>
-  <text x="111" y="62" fill="${p.textMain}" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="31" font-weight="800" letter-spacing="-0.5">Bad König</text>
-  <text x="112" y="79" fill="${p.secondary}" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="11" font-weight="500" letter-spacing="0.8">ODENWALD · 49°44&apos;N 9°00&apos;E</text>
+  <text x="112" y="38" fill="${p.textSub}" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="11.5" font-weight="700" letter-spacing="2.2">PRIVATE WETTERSTATION</text>
+  <text x="111" y="70" fill="${p.textMain}" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="31" font-weight="800" letter-spacing="-0.5">Bad König</text>
 </svg>`;
         }
 
         
-function render(k){const p=palettes[k];
+
+function buildSeal(p){const inner=buildLogoSVG('A',p).replace(/^<svg[^>]*>/,'').replace(/<\/svg>\s*$/,'').replace(/<text[^>]*>BAD KÖNIG<\/text>/,'');
+return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%" role="img" aria-label="Private Wetterstation Bad König">
+<defs><path id="sTop" d="M22,100 A78,78 0 0,1 178,100"/><path id="sBot" d="M18,100 A82,82 0 0,0 182,100"/></defs>
+<circle cx="100" cy="100" r="98" fill="${p.bgTop}" stroke="${p.ring}" stroke-width="3"/>
+<g transform="translate(100,100) scale(.7) translate(-100,-100)">${inner}</g>
+<text fill="${p.textSub}" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="12.5" font-weight="800" letter-spacing="2.2" text-anchor="middle"><textPath href="#sTop" startOffset="50%">PRIVATE WETTERSTATION</textPath></text>
+<text fill="${p.textMain}" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="14" font-weight="800" letter-spacing="3" text-anchor="middle" dominant-baseline="hanging"><textPath href="#sBot" startOffset="50%">BAD KÖNIG · ODENWALD</textPath></text>
+</svg>`}
+function dl(svg,name,px){if(!px){const b=new Blob([svg],{type:'image/svg+xml'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name+'.svg';a.click();return}
+ const vb=svg.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/),w=+vb[1],hh=+vb[2],sc=px/Math.max(w,hh);const c=document.createElement('canvas');c.width=Math.round(w*sc);c.height=Math.round(hh*sc);
+ const im=new Image();im.onload=()=>{const x=c.getContext('2d');x.drawImage(im,0,0,c.width,c.height);c.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name+'.png';a.click()})};
+ im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg.replace('width="100%" height="100%"',`width="${c.width}" height="${c.height}"`))}
+let CUR='goldNight';const LOGOS={};
+function dlb(key,label){return `<div class="dlb"><button onclick="dl(LOGOS['${key}'],'wetterstation-bad-koenig-${key}-'+CUR,1080)">⬇️ PNG</button><button onclick="dl(LOGOS['${key}'],'wetterstation-bad-koenig-${key}-'+CUR)">⬇️ SVG</button></div>`}
+function render(k){CUR=k;const p=palettes[k];
  document.getElementById('dDark').innerHTML=buildLogoSVG('D',p);
  const l=Object.assign({},p,{textMain:light[k].textMain,textSub:light[k].textSub});
- let s=buildLogoSVG('D',l);s=s.replace(/(<text x="112" y="79" fill=")[^"]+/,'$1'+light[k].secondary2);document.getElementById('dLight').innerHTML=s;
+ let s=buildLogoSVG('D',l);document.getElementById('dLight').innerHTML=s;LOGOS['kopf-dunkel']=buildLogoSVG('D',p);LOGOS['kopf-hell']=s;
  const c=buildLogoSVG('C',p);['c16','c48','c120','cPh'].forEach(id=>document.getElementById(id).innerHTML=c);
- const a=buildLogoSVG('A',p);document.getElementById('aRound').innerHTML=a;document.getElementById('aBig').innerHTML=a;
+ const a=buildSeal(p);document.getElementById('aRound').innerHTML=a;document.getElementById('aBig').innerHTML=a;LOGOS['social']=a;LOGOS['icon']=c;LOGOS['wappen']=buildLogoSVG('A',p);LOGOS['linien']=buildLogoSVG('B',p);
  document.getElementById('bBig').innerHTML=buildLogoSVG('B',p);
  document.getElementById('fav').href='data:image/svg+xml,'+encodeURIComponent(c);
+ document.getElementById('b1').innerHTML=dlb('kopf-dunkel');document.getElementById('b2').innerHTML=dlb('kopf-hell');document.getElementById('b3').innerHTML=dlb('icon');document.getElementById('b4').innerHTML=dlb('social');document.getElementById('b5').innerHTML=dlb('linien');
  document.querySelectorAll('.sw button').forEach(b=>b.classList.toggle('on',b.dataset.p==k))}
 document.querySelectorAll('.sw button').forEach(b=>b.onclick=()=>render(b.dataset.p));render('goldNight');
 </script></body></html>
