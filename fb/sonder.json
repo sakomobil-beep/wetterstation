@@ -1,5 +1,5 @@
 {
- "erstellt": "2026-11-20T18:29+01:00",
+ "erstellt": "2026-11-21T00:21+01:00",
  "meldungen": [
   {
    "typ": "glaette",
@@ -8,16 +8,7 @@
    "amtlich": true,
    "stufe": "Stufe 1 – Wetterwarnung",
    "bild": "sonder-glaette.jpg",
-   "text": "🧊 WETTER-SONDERMELDUNG für den Odenwald: Glätte 🧊\n\n⚠️ Stufe 1 – Wetterwarnung\n📍 Gilt für: ganzer Odenwaldkreis\n• DWD: Amtliche WARNUNG vor GLÄTTE\n🕒 Gültig von morgen 02:00 Uhr bis morgen 09:00 Uhr\n\n👉 Hinweis auf: Rutschgefahr. \n\nLive-Werte, Radar & Warnungen 👉 https://wetter-badkoenig.de\n#Odenwald #Odenwaldkreis #BadKönig #Wetter #Glätte #Unwetter"
-  },
-  {
-   "typ": "starkregen",
-   "titel": "Starkregen",
-   "emoji": "🌧️",
-   "amtlich": true,
-   "stufe": "Stufe 2 – Markantes Wetter",
-   "bild": "sonder-starkregen.jpg",
-   "text": "🌧️ WETTER-SONDERMELDUNG für den Odenwald: Starkregen 🌧️\n\n⚠️ Stufe 2 – Markantes Wetter\n📍 Gilt für: Bad König, Brensbach, Brombachtal, Erbach, Fränkisch-Crumbach, Höchst, Michelstadt, Mossautal, Oberzent, Reichelsheim\n• DWD: Amtliche WARNUNG vor DAUERREGEN\n🕒 Gültig von heute 00:00 Uhr bis morgen 00:00 Uhr\n\n👉 Gefahr durch: vereinzelte Überflutungen von Straßen/Unterführungen. \n\nLive-Werte, Radar & Warnungen 👉 https://wetter-badkoenig.de\n#Odenwald #Odenwaldkreis #BadKönig #Wetter #Starkregen #Unwetter"
+   "text": "🧊 WETTER-SONDERMELDUNG für den Odenwald: Glätte 🧊\n\n⚠️ Stufe 1 – Wetterwarnung\n📍 Gilt für: ganzer Odenwaldkreis\n• DWD: Amtliche WARNUNG vor GLÄTTE\n🕒 Gültig von heute 02:00 Uhr bis heute 09:00 Uhr\n\n👉 Hinweis auf: Rutschgefahr. \n\nLive-Werte, Radar & Warnungen 👉 https://wetter-badkoenig.de\n#Odenwald #Odenwaldkreis #BadKönig #Wetter #Glätte #Unwetter"
   }
  ]
 }
