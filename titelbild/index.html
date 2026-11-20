@@ -246,7 +246,7 @@ function steuern(){const now=new Date(),alt=sunAlt(Date.now()),dark=alt<-6?1:alt
  add(!pr&&Date.now()-rainAt<25*60000&&alt>3&&alt<40&&sol>120,'regenbogen','Regenbogen');
  add((mo==12&&d==31&&h>=23.92)||(mo==1&&d==1&&h<.5),'silvester','Frohes neues Jahr!');
  const xmas=mo==12&&d==24;   /* 20.11.2026: Weihnachtsbild nur an Heiligabend */add(xmas,'weihnachten');
- add(!xmas&&((mo==11&&d>=23)||(mo==12&&(d<=23||d==27||d==28))),'markt','Nikolausmarkt-Bild');   /* 20.11.2026: 23.11.–23.12. und 27./28.12. */
+ add(!xmas&&((mo==11&&d>=23)||(mo==12&&d<=28)),'markt','Nikolausmarkt-Bild');   /* 20.11.2026: 23.11.–23.12. und 25.–28.12. */
  if(T!==null)t.push('Station '+T.toFixed(1).replace('.',',')+' °C');document.getElementById('status').textContent=t.join(' · ');
  if(nacht&&Date.now()-kpAt>30*60000){kpAt=Date.now();fetch('https://services.swpc.noaa.gov/json/planetary_k_index_1m.json').then(r=>r.json()).then(j=>{const x=j[j.length-1]||{};KP=Math.round(+(x.kp_index!=null?x.kp_index:x.estimated_kp)||0)}).catch(()=>{})}}
 if(ZEIGE.length){const B={tag:'day',nacht:'night',regen:'rain',schnee:'snow',nebel:'fog'},A={'dämmerung':'daemmerung',nikolausmarkt:'markt',feuerwerk:'silvester',weihnachtsbild:'weihnachten'};let basis=null;
