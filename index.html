@@ -2260,7 +2260,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 20.11.2026, 07:40 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 20.11.2026, 07:45 Uhr</span></p>
 
 </div>
 
@@ -4459,7 +4459,15 @@ function rgKreis3(ohne) {
 function rgDays(hours) {
   var g = {}, out = {};
   hours.forEach(function (h) { (g[h.day] = g[h.day] || []).push(h); });
-  Object.keys(g).forEach(function (ds) { if (g[ds].length >= 12 || ds === todayStr()) out[ds] = summarize(ds, g[ds], false); });
+  Object.keys(g).forEach(function (ds) {
+    if (!(g[ds].length >= 12 || ds === todayStr())) return;
+    /* 20.11.2026: eigene Regenmenge/-risiko des Ortes merken – die gemeinsame Einstufung (niedApply) setzt sonst überall den Kreiswert; Symbol/Stufe bleiben aus der Einstufung */
+    var rr = g[ds].map(function (h) { return h.rain; }).filter(function (v) { return v !== null && v !== undefined; }),
+        pp = g[ds].map(function (h) { return h.prob; }).filter(function (v) { return v !== null && v !== undefined; });
+    out[ds] = summarize(ds, g[ds], false);
+    if (rr.length) out[ds].rain = sumOf(rr);
+    if (pp.length) out[ds].prob = maxOf(pp);
+  });
   /* ab Mittag: bei „Heute“ der Tiefstwert der kommenden Nacht statt des Werts von heute früh (wie bei Bad König) */
   var td = out[todayStr()];
   if (td) {   /* seit 15.11.2026 ganztags */
