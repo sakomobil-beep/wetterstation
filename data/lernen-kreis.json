@@ -1,62 +1,62 @@
 {
- "erstellt": "2026-11-19T23:25+01:00",
+ "erstellt": "2026-11-20T02:48+01:00",
  "orte": {
   "badkoenig": {
-   "n": 456,
-   "tage": 19,
+   "n": 459,
+   "tage": 20,
    "bias": {
     "icon_d2": [
-     -0.79,
-     -0.85,
-     -0.23,
-     -0.2,
      -0.73,
+     -0.86,
+     -0.25,
+     -0.18,
+     -0.72,
      -0.86
     ],
     "meteofrance_arome_france_hd": [
-     -0.73,
-     -0.49,
+     -0.68,
+     -0.5,
+     -0.13,
      -0.12,
-     -0.14,
-     -0.58,
-     -0.77
+     -0.57,
+     -0.76
     ],
     "ecmwf_ifs025": [
-     -0.55,
-     -0.46,
-     -0.38,
-     0.36,
      -0.45,
+     -0.47,
+     -0.4,
+     0.38,
+     -0.44,
      -0.23
     ],
     "icon_eu": [
-     -1.26,
-     -1.23,
-     -0.5,
-     0.07,
-     -0.78,
+     -1.17,
+     -1.24,
+     -0.52,
+     0.09,
+     -0.77,
      -1.25
     ]
    },
    "mae": {
-    "icon_d2": 0.87,
-    "meteofrance_arome_france_hd": 1.18,
+    "icon_d2": 0.86,
+    "meteofrance_arome_france_hd": 1.17,
     "ecmwf_ifs025": 1.32,
     "icon_eu": 1.1
    },
    "mae_roh": {
     "icon_d2": 0.93,
-    "meteofrance_arome_france_hd": 1.17,
+    "meteofrance_arome_france_hd": 1.16,
     "ecmwf_ifs025": 1.34,
-    "icon_eu": 1.25
+    "icon_eu": 1.24
    }
   },
   "breuberg": {
-   "n": 456,
-   "tage": 19,
+   "n": 459,
+   "tage": 20,
    "bias": {
     "icon_d2": [
-     -1.7,
+     -1.64,
      -1.65,
      -0.86,
      -0.53,
@@ -64,23 +64,23 @@
      -1.62
     ],
     "meteofrance_arome_france_hd": [
-     -1.51,
+     -1.46,
      -1.22,
      -0.85,
      -0.69,
-     -1.36,
+     -1.37,
      -1.35
     ],
     "ecmwf_ifs025": [
-     -1.47,
+     -1.37,
      -1.28,
      -1.14,
      -0.24,
      -1.3,
-     -1.06
+     -1.05
     ],
     "icon_eu": [
-     -2.03,
+     -1.96,
      -1.81,
      -0.87,
      -0.26,
@@ -90,23 +90,23 @@
    },
    "mae": {
     "icon_d2": 1.03,
-    "meteofrance_arome_france_hd": 1.18,
+    "meteofrance_arome_france_hd": 1.17,
     "ecmwf_ifs025": 1.46,
     "icon_eu": 1.15
    },
    "mae_roh": {
     "icon_d2": 1.42,
-    "meteofrance_arome_france_hd": 1.47,
-    "ecmwf_ifs025": 1.63,
+    "meteofrance_arome_france_hd": 1.46,
+    "ecmwf_ifs025": 1.62,
     "icon_eu": 1.58
    }
   },
   "hoechst": {
-   "n": 456,
-   "tage": 19,
+   "n": 459,
+   "tage": 20,
    "bias": {
     "icon_d2": [
-     -1.19,
+     -1.13,
      -0.85,
      -0.26,
      0.54,
@@ -114,7 +114,7 @@
      -1.07
     ],
     "meteofrance_arome_france_hd": [
-     -1.39,
+     -1.32,
      -0.64,
      -0.28,
      0.38,
@@ -122,20 +122,20 @@
      -1.17
     ],
     "ecmwf_ifs025": [
-     -1.1,
+     -1.0,
      -0.64,
      -0.47,
      0.93,
      -0.69,
-     -0.56
+     -0.55
     ],
     "icon_eu": [
-     -1.6,
+     -1.52,
      -1.17,
      -0.26,
      0.88,
      -0.72,
-     -1.29
+     -1.28
     ]
    },
    "mae": {
@@ -146,17 +146,17 @@
    },
    "mae_roh": {
     "icon_d2": 1.17,
-    "meteofrance_arome_france_hd": 1.37,
+    "meteofrance_arome_france_hd": 1.36,
     "ecmwf_ifs025": 1.57,
     "icon_eu": 1.41
    }
   },
   "michelstadt": {
-   "n": 456,
-   "tage": 19,
+   "n": 459,
+   "tage": 20,
    "bias": {
     "icon_d2": [
-     -0.46,
+     -0.49,
      -0.7,
      -0.78,
      -0.42,
@@ -164,20 +164,20 @@
      -0.56
     ],
     "meteofrance_arome_france_hd": [
-     -0.55,
+     -0.58,
      -0.46,
      -1.02,
      -0.5,
-     -0.38,
+     -0.39,
      -0.45
     ],
     "ecmwf_ifs025": [
-     0.1,
+     0.12,
      0.02,
      -0.69,
      0.27,
      0.09,
-     0.43
+     0.44
     ],
     "icon_eu": [
      -0.4,
@@ -185,28 +185,28 @@
      -0.77,
      0.25,
      0.05,
-     -0.36
+     -0.37
     ]
    },
    "mae": {
     "icon_d2": 0.62,
     "meteofrance_arome_france_hd": 1.01,
-    "ecmwf_ifs025": 0.92,
+    "ecmwf_ifs025": 0.91,
     "icon_eu": 0.9
    },
    "mae_roh": {
     "icon_d2": 0.73,
     "meteofrance_arome_france_hd": 1.07,
     "ecmwf_ifs025": 0.94,
-    "icon_eu": 0.91
+    "icon_eu": 0.9
    }
   },
   "mossautal": {
-   "n": 456,
-   "tage": 19,
+   "n": 459,
+   "tage": 20,
    "bias": {
     "icon_d2": [
-     -0.22,
+     -0.24,
      -0.41,
      -1.01,
      -1.26,
@@ -214,23 +214,23 @@
      -0.13
     ],
     "meteofrance_arome_france_hd": [
-     0.42,
+     0.36,
      0.39,
      -0.55,
      -1.12,
-     -0.09,
-     0.51
+     -0.1,
+     0.5
     ],
     "ecmwf_ifs025": [
-     0.8,
+     0.78,
      0.69,
      -0.57,
      -0.79,
      -0.14,
-     0.99
+     1.0
     ],
     "icon_eu": [
-     0.48,
+     0.45,
      0.23,
      -0.36,
      -0.51,
@@ -247,16 +247,16 @@
    "mae_roh": {
     "icon_d2": 0.89,
     "meteofrance_arome_france_hd": 1.12,
-    "ecmwf_ifs025": 1.09,
+    "ecmwf_ifs025": 1.08,
     "icon_eu": 0.84
    }
   },
   "oberzent": {
-   "n": 456,
-   "tage": 19,
+   "n": 459,
+   "tage": 20,
    "bias": {
     "icon_d2": [
-     -0.08,
+     -0.09,
      -0.31,
      -0.42,
      -0.48,
@@ -264,23 +264,23 @@
      -0.13
     ],
     "meteofrance_arome_france_hd": [
-     0.01,
+     -0.01,
      -0.13,
      -0.34,
      -0.55,
      -0.24,
-     0.02
+     0.03
     ],
     "ecmwf_ifs025": [
-     0.5,
+     0.51,
      0.47,
      -0.08,
      -0.15,
-     0.04,
-     0.76
+     0.03,
+     0.73
     ],
     "icon_eu": [
-     0.13,
+     0.11,
      0.05,
      -0.13,
      -0.18,
@@ -291,13 +291,13 @@
    "mae": {
     "icon_d2": 0.44,
     "meteofrance_arome_france_hd": 0.66,
-    "ecmwf_ifs025": 0.65,
+    "ecmwf_ifs025": 0.64,
     "icon_eu": 0.6
    },
    "mae_roh": {
-    "icon_d2": 0.51,
+    "icon_d2": 0.5,
     "meteofrance_arome_france_hd": 0.69,
-    "ecmwf_ifs025": 0.7,
+    "ecmwf_ifs025": 0.69,
     "icon_eu": 0.61
    }
   }
