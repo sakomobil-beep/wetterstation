@@ -2287,7 +2287,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 20.11.2026, 22:36 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 20.11.2026, 22:48 Uhr</span></p>
 
 </div>
 
@@ -8385,15 +8385,16 @@ try{var m=JSON.parse(localStorage.getItem('meinOrt'));if(m){inp.value=m.n;laden(
 });
 </script>
 <script>
-/* Interaktives Titelbild: nur im Testmodus. Einschalten mit ?titelbild=test, ausschalten mit ?titelbild=aus. Einzelnes zeigen: &zeige=nacht,regen … */
-(function(){try{var p=new URLSearchParams(location.search),k='tbTest',ls=null;try{ls=window.localStorage}catch(e){}
- if(p.get('titelbild')=='test'&&ls)ls.setItem(k,'1');if(p.get('titelbild')=='aus'&&ls)ls.removeItem(k);
- if(p.get('titelbild')=='aus'||!(p.get('titelbild')=='test'||(ls&&ls.getItem(k))))return;
- var ph=document.querySelector('.photo');if(!ph)return;var f=document.createElement('iframe');f.className='tbf';f.title='Schlossplatz Bad König – Bild passt sich Tageszeit und Wetter an';f.setAttribute('scrolling','no');
- f.src='titelbild/'+(p.get('zeige')?'?zeige='+encodeURIComponent(p.get('zeige')):'');
- function send(){try{var o=window.rawCache&&rawCache.cur&&rawCache.cur.observations&&rawCache.cur.observations[0];var w=document.querySelector('.warntop');
-  f.contentWindow.postMessage({tb:1,obs:o||null,gewitter:/gewitter/i.test(w?w.textContent:''),saison:document.documentElement.getAttribute('data-saison')||''},location.origin)}catch(e){}}
- f.onload=function(){document.documentElement.classList.add('tb-neu');send();setTimeout(send,5000);setInterval(send,30000)};ph.appendChild(f)}catch(e){}})();
+/* Interaktives Titelbild. Für alle: data/titelbild.json {"aktiv":true} (Schalter in der Zentrale). Nur dieses Gerät: ?titelbild=test ein, ?titelbild=aus aus. Einzelnes zeigen: &zeige=nacht,regen … */
+(function(){try{var p=new URLSearchParams(location.search),k='tbTest',ls=null,q=p.get('titelbild');try{ls=window.localStorage}catch(e){}
+ if(ls&&q=='test')ls.setItem(k,'1');if(ls&&q=='aus')ls.setItem(k,'0');var st=ls?ls.getItem(k):null;
+ function start(){var ph=document.querySelector('.photo');if(!ph||ph.querySelector('.tbf'))return;var f=document.createElement('iframe');f.className='tbf';f.title='Schlossplatz Bad König – Bild passt sich Tageszeit und Wetter an';f.setAttribute('scrolling','no');
+  f.src='titelbild/'+(p.get('zeige')?'?zeige='+encodeURIComponent(p.get('zeige')):'');
+  function send(){try{var o=window.rawCache&&rawCache.cur&&rawCache.cur.observations&&rawCache.cur.observations[0];var w=document.querySelector('.warntop');
+   f.contentWindow.postMessage({tb:1,obs:o||null,gewitter:/gewitter/i.test(w?w.textContent:''),saison:document.documentElement.getAttribute('data-saison')||''},location.origin)}catch(e){}}
+  f.onload=function(){document.documentElement.classList.add('tb-neu');send();setTimeout(send,5000);setInterval(send,30000)};ph.appendChild(f)}
+ if(q=='aus'||st=='0')return;if(q=='test'||st=='1')return start();
+ fetch('data/titelbild.json?t='+Math.floor(Date.now()/300000),{cache:'no-store'}).then(function(r){return r.ok?r.json():null}).then(function(j){if(j&&j.aktiv===true)start()}).catch(function(){})}catch(e){}})();
 </script>
 </body>
 
