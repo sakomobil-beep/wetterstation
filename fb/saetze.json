@@ -1,66 +1,6 @@
 [
 {
 "d": "2026-11-18",
-"g": "ueberg_heute",
-"k": "Kommen wir zum Wetter. "
-},
-{
-"d": "2026-11-18",
-"g": "tag",
-"k": "Heute wird es nass, bei rund 13 Grad."
-},
-{
-"d": "2026-11-18",
-"g": "gestern_gleich",
-"k": "Kaum anders als gestern."
-},
-{
-"d": "2026-11-18",
-"g": "klima_mild",
-"k": "Normal wären jetzt eher 6 Grad – also de"
-},
-{
-"d": "2026-11-18",
-"g": "mundart",
-"k": "Des werd e nass Sach!"
-},
-{
-"d": "2026-11-18",
-"g": "kein_ausflug",
-"k": "Heute pustet es ordentlich. Was ihr drau"
-},
-{
-"d": "2026-11-18",
-"g": "ueberg_morgen",
-"k": "Werfen wir noch einen Blick auf morgen. "
-},
-{
-"d": "2026-11-18",
-"g": "tag",
-"k": "Morgen, am Donnerstag: Regen, und das Th"
-},
-{
-"d": "2026-11-18",
-"g": "frage",
-"k": "Passt meine Vorhersage bei euch? Sagt’s "
-},
-{
-"d": "2026-11-18",
-"g": "folgen",
-"k": "Noch kein Follower? Ein Klick auf Folgen"
-},
-{
-"d": "2026-11-18",
-"g": "wissen_intro",
-"k": "Willkommen zu Wetterwissen mit Max!"
-},
-{
-"d": "2026-11-18",
-"g": "wissen_ende",
-"k": "Morgen gibt’s das nächste Wetterwissen –"
-},
-{
-"d": "2026-11-18",
 "g": "wissen_thema",
 "k": "Unser Thema heute: %s"
 },
@@ -1998,5 +1938,65 @@
 "d": "2026-11-19",
 "g": "folgen",
 "k": "Das Wetter kommt hier direkt von unserer"
+},
+{
+"d": "2026-11-20",
+"g": "dwd",
+"k": "Bevor es losgeht – vom Deutschen Wetterd"
+},
+{
+"d": "2026-11-20",
+"g": "ueberg_heute",
+"k": ""
+},
+{
+"d": "2026-11-20",
+"g": "tag",
+"k": "Heute bleibt es kühl: Regen, höchstens 9"
+},
+{
+"d": "2026-11-20",
+"g": "gestern_kaelter",
+"k": "Im Vergleich zu gestern also ein ganzes "
+},
+{
+"d": "2026-11-20",
+"g": "kein_ausflug",
+"k": "Der Odenwald ist morgen auch noch da. Wa"
+},
+{
+"d": "2026-11-20",
+"g": "ueberg_morgen",
+"k": "Schauen wir auf morgen. "
+},
+{
+"d": "2026-11-20",
+"g": "tag",
+"k": "Am Samstag gibt es einen Mix aus Sonne u"
+},
+{
+"d": "2026-11-20",
+"g": "frost",
+"k": "In der Nacht zum Samstag wird es frostig"
+},
+{
+"d": "2026-11-20",
+"g": "glaette_h",
+"k": "Oben auf den Höhen, Richtung Beerfelden,"
+},
+{
+"d": "2026-11-20",
+"g": "glaette_h",
+"k": "Oben auf den Höhen, Richtung Beerfelden,"
+},
+{
+"d": "2026-11-20",
+"g": "frage",
+"k": "Was habt ihr am Wochenende vor? Schreibt"
+},
+{
+"d": "2026-11-20",
+"g": "folgen",
+"k": "Folgt ihr uns eigentlich schon? Dann ver"
 }
 ]
