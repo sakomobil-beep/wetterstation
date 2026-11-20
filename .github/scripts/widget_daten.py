@@ -152,6 +152,13 @@ def main():
             alt = json.load(open(OUT, encoding='utf-8')); d['live'], d['stand'] = alt.get('live'), alt.get('stand')
         except Exception:
             pass
+    try:   # 20.11.2026: Zusatzangaben (Trend, Höchst/Tiefst, Verlauf, Regen-Hinweis, Frost, Max-Satz, Warnungen, Sonne)
+        import widget_extra
+        try: alt = json.load(open(OUT, encoding='utf-8'))
+        except Exception: alt = None
+        widget_extra.ergaenzen(d, now, LAT, LON, alt)
+    except Exception as e:
+        print('Widget-Zusatzangaben nicht möglich:', e)
     d['erstellt'] = now.isoformat(timespec='minutes')
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     json.dump(d, open(OUT, 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
