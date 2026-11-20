@@ -1,21 +1,6 @@
 [
 {
 "d": "2026-11-18",
-"g": "tag",
-"k": "Heute wird es nass, bei rund 13 Grad."
-},
-{
-"d": "2026-11-18",
-"g": "gestern_gleich",
-"k": "Kaum anders als gestern."
-},
-{
-"d": "2026-11-18",
-"g": "klima_mild",
-"k": "Normal wären jetzt eher 6 Grad – also de"
-},
-{
-"d": "2026-11-18",
 "g": "mundart",
 "k": "Des werd e nass Sach!"
 },
@@ -1998,5 +1983,20 @@
 "d": "2026-11-20",
 "g": "folgen",
 "k": "Folgt ihr uns eigentlich schon? Dann ver"
+},
+{
+"d": "2026-11-20",
+"g": "wissen_intro",
+"k": "Wetterwissen mit Max – schön, dass ihr d"
+},
+{
+"d": "2026-11-20",
+"g": "wissen_ende",
+"k": "Habt ihr das gewusst? Schreibt’s mir in "
+},
+{
+"d": "2026-11-20",
+"g": "wissen_thema",
+"k": "Heute klären wir: %s"
 }
 ]
