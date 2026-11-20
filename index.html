@@ -2260,7 +2260,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 19.11.2026, 21:20 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 20.11.2026, 07:40 Uhr</span></p>
 
 </div>
 
@@ -4397,9 +4397,12 @@ function loadRegion() {
   var today = todayStr();
   (RGL ? Promise.resolve() : fetch('data/lernen-kreis.json?v=' + Math.floor(Date.now() / 600000), { cache: 'no-store' })
     .then(function (r) { return r.ok ? r.json() : null; }).then(function (x) { RGL = x || {}; }).catch(function () { RGL = {}; })).then(function () { return Promise.all(RG_TOWNS.filter(function (t) { return !t.home; }).map(function (t) {
-    return fetchJson(rgUrl(t))
-      .then(function (j) { RG.data[t.id] = rgDays(rgHours(j, t.id)); })
-      .catch(function () { RG.data[t.id] = null; });
+    /* 20.11.2026: bei Fehler oder leerer Antwort nach 2 s noch zweimal versuchen (Höchst stand sonst 30 Min. ohne Daten) */
+    function hol(n) {
+      return fetchJson(rgUrl(t)).then(function (j) { var d = rgDays(rgHours(j, t.id)); if (!d || !Object.keys(d).length) throw new Error('leer'); RG.data[t.id] = d; })
+        .catch(function () { if (n > 0) return new Promise(function (r) { setTimeout(r, 2000); }).then(function () { return hol(n - 1); }); RG.data[t.id] = null; RG.at = Date.now() - 1500000; });
+    }
+    return hol(2);
   })); }).then(function () { RG.busy = false; if (!$('panel-vorhersage').hidden) renderRegion(); if (FC_ORT === 'kreis') renderOutlook(); });
 }
 /* 3-Tage-Vorhersage für den ganzen Odenwaldkreis (Täler und Höhen zusammengefasst) */
