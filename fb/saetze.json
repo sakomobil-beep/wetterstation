@@ -1,56 +1,6 @@
 [
 {
 "d": "2026-11-18",
-"g": "mundart",
-"k": "Des werd e nass Sach!"
-},
-{
-"d": "2026-11-18",
-"g": "ueberg_tipp",
-"k": "Was könnt ihr heute machen? "
-},
-{
-"d": "2026-11-18",
-"g": "ueberg_morgen",
-"k": "Kurzer Blick nach vorn. "
-},
-{
-"d": "2026-11-18",
-"g": "tag",
-"k": "Morgen, am Donnerstag: Regen, und das Th"
-},
-{
-"d": "2026-11-18",
-"g": "frage",
-"k": "Passt meine Vorhersage bei euch? Sagt’s "
-},
-{
-"d": "2026-11-18",
-"g": "folgen",
-"k": "Wer uns folgt, weiß morgens als Erster B"
-},
-{
-"d": "2026-11-18",
-"g": "dwd",
-"k": "Kurz vorweg: Vom Deutschen Wetterdienst "
-},
-{
-"d": "2026-11-18",
-"g": "ueberg_heute",
-"k": ""
-},
-{
-"d": "2026-11-18",
-"g": "tag",
-"k": "Heute wird es nass, bei rund 13 Grad."
-},
-{
-"d": "2026-11-18",
-"g": "gestern_gleich",
-"k": "Kaum anders als gestern."
-},
-{
-"d": "2026-11-18",
 "g": "klima_mild",
 "k": "Normal wären jetzt eher 6 Grad – also de"
 },
@@ -1998,5 +1948,55 @@
 "d": "2026-11-20",
 "g": "wissen_thema",
 "k": "Heute klären wir: %s"
+},
+{
+"d": "2026-11-20",
+"g": "abend_gruss",
+"k": "Guten Abend, Odenwald! Euer Max meldet s"
+},
+{
+"d": "2026-11-20",
+"g": "dwd",
+"k": "Ein Hinweis vorab: Für unsere Gegend gel"
+},
+{
+"d": "2026-11-20",
+"g": "tag",
+"k": "Samstag wird es freundlich mit ein paar "
+},
+{
+"d": "2026-11-20",
+"g": "glaette_h",
+"k": "Oben auf den Höhen, Richtung Beerfelden,"
+},
+{
+"d": "2026-11-20",
+"g": "tag",
+"k": "Sonntag bleibt es kühl: viele Wolken, hö"
+},
+{
+"d": "2026-11-20",
+"g": "frost",
+"k": "In der Nacht zum Sonntag wird es frostig"
+},
+{
+"d": "2026-11-20",
+"g": "folgen_abend",
+"k": "Fürs Wochenende bestens informiert: Folg"
+},
+{
+"d": "2026-11-20",
+"g": "abend_ende",
+"k": "Das war es für heute von mir."
+},
+{
+"d": "2026-11-20",
+"g": "abend_gute_nacht",
+"k": "Habt einen schönen Abend – morgen früh g"
+},
+{
+"d": "2026-11-20",
+"g": "abend_live",
+"k": "Live dabei seid ihr auf wetter-badkoenig"
 }
 ]
