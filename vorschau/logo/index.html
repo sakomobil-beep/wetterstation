@@ -1,0 +1,241 @@
+<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>Vorschau · Logo Private Wetterstation Bad König</title><link rel="icon" id="fav" href="">
+<style>
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#111827;color:#e2e8f0}
+.wrap{max-width:1180px;margin:0 auto;padding:18px}
+h1{font-size:22px;margin:4px 0}h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:#94a3b8;margin:28px 0 10px}
+.sw{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.sw button{background:#1e293b;color:#e2e8f0;border:2px solid #ffffff22;border-radius:10px;padding:8px 12px;cursor:pointer;font-weight:600}
+.sw button.on{border-color:#f59e0b}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:800px){.grid{grid-template-columns:1fr}}
+.site{border-radius:14px;overflow:hidden;border:1px solid #ffffff1a}
+.site .head{padding:16px 20px 8px}.site nav{display:flex;gap:16px;font-size:13px;font-weight:600;padding:8px 20px;border-bottom:1px solid #ffffff1a;overflow:auto;white-space:nowrap}
+.site nav span:first-child{color:#3b82f6}
+.site.dark{background:#19202a;color:#e2e8f0}.site.light{background:#eef2f7;color:#1e293b}.site.light nav{border-color:#0000001a}
+.site .logoD{width:100%;max-width:380px}
+.site .img{height:150px;background:url(../schlossplatz.jpg) center/cover;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 20%,#000 70%,transparent)}
+.lab{font-size:12px;color:#94a3b8;margin:6px 2px}
+.row{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-end}
+.box{background:#1e293b;border-radius:14px;padding:14px;text-align:center;font-size:12px;color:#94a3b8}
+.tab{display:flex;align-items:center;gap:8px;background:#2b3442;border-radius:10px 10px 0 0;padding:8px 12px;color:#e2e8f0;font-size:13px;width:260px}
+.tab .i{width:16px;height:16px}
+.phone{width:240px;height:200px;border-radius:24px;background:linear-gradient(160deg,#3b5b8a,#1e293b);display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:18px;box-sizing:border-box}
+.phone div{text-align:center;font-size:9px;color:#fff}.phone .ic{width:44px;height:44px;margin:0 auto 3px;border-radius:12px;background:#ffffff33}
+.round{width:150px;height:150px;border-radius:50%;overflow:hidden;background:#0d131f;margin:0 auto 8px}
+.note{background:#1e293b;border-left:3px solid #f59e0b;padding:10px 14px;border-radius:8px;font-size:13px;color:#cbd5e1;margin-top:20px}
+</style></head><body><div class="wrap">
+<h1>Logo-Vorschau · Private Wetterstation Bad König</h1>
+<div style="color:#94a3b8;font-size:13px">Nur Vorschau – nichts davon ist auf der echten Seite. Farbschema umschalten:</div>
+<div class="sw"><button data-p="goldNight" class="on">Gold / Nachtblau</button><button data-p="castleClassic">Klassisch Rot / Gold (Schloss)</button></div>
+
+<h2>1 · Variante D – Logo im Seitenkopf (dunkel und hell)</h2>
+<div class="grid">
+ <div><div class="site dark"><div class="head"><div class="logoD" id="dDark"></div></div><nav><span>Aktuell Bad König</span><span>Aktuell Odenwald</span><span>Vorhersage</span><span>Grafiken</span><span>Historie</span></nav><div class="img"></div></div><div class="lab">Dunkler Modus (abends)</div></div>
+ <div><div class="site light"><div class="head"><div class="logoD" id="dLight"></div></div><nav><span>Aktuell Bad König</span><span>Aktuell Odenwald</span><span>Vorhersage</span><span>Grafiken</span><span>Historie</span></nav><div class="img"></div></div><div class="lab">Heller Modus (tagsüber) – Schrift automatisch dunkel</div></div>
+</div>
+
+<h2>2 · Variante C – Tab-Symbol und App-Symbol</h2>
+<div class="row">
+ <div><div class="tab"><span class="i" id="c16"></span>Private Wetterstation Bad K…</div><div class="lab">Browser-Tab (16 px) – siehe auch dein echter Tab oben</div></div>
+ <div class="box"><div style="width:48px;height:48px;margin:0 auto 6px" id="c48"></div>48 px</div>
+ <div class="box"><div style="width:120px;height:120px;margin:0 auto 6px" id="c120"></div>App-Symbol groß</div>
+ <div><div class="phone"><div><div class="ic"></div>Kamera</div><div><div class="ic" id="cPh" style="background:none"></div>Wetter BK</div><div><div class="ic"></div>Karten</div><div><div class="ic"></div>Uhr</div></div><div class="lab">Am Handy-Startbildschirm</div></div>
+</div>
+
+<h2>3 · Variante A – Wappen als Profilbild (Facebook, Instagram, Threads)</h2>
+<div class="row">
+ <div class="box"><div class="round" id="aRound"></div>Rund zugeschnitten wie bei Facebook</div>
+ <div class="box"><div style="width:220px;height:220px;margin:0 auto 6px" id="aBig"></div>Wappen groß</div>
+</div>
+
+<h2>4 · Variante B – Linien-Logo (z. B. Wasserzeichen)</h2>
+<div class="row"><div class="box"><div style="width:280px;height:204px;margin:0 auto 6px" id="bBig"></div>Linien-Logo</div></div>
+
+<div class="note">Angepasst gegenüber deiner Datei: keine fremden Server (Tailwind/Google Fonts raus), Schrift = Seitenschrift, helle Version von Variante D für den Tag-Modus.</div>
+</div>
+<script>
+const palettes={goldNight:{bgTop:'#0f172a',bgBottom:'#1e293b',ring:'#f59e0b',primary:'#f8fafc',secondary:'#cbd5e1',accent:'#f59e0b',weather:'#38bdf8',facadeRed:'#334155',hill:'#1e3a5f',textMain:'#ffffff',textSub:'#38bdf8'},
+castleClassic:{bgTop:'#18181b',bgBottom:'#27272a',ring:'#f59e0b',primary:'#f3d9a4',secondary:'#b9382c',accent:'#f59e0b',weather:'#38bdf8',facadeRed:'#b9382c',hill:'#2d4a3e',textMain:'#fef3c7',textSub:'#f59e0b'}};
+const light={goldNight:{textMain:'#0f172a',textSub:'#0369a1',secondary2:'#475569'},castleClassic:{textMain:'#7c2d12',textSub:'#b45309',secondary2:'#57534e'}};
+function buildLogoSVG(variant, p, compactMode = false) {
+            if (variant === 'A') {
+                // VARIANTE A: WAPPEN-EMBLEM (200x200)
+                return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="100%" height="100%" role="img" aria-label="Logo Private Wetterstation Bad König - Wappen-Emblem">
+  <defs>
+    <linearGradient id="bkGradA" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${p.bgTop}"/>
+      <stop offset="100%" stop-color="${p.bgBottom}"/>
+    </linearGradient>
+    <clipPath id="bkClipA">
+      <circle cx="100" cy="100" r="88"/>
+    </clipPath>
+  </defs>
+
+  <!-- Äußerer Wappen-Ring -->
+  <circle cx="100" cy="100" r="94" fill="url(#bkGradA)" stroke="${p.ring}" stroke-width="3.5"/>
+  <circle cx="100" cy="100" r="87" fill="none" stroke="${p.weather}" stroke-width="1" stroke-opacity="0.35"/>
+
+  <g clip-path="url(#bkClipA)">
+    <!-- Goldene Sonne hinter dem Schloss -->
+    <circle cx="136" cy="64" r="19" fill="${p.accent}" fill-opacity="0.22"/>
+    <circle cx="136" cy="64" r="12" fill="${p.accent}"/>
+
+    <!-- Sanfte Odenwald-Hügel im Hintergrund -->
+    <path d="M10,126 Q55,104 102,118 T192,112 L192,190 L10,190 Z" fill="${p.hill}" fill-opacity="0.65"/>
+
+    <!-- 1. Schlosskirche: Spitzer Kirchturm links -->
+    <polygon points="48,88 61,32 74,88" fill="${p.primary}"/>
+    <line x1="61" y1="22" x2="61" y2="34" stroke="${p.accent}" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="57" y1="26" x2="65" y2="26" stroke="${p.accent}" stroke-width="2" stroke-linecap="round"/>
+    <rect x="50" y="88" width="22" height="44" fill="${p.facadeRed}"/>
+    <circle cx="61" cy="99" r="4" fill="${p.bgTop}" stroke="${p.accent}" stroke-width="1.5"/>
+
+    <!-- 2. Altes Schloss: Walmdach & markantes Rundbogentor in der Mitte -->
+    <polygon points="69,96 82,78 134,78 147,96" fill="${p.secondary}"/>
+    <rect x="72" y="96" width="72" height="36" fill="${p.primary}"/>
+    <!-- Rotes Sockelband -->
+    <rect x="72" y="114" width="72" height="18" fill="${p.facadeRed}"/>
+    <!-- Rundbogentor in den Schlosshof -->
+    <path d="M100,132 L100,115 A8,8 0 0,1 116,115 L116,132 Z" fill="${p.bgTop}" stroke="${p.accent}" stroke-width="1.8"/>
+
+    <!-- 3. Neues Schloss: Geschwungener Barockgiebel rechts -->
+    <path d="M144,98 C149,98 153,85 162,85 C171,85 175,98 180,98 L180,132 L144,132 Z" fill="${p.primary}"/>
+    <rect x="144" y="114" width="36" height="18" fill="${p.facadeRed}"/>
+
+    <!-- Dynamische Wetter- / Temperaturkurve & Mümling-Welle unter dem Schloss -->
+    <rect x="10" y="132" width="180" height="60" fill="${p.bgTop}"/>
+    <path d="M26,146 Q64,134 100,146 T174,142" fill="none" stroke="${p.weather}" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M42,156 Q80,147 118,156 T162,154" fill="none" stroke="${p.accent}" stroke-width="2.2" stroke-linecap="round" stroke-opacity="0.85"/>
+
+    <!-- Kompakte Stations-Kennung unten im Wappen -->
+    <text x="100" y="174" text-anchor="middle" fill="${p.primary}" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="11" font-weight="800" letter-spacing="2">BAD KÖNIG</text>
+  </g>
+</svg>`;
+            }
+
+            if (variant === 'B') {
+                // VARIANTE B: MINIMALISTISCHE LINE-ART (220x160)
+                return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 160" width="100%" height="100%" role="img" aria-label="Logo Private Wetterstation Bad König - Line-Art">
+  <!-- Dezenter Odenwald-Bogen im Hintergrund -->
+  <path d="M18,112 Q68,84 118,100 T202,92" fill="none" stroke="${p.weather}" stroke-width="2" stroke-opacity="0.35" stroke-linecap="round"/>
+
+  <!-- Sonne & feine Windlinie oben rechts -->
+  <circle cx="158" cy="42" r="11" fill="none" stroke="${p.accent}" stroke-width="2.6"/>
+  <path d="M132,48 L144,48 M171,36 L188,36 M173,44 L194,44" stroke="${p.weather}" stroke-width="2.2" stroke-linecap="round"/>
+
+  <!-- Edle durchgehende Linien-Architektur (Kirchturm + Altes Schloss + Barockgiebel) -->
+  <g fill="none" stroke="${p.primary}" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Kirchturmspitze links -->
+    <polyline points="42,74 55,22 68,74"/>
+    <line x1="55" y1="13" x2="55" y2="22" stroke="${p.accent}" stroke-width="2.6"/>
+    <line x1="51" y1="17" x2="59" y2="17" stroke="${p.accent}" stroke-width="2.2"/>
+    <polyline points="44,74 44,118 66,118 66,74"/>
+    <circle cx="55" cy="86" r="3.5" stroke="${p.accent}" stroke-width="2"/>
+
+    <!-- Altes Schloss Walmdach & Fassade -->
+    <polyline points="66,82 78,66 126,66 138,82"/>
+    <line x1="66" y1="82" x2="138" y2="82"/>
+    <polyline points="138,82 138,118 66,118"/>
+
+    <!-- Charakteristisches Rundbogentor -->
+    <path d="M94,118 L94,101 A8,8 0 0,1 110,101 L110,118" stroke="${p.accent}" stroke-width="2.6"/>
+
+    <!-- Neues Schloss: Geschwungener Barockgiebel rechts -->
+    <path d="M138,84 C146,84 150,69 162,69 C174,69 178,84 186,84"/>
+    <polyline points="184,84 184,118 138,118"/>
+  </g>
+
+  <!-- Basislinie / Wetterkurve -->
+  <path d="M22,126 Q85,122 145,126 T198,124" fill="none" stroke="${p.weather}" stroke-width="2.8" stroke-linecap="round"/>
+  <text x="110" y="146" text-anchor="middle" fill="${p.primary}" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="11.5" font-weight="700" letter-spacing="2.4">WETTER · BAD KÖNIG</text>
+</svg>`;
+            }
+
+            if (variant === 'C') {
+                // VARIANTE C: KOMPAKT-ICON (APP & FAVICON 128x128 - Extra bold für 16px Schärfe!)
+                return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="100%" height="100%" role="img" aria-label="App- und Favicon-Icon Wetterstation Bad König">
+  <defs>
+    <linearGradient id="bkAppGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="${p.bgTop}"/>
+      <stop offset="100%" stop-color="${p.bgBottom}"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Abgerundetes Quadrat (Squircle) -->
+  <rect x="4" y="4" width="120" height="120" rx="28" fill="url(#bkAppGrad)" stroke="${p.ring}" stroke-width="4"/>
+
+  <!-- Leuchtende Sonne / Mond oben rechts -->
+  <circle cx="90" cy="36" r="13" fill="${p.accent}"/>
+
+  <!-- Stark vereinfachter, maximal lesbarer Turm + Schlossblock + Tor -->
+  <!-- Spitzer Kirchturm links -->
+  <polygon points="24,62 38,18 52,62" fill="${p.primary}"/>
+  <rect x="27" y="62" width="22" height="40" fill="${p.facadeRed}"/>
+
+  <!-- Schlosskörper mit Walmdach rechts daneben -->
+  <polygon points="48,66 58,52 96,52 104,66" fill="${p.secondary}"/>
+  <rect x="49" y="66" width="53" height="36" fill="${p.primary}"/>
+  <rect x="49" y="82" width="53" height="20" fill="${p.facadeRed}"/>
+
+  <!-- Markantes Rundbogentor (bleibt auch bei 16x16px klar erkennbar!) -->
+  <path d="M67,102 L67,84 A8.5,8.5 0 0,1 84,84 L84,102 Z" fill="${p.bgTop}"/>
+
+  <!-- Himmelblaue Wetter-Welle am unteren Rand -->
+  <path d="M22,107 Q64,99 106,107" fill="none" stroke="${p.weather}" stroke-width="5.5" stroke-linecap="round"/>
+</svg>`;
+            }
+
+            // VARIANTE D: HEADER-WORTBILDMARKE
+            if (compactMode) {
+                // Für 16px & 48px Mini-Vorschau das reine Bildzeichen aus Variante D
+                return buildLogoSVG('C', p, false);
+            }
+
+            return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 96" width="100%" height="100%" role="img" aria-label="Wortbildmarke Private Wetterstation Bad König">
+  <defs>
+    <linearGradient id="bkHeaderBadge" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${p.bgTop}"/>
+      <stop offset="100%" stop-color="${p.bgBottom}"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Links: Kompaktes Schloss-Signet im abgerundeten Rahmen -->
+  <rect x="4" y="8" width="80" height="80" rx="20" fill="url(#bkHeaderBadge)" stroke="${p.ring}" stroke-width="2.5"/>
+  <circle cx="62" cy="28" r="8" fill="${p.accent}"/>
+
+  <!-- Turm + Schloss + Barockgiebel -->
+  <polygon points="16,46 25,18 34,46" fill="${p.primary}"/>
+  <rect x="18" y="46" width="14" height="26" fill="${p.facadeRed}"/>
+
+  <polygon points="31,49 38,39 58,39 64,49" fill="${p.secondary}"/>
+  <rect x="32" y="49" width="31" height="23" fill="${p.primary}"/>
+  <rect x="32" y="60" width="31" height="12" fill="${p.facadeRed}"/>
+  <path d="M43,72 L43,61 A4.5,4.5 0 0,1 52,61 L52,72 Z" fill="${p.bgTop}"/>
+
+  <!-- Barockgiebel-Andeutung rechts -->
+  <path d="M63,51 C66,51 67,44 71,44 C75,44 76,51 78,51 L78,72 L63,72 Z" fill="${p.primary}"/>
+
+  <!-- Wetterkurve -->
+  <path d="M14,76 Q44,70 74,76" fill="none" stroke="${p.weather}" stroke-width="3.2" stroke-linecap="round"/>
+
+  <!-- Vertikale Trennlinie -->
+  <line x1="98" y1="18" x2="98" y2="78" stroke="${p.ring}" stroke-opacity="0.35" stroke-width="1.5"/>
+
+  <!-- Rechts: Klare Wortmarke -->
+  <text x="112" y="31" fill="${p.textSub}" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="11.5" font-weight="700" letter-spacing="2.2">PRIVATE WETTERSTATION</text>
+  <text x="111" y="62" fill="${p.textMain}" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="31" font-weight="800" letter-spacing="-0.5">Bad König</text>
+  <text x="112" y="79" fill="${p.secondary}" font-family="system-ui,-apple-system,Segoe UI,Roboto,sans-serif" font-size="11" font-weight="500" letter-spacing="0.8">ODENWALD · 49°44&apos;N 9°00&apos;E</text>
+</svg>`;
+        }
+
+        
+function render(k){const p=palettes[k];
+ document.getElementById('dDark').innerHTML=buildLogoSVG('D',p);
+ const l=Object.assign({},p,{textMain:light[k].textMain,textSub:light[k].textSub});
+ let s=buildLogoSVG('D',l);s=s.replace(/(<text x="112" y="79" fill=")[^"]+/,'$1'+light[k].secondary2);document.getElementById('dLight').innerHTML=s;
+ const c=buildLogoSVG('C',p);['c16','c48','c120','cPh'].forEach(id=>document.getElementById(id).innerHTML=c);
+ const a=buildLogoSVG('A',p);document.getElementById('aRound').innerHTML=a;document.getElementById('aBig').innerHTML=a;
+ document.getElementById('bBig').innerHTML=buildLogoSVG('B',p);
+ document.getElementById('fav').href='data:image/svg+xml,'+encodeURIComponent(c);
+ document.querySelectorAll('.sw button').forEach(b=>b.classList.toggle('on',b.dataset.p==k))}
+document.querySelectorAll('.sw button').forEach(b=>b.onclick=()=>render(b.dataset.p));render('goldNight');
+</script></body></html>
