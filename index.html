@@ -135,6 +135,16 @@ button { font: inherit; color: inherit; }
 .num { font-variant-numeric: tabular-nums; }
 
 /* Kopf */
+/* Logo im Seitenkopf (20.11.2026): Badge + Schriftzug statt reiner Textzeile */
+.brand { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 6px; }
+.top h1.brandh { margin: 0; line-height: 0; }
+.brandlogo { display: block; height: clamp(54px, 9vw, 76px); width: auto; }
+.brandlogo text { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+.brandlogo .bl-sub { fill: #b45309; } .brandlogo .bl-main { fill: #7c2d12; }
+html[data-theme="dark"] .brandlogo .bl-sub, html[data-saison="weihnachten"] .brandlogo .bl-sub { fill: #f59e0b; }
+html[data-theme="dark"] .brandlogo .bl-main, html[data-saison="weihnachten"] .brandlogo .bl-main { fill: #fef3c7; }
+@media (max-width: 480px) { .brand .label { flex-basis: 100%; } .brand .saison-chip { margin-left: 0; } }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .top { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; }
 .top h1 { margin: 4px 0 0; font: 600 clamp(1.6rem, 4vw, 2.1rem)/1.1 var(--font-display); letter-spacing: -.01em; text-wrap: balance; }
 .status { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px 12px; }
@@ -1434,8 +1444,10 @@ document.addEventListener('DOMContentLoaded',function(){
 <div class="wrap">
   <header class="top">
     <div>
-      <div class="label">Bresser 8-in-1<span id="saisonChip"></span></div>
-      <h1 id="stationName">Private Wetterstation Bad König</h1>
+      <div class="brand">
+        <h1 class="brandh"><svg class="brandlogo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 330 96" aria-hidden="true" focusable="false"><defs><linearGradient id="blG" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#18181b"/><stop offset="100%" stop-color="#27272a"/></linearGradient></defs><rect x="4" y="8" width="80" height="80" rx="20" fill="url(#blG)" stroke="#f59e0b" stroke-width="2.5"/><circle cx="62" cy="28" r="8" fill="#f59e0b"/><polygon points="16,46 25,18 34,46" fill="#f3d9a4"/><rect x="18" y="46" width="14" height="26" fill="#b9382c"/><polygon points="31,49 38,39 58,39 64,49" fill="#b9382c"/><rect x="32" y="49" width="31" height="23" fill="#f3d9a4"/><rect x="32" y="60" width="31" height="12" fill="#b9382c"/><path d="M43,72 L43,61 A4.5,4.5 0 0,1 52,61 L52,72 Z" fill="#18181b"/><path d="M63,51 C66,51 67,44 71,44 C75,44 76,51 78,51 L78,72 L63,72 Z" fill="#f3d9a4"/><path d="M14,76 Q44,70 74,76" fill="none" stroke="#38bdf8" stroke-width="3.2" stroke-linecap="round"/><line x1="98" y1="18" x2="98" y2="78" stroke="#f59e0b" stroke-opacity="0.35" stroke-width="1.5"/><text class="bl-sub" x="112" y="38" font-size="11.5" font-weight="700" letter-spacing="2.2">PRIVATE WETTERSTATION</text><text class="bl-main" x="111" y="70" font-size="31" font-weight="800" letter-spacing="-0.5">Bad König</text></svg><span id="stationName" class="vh">Private Wetterstation Bad König</span></h1>
+        <div class="label"><span id="saisonChip"></span></div>
+      </div>
     </div>
     <nav class="tabnav" aria-label="Bereiche">
       <div class="navrow">
@@ -2270,7 +2282,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 20.11.2026, 12:59 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 20.11.2026, 21:52 Uhr</span></p>
 
 </div>
 
