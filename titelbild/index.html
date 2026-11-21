@@ -229,11 +229,16 @@ if(innerWidth<700)document.querySelectorAll('#rain line:nth-child(2n),#rain elli
 let GWARN=false,SAISON='',KP=0,kpAt=0,rainAt=0,erst=true;const cur={};try{rainAt=+sessionStorage.getItem('tbRain')||0}catch(e){}
 const SCHAUER=[[1,2,4],[4,21,23],[8,10,14],[10,20,22],[11,16,18],[12,12,15]];
 function setK(k,v){v=!!v;if(RUHE&&(k=='silvester'||k=='gewitter'||k=='sternschnuppen'||k=='sturm'))v=false;if(!!cur[k]===v)return;cur[k]=v;FX[k][1](v)}
+/* 21.11.2026: Nebel nur, wenn auch die Odenwald-Einstufung von Max (fb/daten.json) für heute Nebel meldet – sonst ist es bei Frost und hoher Feuchte Reif, kein Nebel */
+let MAXD=null,maxAt=0;function maxLaden(){if(Date.now()-maxAt<20*60000)return;maxAt=Date.now();fetch('../fb/daten.json?'+Math.floor(Date.now()/600000),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(j=>{MAXD=j}).catch(()=>{})}
+function nebelMax(now){maxLaden();if(!MAXD||!MAXD.tage)return false;const ds=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0'),tg=MAXD.tage.find(x=>x.datum==ds);if(!tg||!tg.nebel)return false;
+ const b=parseInt(String(tg.nebel_bis||'').match(/\d+/)||'24',10);return now.getHours()<(isNaN(b)?24:b)}
+maxLaden();
 function steuern(){const now=new Date(),alt=OV&&OV.alt!=null?OV.alt:sunAlt(Date.now()),LV=OV?OV.live:live,dark=alt<-6?1:alt<2?(2-alt)/8:0,nacht=dark>.6;
  const v={night:.78*dark,grey:0,stars:nacht?1:0,lamps:Math.min(1,dark*1.2),fogl:0,rain:0,snow:0},t=[alt<-6?'Nacht':alt<4?'Dämmerung':'Tag'];
  let pr=0,T=null,hu=0,w=0,gust=0,sol=0;
  if(LV&&LV.metric&&(!LV.epoch||Date.now()/1000-LV.epoch<1800)){const m=LV.metric;pr=m.precipRate||0;T=typeof m.temp=='number'?m.temp:null;hu=LV.humidity||0;w=m.windSpeed||0;gust=m.windGust||0;sol=LV.solarRadiation||0}
- const schnee=pr>0&&T!==null&&T<=1.5,regen=pr>0&&!schnee,nebel=hu>=97&&w<6&&!pr,klar=!pr&&!nebel;
+ const schnee=pr>0&&T!==null&&T<=1.5,regen=pr>0&&!schnee,nebel=hu>=97&&w<6&&!pr&&(OV?true:nebelMax(now)),klar=!pr&&!nebel;
  if(schnee){v.snow=1;v.grey=.35;t.push('Schnee')}
  if(regen){v.rain=1;v.grey=.55;v.night=Math.max(v.night,.35);v.fogl=.4;v.lamps=Math.max(v.lamps,.5);t.push('Regen '+pr.toFixed(1).replace('.',',')+' mm/h')}
  if(nebel){v.fogl=1;v.grey=Math.max(v.grey,.6);t.push('Nebel')}
