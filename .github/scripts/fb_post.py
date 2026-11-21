@@ -599,6 +599,29 @@ def hoehen(days):
 GLAETTE_REIHE = ('keine', 'reif', 'naesse', 'schnee', 'glatteis')
 
 
+def nebel_live(tal, tag):
+    """21.11.2026: Live-Nebel. Morgens (4–11 Uhr) zählen die gemessenen Odenwald-Orte (data/odenwald-live.json, alle 10 Min.):
+    Feuchte >= 98 %, Wind <= 4 km/h, kein Regen. Ab der Hälfte der Orte „wahrscheinlich“, ab einem Drittel „moeglich“.
+    Hebt die Modell-Einstufung nur an (nie ab), damit Max sagt, was gerade draußen ist."""
+    try:
+        jetzt = dt.datetime.now(TZ)
+        if jetzt.date().isoformat() != tag or not (4 <= jetzt.hour <= 11): return
+        L = json.load(open(os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'odenwald-live.json'), encoding='utf-8'))
+        st = dt.datetime.fromisoformat(L['stand'])
+        if (jetzt - st).total_seconds() > 3600: return
+        orte = [o for o in L.get('orte', []) if o.get('rh') is not None]
+        if len(orte) < 3: return
+        nass = [o['name'] for o in orte if o['rh'] >= 98 and (o.get('w') or 0) <= 4 and not (o.get('rr') or 0)]
+        anteil = len(nass) / len(orte)
+        stufe = 'wahrscheinlich' if anteil >= 0.5 else 'moeglich' if anteil >= 1 / 3 else 'keiner'
+        reihe = ('keiner', 'moeglich', 'wahrscheinlich')
+        if reihe.index(stufe) > reihe.index(tal.get('nebel', 'keiner')):
+            tal.update(nebel=stufe, nebel_p=max(tal.get('nebel_p') or 0, round(100 * anteil)), nebel_bis=max(tal.get('nebel_bis') or 0, 11), nebel_quelle='live')
+        print('Live-Nebel: %d von %d Orten nebelverdächtig (%s) -> %s' % (len(nass), len(orte), ', '.join(nass), tal.get('nebel')))
+    except Exception as e:
+        print('Live-Nebel nicht auswertbar:', e)
+
+
 def lage_winter(days):
     """EINE Grundlage für Nebel, Kaltluft in den Tälern und Glätte (Max, Facebook, Instagram) – wie die Regen-Einstufung.
     Stundenwerte der Talorte (Breuberg, Höchst, Bad König, Michelstadt) bzw. der Höhen × Modelle, gewichtet wie die Vorhersage.
@@ -659,6 +682,7 @@ def lage_winter(days):
         T_, H_ = d.get('tal'), d.get('hoch')
         diff = round(H_['tmin'] - T_['tmin_kalt']) if T_ and H_ else 0
         tal.update(glaette_hoch=hoch.get('glaette', 'keine'), kaltluft=bool(d.get('nacht_klar') and diff >= 0), kalt_diff=diff)
+        if n == 0: nebel_live(tal, tag)
         d['lage'] = tal
         print('Lage %s: Nebel %s (%d %%, bis %s Uhr), Glätte Tal %s / Höhen %s, Kaltluft %s (%+d)' % (
             tag, tal['nebel'], tal['nebel_p'], tal['nebel_bis'], tal['glaette'], tal['glaette_hoch'], tal['kaltluft'], diff))
