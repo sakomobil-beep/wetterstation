@@ -2287,7 +2287,7 @@ document.addEventListener('DOMContentLoaded',function(){
     <p class="src">Webcams bereitgestellt von <a href="https://www.windy.com/webcams" target="_blank" rel="noopener">Windy.com</a>. Die Kameras gehören ihren jeweiligen Betreibern; einzelne können zeitweise offline sein.</p>
   </div>
 
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 21.11.2026, 08:27 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 21.11.2026, 09:22 Uhr</span></p>
 
 </div>
 
@@ -4449,6 +4449,9 @@ function rgKreisTag(ds) {
   var schneeH = hoch.some(function (x) { return x.d.icon === 'snow' || x.d.icon === 'sleet'; }), schneeT = tal.some(function (x) { return x.d.icon === 'snow' || x.d.icon === 'sleet'; });
   if (schneeT) out.push('Schneefall bis in die Täler möglich.');
   else if (schneeH) out.push('Auf den Höhen Schnee oder Schneeregen möglich.');
+  else if (typeof NIED !== 'undefined' && NIED[ds] && NIED[ds].stufe) {   /* 21.11.2026: Regen-Satz aus der gemeinsamen Einstufung (wie Max), nicht aus den Rohwerten je Ort über den ganzen Kalendertag */
+    out.push({ trocken: 'Überwiegend trocken.', vereinzelt: 'Vereinzelt etwas Regen möglich, meist trocken.', schauer: 'Zeitweise Schauer.', regen: 'Verbreitet Regen.', gewitter: 'Schauer und Gewitter möglich.' }[NIED[ds].stufe] || 'Überwiegend trocken.');
+  }
   else if (pmax !== null) out.push(pmax >= 70 ? 'Verbreitet Regen.' : pmax >= 40 ? 'Zeitweise Regen möglich.' : 'Überwiegend trocken.');
   var gx = mx(tage, 'gust', Math.max);
   if (gx !== null && gx >= 50) out.push('Windig, auf den Höhen Böen bis ' + nf(gx, 0) + ' km/h.');
@@ -4493,6 +4496,7 @@ function rgDays(hours) {
         pp = g[ds].map(function (h) { return h.prob; }).filter(function (v) { return v !== null && v !== undefined; });
     out[ds] = summarize(ds, g[ds], false);
     if (rr.length) out[ds].rain = sumOf(rr);
+    if (ds === todayStr()) pp = g[ds].filter(function (h) { return h.t.getTime() >= Date.now() - 3600000; }).map(function (h) { return h.prob; }).filter(function (v) { return v !== null && v !== undefined; });   /* 21.11.2026: vergangene Stunden zählen heute nicht */
     if (pp.length) out[ds].prob = maxOf(pp);
   });
   /* ab Mittag: bei „Heute“ der Tiefstwert der kommenden Nacht statt des Werts von heute früh (wie bei Bad König) */
