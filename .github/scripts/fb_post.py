@@ -1565,7 +1565,7 @@ def jetzt_story(days, path):
         yy += RZ
     if len(da) >= 2:
         hi = max(da, key=lambda x: x[1]); lo_ = min(da, key=lambda x: x[1])
-        satz = 'Überall ähnlich, um %d°.' % round(hi[1]) if hi[1] - lo_[1] < 1 else 'Am wärmsten in %s, am kühlsten in %s.' % (hi[0], lo_[0])
+        satz = 'Überall ähnlich, um %d°.' % round(hi[1]) if hi[1] - lo_[1] < 1 else '%s in %s, %s in %s.' % ('Am wenigsten frostig' if hi[1] < 0 else 'Am wenigsten kalt' if hi[1] < 10 else 'Am mildesten' if hi[1] < 18 else 'Am wärmsten', hi[0], 'am kältesten' if lo_[1] < 0 else 'am kühlsten', lo_[0])   # 23.11.2026
         dr.text((112, yy + 4), satz, font=font(28), fill=(75, 91, 99))
     # 2) Regen-Radar
     y += h1 + 36; rs = radar_satz()

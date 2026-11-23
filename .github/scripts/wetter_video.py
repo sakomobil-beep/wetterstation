@@ -3000,8 +3000,8 @@ def grafik_saetze(d, grafiken, rnd, wann='heute'):
     if 'temp' in grafiken:
         hi = max(st, key=lambda x: x['t']); lo = min(st, key=lambda x: x['t'])
         out.append(rnd.choice(['Schaut mal auf die Temperaturkurve: ', 'Hier seht ihr den Verlauf über den Tag: ', 'Die Kurve zeigt es: '])
-                   + 'Am wärmsten wird es %s gegen %d Uhr mit etwa %s Grad, am kühlsten ist es um %d Uhr mit %s Grad.'
-                   % (wann, hi['h'], zahl(hi['t']), lo['h'], zahl(lo['t'])))
+                   + ('Am %s wird es %s gegen %d Uhr mit etwa %s Grad, am %s ist es um %d Uhr mit %s Grad.'   # 23.11.2026: Wort nach Temperatur
+                      % ('wenigsten frostig' if hi['t'] < 0 else 'wärmsten', wann, hi['h'], zahl(hi['t']), 'kältesten' if lo['t'] < 0 else 'kühlsten', lo['h'], zahl(lo['t']))))
     if 'regen' in grafiken:
         nass = [x for x in st if x['rp'] >= 30]
         if not nass and max(x['rp'] for x in st) < 10:
