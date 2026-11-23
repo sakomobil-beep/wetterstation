@@ -77,7 +77,7 @@ def satz(warn, stufe=None, info=None, hoechstens=3):
         teil = [g for g in k if g['orte'] is not None and len(g['orte']) > 1]
         rest = [_mit_ort(g) for g in k if g not in teil]
         if teil and not rest: liste = _reihe([g['name'] for g in teil]) + ' für Teile des Odenwaldkreises'
-        elif teil: liste = _reihe(rest + [g['name'] for g in teil]) + ' – %s nur für Teile des Kreises' % _reihe([g['name'] for g in teil])
+        elif teil: liste = _reihe(rest) + ' sowie in Teilen des Kreises vor ' + _reihe([g['name'] for g in teil])
         else: liste = _reihe(rest)
         teile.append(('eine amtliche %s vor ' % wort if len(k) == 1 else 'amtliche %sen vor ' % wort) + liste)
     for g in [g for g in G if not g['name']][:max(0, hoechstens - len(klar))]:
