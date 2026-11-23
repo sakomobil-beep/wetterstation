@@ -28,6 +28,45 @@ AUSFALL_ERSATZ = {'IMOSSA13': 'IMOSSA10'}   # Mossautal: IMOSSA13 offline seit 2
 REGEN_ERSATZ = {'Höchst i. Odw.': ['IHCHSTIO2', 'IDTSANDB5']}   # private WU-Stationen in der Nähe, in dieser Reihenfolge; danach DWD (nächste Station)
 REGEN_MIN_MEDIAN = 5.0    # erst prüfen, wenn die anderen Orte im Mittel (Median) mindestens so viel Regen haben
 REGEN_ANTEIL = 0.25       # unplausibel: weniger als ein Viertel des Medians der anderen Orte
+def reserve_text(n, sid, ist_extra):
+    """23.11.2026: welche Reserve einspringen kann (Anzeige in der Zentrale)."""
+    t = []
+    if sid == 'IBADKN33': t.append('Weather Underground')
+    if sid in AUSFALL_ERSATZ: t.append('%s (springt nach 60 Min. ein)' % AUSFALL_ERSATZ[sid])
+    if n in REGEN_ERSATZ: t.append('Regen: ' + ', '.join(REGEN_ERSATZ[n]))
+    if ist_extra: t.append('andere Station im Ort (automatische Wahl)')
+    if sid != 'IBADKN33': t.append('Netatmo-Gegenprobe Regen/Böen')
+    return ' · '.join(t)
+
+
+ALARM = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'stationen-alarm.json')
+
+
+def stationen_alarm(orte, jetzt):
+    """23.11.2026 (Kingman): Push, sobald eine Station über 90 Min. nichts sendet oder eine Reserve einspringt – je Ausfall einmal, mit Entwarnung."""
+    try: A = json.load(open(ALARM, encoding='utf-8'))
+    except Exception: A = {}
+    neu, push = {}, []
+    for o in orte:
+        n = o['name']; kn = n.replace(' i. Odw.', '')
+        alter = (jetzt - dt.datetime.fromisoformat(o['zeit'])).total_seconds() / 60 if o.get('zeit') else 9999
+        rot = alter > 90 or bool(o.get('station_ersatz'))
+        if rot:
+            neu[n] = A.get(n) or jetzt.isoformat(timespec='minutes')
+            if n not in A:
+                push.append('📡 %s (%s) sendet seit %s nichts%s' % (kn, o.get('station') or '?', ('%d Min.' % alter) if alter < 600 else 'über 10 Std.',
+                            ' – Reserve %s ist eingesprungen' % o['station_ersatz'] if o.get('station_ersatz') else ''))
+        elif n in A:
+            push.append('✅ %s (%s) sendet wieder' % (kn, o.get('station') or '?'))
+    if neu != A: json.dump(neu, open(ALARM, 'w', encoding='utf-8'), ensure_ascii=False)
+    t = os.environ.get('NTFY_TOPIC')
+    if push and t:
+        try: urllib.request.urlopen(urllib.request.Request('https://ntfy.sh/' + t, data='\n'.join(push).encode('utf-8'),
+                 headers={'Title': 'Odenwald-Stationen', 'Tags': 'satellite_antenna', 'Click': 'https://sakomobil-beep.github.io/zentrale/'}), timeout=20).read()
+        except Exception as e: print('Push:', e)
+    print('Stations-Alarm:', push or 'alles ok')
+
+
 DATEI = os.path.join(os.path.dirname(__file__), '..', '..', 'data', 'odenwald-live.json')
 r1 = lambda v: None if v is None else round(float(v), 1)
 
@@ -336,7 +375,8 @@ def main():
         o['rhist'] = rhist; o['dr30'] = dr30; o['phist'] = phist
         if len(phist) >= 2 and (dt.datetime.fromisoformat(phist[-1][0]) - dt.datetime.fromisoformat(phist[0][0])).total_seconds() >= 150 * 60: o['p3h'] = round(phist[-1][1] - phist[0][1], 1)
         o['wx'] = wetter_symbol(o, jetzt)
-        if ist_extra: o['extra'] = True; o['station'] = sid
+        if ist_extra: o['extra'] = True
+        o['station'] = sid; o['reserve'] = reserve_text(n, sid, ist_extra)   # 23.11.2026: für „📡 Stationen“ in der Zentrale
         orte.append(o)
         if v and v.get('t') is not None and (v.get('zeit') or '')[:10] == heute:
             L = verlauf.setdefault(n, []); hm = v['zeit'][11:16]
@@ -358,6 +398,8 @@ def main():
                    extra=[o for o in orte if o.get('extra')], verlauf=verlauf),
               open(DATEI, 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
     print('Odenwald live:', [(o['name'], o.get('t')) for o in orte])
+    try: stationen_alarm(orte, jetzt)
+    except Exception as e: print('Stations-Alarm nicht möglich:', e)
 
 
 if __name__ == '__main__':
