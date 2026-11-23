@@ -4,6 +4,11 @@ on:
     - cron: '25 23 * * *'   # 0:25 Uhr Winterzeit (Reserve, Hauptauslöser: cron-job.org 0:15 Uhr)
     - cron: '25 22 * * *'   # 0:25 Uhr Sommerzeit
   workflow_dispatch:
+    inputs:
+      threads:
+        description: 'Zugang für den Threads-Schlüssel prüfen (ändert nichts)'
+        type: boolean
+        default: false
 permissions:
   contents: write
 concurrency:
@@ -24,8 +29,9 @@ jobs:
         continue-on-error: true
         env:
           THREADS_TOKEN: ${{ secrets.THREADS_TOKEN }}
+          GH_SECRETS_PAT: ${{ secrets.GH_SECRETS_PAT }}   # 23.11.2026: darf nur Secrets im Repo wetterstation ändern
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
-        run: if [ "$(TZ=Europe/Berlin date +%u)" = "1" ]; then python .github/scripts/threads_token.py; fi
+        run: if [ "$(TZ=Europe/Berlin date +%u)" = "1" ] ; then pip install -q pynacl; python .github/scripts/threads_token.py; elif [ "${{ github.event.inputs.threads }}" = "true" ]; then pip install -q pynacl; PAT_TEST=1 python .github/scripts/threads_token.py; fi
       - name: Speichern
         run: |
           git config user.name "wetter-bot"; git config user.email "actions@users.noreply.github.com"
