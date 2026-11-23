@@ -113,6 +113,8 @@ def main():
         E = {'n': len(H), 'tage': len({k[:10] for k in H}), 'bias': {}, 'mae': {}, 'mae_roh': {}}   # mae_roh = Fehler reines Modell ohne Korrektur (19.11.2026)
         HL = {k: v for k, v in R.items() if k >= seitL}
         E['n_lang'] = len(HL); E['tage_lang'] = len({k[:10] for k in HL})
+        if ort in ORTE: E['quelle'] = ORTE[ort][3]; E['hoehe'] = ORTE[ort][2]   # 23.11.2026: Anzeige in der Zentrale liest Messquelle + Höhe von hier (bleibt automatisch aktuell)
+        if HL: E['seit_lang'] = min(HL)[:10]
         def alter(k, hw): return 0.5 ** ((jetzt - dt.datetime.strptime(k, '%Y-%m-%dT%H').replace(tzinfo=TZ)).total_seconds() / 86400 / hw)
         def lernbias(D, m):
             s = [[0.0, 0.0, 0] for _ in range(6)]
