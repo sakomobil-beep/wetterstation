@@ -1,6 +1,18 @@
 [
  {
   "datum": "2026-11-23",
+  "datei": "2026-11-23-abend.mp4",
+  "art": "abend",
+  "erstellt": "2026-11-23T18:07+00:00",
+  "special": false,
+  "warn": [
+   "Amtliche Warnung vor Frost",
+   "Amtliche Warnung vor Glätte"
+  ],
+  "dauer": 115.5
+ },
+ {
+  "datum": "2026-11-23",
   "datei": "2026-11-23.mp4",
   "art": "morgen",
   "erstellt": "2026-11-23T06:09+00:00",
