@@ -73,7 +73,13 @@ def satz(warn, stufe=None, info=None, hoechstens=3):
         k = [g for g in klar if (g['stufe'] >= 3) == unwetter]
         if not k: continue
         wort = 'Unwetterwarnung' if unwetter else 'Warnung'
-        teile.append(('eine amtliche %s vor ' % wort if len(k) == 1 else 'amtliche %sen vor ' % wort) + _reihe([_mit_ort(g) for g in k]))
+        # 23.11.2026 (Kingman): „für Teile des Odenwaldkreises“ nur einmal am Ende, nicht hinter jeder Warnart
+        teil = [g for g in k if g['orte'] is not None and len(g['orte']) > 1]
+        rest = [_mit_ort(g) for g in k if g not in teil]
+        if teil and not rest: liste = _reihe([g['name'] for g in teil]) + ' für Teile des Odenwaldkreises'
+        elif teil: liste = _reihe(rest + [g['name'] for g in teil]) + ' – %s nur für Teile des Kreises' % _reihe([g['name'] for g in teil])
+        else: liste = _reihe(rest)
+        teile.append(('eine amtliche %s vor ' % wort if len(k) == 1 else 'amtliche %sen vor ' % wort) + liste)
     for g in [g for g in G if not g['name']][:max(0, hoechstens - len(klar))]:
         r = g['roh']; teile.append(('eine ' + r[0].lower() + r[1:]) if r.lower().startswith('amtliche') else r)
     return ' sowie '.join(teile)

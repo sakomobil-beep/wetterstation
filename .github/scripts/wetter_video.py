@@ -216,8 +216,20 @@ def mundart(d, rnd):
     return ' ' + frisch(rnd, 'mundart', opt, tage=21)
 
 
+def dwd_zusatz(was):
+    """23.11.2026: praktischer Hinweis einmal direkt bei der Warnung (statt später nochmal) – Glätte/Frost bzw. Nebel."""
+    w = was.lower(); t = []
+    if any(x in w for x in ('glätte', 'glatteis', 'frost')): t.append('vorsichtig fahren, vor allem auf Brücken')
+    if 'nebel' in w: t.append('Licht an im Nebel')
+    return (' Also: ' + ' – und '.join(t) + '!') if t else ''
+
+
 def dwd_satz(rnd, was):
     """Hinweis auf eine amtliche DWD-Warnung – abwechslungsreich formuliert, Inhalt bleibt amtlich."""
+    return _dwd_satz(rnd, was) + dwd_zusatz(was)
+
+
+def _dwd_satz(rnd, was):
     if not was.startswith('eine ') or ' sowie ' in was:   # mehrere Warnungen: „gelten“ statt „gilt“ (17.11.2026)
         return frisch(rnd, 'dwd', ['Kurz vorweg: Vom Deutschen Wetterdienst gelten %s. Passt auf euch auf!' % was,
                                     'Erst das Wichtige: Der Deutsche Wetterdienst hat %s herausgegeben.' % was,
@@ -464,9 +476,18 @@ def nebel_wind(d):
     return (max(st) >= 35) if st else (d.get('boe') or 0) >= 60
 
 
+def warn_arten():
+    """23.11.2026: Welche Warnarten der DWD heute ausgegeben hat (klein geschrieben, für „nicht doppelt sagen“)."""
+    try: return ' '.join(str(w) for w in (WARN_DATEN[0][0] or [])).lower() if WARN_DATEN[0] else ''
+    except Exception: return ''
+
+
 def winter_saetze(d, wann, rnd):
     """Nebel am Morgen, Kaltluft in den Tälern, Glätte – nur wenn die Einstufung es hergibt."""
     L = lage(d); out = []
+    # 23.11.2026 (Kingman): hat Max die DWD-Warnung vor Glätte/Frost bzw. Nebel schon am Anfang genannt, hier nicht nochmal warnen
+    WA = warn_arten() if wann.rstrip(',') == 'Heute' else ''
+    gewarnt_glatt = any(x in WA for x in ('glätte', 'glatteis', 'frost')); gewarnt_nebel = 'nebel' in WA
     morgens = {'Heute': 'heute früh', 'Morgen': 'morgen früh', 'Samstag': 'Samstagfrüh'}.get(wann.rstrip(','), 'morgens')
     if L['glaette'] == 'glatteis':
         out.append(frisch(rnd, 'glatteis', ['Achtung, %s droht Glatteis! Gefrierender Regen macht Straßen und Gehwege spiegelglatt – lasst euch Zeit.' % morgens,
@@ -474,6 +495,7 @@ def winter_saetze(d, wann, rnd):
     elif L['glaette'] == 'naesse':
         out.append(frisch(rnd, 'glaette_n', ['Vorsicht %s: Die nassen Straßen können überfrieren, es kann glatt werden.' % morgens,
                                              '%s heißt es aufpassen – Nässe und Frost, da wird es auf Straßen und Gehwegen schnell rutschig.' % morgens.capitalize()]))
+    elif L['glaette'] == 'reif' and gewarnt_glatt: pass   # steht schon in der DWD-Warnung am Anfang
     elif L['glaette'] == 'reif':
         out.append(frisch(rnd, 'glaette_r', ['%s kann Reif auf Brücken und Nebenstraßen für Glätte sorgen.' % morgens.capitalize(),
                                              'Achtet %s auf Reifglätte, vor allem auf Brücken und in schattigen Ecken.' % morgens]))
@@ -483,7 +505,9 @@ def winter_saetze(d, wann, rnd):
         out.append(frisch(rnd, 'glaette_h', ['Oben auf den Höhen, Richtung Beerfelden, kann es %s glatt sein.' % morgens]))
     if L['nebel'] != 'keiner' and nebel_wind(d):   # (18.11.2026) bei kräftigem Wind hält sich kein Nebel – nicht ansagen
         L = dict(L, nebel='keiner')
-    if L['nebel'] == 'wahrscheinlich':
+    if L['nebel'] == 'wahrscheinlich' and gewarnt_nebel:   # gewarnt: nur noch, wie lange er sich hält
+        if L['nebel_bis'] and 7 <= L['nebel_bis'] <= 13: out.append('Der Nebel hält sich in den Tälern bis etwa %d Uhr.' % L['nebel_bis'])
+    elif L['nebel'] == 'wahrscheinlich':
         bis = (' bis etwa %d Uhr' % L['nebel_bis']) if L['nebel_bis'] and 7 <= L['nebel_bis'] <= 13 else ''
         out.append(frisch(rnd, 'nebel_w', ['%s liegt in den Tälern Nebel%s – Licht an beim Autofahren!' % (morgens.capitalize(), bis),
                                            'Im Mümlingtal hängt %s der Nebel%s. Also: Licht an und mit Abstand fahren.' % (morgens, bis),
