@@ -2438,7 +2438,7 @@ html[data-theme="dark"] .luftnb{background:#4a3500;color:#ffd98a}
 
   <p class="foot" id="ortLinks">Wetter im Odenwald, live gemessen: <a href="michelstadt.html">Michelstadt</a> · <a href="hoechst.html">Höchst</a> · <a href="breuberg.html">Breuberg</a> · <a href="mossautal.html">Mossautal</a> · <a href="oberzent.html">Oberzent</a> · <a href="reichelsheim.html">Reichelsheim</a> · <a href="brombachtal.html">Brombachtal</a> · <a href="luetzelbach.html">Lützelbach</a></p>
   <!-- SEO-JETZT ANFANG --><p class="foot" id="seoJetzt" data-std="23.11.2026 20">Aktuell in Bad König (eigene Station, 19:56 Uhr): −4,0 °C, 96 % Luftfeuchte, windstill, Luftdruck 1027 hPa, Regen heute 0,0 l/m².</p><!-- SEO-JETZT ENDE -->
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a> · <a href="https://www.paypal.com/paypalme/wettermax" target="_blank" rel="noopener">☕ Max einen Kaffee ausgeben</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 23.11.2026, 20:05 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a> · <a href="https://www.paypal.com/paypalme/wettermax" target="_blank" rel="noopener">☕ Max einen Kaffee ausgeben</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 23.11.2026, 21:00 Uhr</span></p>
 
 </div>
 
@@ -6993,19 +6993,22 @@ setInterval(function () { if (currentTab === 'odenwald' && !document.hidden) owL
     var S = [], T = ok.filter(function (o) { return o.t !== null && o.t !== undefined; }).sort(function (a, b) { return b.t - a.t; });
     if (T.length >= 2) { var d = T[0].t - T[T.length - 1].t;
       S.push(d >= 1.5 ? 'Gerade ist es in ' + kurz(T[0].name) + ' mit ' + owNf(T[0].t, 1) + ' °C am wärmsten, in ' + kurz(T[T.length - 1].name) + ' ist es ' + owNf(d, 1) + ' Grad kälter.'
-        : 'Überall im Odenwald ist es gerade ähnlich warm, um ' + owNf(T[0].t, 0) + ' °C.'); }
+        : 'Überall im Odenwald ist es gerade ähnlich ' + (T[0].t < 0 ? 'frostig' : T[0].t < 10 ? 'kalt' : T[0].t < 18 ? 'mild' : 'warm') + ', um ' + owNf(T[0].t, 0) + ' °C.'); }   // 23.11.2026: Wort passend zur Temperatur
     var nass = ok.filter(function (o) { return (o.rr || 0) > 0; });
     if (nass.length) S.push(nass.length >= ok.length - 1 ? 'Es regnet gerade fast überall.' : 'Regen gibt es gerade in ' + nass.map(function (o) { return kurz(o.name); }).join(', ') + '.');
     var G = ok.filter(function (o) { return o.g !== null && o.g !== undefined; }).sort(function (a, b) { return b.g - a.g; });
     if (G.length && G[0].g >= 40) S.push('Die stärkste Böe hatte zuletzt ' + kurz(G[0].name) + ' mit ' + owNf(G[0].g, 0) + ' km/h.');
-    var tg = heuteTag();
+    var tg = heuteTag(), jH = new Date().getHours(), abd = jH >= 15;   // 23.11.2026: ab 15 Uhr Ausblick auf Nacht/morgen früh
+    if (abd && LAGE) { var mo = new Date(Date.now() + 864e5).toLocaleDateString('sv-SE'); tg = (LAGE.tage || []).filter(function (t) { return t.datum === mo; })[0] || null; }
+    var WH = abd ? 'heute Nacht und morgen früh' : 'heute', WN = abd ? 'morgen früh' : 'heute';
     if (tg) {   // gemeinsame Einstufung aus den Odenwald-Stundenwerten (wie Max im Video und Facebook)
       var la = tg.lage || {}, ni = tg.nied || {};
       var GL = { reif: 'durch Reif', naesse: 'durch überfrierende Nässe', schnee: 'durch Schnee', glatteis: 'durch Glatteis' }, NB = { moeglich: 'möglich', wahrscheinlich: 'wahrscheinlich' };   // 22.11.2026: Klartext statt interner Kürzel
-      if (la.glaette && la.glaette !== 'keine') S.push('Achtung: Heute Glättegefahr ' + (GL[la.glaette] || '') + (la.glaette_hoch && la.glaette_hoch !== 'keine' && la.glaette_hoch !== la.glaette ? ', auf den Höhen ' + (GL[la.glaette_hoch] || '') : '') + '.');
-      else if (la.glaette_hoch && la.glaette_hoch !== 'keine') S.push('Auf den Höhen besteht heute Glättegefahr ' + (GL[la.glaette_hoch] || '') + '.');
-      if (la.nebel && la.nebel !== 'keiner') S.push('Nebel ist heute ' + (NB[la.nebel] || la.nebel) + (la.nebel_bis ? ', bis etwa ' + la.nebel_bis + ' Uhr' : '') + '.');
-      if (ni.schnee_tal) S.push('Bis ins Tal kann es heute schneien.'); else if (ni.schnee_hoch) S.push('Auf den Höhen kann es heute schneien.');
+      if (la.glaette && la.glaette !== 'keine') S.push('Achtung: ' + WH.charAt(0).toUpperCase() + WH.slice(1) + ' Glättegefahr ' + (GL[la.glaette] || '') + (la.glaette_hoch && la.glaette_hoch !== 'keine' && la.glaette_hoch !== la.glaette ? ', auf den Höhen ' + (GL[la.glaette_hoch] || '') : '') + '.');
+      else if (la.glaette_hoch && la.glaette_hoch !== 'keine') S.push('Auf den Höhen besteht ' + WH + ' Glättegefahr ' + (GL[la.glaette_hoch] || '') + '.');
+      var nbVorbei = !abd && la.nebel_bis && jH >= parseInt(la.nebel_bis, 10);   // vergangene Nebelzeit nicht mehr zeigen
+      if (la.nebel && la.nebel !== 'keiner' && !nbVorbei) S.push((abd ? 'Morgen früh ist Nebel ' : 'Nebel ist heute ') + (NB[la.nebel] || la.nebel) + (la.nebel_bis ? ', bis etwa ' + la.nebel_bis + ' Uhr' : '') + '.');
+      if (ni.schnee_tal) S.push('Bis ins Tal kann es ' + WN + ' schneien.'); else if (ni.schnee_hoch) S.push('Auf den Höhen kann es ' + WN + ' schneien.');
     }
     return S.join(' ');
   }
