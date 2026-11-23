@@ -1,0 +1,39 @@
+name: Saison-Zeiträume speichern
+on:
+  workflow_dispatch:
+    inputs:
+      zeilen: { description: 'JSON-Liste der Zeiträume aus der Zentrale', required: true }
+permissions:
+  contents: write
+concurrency:
+  group: nebenarbeiten
+  cancel-in-progress: false
+jobs:
+  speichern:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Zeiträume prüfen und schreiben
+        env:
+          ZEILEN: ${{ inputs.zeilen }}
+        run: |
+          python3 - <<'PY'
+          import json, os, re, datetime, zoneinfo
+          z = json.loads(os.environ['ZEILEN'])
+          ok = {'halloween', 'herbst', 'markt', 'heiligabend', 'silvester'}
+          rx = re.compile(r'^\d\d-\d\d( \d\d:\d\d)?$')
+          out = []
+          for e in z[:20]:
+              if e.get('k') in ok and rx.match(e.get('von', '')) and rx.match(e.get('bis', '')):
+                  out.append({'k': e['k'], 'von': e['von'], 'bis': e['bis']})
+          if not out: raise SystemExit('Keine gültigen Zeilen')
+          now = datetime.datetime.now(zoneinfo.ZoneInfo('Europe/Berlin')).strftime('%Y-%m-%dT%H:%M')
+          open('data/saison.json', 'w', encoding='utf-8').write(json.dumps({'zeilen': out, 'geaendert': now}, ensure_ascii=False, indent=2) + '\n')
+          print(out)
+          PY
+      - name: Speichern
+        run: |
+          git config user.name "wetter-bot"; git config user.email "actions@users.noreply.github.com"
+          git add data/saison.json; git diff --cached --quiet && exit 0
+          git commit -m "Saison-Zeiträume geändert"
+          for i in 1 2 3; do git pull --rebase -q && git push && exit 0; sleep 5; done; exit 1

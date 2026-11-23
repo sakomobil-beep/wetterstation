@@ -1,0 +1,25 @@
+{
+ "stand": "2026-11-23T02:29+01:00",
+ "quellen": {
+  "Sonnenwind (Plasma)": "ok",
+  "Magnetfeld Bz": "ok",
+  "Kp-Index": "ok",
+  "Kp-Prognose": "ok",
+  "Kurzzeit-Kp": "ok",
+  "Flare-Wahrscheinlichkeiten": "ok",
+  "Röntgenstrahlung GOES": "ok",
+  "Protonen GOES": "ok",
+  "Polarlicht OVATION": "ok",
+  "NOAA-Skalen": "ok",
+  "NOAA-Meldungen": "ok",
+  "Sonnenzyklus": "ok",
+  "Polarlichtoval-Animation": "ok",
+  "Sonnenbild SDO": "nicht erreichbar (<urlopen error [Errno 101] Network is unreachable>)"
+ },
+ "fehler": {
+  "Sonnenbild SDO": "nicht erreichbar (<urlopen error [Errno 101] Network is unreachable>)"
+ },
+ "gemeldet": {
+  "Sonnenbild SDO": "2026-11-23"
+ }
+}

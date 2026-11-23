@@ -1,0 +1,84 @@
+name: DWD-Warnung (schnell)
+# Seit 18.11.2026: EINZIGE Stelle, die amtliche DWD-Warnungen postet (Stufe 2 Warn-Story + Beitrag, Stufe 3/4
+# zuerst Unwetter-Story, dann Special-Video mit Max). Der Viertelstunden-Lauf in facebook-post.yml macht das nicht mehr.
+# Angestoßen vom Cloudflare-Worker (prüft den DWD jede Minute, weckt bei neuer Warnung sofort und bei aktiven
+# Warnungen alle 10 Minuten). Reserve, falls Cloudflare ausfällt: GitHubs eigener Zeitplan alle 15 Minuten.
+# Gegen Doppelposts: eigene Warteschlange (immer nur ein Lauf), Gedächtnis in fb/gepostet.json („uw_merk“),
+# erledigt erst nach dem Posten; Warnungen, die in weniger als 30 Minuten enden, werden nicht mehr gepostet.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '7,22,37,52 * * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dwd-warnung
+  cancel-in-progress: false
+
+jobs:
+  warnung:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+      FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+      THREADS_TOKEN: ${{ secrets.THREADS_TOKEN }}
+      FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+      GDRIVE_CLIENT_ID: ${{ secrets.GDRIVE_CLIENT_ID }}
+      GDRIVE_CLIENT_SECRET: ${{ secrets.GDRIVE_CLIENT_SECRET }}
+      GDRIVE_REFRESH_TOKEN: ${{ secrets.GDRIVE_REFRESH_TOKEN }}
+      IG_AUTO: ${{ vars.IG_AUTO }}
+      GH_TOKEN: ${{ github.token }}
+      FB_WARTEN: '5'   # nur dieser Ablauf postet Warnungen – kein langes Warten auf andere Läufe nötig
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install pillow numpy edge-tts
+      - name: DWD-Warn-Push (Handy)
+        run: python .github/scripts/dwd_push.py
+      - name: Warnungen prüfen (Stufe 2 Story, 3/4 Story + Special)
+        id: uw
+        run: python .github/scripts/unwetter_check.py || echo "neu=0" >> "$GITHUB_OUTPUT"
+      - name: Speichern (Bilder)
+        run: |
+          git config user.name "wetter-bot"; git config user.email "actions@users.noreply.github.com"
+          git add -A fb; git diff --cached --quiet && exit 0
+          git commit -q -m "DWD-Warnung $(TZ=Europe/Berlin date +'%d.%m.%Y %H:%M')"
+          for i in 1 2 3 4 5 6 7 8; do git pull --rebase -X theirs -q && git push -q && break; git rebase --abort 2>/dev/null || true; sleep $((i*4)); done
+      - name: Story posten (zuerst)
+        run: |
+          if [ -z "$FB_PAGE_TOKEN" ]; then echo "Kein Auto-Posting eingerichtet."; exit 0; fi
+          git pull --rebase -X theirs -q || true
+          python .github/scripts/fb_senden.py uw3story || echo "Unwetter-Story nicht gepostet"
+          python .github/scripts/fb_senden.py warnstory || echo "Warn-Story nicht gepostet"
+          python .github/scripts/fb_senden.py special || echo "Unwetter-Special nicht gepostet"
+          bash .github/scripts/merk_speichern.sh
+      - uses: FedericoCarboni/setup-ffmpeg@v3
+        if: steps.uw.outputs.neu == '1'
+        timeout-minutes: 5
+        continue-on-error: true
+      - name: ffmpeg-Reserve (falls die Einrichtung oben ausfällt, 19.11.2026)
+        if: steps.uw.outputs.neu == '1'
+        run: command -v ffprobe >/dev/null || { sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg; }
+      - name: Unwetter-Special mit Max bauen (Stufe 3/4)
+        if: steps.uw.outputs.neu == '1'
+        run: |
+          mkdir -p /tmp/uw; cp fb/post.txt fb/post.json fb/story.jpg fb/story.json /tmp/uw/ 2>/dev/null || true
+          python .github/scripts/fb_post.py || true
+          cp /tmp/uw/* fb/ 2>/dev/null || true
+          if ! python .github/scripts/wetter_video.py --special --unwetter; then
+            [ -n "$NTFY_TOPIC" ] && curl -s -H "Tags: warning" -H "Title: Unwetter-Special nicht gebaut" -d "Die Unwetter-Story ist raus, das Video mit Max konnte nicht gebaut werden." "https://ntfy.sh/$NTFY_TOPIC" >/dev/null || true
+          fi
+          git add -A fb; git diff --cached --quiet && exit 0
+          git commit -q -m "Unwetter-Special $(TZ=Europe/Berlin date +'%d.%m.%Y %H:%M')"
+          for i in 1 2 3 4 5 6 7 8; do git pull --rebase -X theirs -q && git push -q && break; git rebase --abort 2>/dev/null || true; sleep $((i*4)); done
+      - name: Special-Video posten
+        if: steps.uw.outputs.neu == '1'
+        run: |
+          if [ -z "$FB_PAGE_TOKEN" ]; then exit 0; fi
+          git pull --rebase -X theirs -q || true
+          python .github/scripts/fb_senden.py special || echo "Unwetter-Special nicht gepostet"
+          bash .github/scripts/merk_speichern.sh

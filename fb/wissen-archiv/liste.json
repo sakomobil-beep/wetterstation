@@ -1,0 +1,51 @@
+[
+ {
+  "datum": "2026-11-20",
+  "datei": "2026-11-20.mp4",
+  "folge": 6,
+  "titel": "Warum ist es im Tal windstiller?",
+  "dauer": 54.6,
+  "erstellt": "2026-11-20T13:03+00:00"
+ },
+ {
+  "datum": "2026-11-19",
+  "datei": "2026-11-19.mp4",
+  "folge": 5,
+  "titel": "Was ist eine Böe?",
+  "dauer": 51.2,
+  "erstellt": "2026-11-19T13:03+00:00"
+ },
+ {
+  "datum": "2026-11-18",
+  "datei": "2026-11-18.mp4",
+  "folge": 4,
+  "titel": "Was bedeutet Windstärke 12?",
+  "dauer": 50.7,
+  "erstellt": "2026-11-18T13:03+00:00"
+ },
+ {
+  "datum": "2026-11-17",
+  "datei": "2026-11-17.mp4",
+  "folge": 3,
+  "titel": "Woher kommt eigentlich der Wind?",
+  "dauer": 52.7,
+  "erstellt": "2026-11-17T19:57+00:00"
+ },
+ {
+  "datum": "2026-11-16",
+  "datei": "2026-11-16.mp4",
+  "folge": 2,
+  "titel": "Was ist eine Fallböe?",
+  "dauer": 47.8,
+  "erstellt": "2026-11-16T15:08+01:00"
+ },
+ {
+  "datum": "2026-11-15",
+  "datei": "2026-11-15.mp4",
+  "folge": 1,
+  "titel": "Warum hängt der Nebel im Tal?",
+  "dauer": 174.7,
+  "erstellt": "2026-11-15T15:04+01:00",
+  "premiere": true
+ }
+]

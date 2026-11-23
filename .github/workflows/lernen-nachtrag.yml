@@ -1,0 +1,41 @@
+name: Kreis-Lernen nachtragen (einmalig, 3 Monate)
+
+# 22.11.2026: läuft nachts kurz nach dem WU-Tageswechsel, solange data/lernen-nachtrag.an existiert.
+# Holt Messwerte, Modellwerte und Bewölkung/Wind ab 24.08.2026 und lernt danach neu. Danach tut er nichts mehr.
+on:
+  schedule:
+    - cron: '20 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: nebenarbeiten
+  cancel-in-progress: false
+
+jobs:
+  nachtrag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Angefordert?
+        id: an
+        run: test -f data/lernen-nachtrag.an && echo "ja=1" >> $GITHUB_OUTPUT || echo "Kein Nachtrag angefordert."
+      - uses: actions/setup-python@v5
+        if: steps.an.outputs.ja == '1'
+        with: { python-version: '3.12' }
+      - if: steps.an.outputs.ja == '1'
+        run: python .github/scripts/lernen_nachtrag.py
+      - if: steps.an.outputs.ja == '1'
+        run: python .github/scripts/lernen_kreis.py || echo "Kreis-Lernen fehlgeschlagen"
+      - name: Speichern
+        if: steps.an.outputs.ja == '1'
+        run: |
+          git config user.name "wetter-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A data
+          git diff --cached --quiet && exit 0
+          git commit -m "Kreis-Lernen nachgetragen $(TZ=Europe/Berlin date +'%d.%m. %H:%M')"
+          for i in 1 2 3; do git pull --rebase -q && git push && break; sleep 5; done

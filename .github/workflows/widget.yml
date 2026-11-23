@@ -1,0 +1,39 @@
+name: Widget-Daten
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'   # alle 10 Minuten (GitHub startet manchmal etwas später)
+  workflow_dispatch:
+  push:
+    paths: ['.github/scripts/ortsseiten.py', '.github/scripts/widget_daten.py', '.github/scripts/odenwald_live.py', '.github/workflows/widget.yml', '.github/scripts/luftqualitaet.py']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: widget-daten
+  cancel-in-progress: false
+
+jobs:
+  daten:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install pillow
+      - run: python .github/scripts/widget_daten.py
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+      - run: timeout 240 python .github/scripts/odenwald_live.py || echo "Odenwald-Live nicht aktualisiert"
+      - run: timeout 60 python .github/scripts/luftqualitaet.py || echo "Luftqualität nicht aktualisiert"   # 22.11.2026, ruft höchstens alle 30 Min. ab
+      - run: timeout 60 python .github/scripts/ortsseiten.py || echo "Ortsseiten nicht aktualisiert"   # 22.11.2026: 8 Ortsseiten + Jetzt-Satz der Startseite (für Google), nur bei Änderung
+      - name: Speichern
+        run: |
+          git config user.name "wetter-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/widget.json data/live.json $(ls data/station-status.json 2>/dev/null) data/archiv data/odenwald-live.json data/odenwald-archiv $(ls data/odenwald-stationen.json 2>/dev/null) $(ls data/luft.json 2>/dev/null) michelstadt.html hoechst.html breuberg.html mossautal.html oberzent.html reichelsheim.html brombachtal.html luetzelbach.html index.html
+          git diff --cached --quiet && exit 0
+          git commit -q -m "Widget-Daten $(TZ=Europe/Berlin date +'%d.%m.%Y %H:%M')"
+          for i in 1 2 3 4; do git pull --rebase -X theirs -q && git push -q && break; git rebase --abort 2>/dev/null || true; sleep 7; done

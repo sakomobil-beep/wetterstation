@@ -1,0 +1,3650 @@
+{
+ "erstellt": "2026-11-07T19:42+00:00",
+ "orte": {
+  "Breuberg": {
+   "wu": [
+    {
+     "id": "IBREUB9",
+     "km": 0.22,
+     "qc": 0,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.816421,
+     "lon": 9.038268,
+     "letzte": "2026-11-07 20:40:07",
+     "hoehe": 12
+    },
+    {
+     "id": "IBREUB3",
+     "km": 0.78,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.8117,
+     "lon": 9.044789,
+     "letzte": "2026-11-07 20:39:55",
+     "hoehe": 62
+    },
+    {
+     "id": "IBREUB10",
+     "km": 0.96,
+     "qc": -1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.816,
+     "lon": 9.053,
+     "letzte": "2026-11-07 20:40:07",
+     "hoehe": 43
+    },
+    {
+     "id": "IBREUB7",
+     "km": 1.8,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.834,
+     "lon": 9.044,
+     "letzte": "2026-11-07 20:39:54",
+     "hoehe": 169
+    },
+    {
+     "id": "IDTSANDB5",
+     "km": 1.93,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.820164,
+     "lon": 9.013369,
+     "letzte": "2026-11-07 20:39:39",
+     "hoehe": 188
+    },
+    {
+     "id": "ILTZEL3",
+     "km": 3.57,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.785915,
+     "lon": 9.041221,
+     "letzte": "2026-11-07 20:40:00",
+     "hoehe": 270
+    },
+    {
+     "id": "ILTZEL13",
+     "km": 3.69,
+     "qc": 1,
+     "stunden": 157,
+     "mit_regen": 157,
+     "name": null,
+     "lat": 49.790761,
+     "lon": 9.069444,
+     "letzte": "2026-11-07 20:39:58",
+     "hoehe": 79
+    },
+    {
+     "id": "ILTZEL5",
+     "km": 3.99,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.782129,
+     "lon": 9.039183,
+     "letzte": "2026-11-07 20:39:55",
+     "hoehe": 73
+    }
+   ],
+   "dwd": [
+    {
+     "id": 14118,
+     "dwd_station_id": null,
+     "station_name": "Hoechst/Odenwald-Ann",
+     "observation_type": "synop",
+     "height": 220.0,
+     "distance": 7179,
+     "last_record": "2023-08-16T06:00:00+00:00"
+    },
+    {
+     "id": 292461,
+     "dwd_station_id": "15171",
+     "station_name": "Höchst/Odenwald-Annelsbach",
+     "observation_type": "historical",
+     "height": 220.0,
+     "distance": 7179,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 301597,
+     "dwd_station_id": null,
+     "station_name": "Hoechst/Odenwald-Ann",
+     "observation_type": "synop",
+     "height": 219.0,
+     "distance": 7195,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 291964,
+     "dwd_station_id": "03703",
+     "station_name": "Wörth am Main",
+     "observation_type": "historical",
+     "height": 132.0,
+     "distance": 8670,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 234270,
+     "dwd_station_id": null,
+     "station_name": "Woerth am Main",
+     "observation_type": "synop",
+     "height": 132.0,
+     "distance": 8670,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 14164,
+     "dwd_station_id": null,
+     "station_name": "Woerth am Main",
+     "observation_type": "synop",
+     "height": 132.0,
+     "distance": 8676,
+     "last_record": "2022-10-20T06:00:00+00:00"
+    },
+    {
+     "id": 220961,
+     "dwd_station_id": "04134",
+     "station_name": "Otzberg-Habitzheim",
+     "observation_type": "historical",
+     "height": 171.5,
+     "distance": 11633,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 36740,
+     "dwd_station_id": "04134",
+     "station_name": "Otzberg-Habitzheim",
+     "observation_type": "synop",
+     "height": 171.5,
+     "distance": 11635,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 6220,
+     "dwd_station_id": "03287",
+     "station_name": "MICHELSTADT-V.",
+     "observation_type": "current",
+     "height": 453.0,
+     "distance": 11731,
+     "last_record": "2026-11-07T19:00:00+00:00"
+    },
+    {
+     "id": 204146,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrun",
+     "observation_type": "synop",
+     "height": 452.8,
+     "distance": 11962,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 204147,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrunn",
+     "observation_type": "historical",
+     "height": 452.83,
+     "distance": 11962,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 81854,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrun",
+     "observation_type": "synop",
+     "height": 453.0,
+     "distance": 11962,
+     "last_record": "2022-05-05T03:00:00+00:00"
+    },
+    {
+     "id": 96588,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrunn",
+     "observation_type": "historical",
+     "height": 453.0,
+     "distance": 11962,
+     "last_record": "2022-05-04T23:00:00+00:00"
+    },
+    {
+     "id": 11767,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrun",
+     "observation_type": "synop",
+     "height": 453.0,
+     "distance": 11972,
+     "last_record": "2021-02-10T03:00:00+00:00"
+    },
+    {
+     "id": 7130,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrunn",
+     "observation_type": "historical",
+     "height": 453.0,
+     "distance": 11972,
+     "last_record": "2019-12-31T23:00:00+00:00"
+    },
+    {
+     "id": 334502,
+     "dwd_station_id": "01851",
+     "station_name": "Großostheim",
+     "observation_type": "historical",
+     "height": 110.0,
+     "distance": 12225,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 6649,
+     "dwd_station_id": "04411",
+     "station_name": "SCHAAFHEIM-SCHLIERB.",
+     "observation_type": "current",
+     "height": 155.0,
+     "distance": 12416,
+     "last_record": "2026-11-07T19:00:00+00:00"
+    },
+    {
+     "id": 308022,
+     "dwd_station_id": "04411",
+     "station_name": "Schaafheim-Schlierbach",
+     "observation_type": "historical",
+     "height": 155.0,
+     "distance": 12448,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 308198,
+     "dwd_station_id": "04411",
+     "station_name": "Schaafheim-Schlierba",
+     "observation_type": "synop",
+     "height": 155.0,
+     "distance": 12449,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 9339,
+     "dwd_station_id": "04411",
+     "station_name": "Schaafheim-Schlierba",
+     "observation_type": "synop",
+     "height": 155.0,
+     "distance": 12450,
+     "last_record": "2020-08-05T04:00:00+00:00"
+    },
+    {
+     "id": 7214,
+     "dwd_station_id": "04411",
+     "station_name": "Schaafheim-Schlierbach",
+     "observation_type": "historical",
+     "height": 155.0,
+     "distance": 12451,
+     "last_record": "2022-12-31T23:00:00+00:00"
+    },
+    {
+     "id": 37662,
+     "dwd_station_id": "04411",
+     "station_name": "Schaafheim-Schlierba",
+     "observation_type": "synop",
+     "height": 155.0,
+     "distance": 12452,
+     "last_record": "2025-01-16T14:00:00+00:00"
+    },
+    {
+     "id": 306065,
+     "dwd_station_id": "19576",
+     "station_name": "Reinheim-Hundertmorgen",
+     "observation_type": "historical",
+     "height": 249.0,
+     "distance": 13147,
+     "last_record": "2023-09-08T00:00:00+00:00"
+    },
+    {
+     "id": 6647,
+     "dwd_station_id": "03284",
+     "station_name": "MICHELSTADT",
+     "observation_type": "current",
+     "height": 204.0,
+     "distance": 15429,
+     "last_record": "2026-11-07T19:00:00+00:00"
+    },
+    {
+     "id": 8264,
+     "dwd_station_id": "04134",
+     "station_name": "Otzberg-Habitzheim",
+     "observation_type": "historical",
+     "height": 165.0,
+     "distance": 15551,
+     "last_record": "2018-11-01T06:00:00+00:00"
+    },
+    {
+     "id": 6723,
+     "dwd_station_id": "03319",
+     "station_name": "ROELLBACH",
+     "observation_type": "current",
+     "height": 239.0,
+     "distance": 16009,
+     "last_record": "2026-11-07T19:00:00+00:00"
+    },
+    {
+     "id": 291490,
+     "dwd_station_id": "00955",
+     "station_name": "Dieburg",
+     "observation_type": "historical",
+     "height": 145.0,
+     "distance": 16340,
+     "last_record": "2018-08-01T06:00:00+00:00"
+    },
+    {
+     "id": 234401,
+     "dwd_station_id": "03319",
+     "station_name": "Röllbach",
+     "observation_type": "historical",
+     "height": 238.5,
+     "distance": 16429,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 7129,
+     "dwd_station_id": "03319",
+     "station_name": "Röllbach",
+     "observation_type": "historical",
+     "height": 239.0,
+     "distance": 16429,
+     "last_record": "2022-10-19T23:00:00+00:00"
+    },
+    {
+     "id": 9405,
+     "dwd_station_id": "03319",
+     "station_name": "Roellbach",
+     "observation_type": "synop",
+     "height": 239.0,
+     "distance": 16431,
+     "last_record": "2022-10-21T03:00:00+00:00"
+    },
+    {
+     "id": 233572,
+     "dwd_station_id": "03319",
+     "station_name": "Roellbach",
+     "observation_type": "synop",
+     "height": 238.5,
+     "distance": 16432,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 133293,
+     "dwd_station_id": "03284",
+     "station_name": "Michelstadt",
+     "observation_type": "synop",
+     "height": 240.0,
+     "distance": 16718,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 133294,
+     "dwd_station_id": "03284",
+     "station_name": "Michelstadt",
+     "observation_type": "historical",
+     "height": 240.0,
+     "distance": 16719,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 9340,
+     "dwd_station_id": "03284",
+     "station_name": "Michelstadt",
+     "observation_type": "synop",
+     "height": 240.0,
+     "distance": 16729,
+     "last_record": "2021-08-25T03:00:00+00:00"
+    },
+    {
+     "id": 7126,
+     "dwd_station_id": "03284",
+     "station_name": "Michelstadt",
+     "observation_type": "historical",
+     "height": 240.0,
+     "distance": 16730,
+     "last_record": "2021-08-23T23:00:00+00:00"
+    },
+    {
+     "id": 291890,
+     "dwd_station_id": "03291",
+     "station_name": "Miltenberg",
+     "observation_type": "historical",
+     "height": 128.5,
+     "distance": 17825,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 127820,
+     "dwd_station_id": null,
+     "station_name": "Miltenberg",
+     "observation_type": "synop",
+     "height": 128.5,
+     "distance": 17825,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 14168,
+     "dwd_station_id": null,
+     "station_name": "Miltenberg",
+     "observation_type": "synop",
+     "height": 128.0,
+     "distance": 17826,
+     "last_record": "2021-07-22T06:00:00+00:00"
+    },
+    {
+     "id": 292067,
+     "dwd_station_id": "04121",
+     "station_name": "Reichelsheim/Odenwald",
+     "observation_type": "historical",
+     "height": 209.0,
+     "distance": 17967,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 14120,
+     "dwd_station_id": null,
+     "station_name": "Reichelsheim/Odenwal",
+     "observation_type": "synop",
+     "height": 209.0,
+     "distance": 17969,
+     "last_record": "2025-01-01T06:00:00+00:00"
+    },
+    {
+     "id": 127803,
+     "dwd_station_id": null,
+     "station_name": "Aschaffenburg",
+     "observation_type": "synop",
+     "height": 110.5,
+     "distance": 18391,
+     "last_record": "2026-07-01T06:00:00+00:00"
+    },
+    {
+     "id": 291371,
+     "dwd_station_id": "00202",
+     "station_name": "Aschaffenburg",
+     "observation_type": "historical",
+     "height": 110.5,
+     "distance": 18391,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 14559,
+     "dwd_station_id": null,
+     "station_name": "Aschaffenburg",
+     "observation_type": "synop",
+     "height": 110.0,
+     "distance": 18512,
+     "last_record": "2021-07-22T06:00:00+00:00"
+    },
+    {
+     "id": 291884,
+     "dwd_station_id": "03265",
+     "station_name": "Mespelbrunn",
+     "observation_type": "historical",
+     "height": 296.5,
+     "distance": 21180,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 127809,
+     "dwd_station_id": null,
+     "station_name": "Mespelbrunn",
+     "observation_type": "synop",
+     "height": 296.5,
+     "distance": 21182,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 14156,
+     "dwd_station_id": null,
+     "station_name": "Mespelbrunn",
+     "observation_type": "synop",
+     "height": 302.0,
+     "distance": 21182,
+     "last_record": "2021-07-22T06:00:00+00:00"
+    },
+    {
+     "id": 292148,
+     "dwd_station_id": "04668",
+     "station_name": "Seligenstadt-Waldhof",
+     "observation_type": "historical",
+     "height": 126.0,
+     "distance": 22456,
+     "last_record": "2021-02-28T06:00:00+00:00"
+    },
+    {
+     "id": 15741,
+     "dwd_station_id": null,
+     "station_name": "Mainhausen-Zellhause",
+     "observation_type": "synop",
+     "height": 126.0,
+     "distance": 22456,
+     "last_record": "2021-03-01T06:00:00+00:00"
+    },
+    {
+     "id": 9836,
+     "dwd_station_id": "04230",
+     "station_name": "Roedermark-Ober-Rode",
+     "observation_type": "synop",
+     "height": 137.0,
+     "distance": 23341,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 8271,
+     "dwd_station_id": "04230",
+     "station_name": "Rödermark-Ober-Roden",
+     "observation_type": "historical",
+     "height": 137.0,
+     "distance": 23343,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 87650,
+     "dwd_station_id": null,
+     "station_name": "Seligenstadt-Waldhof",
+     "observation_type": "synop",
+     "height": 119.0,
+     "distance": 23652,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 292149,
+     "dwd_station_id": "04668",
+     "station_name": "Seligenstadt-Waldhof",
+     "observation_type": "historical",
+     "height": 119.0,
+     "distance": 23653,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 334527,
+     "dwd_station_id": "06285",
+     "station_name": "Amorbach-Neudorf",
+     "observation_type": "historical",
+     "height": 420.0,
+     "distance": 24155,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 291623,
+     "dwd_station_id": "01742",
+     "station_name": "Grasellenbach-Hammelbach",
+     "observation_type": "historical",
+     "height": 447.0,
+     "distance": 24772,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 15881,
+     "dwd_station_id": null,
+     "station_name": "Grasellenbach-Hammel",
+     "observation_type": "synop",
+     "height": 447.0,
+     "distance": 24774,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    }
+   ]
+  },
+  "Höchst": {
+   "wu": [
+    {
+     "id": "IDTSANDB5",
+     "km": 2.73,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.820164,
+     "lon": 9.013369,
+     "letzte": "2026-11-07 20:39:39",
+     "hoehe": 188
+    },
+    {
+     "id": "IHCHSTIO2",
+     "km": 3.02,
+     "qc": 1,
+     "stunden": 106,
+     "mit_regen": 106,
+     "name": null,
+     "lat": 49.772495,
+     "lon": 8.98485,
+     "letzte": "2026-11-07 20:39:28",
+     "hoehe": 35
+    },
+    {
+     "id": "IHCHST74",
+     "km": 3.33,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.769085,
+     "lon": 8.991183,
+     "letzte": "2026-11-07 20:40:05",
+     "hoehe": 51
+    },
+    {
+     "id": "ILTZEL3",
+     "km": 3.69,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.785915,
+     "lon": 9.041221,
+     "letzte": "2026-11-07 20:40:00",
+     "hoehe": 270
+    },
+    {
+     "id": "IBREUB9",
+     "km": 3.72,
+     "qc": 0,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.816421,
+     "lon": 9.038268,
+     "letzte": "2026-11-07 20:40:07",
+     "hoehe": 12
+    },
+    {
+     "id": "ILTZEL5",
+     "km": 3.75,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.782129,
+     "lon": 9.039183,
+     "letzte": "2026-11-07 20:39:55",
+     "hoehe": 73
+    },
+    {
+     "id": "IBREUB3",
+     "km": 3.91,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.8117,
+     "lon": 9.044789,
+     "letzte": "2026-11-07 20:39:55",
+     "hoehe": 62
+    },
+    {
+     "id": "IGROUM27",
+     "km": 4.34,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.82,
+     "lon": 8.943,
+     "letzte": "2026-11-07 20:39:47",
+     "hoehe": 230
+    }
+   ],
+   "dwd": [
+    {
+     "id": 14118,
+     "dwd_station_id": null,
+     "station_name": "Hoechst/Odenwald-Ann",
+     "observation_type": "synop",
+     "height": 220.0,
+     "distance": 3266,
+     "last_record": "2023-08-16T06:00:00+00:00"
+    },
+    {
+     "id": 292461,
+     "dwd_station_id": "15171",
+     "station_name": "Höchst/Odenwald-Annelsbach",
+     "observation_type": "historical",
+     "height": 220.0,
+     "distance": 3266,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 301597,
+     "dwd_station_id": null,
+     "station_name": "Hoechst/Odenwald-Ann",
+     "observation_type": "synop",
+     "height": 219.0,
+     "distance": 3283,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 220961,
+     "dwd_station_id": "04134",
+     "station_name": "Otzberg-Habitzheim",
+     "observation_type": "historical",
+     "height": 171.5,
+     "distance": 9158,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 36740,
+     "dwd_station_id": "04134",
+     "station_name": "Otzberg-Habitzheim",
+     "observation_type": "synop",
+     "height": 171.5,
+     "distance": 9160,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 306065,
+     "dwd_station_id": "19576",
+     "station_name": "Reinheim-Hundertmorgen",
+     "observation_type": "historical",
+     "height": 249.0,
+     "distance": 9776,
+     "last_record": "2023-09-08T00:00:00+00:00"
+    },
+    {
+     "id": 234270,
+     "dwd_station_id": null,
+     "station_name": "Woerth am Main",
+     "observation_type": "synop",
+     "height": 132.0,
+     "distance": 11550,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 291964,
+     "dwd_station_id": "03703",
+     "station_name": "Wörth am Main",
+     "observation_type": "historical",
+     "height": 132.0,
+     "distance": 11550,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 14164,
+     "dwd_station_id": null,
+     "station_name": "Woerth am Main",
+     "observation_type": "synop",
+     "height": 132.0,
+     "distance": 11554,
+     "last_record": "2022-10-20T06:00:00+00:00"
+    },
+    {
+     "id": 6220,
+     "dwd_station_id": "03287",
+     "station_name": "MICHELSTADT-V.",
+     "observation_type": "current",
+     "height": 453.0,
+     "distance": 11638,
+     "last_record": "2026-11-07T19:00:00+00:00"
+    },
+    {
+     "id": 204147,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrunn",
+     "observation_type": "historical",
+     "height": 452.83,
+     "distance": 11819,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 96588,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrunn",
+     "observation_type": "historical",
+     "height": 453.0,
+     "distance": 11819,
+     "last_record": "2022-05-04T23:00:00+00:00"
+    },
+    {
+     "id": 81854,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrun",
+     "observation_type": "synop",
+     "height": 453.0,
+     "distance": 11820,
+     "last_record": "2022-05-05T03:00:00+00:00"
+    },
+    {
+     "id": 204146,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrun",
+     "observation_type": "synop",
+     "height": 452.8,
+     "distance": 11820,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 11767,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrun",
+     "observation_type": "synop",
+     "height": 453.0,
+     "distance": 11827,
+     "last_record": "2021-02-10T03:00:00+00:00"
+    },
+    {
+     "id": 7130,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrunn",
+     "observation_type": "historical",
+     "height": 453.0,
+     "distance": 11827,
+     "last_record": "2019-12-31T23:00:00+00:00"
+    },
+    {
+     "id": 8264,
+     "dwd_station_id": "04134",
+     "station_name": "Otzberg-Habitzheim",
+     "observation_type": "historical",
+     "height": 165.0,
+     "distance": 12556,
+     "last_record": "2018-11-01T06:00:00+00:00"
+    },
+    {
+     "id": 6647,
+     "dwd_station_id": "03284",
+     "station_name": "MICHELSTADT",
+     "observation_type": "current",
+     "height": 204.0,
+     "distance": 13378,
+     "last_record": "2026-11-07T19:00:00+00:00"
+    },
+    {
+     "id": 308198,
+     "dwd_station_id": "04411",
+     "station_name": "Schaafheim-Schlierba",
+     "observation_type": "synop",
+     "height": 155.0,
+     "distance": 13551,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 308022,
+     "dwd_station_id": "04411",
+     "station_name": "Schaafheim-Schlierbach",
+     "observation_type": "historical",
+     "height": 155.0,
+     "distance": 13551,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 37662,
+     "dwd_station_id": "04411",
+     "station_name": "Schaafheim-Schlierba",
+     "observation_type": "synop",
+     "height": 155.0,
+     "distance": 13552,
+     "last_record": "2025-01-16T14:00:00+00:00"
+    },
+    {
+     "id": 7214,
+     "dwd_station_id": "04411",
+     "station_name": "Schaafheim-Schlierbach",
+     "observation_type": "historical",
+     "height": 155.0,
+     "distance": 13552,
+     "last_record": "2022-12-31T23:00:00+00:00"
+    },
+    {
+     "id": 9339,
+     "dwd_station_id": "04411",
+     "station_name": "Schaafheim-Schlierba",
+     "observation_type": "synop",
+     "height": 155.0,
+     "distance": 13552,
+     "last_record": "2020-08-05T04:00:00+00:00"
+    },
+    {
+     "id": 6649,
+     "dwd_station_id": "04411",
+     "station_name": "SCHAAFHEIM-SCHLIERB.",
+     "observation_type": "current",
+     "height": 155.0,
+     "distance": 13579,
+     "last_record": "2026-11-07T19:00:00+00:00"
+    },
+    {
+     "id": 292067,
+     "dwd_station_id": "04121",
+     "station_name": "Reichelsheim/Odenwald",
+     "observation_type": "historical",
+     "height": 209.0,
+     "distance": 14119,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 14120,
+     "dwd_station_id": null,
+     "station_name": "Reichelsheim/Odenwal",
+     "observation_type": "synop",
+     "height": 209.0,
+     "distance": 14122,
+     "last_record": "2025-01-01T06:00:00+00:00"
+    },
+    {
+     "id": 133293,
+     "dwd_station_id": "03284",
+     "station_name": "Michelstadt",
+     "observation_type": "synop",
+     "height": 240.0,
+     "distance": 14487,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 133294,
+     "dwd_station_id": "03284",
+     "station_name": "Michelstadt",
+     "observation_type": "historical",
+     "height": 240.0,
+     "distance": 14487,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 7126,
+     "dwd_station_id": "03284",
+     "station_name": "Michelstadt",
+     "observation_type": "historical",
+     "height": 240.0,
+     "distance": 14498,
+     "last_record": "2021-08-23T23:00:00+00:00"
+    },
+    {
+     "id": 9340,
+     "dwd_station_id": "03284",
+     "station_name": "Michelstadt",
+     "observation_type": "synop",
+     "height": 240.0,
+     "distance": 14498,
+     "last_record": "2021-08-25T03:00:00+00:00"
+    },
+    {
+     "id": 291490,
+     "dwd_station_id": "00955",
+     "station_name": "Dieburg",
+     "observation_type": "historical",
+     "height": 145.0,
+     "distance": 15138,
+     "last_record": "2018-08-01T06:00:00+00:00"
+    },
+    {
+     "id": 334502,
+     "dwd_station_id": "01851",
+     "station_name": "Großostheim",
+     "observation_type": "historical",
+     "height": 110.0,
+     "distance": 15430,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 6723,
+     "dwd_station_id": "03319",
+     "station_name": "ROELLBACH",
+     "observation_type": "current",
+     "height": 239.0,
+     "distance": 18681,
+     "last_record": "2026-11-07T19:00:00+00:00"
+    },
+    {
+     "id": 234401,
+     "dwd_station_id": "03319",
+     "station_name": "Röllbach",
+     "observation_type": "historical",
+     "height": 238.5,
+     "distance": 19011,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 7129,
+     "dwd_station_id": "03319",
+     "station_name": "Röllbach",
+     "observation_type": "historical",
+     "height": 239.0,
+     "distance": 19011,
+     "last_record": "2022-10-19T23:00:00+00:00"
+    },
+    {
+     "id": 9405,
+     "dwd_station_id": "03319",
+     "station_name": "Roellbach",
+     "observation_type": "synop",
+     "height": 239.0,
+     "distance": 19013,
+     "last_record": "2022-10-21T03:00:00+00:00"
+    },
+    {
+     "id": 233572,
+     "dwd_station_id": "03319",
+     "station_name": "Roellbach",
+     "observation_type": "synop",
+     "height": 238.5,
+     "distance": 19014,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 291890,
+     "dwd_station_id": "03291",
+     "station_name": "Miltenberg",
+     "observation_type": "historical",
+     "height": 128.5,
+     "distance": 19280,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 127820,
+     "dwd_station_id": null,
+     "station_name": "Miltenberg",
+     "observation_type": "synop",
+     "height": 128.5,
+     "distance": 19280,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 14168,
+     "dwd_station_id": null,
+     "station_name": "Miltenberg",
+     "observation_type": "synop",
+     "height": 128.0,
+     "distance": 19281,
+     "last_record": "2021-07-22T06:00:00+00:00"
+    },
+    {
+     "id": 291623,
+     "dwd_station_id": "01742",
+     "station_name": "Grasellenbach-Hammelbach",
+     "observation_type": "historical",
+     "height": 447.0,
+     "distance": 21156,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 15881,
+     "dwd_station_id": null,
+     "station_name": "Grasellenbach-Hammel",
+     "observation_type": "synop",
+     "height": 447.0,
+     "distance": 21157,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 127803,
+     "dwd_station_id": null,
+     "station_name": "Aschaffenburg",
+     "observation_type": "synop",
+     "height": 110.5,
+     "distance": 21476,
+     "last_record": "2026-07-01T06:00:00+00:00"
+    },
+    {
+     "id": 291371,
+     "dwd_station_id": "00202",
+     "station_name": "Aschaffenburg",
+     "observation_type": "historical",
+     "height": 110.5,
+     "distance": 21476,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 14559,
+     "dwd_station_id": null,
+     "station_name": "Aschaffenburg",
+     "observation_type": "synop",
+     "height": 110.0,
+     "distance": 21613,
+     "last_record": "2021-07-22T06:00:00+00:00"
+    },
+    {
+     "id": 9836,
+     "dwd_station_id": "04230",
+     "station_name": "Roedermark-Ober-Rode",
+     "observation_type": "synop",
+     "height": 137.0,
+     "distance": 23306,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 8271,
+     "dwd_station_id": "04230",
+     "station_name": "Rödermark-Ober-Roden",
+     "observation_type": "historical",
+     "height": 137.0,
+     "distance": 23307,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 14115,
+     "dwd_station_id": null,
+     "station_name": "Messel",
+     "observation_type": "synop",
+     "height": 165.0,
+     "distance": 23637,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 291886,
+     "dwd_station_id": "03266",
+     "station_name": "Messel",
+     "observation_type": "historical",
+     "height": 165.0,
+     "distance": 23639,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 291885,
+     "dwd_station_id": "03266",
+     "station_name": "Messel",
+     "observation_type": "historical",
+     "height": 178.0,
+     "distance": 23935,
+     "last_record": "2015-02-24T06:00:00+00:00"
+    },
+    {
+     "id": 8160,
+     "dwd_station_id": "02900",
+     "station_name": "Lautertal/Odenwald-Reichenbach",
+     "observation_type": "historical",
+     "height": 208.3,
+     "distance": 23998,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 9838,
+     "dwd_station_id": "02900",
+     "station_name": "Lautertal/Odenwald-R",
+     "observation_type": "synop",
+     "height": 208.3,
+     "distance": 23998,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 15741,
+     "dwd_station_id": null,
+     "station_name": "Mainhausen-Zellhause",
+     "observation_type": "synop",
+     "height": 126.0,
+     "distance": 24071,
+     "last_record": "2021-03-01T06:00:00+00:00"
+    },
+    {
+     "id": 292148,
+     "dwd_station_id": "04668",
+     "station_name": "Seligenstadt-Waldhof",
+     "observation_type": "historical",
+     "height": 126.0,
+     "distance": 24071,
+     "last_record": "2021-02-28T06:00:00+00:00"
+    },
+    {
+     "id": 6646,
+     "dwd_station_id": "00917",
+     "station_name": "DARMSTADT",
+     "observation_type": "current",
+     "height": 162.0,
+     "distance": 24280,
+     "last_record": "2026-11-07T19:00:00+00:00"
+    },
+    {
+     "id": 9338,
+     "dwd_station_id": "00917",
+     "station_name": "Darmstadt",
+     "observation_type": "synop",
+     "height": 162.0,
+     "distance": 24456,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 16264,
+     "dwd_station_id": "00917",
+     "station_name": "Darmstadt",
+     "observation_type": "current",
+     "height": 162.0,
+     "distance": 24456,
+     "last_record": "2026-10-30T01:00:00+00:00"
+    },
+    {
+     "id": 9158,
+     "dwd_station_id": "00917",
+     "station_name": "Darmstadt",
+     "observation_type": "current",
+     "height": 162.0,
+     "distance": 24457,
+     "last_record": null
+    },
+    {
+     "id": 6920,
+     "dwd_station_id": "00917",
+     "station_name": "Darmstadt",
+     "observation_type": "historical",
+     "height": 162.0,
+     "distance": 24457,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    }
+   ]
+  },
+  "Michelstadt": {
+   "wu": [
+    {
+     "id": "IMICHELS20",
+     "km": 0.68,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.678074,
+     "lon": 9.013475,
+     "letzte": "2026-11-07 20:40:02",
+     "hoehe": 228
+    },
+    {
+     "id": "IMICHE124",
+     "km": 0.95,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.672621,
+     "lon": 9.014225,
+     "letzte": "2026-11-07 20:39:55",
+     "hoehe": 250
+    },
+    {
+     "id": "IMICHE85",
+     "km": 1.27,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.684,
+     "lon": 8.989,
+     "letzte": "2026-11-07 20:39:57",
+     "hoehe": 0
+    },
+    {
+     "id": "IERBAC16",
+     "km": 1.94,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.661931,
+     "lon": 8.993363,
+     "letzte": "2026-11-07 20:39:54",
+     "hoehe": 65
+    },
+    {
+     "id": "IERBAC1",
+     "km": 2.19,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.659,
+     "lon": 8.996,
+     "letzte": "2026-11-07 20:39:54",
+     "hoehe": 240
+    },
+    {
+     "id": "IERBAC25",
+     "km": 2.78,
+     "qc": -1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.653,
+     "lon": 9.005,
+     "letzte": "2026-11-07 20:39:59",
+     "hoehe": 85
+    },
+    {
+     "id": "IERBAC9",
+     "km": 2.9,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.652,
+     "lon": 9.007,
+     "letzte": "2026-11-07 20:39:53",
+     "hoehe": 85
+    },
+    {
+     "id": "IMICHE153",
+     "km": 3.31,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.684,
+     "lon": 8.959,
+     "letzte": "2026-11-07 20:39:51",
+     "hoehe": 93
+    }
+   ],
+   "dwd": [
+    {
+     "id": 133294,
+     "dwd_station_id": "03284",
+     "station_name": "Michelstadt",
+     "observation_type": "historical",
+     "height": 240.0,
+     "distance": 1032,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 133293,
+     "dwd_station_id": "03284",
+     "station_name": "Michelstadt",
+     "observation_type": "synop",
+     "height": 240.0,
+     "distance": 1032,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 7126,
+     "dwd_station_id": "03284",
+     "station_name": "Michelstadt",
+     "observation_type": "historical",
+     "height": 240.0,
+     "distance": 1042,
+     "last_record": "2021-08-23T23:00:00+00:00"
+    },
+    {
+     "id": 9340,
+     "dwd_station_id": "03284",
+     "station_name": "Michelstadt",
+     "observation_type": "synop",
+     "height": 240.0,
+     "distance": 1043,
+     "last_record": "2021-08-25T03:00:00+00:00"
+    },
+    {
+     "id": 6647,
+     "dwd_station_id": "03284",
+     "station_name": "MICHELSTADT",
+     "observation_type": "current",
+     "height": 204.0,
+     "distance": 1174,
+     "last_record": "2026-11-07T19:00:00+00:00"
+    },
+    {
+     "id": 11767,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrun",
+     "observation_type": "synop",
+     "height": 453.0,
+     "distance": 8180,
+     "last_record": "2021-02-10T03:00:00+00:00"
+    },
+    {
+     "id": 7130,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrunn",
+     "observation_type": "historical",
+     "height": 453.0,
+     "distance": 8180,
+     "last_record": "2019-12-31T23:00:00+00:00"
+    },
+    {
+     "id": 204147,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrunn",
+     "observation_type": "historical",
+     "height": 452.83,
+     "distance": 8186,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 96588,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrunn",
+     "observation_type": "historical",
+     "height": 453.0,
+     "distance": 8186,
+     "last_record": "2022-05-04T23:00:00+00:00"
+    },
+    {
+     "id": 204146,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrun",
+     "observation_type": "synop",
+     "height": 452.8,
+     "distance": 8187,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 81854,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrun",
+     "observation_type": "synop",
+     "height": 453.0,
+     "distance": 8187,
+     "last_record": "2022-05-05T03:00:00+00:00"
+    },
+    {
+     "id": 6220,
+     "dwd_station_id": "03287",
+     "station_name": "MICHELSTADT-V.",
+     "observation_type": "current",
+     "height": 453.0,
+     "distance": 8345,
+     "last_record": "2026-11-07T19:00:00+00:00"
+    },
+    {
+     "id": 292067,
+     "dwd_station_id": "04121",
+     "station_name": "Reichelsheim/Odenwald",
+     "observation_type": "historical",
+     "height": 209.0,
+     "distance": 11168,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 14120,
+     "dwd_station_id": null,
+     "station_name": "Reichelsheim/Odenwal",
+     "observation_type": "synop",
+     "height": 209.0,
+     "distance": 11172,
+     "last_record": "2025-01-01T06:00:00+00:00"
+    },
+    {
+     "id": 301597,
+     "dwd_station_id": null,
+     "station_name": "Hoechst/Odenwald-Ann",
+     "observation_type": "synop",
+     "height": 219.0,
+     "distance": 11846,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 14118,
+     "dwd_station_id": null,
+     "station_name": "Hoechst/Odenwald-Ann",
+     "observation_type": "synop",
+     "height": 220.0,
+     "distance": 11880,
+     "last_record": "2023-08-16T06:00:00+00:00"
+    },
+    {
+     "id": 292461,
+     "dwd_station_id": "15171",
+     "station_name": "Höchst/Odenwald-Annelsbach",
+     "observation_type": "historical",
+     "height": 220.0,
+     "distance": 11880,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 6648,
+     "dwd_station_id": "00330",
+     "station_name": "BEERFELDEN",
+     "observation_type": "current",
+     "height": 450.0,
+     "distance": 12270,
+     "last_record": "2026-11-07T19:00:00+00:00"
+    },
+    {
+     "id": 291623,
+     "dwd_station_id": "01742",
+     "station_name": "Grasellenbach-Hammelbach",
+     "observation_type": "historical",
+     "height": 447.0,
+     "distance": 12866,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 15881,
+     "dwd_station_id": null,
+     "station_name": "Grasellenbach-Hammel",
+     "observation_type": "synop",
+     "height": 447.0,
+     "distance": 12868,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 16265,
+     "dwd_station_id": "00330",
+     "station_name": "Oberzent-Beerfelden",
+     "observation_type": "current",
+     "height": 455.0,
+     "distance": 13214,
+     "last_record": "2026-10-30T01:00:00+00:00"
+    },
+    {
+     "id": 9341,
+     "dwd_station_id": "00330",
+     "station_name": "Oberzent-Beerfelden",
+     "observation_type": "synop",
+     "height": 455.0,
+     "distance": 13214,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 9157,
+     "dwd_station_id": "00330",
+     "station_name": "Oberzent-Beerfelden",
+     "observation_type": "current",
+     "height": 455.0,
+     "distance": 13214,
+     "last_record": null
+    },
+    {
+     "id": 46571,
+     "dwd_station_id": "00330",
+     "station_name": "Oberzent-Beerfelden",
+     "observation_type": "historical",
+     "height": 455.0,
+     "distance": 13214,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 6877,
+     "dwd_station_id": "00330",
+     "station_name": "Oberzent-Beerfelden",
+     "observation_type": "historical",
+     "height": 450.0,
+     "distance": 13214,
+     "last_record": "2019-12-31T23:00:00+00:00"
+    },
+    {
+     "id": 9496,
+     "dwd_station_id": "07391",
+     "station_name": "Oberzent-Beerfelden-",
+     "observation_type": "synop",
+     "height": 442.6,
+     "distance": 13831,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 9043,
+     "dwd_station_id": "07391",
+     "station_name": "Oberzent-Beerfelden-Vogelherd",
+     "observation_type": "historical",
+     "height": 442.6,
+     "distance": 13831,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 291890,
+     "dwd_station_id": "03291",
+     "station_name": "Miltenberg",
+     "observation_type": "historical",
+     "height": 128.5,
+     "distance": 16414,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 127820,
+     "dwd_station_id": null,
+     "station_name": "Miltenberg",
+     "observation_type": "synop",
+     "height": 128.5,
+     "distance": 16414,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 14168,
+     "dwd_station_id": null,
+     "station_name": "Miltenberg",
+     "observation_type": "synop",
+     "height": 128.0,
+     "distance": 16416,
+     "last_record": "2021-07-22T06:00:00+00:00"
+    },
+    {
+     "id": 14164,
+     "dwd_station_id": null,
+     "station_name": "Woerth am Main",
+     "observation_type": "synop",
+     "height": 132.0,
+     "distance": 16794,
+     "last_record": "2022-10-20T06:00:00+00:00"
+    },
+    {
+     "id": 291964,
+     "dwd_station_id": "03703",
+     "station_name": "Wörth am Main",
+     "observation_type": "historical",
+     "height": 132.0,
+     "distance": 16801,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 234270,
+     "dwd_station_id": null,
+     "station_name": "Woerth am Main",
+     "observation_type": "synop",
+     "height": 132.0,
+     "distance": 16801,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 306065,
+     "dwd_station_id": "19576",
+     "station_name": "Reinheim-Hundertmorgen",
+     "observation_type": "historical",
+     "height": 249.0,
+     "distance": 17550,
+     "last_record": "2023-09-08T00:00:00+00:00"
+    },
+    {
+     "id": 291901,
+     "dwd_station_id": "03356",
+     "station_name": "Mudau-Schloßau",
+     "observation_type": "historical",
+     "height": 496.0,
+     "distance": 18515,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 14177,
+     "dwd_station_id": null,
+     "station_name": "Mudau-Schlossau",
+     "observation_type": "synop",
+     "height": 496.0,
+     "distance": 18515,
+     "last_record": "2024-06-20T06:00:00+00:00"
+    },
+    {
+     "id": 324794,
+     "dwd_station_id": null,
+     "station_name": "Mudau-Schlossau",
+     "observation_type": "synop",
+     "height": 493.0,
+     "distance": 18515,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 334527,
+     "dwd_station_id": "06285",
+     "station_name": "Amorbach-Neudorf",
+     "observation_type": "historical",
+     "height": 420.0,
+     "distance": 18692,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 220961,
+     "dwd_station_id": "04134",
+     "station_name": "Otzberg-Habitzheim",
+     "observation_type": "historical",
+     "height": 171.5,
+     "distance": 19760,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 36740,
+     "dwd_station_id": "04134",
+     "station_name": "Otzberg-Habitzheim",
+     "observation_type": "synop",
+     "height": 171.5,
+     "distance": 19761,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 7129,
+     "dwd_station_id": "03319",
+     "station_name": "Röllbach",
+     "observation_type": "historical",
+     "height": 239.0,
+     "distance": 20338,
+     "last_record": "2022-10-19T23:00:00+00:00"
+    },
+    {
+     "id": 234401,
+     "dwd_station_id": "03319",
+     "station_name": "Röllbach",
+     "observation_type": "historical",
+     "height": 238.5,
+     "distance": 20338,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 9405,
+     "dwd_station_id": "03319",
+     "station_name": "Roellbach",
+     "observation_type": "synop",
+     "height": 239.0,
+     "distance": 20340,
+     "last_record": "2022-10-21T03:00:00+00:00"
+    },
+    {
+     "id": 233572,
+     "dwd_station_id": "03319",
+     "station_name": "Roellbach",
+     "observation_type": "synop",
+     "height": 238.5,
+     "distance": 20341,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 6723,
+     "dwd_station_id": "03319",
+     "station_name": "ROELLBACH",
+     "observation_type": "current",
+     "height": 239.0,
+     "distance": 20452,
+     "last_record": "2026-11-07T19:00:00+00:00"
+    },
+    {
+     "id": 8264,
+     "dwd_station_id": "04134",
+     "station_name": "Otzberg-Habitzheim",
+     "observation_type": "historical",
+     "height": 165.0,
+     "distance": 20827,
+     "last_record": "2018-11-01T06:00:00+00:00"
+    },
+    {
+     "id": 291679,
+     "dwd_station_id": "02139",
+     "station_name": "Heppenheim-Mittershausen",
+     "observation_type": "historical",
+     "height": 265.0,
+     "distance": 21000,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 14123,
+     "dwd_station_id": null,
+     "station_name": "Heppenheim-Mittersha",
+     "observation_type": "synop",
+     "height": 265.0,
+     "distance": 21000,
+     "last_record": "2025-03-10T06:00:00+00:00"
+    },
+    {
+     "id": 342003,
+     "dwd_station_id": null,
+     "station_name": "Heppenheim-Mittersha",
+     "observation_type": "synop",
+     "height": 270.0,
+     "distance": 21035,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 8160,
+     "dwd_station_id": "02900",
+     "station_name": "Lautertal/Odenwald-Reichenbach",
+     "observation_type": "historical",
+     "height": 208.3,
+     "distance": 22816,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 9838,
+     "dwd_station_id": "02900",
+     "station_name": "Lautertal/Odenwald-R",
+     "observation_type": "synop",
+     "height": 208.3,
+     "distance": 22816,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 241513,
+     "dwd_station_id": "01093",
+     "station_name": "Eberbach",
+     "observation_type": "historical",
+     "height": 131.0,
+     "distance": 24557,
+     "last_record": "2025-04-02T23:00:00+00:00"
+    },
+    {
+     "id": 9839,
+     "dwd_station_id": "06185",
+     "station_name": "Birkenau",
+     "observation_type": "synop",
+     "height": 168.0,
+     "distance": 24995,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 8464,
+     "dwd_station_id": "14157",
+     "station_name": "Birkenau",
+     "observation_type": "historical",
+     "height": 168.0,
+     "distance": 24996,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    }
+   ]
+  },
+  "Mossautal": {
+   "wu": [
+    {
+     "id": "IMOSSA13",
+     "km": 1.29,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.659,
+     "lon": 8.924,
+     "letzte": "2026-11-07 20:39:14",
+     "hoehe": 122
+    },
+    {
+     "id": "IMOSSA10",
+     "km": 2.46,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.645,
+     "lon": 8.933,
+     "letzte": "2026-11-07 20:39:43",
+     "hoehe": 315
+    },
+    {
+     "id": "IMICHE153",
+     "km": 2.47,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.684,
+     "lon": 8.959,
+     "letzte": "2026-11-07 20:39:51",
+     "hoehe": 93
+    },
+    {
+     "id": "IERBAC16",
+     "km": 4.1,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.661931,
+     "lon": 8.993363,
+     "letzte": "2026-11-07 20:39:54",
+     "hoehe": 65
+    },
+    {
+     "id": "IMICHE85",
+     "km": 4.19,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.684,
+     "lon": 8.989,
+     "letzte": "2026-11-07 20:39:57",
+     "hoehe": 0
+    },
+    {
+     "id": "IREICH110",
+     "km": 4.21,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 0,
+     "name": null,
+     "lat": 49.68,
+     "lon": 8.882,
+     "letzte": "2026-11-07 20:39:09",
+     "hoehe": 315
+    },
+    {
+     "id": "IERBAC1",
+     "km": 4.34,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.659,
+     "lon": 8.996,
+     "letzte": "2026-11-07 20:39:54",
+     "hoehe": 240
+    },
+    {
+     "id": "IERBAC11",
+     "km": 4.49,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.636,
+     "lon": 8.977,
+     "letzte": "2026-11-07 20:39:51",
+     "hoehe": 320
+    }
+   ],
+   "dwd": [
+    {
+     "id": 7126,
+     "dwd_station_id": "03284",
+     "station_name": "Michelstadt",
+     "observation_type": "historical",
+     "height": 240.0,
+     "distance": 5157,
+     "last_record": "2021-08-23T23:00:00+00:00"
+    },
+    {
+     "id": 133294,
+     "dwd_station_id": "03284",
+     "station_name": "Michelstadt",
+     "observation_type": "historical",
+     "height": 240.0,
+     "distance": 5157,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 133293,
+     "dwd_station_id": "03284",
+     "station_name": "Michelstadt",
+     "observation_type": "synop",
+     "height": 240.0,
+     "distance": 5159,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 9340,
+     "dwd_station_id": "03284",
+     "station_name": "Michelstadt",
+     "observation_type": "synop",
+     "height": 240.0,
+     "distance": 5160,
+     "last_record": "2021-08-25T03:00:00+00:00"
+    },
+    {
+     "id": 6647,
+     "dwd_station_id": "03284",
+     "station_name": "MICHELSTADT",
+     "observation_type": "current",
+     "height": 204.0,
+     "distance": 6152,
+     "last_record": "2026-11-07T19:00:00+00:00"
+    },
+    {
+     "id": 292067,
+     "dwd_station_id": "04121",
+     "station_name": "Reichelsheim/Odenwald",
+     "observation_type": "historical",
+     "height": 209.0,
+     "distance": 7431,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 14120,
+     "dwd_station_id": null,
+     "station_name": "Reichelsheim/Odenwal",
+     "observation_type": "synop",
+     "height": 209.0,
+     "distance": 7434,
+     "last_record": "2025-01-01T06:00:00+00:00"
+    },
+    {
+     "id": 291623,
+     "dwd_station_id": "01742",
+     "station_name": "Grasellenbach-Hammelbach",
+     "observation_type": "historical",
+     "height": 447.0,
+     "distance": 7925,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 15881,
+     "dwd_station_id": null,
+     "station_name": "Grasellenbach-Hammel",
+     "observation_type": "synop",
+     "height": 447.0,
+     "distance": 7927,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 6648,
+     "dwd_station_id": "00330",
+     "station_name": "BEERFELDEN",
+     "observation_type": "current",
+     "height": 450.0,
+     "distance": 11057,
+     "last_record": "2026-11-07T19:00:00+00:00"
+    },
+    {
+     "id": 6877,
+     "dwd_station_id": "00330",
+     "station_name": "Oberzent-Beerfelden",
+     "observation_type": "historical",
+     "height": 450.0,
+     "distance": 11924,
+     "last_record": "2019-12-31T23:00:00+00:00"
+    },
+    {
+     "id": 9157,
+     "dwd_station_id": "00330",
+     "station_name": "Oberzent-Beerfelden",
+     "observation_type": "current",
+     "height": 455.0,
+     "distance": 11924,
+     "last_record": null
+    },
+    {
+     "id": 46571,
+     "dwd_station_id": "00330",
+     "station_name": "Oberzent-Beerfelden",
+     "observation_type": "historical",
+     "height": 455.0,
+     "distance": 11924,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 9341,
+     "dwd_station_id": "00330",
+     "station_name": "Oberzent-Beerfelden",
+     "observation_type": "synop",
+     "height": 455.0,
+     "distance": 11925,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 16265,
+     "dwd_station_id": "00330",
+     "station_name": "Oberzent-Beerfelden",
+     "observation_type": "current",
+     "height": 455.0,
+     "distance": 11925,
+     "last_record": "2026-10-30T01:00:00+00:00"
+    },
+    {
+     "id": 9043,
+     "dwd_station_id": "07391",
+     "station_name": "Oberzent-Beerfelden-Vogelherd",
+     "observation_type": "historical",
+     "height": 442.6,
+     "distance": 12532,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 9496,
+     "dwd_station_id": "07391",
+     "station_name": "Oberzent-Beerfelden-",
+     "observation_type": "synop",
+     "height": 442.6,
+     "distance": 12533,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 301597,
+     "dwd_station_id": null,
+     "station_name": "Hoechst/Odenwald-Ann",
+     "observation_type": "synop",
+     "height": 219.0,
+     "distance": 12709,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 292461,
+     "dwd_station_id": "15171",
+     "station_name": "Höchst/Odenwald-Annelsbach",
+     "observation_type": "historical",
+     "height": 220.0,
+     "distance": 12741,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 14118,
+     "dwd_station_id": null,
+     "station_name": "Hoechst/Odenwald-Ann",
+     "observation_type": "synop",
+     "height": 220.0,
+     "distance": 12741,
+     "last_record": "2023-08-16T06:00:00+00:00"
+    },
+    {
+     "id": 7130,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrunn",
+     "observation_type": "historical",
+     "height": 453.0,
+     "distance": 13000,
+     "last_record": "2019-12-31T23:00:00+00:00"
+    },
+    {
+     "id": 11767,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrun",
+     "observation_type": "synop",
+     "height": 453.0,
+     "distance": 13000,
+     "last_record": "2021-02-10T03:00:00+00:00"
+    },
+    {
+     "id": 96588,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrunn",
+     "observation_type": "historical",
+     "height": 453.0,
+     "distance": 13005,
+     "last_record": "2022-05-04T23:00:00+00:00"
+    },
+    {
+     "id": 204147,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrunn",
+     "observation_type": "historical",
+     "height": 452.83,
+     "distance": 13005,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 81854,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrun",
+     "observation_type": "synop",
+     "height": 453.0,
+     "distance": 13006,
+     "last_record": "2022-05-05T03:00:00+00:00"
+    },
+    {
+     "id": 204146,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrun",
+     "observation_type": "synop",
+     "height": 452.8,
+     "distance": 13006,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 6220,
+     "dwd_station_id": "03287",
+     "station_name": "MICHELSTADT-V.",
+     "observation_type": "current",
+     "height": 453.0,
+     "distance": 13137,
+     "last_record": "2026-11-07T19:00:00+00:00"
+    },
+    {
+     "id": 291679,
+     "dwd_station_id": "02139",
+     "station_name": "Heppenheim-Mittershausen",
+     "observation_type": "historical",
+     "height": 265.0,
+     "distance": 16081,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 14123,
+     "dwd_station_id": null,
+     "station_name": "Heppenheim-Mittersha",
+     "observation_type": "synop",
+     "height": 265.0,
+     "distance": 16081,
+     "last_record": "2025-03-10T06:00:00+00:00"
+    },
+    {
+     "id": 342003,
+     "dwd_station_id": null,
+     "station_name": "Heppenheim-Mittersha",
+     "observation_type": "synop",
+     "height": 270.0,
+     "distance": 16116,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 306065,
+     "dwd_station_id": "19576",
+     "station_name": "Reinheim-Hundertmorgen",
+     "observation_type": "historical",
+     "height": 249.0,
+     "distance": 16312,
+     "last_record": "2023-09-08T00:00:00+00:00"
+    },
+    {
+     "id": 9838,
+     "dwd_station_id": "02900",
+     "station_name": "Lautertal/Odenwald-R",
+     "observation_type": "synop",
+     "height": 208.3,
+     "distance": 18337,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 8160,
+     "dwd_station_id": "02900",
+     "station_name": "Lautertal/Odenwald-Reichenbach",
+     "observation_type": "historical",
+     "height": 208.3,
+     "distance": 18337,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 36740,
+     "dwd_station_id": "04134",
+     "station_name": "Otzberg-Habitzheim",
+     "observation_type": "synop",
+     "height": 171.5,
+     "distance": 19311,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 220961,
+     "dwd_station_id": "04134",
+     "station_name": "Otzberg-Habitzheim",
+     "observation_type": "historical",
+     "height": 171.5,
+     "distance": 19311,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 8264,
+     "dwd_station_id": "04134",
+     "station_name": "Otzberg-Habitzheim",
+     "observation_type": "historical",
+     "height": 165.0,
+     "distance": 19325,
+     "last_record": "2018-11-01T06:00:00+00:00"
+    },
+    {
+     "id": 9839,
+     "dwd_station_id": "06185",
+     "station_name": "Birkenau",
+     "observation_type": "synop",
+     "height": 168.0,
+     "distance": 20222,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 8464,
+     "dwd_station_id": "14157",
+     "station_name": "Birkenau",
+     "observation_type": "historical",
+     "height": 168.0,
+     "distance": 20223,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 291901,
+     "dwd_station_id": "03356",
+     "station_name": "Mudau-Schloßau",
+     "observation_type": "historical",
+     "height": 496.0,
+     "distance": 20892,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 14177,
+     "dwd_station_id": null,
+     "station_name": "Mudau-Schlossau",
+     "observation_type": "synop",
+     "height": 496.0,
+     "distance": 20892,
+     "last_record": "2024-06-20T06:00:00+00:00"
+    },
+    {
+     "id": 324794,
+     "dwd_station_id": null,
+     "station_name": "Mudau-Schlossau",
+     "observation_type": "synop",
+     "height": 493.0,
+     "distance": 20893,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 14164,
+     "dwd_station_id": null,
+     "station_name": "Woerth am Main",
+     "observation_type": "synop",
+     "height": 132.0,
+     "distance": 21041,
+     "last_record": "2022-10-20T06:00:00+00:00"
+    },
+    {
+     "id": 234270,
+     "dwd_station_id": null,
+     "station_name": "Woerth am Main",
+     "observation_type": "synop",
+     "height": 132.0,
+     "distance": 21046,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 291964,
+     "dwd_station_id": "03703",
+     "station_name": "Wörth am Main",
+     "observation_type": "historical",
+     "height": 132.0,
+     "distance": 21046,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 291890,
+     "dwd_station_id": "03291",
+     "station_name": "Miltenberg",
+     "observation_type": "historical",
+     "height": 128.5,
+     "distance": 21393,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 127820,
+     "dwd_station_id": null,
+     "station_name": "Miltenberg",
+     "observation_type": "synop",
+     "height": 128.5,
+     "distance": 21393,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 14168,
+     "dwd_station_id": null,
+     "station_name": "Miltenberg",
+     "observation_type": "synop",
+     "height": 128.0,
+     "distance": 21395,
+     "last_record": "2021-07-22T06:00:00+00:00"
+    },
+    {
+     "id": 241513,
+     "dwd_station_id": "01093",
+     "station_name": "Eberbach",
+     "observation_type": "historical",
+     "height": 131.0,
+     "distance": 23178,
+     "last_record": "2025-04-02T23:00:00+00:00"
+    },
+    {
+     "id": 334527,
+     "dwd_station_id": "06285",
+     "station_name": "Amorbach-Neudorf",
+     "observation_type": "historical",
+     "height": 420.0,
+     "distance": 23381,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 291694,
+     "dwd_station_id": "02235",
+     "station_name": "Hirschhorn (Neckar)",
+     "observation_type": "historical",
+     "height": 125.0,
+     "distance": 24000,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 170372,
+     "dwd_station_id": null,
+     "station_name": "Hirschhorn (Neckar)",
+     "observation_type": "synop",
+     "height": 125.0,
+     "distance": 24000,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 14126,
+     "dwd_station_id": null,
+     "station_name": "Hirschhorn (Neckar)",
+     "observation_type": "synop",
+     "height": 125.0,
+     "distance": 24000,
+     "last_record": "2020-07-16T06:00:00+00:00"
+    },
+    {
+     "id": 33241,
+     "dwd_station_id": null,
+     "station_name": "Hirschhorn (Neckar)",
+     "observation_type": "synop",
+     "height": 125.0,
+     "distance": 24001,
+     "last_record": "2022-02-15T06:00:00+00:00"
+    }
+   ]
+  },
+  "Oberzent": {
+   "wu": [
+    {
+     "id": "IOBERZ4",
+     "km": 0.63,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.572,
+     "lon": 8.98,
+     "letzte": "2026-11-07 20:39:55",
+     "hoehe": 409
+    },
+    {
+     "id": "IBEERF1",
+     "km": 0.7,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.562,
+     "lon": 8.97,
+     "letzte": "2026-11-07 20:39:53",
+     "hoehe": 445
+    },
+    {
+     "id": "IBEERFEL4",
+     "km": 1.13,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.560768,
+     "lon": 8.963603,
+     "letzte": "2026-11-07 20:39:54",
+     "hoehe": 461
+    },
+    {
+     "id": "IOBERZ16",
+     "km": 3.03,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.582,
+     "lon": 8.941,
+     "letzte": "2026-11-07 20:39:54",
+     "hoehe": 108
+    },
+    {
+     "id": "IOBERZ5",
+     "km": 3.65,
+     "qc": 1,
+     "stunden": 46,
+     "mit_regen": 46,
+     "name": null,
+     "lat": 49.553032,
+     "lon": 8.930276,
+     "letzte": "2026-11-07 17:59:54",
+     "hoehe": null
+    },
+    {
+     "id": "IOBERZ27",
+     "km": 6.18,
+     "qc": -1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.511748,
+     "lon": 8.966419,
+     "letzte": "2026-11-07 20:39:32",
+     "hoehe": 108
+    },
+    {
+     "id": "IEBERB3",
+     "km": 7.49,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.521444,
+     "lon": 9.052506,
+     "letzte": "2026-11-07 20:39:54",
+     "hoehe": 64
+    },
+    {
+     "id": "IERBAC11",
+     "km": 7.67,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.636,
+     "lon": 8.977,
+     "letzte": "2026-11-07 20:39:51",
+     "hoehe": 320
+    }
+   ],
+   "dwd": [
+    {
+     "id": 6648,
+     "dwd_station_id": "00330",
+     "station_name": "BEERFELDEN",
+     "observation_type": "current",
+     "height": 450.0,
+     "distance": 547,
+     "last_record": "2026-11-07T19:00:00+00:00"
+    },
+    {
+     "id": 9341,
+     "dwd_station_id": "00330",
+     "station_name": "Oberzent-Beerfelden",
+     "observation_type": "synop",
+     "height": 455.0,
+     "distance": 860,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 16265,
+     "dwd_station_id": "00330",
+     "station_name": "Oberzent-Beerfelden",
+     "observation_type": "current",
+     "height": 455.0,
+     "distance": 860,
+     "last_record": "2026-10-30T01:00:00+00:00"
+    },
+    {
+     "id": 46571,
+     "dwd_station_id": "00330",
+     "station_name": "Oberzent-Beerfelden",
+     "observation_type": "historical",
+     "height": 455.0,
+     "distance": 862,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 6877,
+     "dwd_station_id": "00330",
+     "station_name": "Oberzent-Beerfelden",
+     "observation_type": "historical",
+     "height": 450.0,
+     "distance": 862,
+     "last_record": "2019-12-31T23:00:00+00:00"
+    },
+    {
+     "id": 9157,
+     "dwd_station_id": "00330",
+     "station_name": "Oberzent-Beerfelden",
+     "observation_type": "current",
+     "height": 455.0,
+     "distance": 862,
+     "last_record": null
+    },
+    {
+     "id": 9496,
+     "dwd_station_id": "07391",
+     "station_name": "Oberzent-Beerfelden-",
+     "observation_type": "synop",
+     "height": 442.6,
+     "distance": 1379,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 9043,
+     "dwd_station_id": "07391",
+     "station_name": "Oberzent-Beerfelden-Vogelherd",
+     "observation_type": "historical",
+     "height": 442.6,
+     "distance": 1380,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 7126,
+     "dwd_station_id": "03284",
+     "station_name": "Michelstadt",
+     "observation_type": "historical",
+     "height": 240.0,
+     "distance": 11605,
+     "last_record": "2021-08-23T23:00:00+00:00"
+    },
+    {
+     "id": 9340,
+     "dwd_station_id": "03284",
+     "station_name": "Michelstadt",
+     "observation_type": "synop",
+     "height": 240.0,
+     "distance": 11606,
+     "last_record": "2021-08-25T03:00:00+00:00"
+    },
+    {
+     "id": 133294,
+     "dwd_station_id": "03284",
+     "station_name": "Michelstadt",
+     "observation_type": "historical",
+     "height": 240.0,
+     "distance": 11616,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 133293,
+     "dwd_station_id": "03284",
+     "station_name": "Michelstadt",
+     "observation_type": "synop",
+     "height": 240.0,
+     "distance": 11616,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 241513,
+     "dwd_station_id": "01093",
+     "station_name": "Eberbach",
+     "observation_type": "historical",
+     "height": 131.0,
+     "distance": 12048,
+     "last_record": "2025-04-02T23:00:00+00:00"
+    },
+    {
+     "id": 291623,
+     "dwd_station_id": "01742",
+     "station_name": "Grasellenbach-Hammelbach",
+     "observation_type": "historical",
+     "height": 447.0,
+     "distance": 12868,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 15881,
+     "dwd_station_id": null,
+     "station_name": "Grasellenbach-Hammel",
+     "observation_type": "synop",
+     "height": 447.0,
+     "distance": 12869,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 6647,
+     "dwd_station_id": "03284",
+     "station_name": "MICHELSTADT",
+     "observation_type": "current",
+     "height": 204.0,
+     "distance": 12973,
+     "last_record": "2026-11-07T19:00:00+00:00"
+    },
+    {
+     "id": 14177,
+     "dwd_station_id": null,
+     "station_name": "Mudau-Schlossau",
+     "observation_type": "synop",
+     "height": 496.0,
+     "distance": 13201,
+     "last_record": "2024-06-20T06:00:00+00:00"
+    },
+    {
+     "id": 291901,
+     "dwd_station_id": "03356",
+     "station_name": "Mudau-Schloßau",
+     "observation_type": "historical",
+     "height": 496.0,
+     "distance": 13201,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 324794,
+     "dwd_station_id": null,
+     "station_name": "Mudau-Schlossau",
+     "observation_type": "synop",
+     "height": 493.0,
+     "distance": 13201,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 170372,
+     "dwd_station_id": null,
+     "station_name": "Hirschhorn (Neckar)",
+     "observation_type": "synop",
+     "height": 125.0,
+     "distance": 13713,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 291694,
+     "dwd_station_id": "02235",
+     "station_name": "Hirschhorn (Neckar)",
+     "observation_type": "historical",
+     "height": 125.0,
+     "distance": 13713,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 14126,
+     "dwd_station_id": null,
+     "station_name": "Hirschhorn (Neckar)",
+     "observation_type": "synop",
+     "height": 125.0,
+     "distance": 13714,
+     "last_record": "2020-07-16T06:00:00+00:00"
+    },
+    {
+     "id": 33241,
+     "dwd_station_id": null,
+     "station_name": "Hirschhorn (Neckar)",
+     "observation_type": "synop",
+     "height": 125.0,
+     "distance": 13717,
+     "last_record": "2022-02-15T06:00:00+00:00"
+    },
+    {
+     "id": 292067,
+     "dwd_station_id": "04121",
+     "station_name": "Reichelsheim/Odenwald",
+     "observation_type": "historical",
+     "height": 209.0,
+     "distance": 17970,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 14120,
+     "dwd_station_id": null,
+     "station_name": "Reichelsheim/Odenwal",
+     "observation_type": "synop",
+     "height": 209.0,
+     "distance": 17972,
+     "last_record": "2025-01-01T06:00:00+00:00"
+    },
+    {
+     "id": 14567,
+     "dwd_station_id": null,
+     "station_name": "Wilhelmsfeld",
+     "observation_type": "synop",
+     "height": 347.0,
+     "distance": 18873,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 292325,
+     "dwd_station_id": "05574",
+     "station_name": "Wilhelmsfeld",
+     "observation_type": "historical",
+     "height": 347.0,
+     "distance": 18873,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 11767,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrun",
+     "observation_type": "synop",
+     "height": 453.0,
+     "distance": 18989,
+     "last_record": "2021-02-10T03:00:00+00:00"
+    },
+    {
+     "id": 7130,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrunn",
+     "observation_type": "historical",
+     "height": 453.0,
+     "distance": 18989,
+     "last_record": "2019-12-31T23:00:00+00:00"
+    },
+    {
+     "id": 204146,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrun",
+     "observation_type": "synop",
+     "height": 452.8,
+     "distance": 18999,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 96588,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrunn",
+     "observation_type": "historical",
+     "height": 453.0,
+     "distance": 18999,
+     "last_record": "2022-05-04T23:00:00+00:00"
+    },
+    {
+     "id": 81854,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrun",
+     "observation_type": "synop",
+     "height": 453.0,
+     "distance": 18999,
+     "last_record": "2022-05-05T03:00:00+00:00"
+    },
+    {
+     "id": 204147,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrunn",
+     "observation_type": "historical",
+     "height": 452.83,
+     "distance": 18999,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 6220,
+     "dwd_station_id": "03287",
+     "station_name": "MICHELSTADT-V.",
+     "observation_type": "current",
+     "height": 453.0,
+     "distance": 19235,
+     "last_record": "2026-11-07T19:00:00+00:00"
+    },
+    {
+     "id": 9839,
+     "dwd_station_id": "06185",
+     "station_name": "Birkenau",
+     "observation_type": "synop",
+     "height": 168.0,
+     "distance": 19832,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 8464,
+     "dwd_station_id": "14157",
+     "station_name": "Birkenau",
+     "observation_type": "historical",
+     "height": 168.0,
+     "distance": 19833,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 14401,
+     "dwd_station_id": null,
+     "station_name": "Schwarzach/Baden",
+     "observation_type": "synop",
+     "height": 246.0,
+     "distance": 21307,
+     "last_record": "2022-04-19T06:00:00+00:00"
+    },
+    {
+     "id": 291932,
+     "dwd_station_id": "03547",
+     "station_name": "Schwarzach/Baden",
+     "observation_type": "historical",
+     "height": 244.0,
+     "distance": 21307,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 194652,
+     "dwd_station_id": null,
+     "station_name": "Schwarzach/Baden",
+     "observation_type": "synop",
+     "height": 244.0,
+     "distance": 21307,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 14123,
+     "dwd_station_id": null,
+     "station_name": "Heppenheim-Mittersha",
+     "observation_type": "synop",
+     "height": 265.0,
+     "distance": 21349,
+     "last_record": "2025-03-10T06:00:00+00:00"
+    },
+    {
+     "id": 291679,
+     "dwd_station_id": "02139",
+     "station_name": "Heppenheim-Mittershausen",
+     "observation_type": "historical",
+     "height": 265.0,
+     "distance": 21349,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 342003,
+     "dwd_station_id": null,
+     "station_name": "Heppenheim-Mittersha",
+     "observation_type": "synop",
+     "height": 270.0,
+     "distance": 21380,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 334527,
+     "dwd_station_id": "06285",
+     "station_name": "Amorbach-Neudorf",
+     "observation_type": "historical",
+     "height": 420.0,
+     "distance": 22747,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 8202,
+     "dwd_station_id": "03448",
+     "station_name": "Neckargemünd-Kleingemünd",
+     "observation_type": "historical",
+     "height": 117.0,
+     "distance": 22856,
+     "last_record": "2022-10-19T23:00:00+00:00"
+    },
+    {
+     "id": 9841,
+     "dwd_station_id": "03448",
+     "station_name": "Neckargemuend-Kleing",
+     "observation_type": "synop",
+     "height": 117.0,
+     "distance": 22858,
+     "last_record": "2022-10-21T03:00:00+00:00"
+    },
+    {
+     "id": 233882,
+     "dwd_station_id": "03448",
+     "station_name": "Neckargemuend-Kleing",
+     "observation_type": "synop",
+     "height": 117.0,
+     "distance": 22859,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 234403,
+     "dwd_station_id": "03448",
+     "station_name": "Neckargemünd-Kleingemünd",
+     "observation_type": "historical",
+     "height": 117.0,
+     "distance": 22860,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 301597,
+     "dwd_station_id": null,
+     "station_name": "Hoechst/Odenwald-Ann",
+     "observation_type": "synop",
+     "height": 219.0,
+     "distance": 23777,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 14118,
+     "dwd_station_id": null,
+     "station_name": "Hoechst/Odenwald-Ann",
+     "observation_type": "synop",
+     "height": 220.0,
+     "distance": 23811,
+     "last_record": "2023-08-16T06:00:00+00:00"
+    },
+    {
+     "id": 292461,
+     "dwd_station_id": "15171",
+     "station_name": "Höchst/Odenwald-Annelsbach",
+     "observation_type": "historical",
+     "height": 220.0,
+     "distance": 23811,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 127820,
+     "dwd_station_id": null,
+     "station_name": "Miltenberg",
+     "observation_type": "synop",
+     "height": 128.5,
+     "distance": 24184,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 291890,
+     "dwd_station_id": "03291",
+     "station_name": "Miltenberg",
+     "observation_type": "historical",
+     "height": 128.5,
+     "distance": 24184,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 14168,
+     "dwd_station_id": null,
+     "station_name": "Miltenberg",
+     "observation_type": "synop",
+     "height": 128.0,
+     "distance": 24185,
+     "last_record": "2021-07-22T06:00:00+00:00"
+    },
+    {
+     "id": 302075,
+     "dwd_station_id": "01216",
+     "station_name": "Elztal-Rittersbach",
+     "observation_type": "synop",
+     "height": 311.5,
+     "distance": 24942,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 9843,
+     "dwd_station_id": "01216",
+     "station_name": "Elztal-Rittersbach",
+     "observation_type": "synop",
+     "height": 312.0,
+     "distance": 24942,
+     "last_record": "2023-08-19T03:00:00+00:00"
+    },
+    {
+     "id": 8041,
+     "dwd_station_id": "01216",
+     "station_name": "Elztal-Rittersbach",
+     "observation_type": "historical",
+     "height": 312.0,
+     "distance": 24944,
+     "last_record": "2022-12-31T23:00:00+00:00"
+    },
+    {
+     "id": 302223,
+     "dwd_station_id": "01216",
+     "station_name": "Elztal-Rittersbach",
+     "observation_type": "historical",
+     "height": 311.5,
+     "distance": 24944,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    }
+   ]
+  },
+  "Bad König": {
+   "wu": [
+    {
+     "id": "IBADKN33",
+     "km": 0.24,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.742,
+     "lon": 9.009,
+     "letzte": "2026-11-07 20:40:02",
+     "hoehe": 184
+    },
+    {
+     "id": "IBADKN32",
+     "km": 0.67,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.737405,
+     "lon": 9.009387,
+     "letzte": "2026-11-07 20:39:47",
+     "hoehe": 62
+    },
+    {
+     "id": "IBADKN16",
+     "km": 2.62,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.72,
+     "lon": 8.998,
+     "letzte": "2026-11-07 20:39:57",
+     "hoehe": 206
+    },
+    {
+     "id": "IBADKN4",
+     "km": 2.91,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.718253,
+     "lon": 8.993005,
+     "letzte": "2026-11-07 20:40:01",
+     "hoehe": 57
+    },
+    {
+     "id": "IHCHST74",
+     "km": 3.09,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.769085,
+     "lon": 8.991183,
+     "letzte": "2026-11-07 20:40:05",
+     "hoehe": 51
+    },
+    {
+     "id": "IBROMB18",
+     "km": 3.31,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.741,
+     "lon": 8.96,
+     "letzte": "2026-11-07 20:39:10",
+     "hoehe": 86
+    },
+    {
+     "id": "IHCHSTIO2",
+     "km": 3.62,
+     "qc": 1,
+     "stunden": 106,
+     "mit_regen": 106,
+     "name": null,
+     "lat": 49.772495,
+     "lon": 8.98485,
+     "letzte": "2026-11-07 20:39:28",
+     "hoehe": 35
+    },
+    {
+     "id": "IBROMB4",
+     "km": 3.8,
+     "qc": 1,
+     "stunden": 165,
+     "mit_regen": 165,
+     "name": null,
+     "lat": 49.725,
+     "lon": 8.961,
+     "letzte": "2026-11-07 20:40:03",
+     "hoehe": 78
+    }
+   ],
+   "dwd": [
+    {
+     "id": 301597,
+     "dwd_station_id": null,
+     "station_name": "Hoechst/Odenwald-Ann",
+     "observation_type": "synop",
+     "height": 219.0,
+     "distance": 5369,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 292461,
+     "dwd_station_id": "15171",
+     "station_name": "Höchst/Odenwald-Annelsbach",
+     "observation_type": "historical",
+     "height": 220.0,
+     "distance": 5398,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 14118,
+     "dwd_station_id": null,
+     "station_name": "Hoechst/Odenwald-Ann",
+     "observation_type": "synop",
+     "height": 220.0,
+     "distance": 5398,
+     "last_record": "2023-08-16T06:00:00+00:00"
+    },
+    {
+     "id": 6647,
+     "dwd_station_id": "03284",
+     "station_name": "MICHELSTADT",
+     "observation_type": "current",
+     "height": 204.0,
+     "distance": 7085,
+     "last_record": "2026-11-07T19:00:00+00:00"
+    },
+    {
+     "id": 6220,
+     "dwd_station_id": "03287",
+     "station_name": "MICHELSTADT-V.",
+     "observation_type": "current",
+     "height": 453.0,
+     "distance": 7232,
+     "last_record": "2026-11-07T19:00:00+00:00"
+    },
+    {
+     "id": 204147,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrunn",
+     "observation_type": "historical",
+     "height": 452.83,
+     "distance": 7307,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 96588,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrunn",
+     "observation_type": "historical",
+     "height": 453.0,
+     "distance": 7307,
+     "last_record": "2022-05-04T23:00:00+00:00"
+    },
+    {
+     "id": 204146,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrun",
+     "observation_type": "synop",
+     "height": 452.8,
+     "distance": 7308,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 81854,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrun",
+     "observation_type": "synop",
+     "height": 453.0,
+     "distance": 7308,
+     "last_record": "2022-05-05T03:00:00+00:00"
+    },
+    {
+     "id": 11767,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrun",
+     "observation_type": "synop",
+     "height": 453.0,
+     "distance": 7310,
+     "last_record": "2021-02-10T03:00:00+00:00"
+    },
+    {
+     "id": 7130,
+     "dwd_station_id": "03287",
+     "station_name": "Michelstadt-Vielbrunn",
+     "observation_type": "historical",
+     "height": 453.0,
+     "distance": 7311,
+     "last_record": "2019-12-31T23:00:00+00:00"
+    },
+    {
+     "id": 133294,
+     "dwd_station_id": "03284",
+     "station_name": "Michelstadt",
+     "observation_type": "historical",
+     "height": 240.0,
+     "distance": 8217,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 133293,
+     "dwd_station_id": "03284",
+     "station_name": "Michelstadt",
+     "observation_type": "synop",
+     "height": 240.0,
+     "distance": 8217,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 7126,
+     "dwd_station_id": "03284",
+     "station_name": "Michelstadt",
+     "observation_type": "historical",
+     "height": 240.0,
+     "distance": 8228,
+     "last_record": "2021-08-23T23:00:00+00:00"
+    },
+    {
+     "id": 9340,
+     "dwd_station_id": "03284",
+     "station_name": "Michelstadt",
+     "observation_type": "synop",
+     "height": 240.0,
+     "distance": 8228,
+     "last_record": "2021-08-25T03:00:00+00:00"
+    },
+    {
+     "id": 292067,
+     "dwd_station_id": "04121",
+     "station_name": "Reichelsheim/Odenwald",
+     "observation_type": "historical",
+     "height": 209.0,
+     "distance": 11433,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 14120,
+     "dwd_station_id": null,
+     "station_name": "Reichelsheim/Odenwal",
+     "observation_type": "synop",
+     "height": 209.0,
+     "distance": 11437,
+     "last_record": "2025-01-01T06:00:00+00:00"
+    },
+    {
+     "id": 14164,
+     "dwd_station_id": null,
+     "station_name": "Woerth am Main",
+     "observation_type": "synop",
+     "height": 132.0,
+     "distance": 12059,
+     "last_record": "2022-10-20T06:00:00+00:00"
+    },
+    {
+     "id": 291964,
+     "dwd_station_id": "03703",
+     "station_name": "Wörth am Main",
+     "observation_type": "historical",
+     "height": 132.0,
+     "distance": 12061,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 234270,
+     "dwd_station_id": null,
+     "station_name": "Woerth am Main",
+     "observation_type": "synop",
+     "height": 132.0,
+     "distance": 12061,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 306065,
+     "dwd_station_id": "19576",
+     "station_name": "Reinheim-Hundertmorgen",
+     "observation_type": "historical",
+     "height": 249.0,
+     "distance": 12634,
+     "last_record": "2023-09-08T00:00:00+00:00"
+    },
+    {
+     "id": 220961,
+     "dwd_station_id": "04134",
+     "station_name": "Otzberg-Habitzheim",
+     "observation_type": "historical",
+     "height": 171.5,
+     "distance": 13776,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 36740,
+     "dwd_station_id": "04134",
+     "station_name": "Otzberg-Habitzheim",
+     "observation_type": "synop",
+     "height": 171.5,
+     "distance": 13778,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 8264,
+     "dwd_station_id": "04134",
+     "station_name": "Otzberg-Habitzheim",
+     "observation_type": "historical",
+     "height": 165.0,
+     "distance": 15931,
+     "last_record": "2018-11-01T06:00:00+00:00"
+    },
+    {
+     "id": 291890,
+     "dwd_station_id": "03291",
+     "station_name": "Miltenberg",
+     "observation_type": "historical",
+     "height": 128.5,
+     "distance": 16189,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 127820,
+     "dwd_station_id": null,
+     "station_name": "Miltenberg",
+     "observation_type": "synop",
+     "height": 128.5,
+     "distance": 16189,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 14168,
+     "dwd_station_id": null,
+     "station_name": "Miltenberg",
+     "observation_type": "synop",
+     "height": 128.0,
+     "distance": 16191,
+     "last_record": "2021-07-22T06:00:00+00:00"
+    },
+    {
+     "id": 291623,
+     "dwd_station_id": "01742",
+     "station_name": "Grasellenbach-Hammelbach",
+     "observation_type": "historical",
+     "height": 447.0,
+     "distance": 16867,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 15881,
+     "dwd_station_id": null,
+     "station_name": "Grasellenbach-Hammel",
+     "observation_type": "synop",
+     "height": 447.0,
+     "distance": 16869,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 6723,
+     "dwd_station_id": "03319",
+     "station_name": "ROELLBACH",
+     "observation_type": "current",
+     "height": 239.0,
+     "distance": 17803,
+     "last_record": "2026-11-07T19:00:00+00:00"
+    },
+    {
+     "id": 7129,
+     "dwd_station_id": "03319",
+     "station_name": "Röllbach",
+     "observation_type": "historical",
+     "height": 239.0,
+     "distance": 17924,
+     "last_record": "2022-10-19T23:00:00+00:00"
+    },
+    {
+     "id": 234401,
+     "dwd_station_id": "03319",
+     "station_name": "Röllbach",
+     "observation_type": "historical",
+     "height": 238.5,
+     "distance": 17924,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 233572,
+     "dwd_station_id": "03319",
+     "station_name": "Roellbach",
+     "observation_type": "synop",
+     "height": 238.5,
+     "distance": 17926,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 9405,
+     "dwd_station_id": "03319",
+     "station_name": "Roellbach",
+     "observation_type": "synop",
+     "height": 239.0,
+     "distance": 17926,
+     "last_record": "2022-10-21T03:00:00+00:00"
+    },
+    {
+     "id": 6648,
+     "dwd_station_id": "00330",
+     "station_name": "BEERFELDEN",
+     "observation_type": "current",
+     "height": 450.0,
+     "distance": 19432,
+     "last_record": "2026-11-07T19:00:00+00:00"
+    },
+    {
+     "id": 308022,
+     "dwd_station_id": "04411",
+     "station_name": "Schaafheim-Schlierbach",
+     "observation_type": "historical",
+     "height": 155.0,
+     "distance": 19844,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 7214,
+     "dwd_station_id": "04411",
+     "station_name": "Schaafheim-Schlierbach",
+     "observation_type": "historical",
+     "height": 155.0,
+     "distance": 19845,
+     "last_record": "2022-12-31T23:00:00+00:00"
+    },
+    {
+     "id": 9339,
+     "dwd_station_id": "04411",
+     "station_name": "Schaafheim-Schlierba",
+     "observation_type": "synop",
+     "height": 155.0,
+     "distance": 19845,
+     "last_record": "2020-08-05T04:00:00+00:00"
+    },
+    {
+     "id": 308198,
+     "dwd_station_id": "04411",
+     "station_name": "Schaafheim-Schlierba",
+     "observation_type": "synop",
+     "height": 155.0,
+     "distance": 19845,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 37662,
+     "dwd_station_id": "04411",
+     "station_name": "Schaafheim-Schlierba",
+     "observation_type": "synop",
+     "height": 155.0,
+     "distance": 19846,
+     "last_record": "2025-01-16T14:00:00+00:00"
+    },
+    {
+     "id": 6649,
+     "dwd_station_id": "04411",
+     "station_name": "SCHAAFHEIM-SCHLIERB.",
+     "observation_type": "current",
+     "height": 155.0,
+     "distance": 19872,
+     "last_record": "2026-11-07T19:00:00+00:00"
+    },
+    {
+     "id": 9341,
+     "dwd_station_id": "00330",
+     "station_name": "Oberzent-Beerfelden",
+     "observation_type": "synop",
+     "height": 455.0,
+     "distance": 20374,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 6877,
+     "dwd_station_id": "00330",
+     "station_name": "Oberzent-Beerfelden",
+     "observation_type": "historical",
+     "height": 450.0,
+     "distance": 20374,
+     "last_record": "2019-12-31T23:00:00+00:00"
+    },
+    {
+     "id": 9157,
+     "dwd_station_id": "00330",
+     "station_name": "Oberzent-Beerfelden",
+     "observation_type": "current",
+     "height": 455.0,
+     "distance": 20374,
+     "last_record": null
+    },
+    {
+     "id": 16265,
+     "dwd_station_id": "00330",
+     "station_name": "Oberzent-Beerfelden",
+     "observation_type": "current",
+     "height": 455.0,
+     "distance": 20374,
+     "last_record": "2026-10-30T01:00:00+00:00"
+    },
+    {
+     "id": 46571,
+     "dwd_station_id": "00330",
+     "station_name": "Oberzent-Beerfelden",
+     "observation_type": "historical",
+     "height": 455.0,
+     "distance": 20374,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 291490,
+     "dwd_station_id": "00955",
+     "station_name": "Dieburg",
+     "observation_type": "historical",
+     "height": 145.0,
+     "distance": 20582,
+     "last_record": "2018-08-01T06:00:00+00:00"
+    },
+    {
+     "id": 334527,
+     "dwd_station_id": "06285",
+     "station_name": "Amorbach-Neudorf",
+     "observation_type": "historical",
+     "height": 420.0,
+     "distance": 20825,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 334502,
+     "dwd_station_id": "01851",
+     "station_name": "Großostheim",
+     "observation_type": "historical",
+     "height": 110.0,
+     "distance": 20923,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 9496,
+     "dwd_station_id": "07391",
+     "station_name": "Oberzent-Beerfelden-",
+     "observation_type": "synop",
+     "height": 442.6,
+     "distance": 20995,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 9043,
+     "dwd_station_id": "07391",
+     "station_name": "Oberzent-Beerfelden-Vogelherd",
+     "observation_type": "historical",
+     "height": 442.6,
+     "distance": 20996,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 8160,
+     "dwd_station_id": "02900",
+     "station_name": "Lautertal/Odenwald-Reichenbach",
+     "observation_type": "historical",
+     "height": 208.3,
+     "distance": 22996,
+     "last_record": "2026-11-06T23:00:00+00:00"
+    },
+    {
+     "id": 9838,
+     "dwd_station_id": "02900",
+     "station_name": "Lautertal/Odenwald-R",
+     "observation_type": "synop",
+     "height": 208.3,
+     "distance": 22996,
+     "last_record": "2026-11-07T19:30:00+00:00"
+    },
+    {
+     "id": 291679,
+     "dwd_station_id": "02139",
+     "station_name": "Heppenheim-Mittershausen",
+     "observation_type": "historical",
+     "height": 265.0,
+     "distance": 23089,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 14123,
+     "dwd_station_id": null,
+     "station_name": "Heppenheim-Mittersha",
+     "observation_type": "synop",
+     "height": 265.0,
+     "distance": 23089,
+     "last_record": "2025-03-10T06:00:00+00:00"
+    },
+    {
+     "id": 342003,
+     "dwd_station_id": null,
+     "station_name": "Heppenheim-Mittersha",
+     "observation_type": "synop",
+     "height": 270.0,
+     "distance": 23121,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    },
+    {
+     "id": 291901,
+     "dwd_station_id": "03356",
+     "station_name": "Mudau-Schloßau",
+     "observation_type": "historical",
+     "height": 496.0,
+     "distance": 24666,
+     "last_record": "2023-05-03T06:00:00+00:00"
+    },
+    {
+     "id": 14177,
+     "dwd_station_id": null,
+     "station_name": "Mudau-Schlossau",
+     "observation_type": "synop",
+     "height": 496.0,
+     "distance": 24666,
+     "last_record": "2024-06-20T06:00:00+00:00"
+    },
+    {
+     "id": 324794,
+     "dwd_station_id": null,
+     "station_name": "Mudau-Schlossau",
+     "observation_type": "synop",
+     "height": 493.0,
+     "distance": 24666,
+     "last_record": "2026-11-07T06:00:00+00:00"
+    }
+   ]
+  }
+ }
+}

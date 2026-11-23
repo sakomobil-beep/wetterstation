@@ -1,0 +1,54 @@
+{
+ "stand": "2026-11-19T22:28",
+ "tests": {
+  "profil": {
+   "id": "40442441082038489",
+   "username": "wetterstation_badkoenig"
+  },
+  "profil:views": "[{\"id\": \"17841435745202437/insights/views/day\", \"name\": \"views\", \"period\": \"day\", \"values\": [{\"value\": 0, \"end_time\": \"2026-11-12T08:00:00+0000\"}, {\"value\": 0, \"end_time\": \"2026-11-13T08:00:00+0000\"}, {\"value\": 0, \"end_time\": \"2026-11-14T08:00:00+0000\"}, {\"value\": 0, \"end_time\": \"2026-11-15T08:00:00",
+  "profil:likes": "[{\"id\": \"17841435745202437/insights/likes/day\", \"name\": \"likes\", \"period\": \"day\", \"title\": \"likes\", \"description\": \"The number of likes on your posts.\", \"total_value\": {\"value\": 1}}]",
+  "profil:replies": "[{\"id\": \"17841435745202437/insights/replies/day\", \"name\": \"replies\", \"period\": \"day\", \"title\": \"replies\", \"description\": \"The number of replies on your posts.\", \"total_value\": {\"value\": 0}}]",
+  "profil:reposts": "[{\"id\": \"17841435745202437/insights/reposts/day\", \"name\": \"reposts\", \"period\": \"day\", \"title\": \"reposts\", \"description\": \"The number of times your posts were reposted.\", \"total_value\": {\"value\": 0}}]",
+  "profil:quotes": "[{\"id\": \"17841435745202437/insights/quotes/day\", \"name\": \"quotes\", \"period\": \"day\", \"title\": \"quotes\", \"description\": \"The number of times your posts were quoted.\", \"total_value\": {\"value\": 0}}]",
+  "profil:clicks": "[{\"id\": \"17841435745202437/insights/clicks/day\", \"name\": \"clicks\", \"period\": \"day\", \"title\": \"clicks\", \"description\": \"The number of times users clicked on a link\", \"link_total_values\": [{\"value\": 0, \"link_url\": \"https://wetter-badkoenig.de/\"}, {\"value\": 0, \"link_url\": \"http://wetter-badkoenig.de/\"}",
+  "profil:followers_count": "[{\"id\": \"17841435745202437/insights/followers_count/day\", \"name\": \"followers_count\", \"period\": \"day\", \"title\": \"followers_count\", \"description\": \"This is your total number of followers on Threads.\", \"total_value\": {\"value\": 0}}]",
+  "profil:follower_demographics": "FEHLER: Invalid operation",
+  "beitraege": [
+   [
+    "2026-11-19T19:37:21+0000",
+    "IMAGE",
+    "⚠️ DWD-Warnung für den Odenwald: Dauerre"
+   ],
+   [
+    "2026-11-19T18:12:55+0000",
+    "IMAGE",
+    "🌙 So wird das Wetter morgen im Odenwald."
+   ],
+   [
+    "2026-11-19T18:10:36+0000",
+    "VIDEO",
+    "Guten Abend Odenwald! 🌙 Hier kommt der W"
+   ]
+  ],
+  "beitrag:insights": [
+   {
+    "views": 6
+   },
+   {
+    "likes": 0
+   },
+   {
+    "replies": 0
+   },
+   {
+    "reposts": 0
+   },
+   {
+    "quotes": 0
+   },
+   {
+    "shares": 0
+   }
+  ]
+ }
+}

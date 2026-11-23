@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Wetter Bad König – Widget</title>
+<style>
+  :root { --bg:#ffffff; --ink:#1d2b3f; --mut:#62728a; --line:#e3e9f1; --warm:#e0661f; --cold:#2f74c0; --acc:#2a6db5; --chip:#f1f5fa; }
+  .dunkel { --bg:#16202e; --ink:#eef3f9; --mut:#9fb0c6; --line:#2a3a50; --warm:#ff9a52; --cold:#7db4f0; --acc:#8cc0ff; --chip:#1f2c3e; }
+  * { box-sizing:border-box; margin:0; }
+  html, body { background:transparent; }
+  body { font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; color:var(--ink); }
+  a.w { display:block; color:inherit; text-decoration:none; background:var(--bg); border:1px solid var(--line); border-radius:14px; padding:12px 14px; overflow:hidden; }
+  a.w:hover { border-color:var(--acc); }
+  .kopf { display:flex; justify-content:space-between; align-items:baseline; gap:8px; font-size:12px; color:var(--mut); }
+  .kopf b { color:var(--ink); font-size:13px; }
+  .jetzt { display:flex; align-items:center; gap:10px; margin-top:6px; }
+  .ic { font-size:40px; line-height:1; }
+  .t { font-size:42px; font-weight:700; color:var(--warm); line-height:1; letter-spacing:-.02em; }
+  .t.kalt { color:var(--cold); }
+  .gf { font-size:12px; color:var(--mut); }
+  .werte { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:4px 12px; margin-top:10px; font-size:13px; }
+  .werte span { color:var(--mut); } .werte b { font-weight:600; float:right; }
+  .tage { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; margin-top:10px; }
+  .tag { background:var(--chip); border-radius:10px; padding:6px 4px; text-align:center; font-size:12px; }
+  .tag .i { font-size:20px; display:block; margin:2px 0; }
+  .tag .mx { color:var(--warm); font-weight:700; } .tag .mn { color:var(--cold); }
+  .warn { margin-top:8px; background:#fde4e1; color:#a42014; border-radius:8px; padding:5px 8px; font-size:12px; font-weight:600; }
+  .dunkel .warn { background:#4a1f1b; color:#ffb4a9; }
+  .fuss { margin-top:8px; font-size:11px; color:var(--acc); text-align:right; }
+  .alt { color:#b26a00; }
+  .tr { font-size:22px; color:var(--mut); margin-left:4px; font-weight:600; }
+  .hl { font-size:12px; margin-top:2px; } .hl .mx { color:var(--warm); font-weight:700; } .hl .mn { color:var(--cold); font-weight:700; }
+  .rg { margin-top:8px; background:var(--chip); border-radius:8px; padding:5px 8px; font-size:12px; font-weight:600; color:var(--acc); }
+  .rg.fr { color:var(--cold); }
+  .max { margin-top:8px; display:flex; gap:7px; align-items:center; font-size:12px; font-style:italic; }
+  .max img { width:26px; height:26px; border-radius:50%; background:#fff3e8; flex:none; object-fit:cover; }
+  .kurve { margin-top:10px; } .kurve small { font-size:11px; color:var(--mut); } .kurve svg { width:100%; height:46px; display:block; }
+  .tag .p { display:block; font-size:11px; color:var(--acc); }
+  .sonne { display:flex; justify-content:space-between; margin-top:8px; font-size:12px; color:var(--mut); }
+  .warn.s1 { border-left:5px solid #e6c200; background:#fff8d6; color:#6b5600; }
+  .warn.s2 { border-left:5px solid #f08a00; background:#fff1dc; color:#7a4300; }
+  .warn.s3 { border-left:5px solid #e0261b; background:#fde4e1; color:#a42014; }
+  .warn.s4 { border-left:5px solid #9b1f9e; background:#f6e3f7; color:#6d1170; }
+  .dunkel .warn.s1 { background:#3a3410; color:#ffe680; } .dunkel .warn.s2 { background:#3d2a10; color:#ffcf8a; }
+  .dunkel .warn.s3 { background:#4a1f1b; color:#ffb4a9; } .dunkel .warn.s4 { background:#3e1a40; color:#f2b4f4; }
+  .aus { display:none !important; }
+  .klein .max, .klein .kurve, .klein .sonne, .klein .gf { display:none; }
+  .breit .hl, .breit .max, .breit .kurve, .breit .sonne, .breit #frost { display:none; }
+  .breit .rg { margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .breit .tr { font-size:16px; }
+  .breit .jetzt, .breit .kopf { flex:none; } .breit .werte { order:1; } 
+  #bx { display:contents; }
+  .breit #bx { display:flex; flex-direction:column; gap:3px; flex:1 1 0; min-width:0; order:2; }
+  .breit #bx .rg, .breit #bx .warn { padding:3px 8px; font-size:12px; margin:0; }
+  .breit .lang { display:none; } .breit .warn .bis { font-weight:500; }
+  @media (max-width:900px) { .breit .werte { display:none !important; } }
+  .breit .warn { overflow:hidden; text-overflow:ellipsis; } .breit #warn .warn + .warn { display:none; }
+  .breit .werte { flex:none; } .breit .werte div { display:none; } .breit .werte div:nth-child(3) { display:block; }
+  @media (max-width:620px) { .breit .rg { display:none; } }
+  /* klein */
+  .klein .werte, .klein .tage { display:none; }
+  /* breit: alles in einer Zeile */
+  .breit a.w { display:flex; align-items:center; gap:16px; padding:8px 14px; }
+  .breit .kopf { display:block; min-width:110px; } .breit .kopf small { display:block; }
+  .breit .jetzt { margin:0; } .breit .ic { font-size:30px; } .breit .t { font-size:32px; }
+  .breit .werte { margin:0; display:flex; gap:14px; flex-wrap:wrap; } .breit .werte b { float:none; margin-left:4px; }
+  .breit .tage, .breit .fuss { display:none; } .breit .warn { margin:0; }
+  .breit .t { white-space:nowrap; } .breit .gf { display:none; } .breit .warn { white-space:nowrap; }
+  .breit .werte div:nth-child(n+4) { display:none; } .breit .kopf { white-space:nowrap; }
+  .breit a.w { min-height:60px; }
+  @media (max-width:620px) { .breit .werte { display:none; } }
+</style>
+</head>
+<body>
+<a class="w" id="w" href="https://wetter-badkoenig.de/?ref=widget" target="_blank" rel="noopener">
+  <div class="kopf"><b>Wetter Bad König</b><small id="stand">wird geladen …</small></div>
+  <div class="jetzt"><span class="ic" id="ic">⛅</span><div><div class="t" id="t">–</div><div class="gf" id="gf"></div><div class="hl" id="hl"></div></div></div>
+  <div id="max"></div>
+  <div id="bx"><div id="rg"></div>
+  <div id="warn"></div></div>
+  <div id="frost"></div>
+  <div class="werte" id="werte"></div>
+  <div class="kurve" id="kurve"></div>
+  <div class="tage" id="tage"></div>
+  <div class="sonne" id="sonne"></div>
+  <div class="fuss">wetter-badkoenig.de →</div>
+</a>
+<script>
+(function () {
+  var q = new URLSearchParams(location.search);
+  document.body.className = (q.get('g') === 'klein' ? 'klein' : q.get('g') === 'breit' ? 'breit' : 'mittel') + (q.get('t') === 'dunkel' ? ' dunkel' : '');
+  var TAGE = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+  function ic(c, tag) {
+    if (c == null) return '🌡️';
+    if (c === 0) return tag === 0 ? '🌙' : '☀️';
+    if (c <= 2) return tag === 0 ? '☁️' : '⛅';
+    if (c === 3) return '☁️';
+    if (c === 45 || c === 48) return '🌫️';
+    if (c >= 95) return '⛈️';
+    if ((c >= 71 && c <= 77) || c === 85 || c === 86) return '❄️';
+    if (c >= 80) return '🌦️';
+    return '🌧️';
+  }
+  function nf(v, d) { return v == null ? '–' : Number(v).toLocaleString('de-DE', { minimumFractionDigits: d, maximumFractionDigits: d }); }
+  function el(id) { return document.getElementById(id); }
+  function esc(x) { return String(x).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  // Passt das Widget nicht in die eingebettete Höhe (ältere Einbettungen), werden die unwichtigsten Teile ausgeblendet.
+  var REIHE = ['kurve', 'sonne', 'max', 'tage', 'frost', 'werte', 'hl', 'rg'];
+  function passen() {
+    REIHE.forEach(function (id) { el(id).classList.remove('aus'); });
+    if (document.body.className.indexOf('breit') >= 0) return;
+    for (var i = 0; i < REIHE.length && document.documentElement.scrollHeight > window.innerHeight + 1; i++) el(REIHE[i]).classList.add('aus');
+  }
+  window.addEventListener('resize', passen);
+  function laden() {
+    fetch('data/widget.json?v=' + Math.floor(Date.now() / 60000), { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (d) {
+      var L = d.live || {}, st = d.stand ? new Date(d.stand) : null, alt = st && Date.now() - st.getTime() > 45 * 60000;
+      el('stand').innerHTML = st ? '<span class="' + (alt ? 'alt' : '') + '">Stand ' + st.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) + ' Uhr</span>' : '';
+      var PF = { hoch: '↑', runter: '↓', gleich: '→' };
+      el('t').innerHTML = nf(L.temp, 1) + ' °C' + (d.trend_t ? '<span class="tr" title="Trend zur letzten Stunde">' + PF[d.trend_t] + '</span>' : '');
+      el('t').className = 't' + (L.temp != null && L.temp <= 3 ? ' kalt' : '');
+      el('gf').textContent = L.gefuehlt != null ? 'gefühlt ' + nf(L.gefuehlt, 1) + ' °C' : '';
+      el('hl').innerHTML = d.hoch && d.tief ? '<span class="mx">↑ ' + nf(d.hoch[0], 1) + '°</span> <small>(' + d.hoch[1] + ')</small> · <span class="mn">↓ ' + nf(d.tief[0], 1) + '°</span> <small>(' + d.tief[1] + ')</small>' : '';
+      el('ic').textContent = ic(d.code, d.tag);
+      el('max').innerHTML = d.max ? '<div class="max"><img src="max-kopf.png" alt="Max"><span>„' + esc(d.max) + '“</span></div>' : '';
+      el('rg').innerHTML = d.regen_hinweis ? '<div class="rg">' + (/Schnee/.test(d.regen_hinweis) ? '❄️ ' : /trocken$/.test(d.regen_hinweis) && !/hält/.test(d.regen_hinweis) ? '🌂 ' : '☔ ') + esc(d.regen_hinweis).replace(/^(.*?)(, .*)$/, '$1<span class="lang">$2</span>') + '</div>' : '';
+      el('frost').innerHTML = d.frost ? '<div class="rg fr">❄️ ' + esc(d.frost) + '</div>' : '';
+      el('werte').innerHTML =
+        '<div><span>Wind</span><b>' + nf(L.wind, 0) + ' km/h</b></div>' +
+        '<div><span>Böen</span><b>' + nf(L.boe, 0) + ' km/h</b></div>' +
+        '<div><span>Regen heute</span><b>' + nf(L.regen, 1) + ' mm</b></div>' +
+        '<div><span>Feuchte</span><b>' + nf(L.feuchte, 0) + ' %</b></div>' +
+        '<div><span>Luftdruck</span><b>' + nf(L.druck, 0) + ' hPa' + (d.trend_p ? ' ' + PF[d.trend_p] : '') + '</b></div>' +
+        '<div><span>UV-Index</span><b>' + nf(L.uv, 0) + '</b></div>';
+      var V = d.verlauf || [];
+      if (V.length > 5) {
+        var mx = -99, mn = 99; V.forEach(function (x) { mx = Math.max(mx, x[1]); mn = Math.min(mn, x[1]); }); if (mx - mn < 1) { mx += .5; mn -= .5; }
+        var a = V[0][0], b = V[V.length - 1][0] || a + 1;
+        el('kurve').innerHTML = '<small>Temperatur letzte 24 Std. (' + nf(mn, 1) + ' bis ' + nf(mx, 1) + ' °C)</small><svg viewBox="0 0 270 44" preserveAspectRatio="none"><polyline fill="none" stroke="var(--warm)" stroke-width="2" vector-effect="non-scaling-stroke" points="' +
+          V.map(function (x) { return (270 * (x[0] - a) / Math.max(1, b - a)).toFixed(1) + ',' + (2 + 40 - (x[1] - mn) / (mx - mn) * 40).toFixed(1); }).join(' ') + '"/></svg>';
+      } else el('kurve').innerHTML = '';
+      el('tage').innerHTML = (d.tage || []).map(function (x, i) {
+        var n = i === 0 ? 'Heute' : TAGE[new Date(x.datum + 'T12:00').getDay()];
+        return '<div class="tag">' + n + '<span class="i">' + ic(x.code) + '</span><span class="mx">' + x.max + '°</span> <span class="mn">' + x.min + '°</span><span class="p">💧 ' + (x.rp || 0) + ' %</span></div>';
+      }).join('');
+      el('sonne').innerHTML = d.sonne ? '<span>🌅 ' + d.sonne[0] + ' Uhr</span><span>🌇 ' + d.sonne[1] + ' Uhr</span>' : '';
+      var FB = { 1: '🟡', 2: '🟠', 3: '🔴', 4: '🟣' };
+      el('warn').innerHTML = (d.warn || []).slice(0, 2).map(function (w) {
+        var st = typeof w.stufe === 'number' ? w.stufe : 2;
+        return '<div class="warn s' + st + '">' + (FB[st] || '⚠') + ' ' + esc(w.text || 'Amtliche Warnung') + (w.bis ? ' · ' + esc(w.bis) : '') + '</div>';
+      }).join('');
+      passen();
+    }).catch(function () { el('stand').textContent = 'gerade nicht erreichbar'; });
+  }
+  laden(); setInterval(laden, 5 * 60000);
+})();
+</script>
+</body>
+</html>
