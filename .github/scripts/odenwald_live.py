@@ -354,6 +354,7 @@ def main():
         alt_e = next((o for o in alt.get('orte', []) + alt.get('extra', []) if o['name'] == n), None)
         if sid != 'IBADKN33' and not abruf_jetzt and alt_e and (alt_e.get('station') == sid or not ist_extra) and alt_e.get('zeit') \
            and (jetzt - dt.datetime.fromisoformat(alt_e['zeit'])).total_seconds() < 25 * 60:
+            alt_e.setdefault('station', sid); alt_e['reserve'] = reserve_text(n, sid, ist_extra)
             orte.append(alt_e); continue   # alter Wert bleibt bis zum nächsten Abruf
         try: v = wu(sid) if art == 'wu' else dwd(sid, heute)
         except Exception as e: print('Station %s nicht abrufbar:' % n, e); v = None
