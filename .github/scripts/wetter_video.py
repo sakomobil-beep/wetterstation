@@ -569,7 +569,14 @@ def tagtext(d, wann, nachtfrost=True, hoch_temp=True):
     elif sf == 'vereinzelt':
         s += ' ' + frisch(rnd, 'vereinzelt', ['Meist bleibt es trocken, nur vereinzelt ist ein kurzer Schauer möglich.',
                                               'Ganz ausschließen lässt sich ein einzelner Schauer nicht, meistens bleibt es aber trocken.'])
-    if nachtfrost and d.get('frost_min', d['tmin']) <= 0:   # Frost nach dem kältesten Talort (Nacht VOR diesem Tag)
+    if nachtfrost and d.get('frost_min', d['tmin']) <= 0 and round(d['tmin']) != round(d.get('frost_min', d['tmin'])):
+        # 23.11.2026 (Kingman, Variante 1): Tafel zeigt das Tal-Mittel, Max nennt beide Werte – passt dann zur Tafel
+        t_, k_ = zahl(d['tmin']), zahl(d['frost_min']); tg_ = TAGE[d['datum'].weekday()]
+        zum = ('in der Nacht zum %s' % tg_) if Wk not in ('Heute',) else 'heute Nacht'
+        s += ' ' + frisch(rnd, 'frost2', ['%s geht es in den Tälern auf %s Grad runter, stellenweise sogar bis %s. Also: morgens Scheiben kratzen!' % (zum[0].upper() + zum[1:], t_, k_),
+                                          '%s gibt es Frost: in den Tälern um %s Grad, an den kältesten Stellen bis %s.' % (zum[0].upper() + zum[1:], t_, k_),
+                                          'Frostig wird es %s – in den Tälern %s Grad, stellenweise %s. Wer früh losmuss: Zeit zum Kratzen einplanen.' % (zum, t_, k_)])
+    elif nachtfrost and d.get('frost_min', d['tmin']) <= 0:   # Frost nach dem kältesten Talort (Nacht VOR diesem Tag)
         n = zahl(d.get('frost_min', d['tmin'])); tg_ = TAGE[d['datum'].weekday()]
         s += ' ' + frisch(rnd, 'frost', ['In der Nacht zum %s wird es frostig, bis %s Grad.' % (tg_, n),
                                          'In der Nacht zum %s geht es runter auf %s Grad. Also: morgens Scheiben kratzen!' % (tg_, n),
@@ -942,15 +949,15 @@ def abschied(d, rnd):
                            'Tee kochen, Füße hoch – das nächste schöne Wetter kommt bestimmt!'])
     if d['code'] in (45, 48):
         return frisch(rnd, 'schluss_nebel', ['Licht an im Nebel, fahrt vorsichtig – und macht es euch gemütlich!',
-                           'Warm einpacken und vorsichtig fahren – bis morgen!',
+                           'Warm einpacken und vorsichtig fahren – bis heute Abend!',
                            'Kommt gut durch die graue Suppe – oben auf den Höhen wartet vielleicht schon die Sonne!',
-                           'Abblendlicht an, Abstand halten – und dann einen schönen Tag, bis morgen!',
-                           'Nebel hin oder her – macht was Schönes aus dem Tag. Bis morgen!'], tage=5)
+                           'Abblendlicht an, Abstand halten – und dann einen schönen Tag, wir sehen uns heute Abend!',
+                           'Nebel hin oder her – macht was Schönes aus dem Tag. Bis heute Abend!'], tage=5)
     if d['code'] == 3:
-        return rnd.choice(['Auch ein grauer Tag kann schön werden – macht was draus!', 'Jacke an und los – bis morgen!'])
+        return rnd.choice(['Auch ein grauer Tag kann schön werden – macht was draus!', 'Jacke an und los – bis heute Abend!'])
     if d['tmax'] <= 3:
         return 'Dick einpacken – und dann raus an die frische Luft!'
-    return rnd.choice(['Genießt den Tag – bis morgen!', 'Macht was draus – bis morgen!'])
+    return rnd.choice(['Genießt den Tag – bis heute Abend!', 'Macht was draus – wir sehen uns heute Abend!'])
 
 
 def lage_fx(d):
