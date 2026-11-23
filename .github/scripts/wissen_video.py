@@ -342,11 +342,13 @@ def main():
                   ('p_termin', 'Und ab jetzt gilt: Wetterwissen mit Max gibt es immer von Montag bis Freitag, jeden Nachmittag um 15 Uhr – hier auf unserer Seite. Die nächste Folge kommt schon morgen, am Montag!'),
                   ('p_folgen', 'Wenn ihr mehr über das Wetter im Odenwald wissen wollt, dann folgt uns – so verpasst ihr keine Folge. Und wenn euch die Premiere gefallen hat: Lasst ein Like da, das hilft uns sehr!'),
                   ('p_folgen', 'Schreibt mir in die Kommentare, welche Wetterfrage ich als Nächstes beantworten soll. Ich bin Max – bis morgen um 15 Uhr, euer Wetterwissen mit Max!')]
+    # 23.11.2026: Tempo wie Morgen-/Abendvideo (Begrüßung +4 %, Abschied +3 %, Erklärteil wie Wissen-Abschnitt +2 %)
+    WT = {'intro': V.TEMPO['intro'], 'p_hallo': V.TEMPO['intro'], 'ende': V.TEMPO['outro'], 'p_termin': V.TEMPO['outro'], 'p_folgen': V.TEMPO['outro']}
     tmp = tempfile.mkdtemp(); echt = True; dat = []
     for n, (art, txt) in enumerate(teile):
         p = os.path.join(tmp, 'a%d.mp3' % n)
         if DEMO: subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-f', 'lavfi', '-i', 'anullsrc=r=24000:cl=mono', '-t', '%.2f' % max(1.5, len(txt) / 16), p], check=True); echt = False
-        else: echt = sprich(txt, p, '+0%') and echt
+        else: echt = sprich(txt, p, WT.get(art, V.TEMPO['wissen'])) and echt
         q = os.path.join(tmp, 'p%d.wav' % n)
         subprocess.run(['ffmpeg', '-y', '-loglevel', 'error', '-i', p, '-af', 'apad=pad_dur=0.35', '-ar', '24000', '-ac', '1', q], check=True)
         dat.append(dict(art=art, text=txt, wav=q, dauer=dauer(q)))
