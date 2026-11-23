@@ -1,5 +1,5 @@
 {
- "stand": "2026-11-23T02:29+01:00",
+ "stand": "2026-11-23T08:51+01:00",
  "quellen": {
   "Sonnenwind (Plasma)": "ok",
   "Magnetfeld Bz": "ok",
@@ -14,12 +14,8 @@
   "NOAA-Meldungen": "ok",
   "Sonnenzyklus": "ok",
   "Polarlichtoval-Animation": "ok",
-  "Sonnenbild SDO": "nicht erreichbar (<urlopen error [Errno 101] Network is unreachable>)"
+  "Sonnenbild SDO": "ok"
  },
- "fehler": {
-  "Sonnenbild SDO": "nicht erreichbar (<urlopen error [Errno 101] Network is unreachable>)"
- },
- "gemeldet": {
-  "Sonnenbild SDO": "2026-11-23"
- }
+ "fehler": {},
+ "gemeldet": {}
 }
