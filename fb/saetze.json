@@ -1,21 +1,6 @@
 [
 {
 "d": "2026-11-22",
-"g": "tag",
-"k": "Am Montag wird es nach Nebel am Morgen f"
-},
-{
-"d": "2026-11-22",
-"g": "frost",
-"k": "In der Nacht zum Montag wird es frostig,"
-},
-{
-"d": "2026-11-22",
-"g": "glaette_r",
-"k": "Morgens kann Reif auf Brücken und Nebens"
-},
-{
-"d": "2026-11-22",
 "g": "nebel_w",
 "k": "Morgens gibt es in den Tälern Nebel bis "
 },
@@ -1998,5 +1983,20 @@
 "d": "2026-11-23",
 "g": "schluss_nebel",
 "k": "Warm einpacken und vorsichtig fahren – b"
+},
+{
+"d": "2026-11-23",
+"g": "wissen_intro",
+"k": "Hallo zusammen, hier ist Max – Zeit für "
+},
+{
+"d": "2026-11-23",
+"g": "wissen_ende",
+"k": "Habt ihr das gewusst? Schreibt’s mir in "
+},
+{
+"d": "2026-11-23",
+"g": "wissen_thema",
+"k": "Heute klären wir: %s"
 }
 ]
