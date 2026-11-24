@@ -2,134 +2,6 @@
  "stand": "2026-11-24T15:14",
  "wochen": [
   {
-   "woche": "18.11.–24.11.2026",
-   "start": "2026-11-18",
-   "ende": "2026-11-24",
-   "erstellt": "2026-11-24T15:14",
-   "posts_ist": 37,
-   "posts_soll": 41,
-   "station_online": 100.0,
-   "warnungen": 1,
-   "posts": [
-    {
-     "name": "Morgenvideo",
-     "soll": 7,
-     "fb": 3,
-     "fb_soll": 3,
-     "th": 3,
-     "th_soll": 3
-    },
-    {
-     "name": "Morgen-Story / Morgenbild",
-     "soll": 7,
-     "fb": 3,
-     "fb_soll": 3,
-     "th": 3,
-     "th_soll": 3
-    },
-    {
-     "name": "Mittagskarte",
-     "soll": 7,
-     "fb": 3,
-     "fb_soll": 3,
-     "th": 3,
-     "th_soll": 3
-    },
-    {
-     "name": "Mittags-Story",
-     "soll": 7,
-     "fb": 3,
-     "fb_soll": 3,
-     "th": null
-    },
-    {
-     "name": "Wetterwissen",
-     "soll": 5,
-     "fb": 3,
-     "fb_soll": 3,
-     "th": 3,
-     "th_soll": 3
-    },
-    {
-     "name": "Abendvideo",
-     "soll": 6,
-     "fb": 2,
-     "fb_soll": 3,
-     "th": 2,
-     "th_soll": 3
-    },
-    {
-     "name": "Abend-Story / Abendbild",
-     "soll": 7,
-     "fb": 2,
-     "fb_soll": 3,
-     "th": 2,
-     "th_soll": 3
-    },
-    {
-     "name": "Wochenausblick",
-     "soll": 1,
-     "fb": 1,
-     "fb_soll": 1,
-     "th": 1,
-     "th_soll": 1
-    }
-   ],
-   "ablauf_fehler": [
-    {
-     "name": "Vorhersage lernen",
-     "anzahl": 11
-    },
-    {
-     "name": "Widget-Daten",
-     "anzahl": 3
-    },
-    {
-     "name": "Facebook-Vorhersage + Video",
-     "anzahl": 2
-    },
-    {
-     "name": "Wettervideo neu erstellen (ohne Posten)",
-     "anzahl": 2
-    },
-    {
-     "name": "Facebook/Instagram-Statistik testen (ohne Posten)",
-     "anzahl": 1
-    }
-   ],
-   "abdeckung": {
-    "Breuberg": 100.0,
-    "Höchst i. Odw.": 100.0,
-    "Bad König": 100.0,
-    "Michelstadt": 100.0,
-    "Mossautal": 100.0,
-    "Oberzent": 100.0,
-    "Reichelsheim": 100.0,
-    "Brombachtal": 100.0,
-    "Lützelbach": 100.0
-   },
-   "luecken": [],
-   "luft_ok": true,
-   "hinweise": [
-    {
-     "tag": "",
-     "text": "Ablauf „Vorhersage lernen“ 11× fehlgeschlagen"
-    },
-    {
-     "tag": "",
-     "text": "Ablauf „Widget-Daten“ 3× fehlgeschlagen"
-    },
-    {
-     "tag": "2026-11-24",
-     "text": "Abendvideo auf Facebook/Instagram nicht gepostet"
-    },
-    {
-     "tag": "2026-11-24",
-     "text": "Abendvideo auf Threads nicht gepostet"
-    }
-   ]
-  },
-  {
    "woche": "16.11.–22.11.2026",
    "start": "2026-11-16",
    "ende": "2026-11-22",
@@ -226,15 +98,15 @@
     }
    ],
    "abdeckung": {
-    "Breuberg": 98.2,
-    "Höchst i. Odw.": 98.2,
-    "Bad König": 99.2,
-    "Michelstadt": 98.2,
-    "Mossautal": 97.0,
-    "Oberzent": 98.2,
-    "Reichelsheim": 98.4,
-    "Brombachtal": 98.4,
-    "Lützelbach": 95.1
+    "Breuberg": 100.0,
+    "Höchst i. Odw.": 100.0,
+    "Bad König": 100.0,
+    "Michelstadt": 100.0,
+    "Mossautal": 100.0,
+    "Oberzent": 100.0,
+    "Reichelsheim": 100.0,
+    "Brombachtal": 100.0,
+    "Lützelbach": 100.0
    },
    "luecken": [
     {
@@ -287,14 +159,6 @@
     {
      "tag": "",
      "text": "Ablauf „Widget-Daten“ 3× fehlgeschlagen"
-    },
-    {
-     "tag": "2026-11-18",
-     "text": "5 Odenwald-Orte 3,0 Std. ohne Daten (18.11. 22:20–19.11. 01:20)"
-    },
-    {
-     "tag": "2026-11-21",
-     "text": "Lützelbach 3,1 Std. ohne Daten (21.11. 16:25–19:30)"
     }
    ]
   }
