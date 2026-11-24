@@ -1,5 +1,17 @@
 [
  {
+  "datum": "2026-11-24",
+  "datei": "2026-11-24.mp4",
+  "art": "morgen",
+  "erstellt": "2026-11-24T05:33+00:00",
+  "special": false,
+  "warn": [
+   "Amtliche Warnung vor Frost",
+   "Amtliche Warnung vor Glätte"
+  ],
+  "dauer": 133.0
+ },
+ {
   "datum": "2026-11-23",
   "datei": "2026-11-23-abend.mp4",
   "art": "abend",
@@ -141,31 +153,5 @@
    "Amtliche Warnung vor Starkem Gewitter für Breuberg"
   ],
   "dauer": 123.1
- },
- {
-  "datum": "2026-11-17",
-  "datei": "2026-11-17-abend.mp4",
-  "art": "abend",
-  "erstellt": "2026-11-17T23:03+00:00",
-  "special": false,
-  "warn": [
-   "Amtliche Warnung vor Sturmböen",
-   "Amtliche Warnung vor Windböen",
-   "Amtliche Warnung vor Windböen für Breuberg"
-  ],
-  "dauer": 109.0
- },
- {
-  "datum": "2026-11-17",
-  "datei": "2026-11-17.mp4",
-  "art": "morgen",
-  "erstellt": "2026-11-17T23:00+00:00",
-  "special": false,
-  "warn": [
-   "Amtliche Warnung vor Sturmböen",
-   "Amtliche Warnung vor Windböen",
-   "Amtliche Warnung vor Windböen für Breuberg"
-  ],
-  "dauer": 111.5
  }
 ]
