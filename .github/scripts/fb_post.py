@@ -763,6 +763,10 @@ def niederschlag(days):
             elif st_ == 'schauer' and (c not in NASS_CODES or c >= 95 or 71 <= c <= 77 or c in (85, 86)): c = 80
         if c != d['code']: print('Wettersymbol %s angeglichen: %s -> %s (Regen-Stufe %s, %s %%)' % (tag, d['code'], c, st_, d['rp']))
         d['code'] = c
+        # 24.11.2026: Schnee nach Menge abstufen (einzelne Flocken / leichter Schneefall / Schnee)
+        if 71 <= c <= 77 or c in (85, 86):
+            cm_ = max(d.get('schnee') or 0, (d.get('tal') or {}).get('schnee_cm') or 0)
+            d['schnee_stufe'] = 'schnee' if cm_ >= 1 else 'leicht' if (d['nied'].get('mm') or 0) >= 0.5 else 'flocken'
         if d.get('tal'): d['tal']['code'] = c
         if d.get('hoch') and d['nied']['schnee_hoch']: d['hoch']['schnee'] = True   # im Tal Regen, oben Schnee
         # Stundenwerte der Grafik: Regenrisiko/-menge aus derselben Grundlage, Symbole passend
@@ -911,6 +915,13 @@ def wort(c):
     return 'wechselhaft'
 
 
+def wort_d(d):
+    """Wetterwort für einen Tag, Schnee nach Menge abgestuft (24.11.2026)."""
+    w = wort(d['code'])
+    if w == 'Schnee': w = {'flocken': 'einzelne Flocken', 'leicht': 'leichter Schneefall'}.get(d.get('schnee_stufe'), w)
+    return w
+
+
 def emoji(c):
     return {'sonnig': '☀️', 'heiter bis wolkig': '⛅', 'bedeckt': '☁️', 'neblig': '🌫️', 'Nieselregen': '🌦️',
             'Regen': '🌧️', 'Schnee': '❄️', 'Schauer': '🌦️', 'Gewitter': '⛈️'}.get(wort(c), '🌤️')
@@ -960,14 +971,14 @@ def text(days, warn):
     gruss = 'Mahlzeit, Odenwald! %s Euer Wetter für den Rest des Tages:' % emoji(a['code'])
     rest = [n for n, p in (('am Nachmittag', a['rp_nm']), ('am Abend', a['rp_ab'])) if p >= 40]
     zeilen = [gruss, '',
-              'Heute Nachmittag (%s): %s, in den Tälern bis %d °C%s.%s' % (TAGE[a['datum'].weekday()], wort(a['code']), a['tmax'],
+              'Heute Nachmittag (%s): %s, in den Tälern bis %d °C%s.%s' % (TAGE[a['datum'].weekday()], wort_d(a), a['tmax'],
                   (', Regen vor allem ' + ' und '.join(rest)) if rest else ', meist trocken',
                   (' Auf den Höhen um %d °C%s.' % (a['hoch']['tmax'], ', Schnee möglich ❄️' if a['hoch']['schnee'] else '')) if a.get('hoch') else ''),
               '🌃 Heute Nacht: Täler um %d °C%s.' % (b['tmin'], (', Höhen um %d °C' % b['hoch']['tmin']) if b.get('hoch') else '')]
     # mittags zählt der Frost der kommenden Nacht (Tiefstwert von morgen früh), nicht der von heute früh
     nacht = dict(a, tmin=b['tmin'], frost_min=b.get('frost_min', b['tmin']), hoch=(dict(a['hoch'], tmin=b['hoch']['tmin']) if a.get('hoch') and b.get('hoch') else a.get('hoch')))
     for x in hinweise(nacht): zeilen.append('⚠️ ' + x.replace('Frost bis', 'Heute Nacht Frost bis'))
-    zeilen.append('Morgen (%s): %s %s, Täler %d bis %d °C%s' % (TAGE[b['datum'].weekday()], emoji(b['code']), wort(b['code']), b['tmin'], b['tmax'],
+    zeilen.append('Morgen (%s): %s %s, Täler %d bis %d °C%s' % (TAGE[b['datum'].weekday()], emoji(b['code']), wort_d(b), b['tmin'], b['tmax'],
                   (', Höhen um %d °C.' % b['hoch']['tmax']) if b.get('hoch') else '.'))
     for w in warn_zeilen(warn, 3): zeilen.append('🚨 DWD: ' + w)
     zeilen += ['', '📍 Vorhersage für den Odenwaldkreis (Täler und Höhen) aus vier Wettermodellen – Messwerte von unserer Station in Bad König.',
@@ -1063,7 +1074,7 @@ def bild(days, warn, path, labels=('HEUTE', 'MORGEN'), kopf=None, nacht=False):
         icon(dr, cx, y0 + 215, 160, d['code'])
         f = font(96, True); t = '%d°' % d['tmax']; w = dr.textlength(t, font=f); dr.text((cx - w / 2 - 70, y0 + 355), t, font=f, fill=(230, 100, 40))
         f = font(64, True); t = '%d°' % d['tmin']; w = dr.textlength(t, font=f); dr.text((cx + 50, y0 + 385), t, font=f, fill=(60, 120, 200))
-        f = font(34, True); t = wort(d['code']).capitalize(); w = dr.textlength(t, font=f); dr.text((cx - w / 2, y0 + 485), t, font=f, fill=(40, 55, 75))
+        f = font(34, True); t = wort_d(d)[0].upper() + wort_d(d)[1:]; w = dr.textlength(t, font=f); dr.text((cx - w / 2, y0 + 485), t, font=f, fill=(40, 55, 75))
         f = font(28)
         info = ('Regen %d %%  ·  %.1f l/m²' % (d['rp'], d['regen'])).replace('.', ',')
         w = dr.textlength(info, font=f); dr.text((cx - w / 2, y0 + (525 if d.get('hoch') else 540)), info, font=f, fill=(90, 105, 125))
@@ -1127,14 +1138,14 @@ def text_abend(paar, wochenende, warn, rest=()):
                   (', auf den Höhen um %d °C' % a['hoch']['tmin']) if a.get('hoch') else ''))
     zeilen.append('')
     for name, d in ((('Samstag', a), ('Sonntag', b)) if wochenende else (('Morgen', a),)):
-        zeilen.append('📅 %s (%s): %s %s, Täler %d bis %d °C' % (name, TAGE[d['datum'].weekday()], emoji(d['code']), wort(d['code']), d['tmin'], d['tmax']))
+        zeilen.append('📅 %s (%s): %s %s, Täler %d bis %d °C' % (name, TAGE[d['datum'].weekday()], emoji(d['code']), wort_d(d), d['tmin'], d['tmax']))
         if d.get('hoch'): zeilen.append('⛰️ Höhen (Oberzent, Mossautal): %d bis %d °C%s' % (d['hoch']['tmin'], d['hoch']['tmax'], ' – Schnee möglich ❄️' if d['hoch']['schnee'] else ''))
         zeilen.append('🕒 ' + tagesablauf(d))
         zeilen += details(d)
         zeilen.append('👉 Tipp: ' + tipp(d))
         zeilen.append('')
     if not wochenende:
-        zeilen.append('📅 Übermorgen (%s): %s %s, %d bis %d °C%s.' % (TAGE[b['datum'].weekday()], emoji(b['code']), wort(b['code']), b['tmin'], b['tmax'],
+        zeilen.append('📅 Übermorgen (%s): %s %s, %d bis %d °C%s.' % (TAGE[b['datum'].weekday()], emoji(b['code']), wort_d(b), b['tmin'], b['tmax'],
                       ', Regenrisiko %d %%' % b['rp'] if b['rp'] >= 30 else ', meist trocken'))
     if rest:
         zeilen.append('📈 Danach: ' + ' · '.join('%s %s %d°' % (TAGE[d['datum'].weekday()][:2], emoji(d['code']), d['tmax']) for d in rest))
@@ -1325,7 +1336,7 @@ def text_mittag(days, rest, live, warn):
     if live: z += ['🌡️ Jetzt an unserer Station in Bad König: %s °C (%s Uhr)' % (('%.1f' % live['temp']).replace('.', ','), live['zeit']), '']
     teile = ['%s %d°' % (n, rest[n]['tmax']) for n, *_ in ORTE_KARTE if rest.get(n)]
     if teile: z += ['📍 Höchstwerte bis zum Abend: ' + ' · '.join(teile), '']
-    z.append('%s %s%s.' % (emoji(d['code']), wort(d['code']).capitalize(),
+    z.append('%s %s%s.' % (emoji(d['code']), wort_d(d)[0].upper() + wort_d(d)[1:],
                            ', Regenrisiko %d %%' % d['rp'] if d['rp'] >= 30 else ', meist trocken'))
     if d.get('hoch'): z.append('⛰️ Auf den Höhen (Oberzent, Mossautal) bis %d °C.' % d['hoch']['tmax'])
     for w in warn_zeilen(warn, 2): z.append('🚨 DWD: ' + w)
@@ -1374,7 +1385,7 @@ def story(days, warn, path, abends=False):
     k = None
     try: k = web_karte(story_orte(days, n), d, codef=ort_code_tag, gross=1.35)
     except Exception as e: print('Story-Karte nicht möglich:', e)
-    wt = wort(d['code']).capitalize() if wort(d['code'])[:1].islower() else wort(d['code'])
+    wt = wort_d(d)[0].upper() + wort_d(d)[1:]
     z = ['Regen %d %%' % d['rp'] if d['rp'] >= 20 else 'meist trocken', 'Böen bis %d km/h' % round(d['boe']) if d.get('boe') else '',
          ('Höhen %d° / %d°' % (d['hoch']['tmax'], d['hoch']['tmin'])) if d.get('hoch') else '']
     z = [x for x in z if x]

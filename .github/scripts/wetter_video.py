@@ -48,8 +48,8 @@ def art(d):
     w = wort_tag(d)
     if w == 'neblig' and d.get('sonne', 0) >= 3: return 'nach Nebel am Morgen auch Sonne'
     return {'sonnig': 'viel Sonne', 'heiter bis wolkig': 'einen Mix aus Sonne und Wolken', 'bedeckt': 'viele Wolken',
-            'neblig': 'Nebel', 'Nieselregen': 'Nieselregen', 'Regen': 'Regen', 'Schnee': 'Schnee',
-            'Schauer': 'einzelne Schauer', 'Gewitter': 'Gewitter'}.get(w, 'wechselhaftes Wetter')
+            'neblig': 'Nebel', 'Nieselregen': 'Nieselregen', 'Regen': 'Regen', 'Schnee': 'leichten Schneefall' if d.get('schnee_stufe') == 'leicht' else 'Schnee',
+            'Flocken': 'ein paar Schneeflocken – liegen bleibt aber nichts', 'Schauer': 'einzelne Schauer', 'Gewitter': 'Gewitter'}.get(w, 'wechselhaftes Wetter')
 
 
 def regenzeit(d):
@@ -73,6 +73,7 @@ def stufe(d):
 def wort_tag(d):
     """Wetterwort für den Tag. (18.11.2026) „Nieselregen“ untertreibt, wenn die gemeinsame Einstufung „Regen“ sagt und 3 l/m² oder mehr fallen."""
     w = wort(d['code'])
+    if w == 'Schnee' and d.get('schnee_stufe') == 'flocken': return 'Flocken'   # 24.11.2026: kaum Menge → nur einzelne Flocken
     if w == 'Nieselregen' and stufe(d) == 'regen' and (d.get('regen') or 0) >= 3: return 'Regen'
     return w
 
@@ -461,7 +462,7 @@ def tipp(d, rnd, heute, zusatz=True):
 
 
 ADJ = {'sonnig': 'richtig sonnig', 'heiter bis wolkig': 'freundlich mit ein paar Wolken', 'bedeckt': 'ziemlich grau',
-       'neblig': 'neblig und trüb', 'Nieselregen': 'ungemütlich mit Niesel', 'Regen': 'nass', 'Schnee': 'winterlich',
+       'neblig': 'neblig und trüb', 'Nieselregen': 'ungemütlich mit Niesel', 'Regen': 'nass', 'Schnee': 'winterlich', 'Flocken': 'grau mit ein paar Flocken',
        'Schauer': 'wechselhaft mit Schauern', 'Gewitter': 'gewittrig'}
 
 
@@ -1164,7 +1165,7 @@ def kurz_gesagt(d, wann='heute'):
     """Idee 7: Merksatz zum Schluss – „Kurz gesagt: morgens frostig, nachmittags freundlich bei 4 Grad, abends klar und kalt.“
     Nur aus der gemeinsamen Einstufung (d['nied'], d['lage']) und den Tageswerten – sagt nichts, was dem übrigen Video widerspricht."""
     N = d.get('nied') or {}; L = lage(d)
-    def nass(x): return {'schauer': 'Schauer', 'regen': 'Regen', 'gewitter': 'Gewitter'}.get(N.get(x))
+    def nass(x): return ('ein paar Flocken' if N.get(x) in ('schauer', 'regen', 'vereinzelt') else None) if wort_tag(d) == 'Flocken' else {'schauer': 'Schauer', 'regen': 'Regen', 'gewitter': 'Gewitter'}.get(N.get(x))
     schnee = d.get('schnee', 0) >= 1 or wort_tag(d) == 'Schnee'
     if schnee: vm = 'Schnee' if N.get('vm') in ('schauer', 'regen') else None
     else: vm = nass('vm')

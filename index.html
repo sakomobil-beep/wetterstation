@@ -2438,7 +2438,7 @@ html[data-theme="dark"] .luftnb{background:#4a3500;color:#ffd98a}
 
   <p class="foot" id="ortLinks">Wetter im Odenwald, live gemessen: <a href="michelstadt.html">Michelstadt</a> · <a href="hoechst.html">Höchst</a> · <a href="breuberg.html">Breuberg</a> · <a href="mossautal.html">Mossautal</a> · <a href="oberzent.html">Oberzent</a> · <a href="reichelsheim.html">Reichelsheim</a> · <a href="brombachtal.html">Brombachtal</a> · <a href="luetzelbach.html">Lützelbach</a></p>
   <!-- SEO-JETZT ANFANG --><p class="foot" id="seoJetzt" data-std="24.11.2026 07">Aktuell in Bad König (eigene Station, 06:56 Uhr): −8,0 °C, 93 % Luftfeuchte, windstill, Luftdruck 1028 hPa, Regen heute 0,0 l/m².</p><!-- SEO-JETZT ENDE -->
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a> · <a href="https://www.paypal.com/paypalme/wettermax" target="_blank" rel="noopener">☕ Max einen Kaffee ausgeben</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 23.11.2026, 22:35 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a> · <a href="https://www.paypal.com/paypalme/wettermax" target="_blank" rel="noopener">☕ Max einen Kaffee ausgeben</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 24.11.2026, 07:30 Uhr</span></p>
 
 </div>
 
@@ -3688,7 +3688,7 @@ function dirLong(deg) { return DIR8[Math.round((((deg % 360) + 360) % 360) / 45)
 /* Wettersymbole */
 var ICON_TXT = {
   'clear-day': 'Sonnig', 'clear-night': 'Klar', 'partly-cloudy-day': 'Wechselnd bewölkt', 'partly-cloudy-night': 'Wechselnd bewölkt',
-  'cloudy': 'Bedeckt', 'fog': 'Nebel', 'wind': 'Windig', 'rain': 'Regen', 'sleet': 'Schneeregen', 'snow': 'Schnee', 'hail': 'Hagel', 'thunderstorm': 'Gewitter',
+  'cloudy': 'Bedeckt', 'fog': 'Nebel', 'wind': 'Windig', 'rain': 'Regen', 'sleet': 'Schneeregen', 'snow': 'Schnee', 'snow-light': 'Leichter Schneefall', 'flocken': 'Einzelne Flocken', 'hail': 'Hagel', 'thunderstorm': 'Gewitter',
   'showers-day': 'Schauer', 'showers-night': 'Schauer'
 };
 function icSun(cx, cy, r) {
@@ -3719,6 +3719,8 @@ function wxIcon(name) {
     case 'showers-night': b = icMoon(-2, -4, 0.66) + icCloud(4, 4, 0.92, '#97A8B3') + '<g class="wa-rain" stroke="#2F7FC1" stroke-width="2.6" stroke-linecap="round"><line x1="19" y1="35" x2="16.5" y2="42"/><line x1="28" y1="35" x2="25.5" y2="42"/></g>'; break;
     case 'sleet': b = top + '<g class="wa-rain" stroke="#2F7FC1" stroke-width="2.6" stroke-linecap="round"><line x1="17" y1="32" x2="14.5" y2="40"/><line x1="31" y1="32" x2="28.5" y2="40"/></g><g class="wa-snow" fill="#7FA7C9"><circle cx="24" cy="36" r="2.4"/><circle cx="22" cy="43.5" r="2.4"/></g>'; break;
     case 'snow': b = top + '<g class="wa-snow" fill="#7FA7C9"><circle cx="16" cy="35" r="2.5"/><circle cx="24" cy="38" r="2.5"/><circle cx="32" cy="35" r="2.5"/><circle cx="20" cy="43.5" r="2.5"/><circle cx="28" cy="43.5" r="2.5"/></g>'; break;
+    case 'snow-light': b = top + '<g class="wa-snow" fill="#7FA7C9"><circle cx="18" cy="36" r="2.4"/><circle cx="30" cy="36" r="2.4"/><circle cx="24" cy="43" r="2.4"/></g>'; break;
+    case 'flocken': b = top + '<g class="wa-snow" fill="#7FA7C9"><circle cx="24" cy="38" r="2.4"/></g>'; break;   // 24.11.2026 Schnee-Abstufung
     case 'hail': b = top + '<g class="wa-snow" fill="#FFFFFF" stroke="#7FA7C9" stroke-width="2"><circle cx="17" cy="36" r="2.8"/><circle cx="25" cy="41" r="2.8"/><circle cx="33" cy="36" r="2.8"/></g>'; break;
     case 'thunderstorm': b = icCloud(0, -3, 1, '#7F909C') + '<polygon class="wa-bolt" fill="#F2B233" points="26,26 17,38 23,38 20,47 31,33 25,33 28,26"/>'; break;
     case 'wet': b = '<path class="wa-wet" fill="#2F7FC1" d="M24 8C18 18 14.5 23 14.5 28.5a9.5 9.5 0 0 0 19 0C33.5 23 30 18 24 8z"/><ellipse cx="20" cy="29" rx="2" ry="3.5" fill="#fff" opacity=".45"/>'; break;
@@ -3772,11 +3774,12 @@ function pickIcon(part, d) {
 }
 
 /* EINE Regen-Einstufung für Website, Max und Facebook/Instagram (fb/daten.json, aus den Stundenwerten des Odenwaldkreises) */
-var NIED = {}, NIED_H = {};
+var NIED = {}, NIED_H = {}, NIED_CM = {};
 var NIED_TXT = { vm: 'am Vormittag', nm: 'am Nachmittag', ab: 'am Abend' };
 fetch('fb/daten.json', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
   (j.tage || []).forEach(function (t) {
     if (t.nied) NIED[t.datum] = t.nied;
+    NIED_CM[t.datum] = Math.max(t.schnee || 0, (t.tal || {}).schnee_cm || 0);
     if (t.nied && t.stunden) t.stunden.forEach(function (x) { NIED_H[t.datum + 'T' + (x.h < 10 ? '0' : '') + x.h] = x; });
   });
   if (FC.loaded && FC.hours) setForecast(FC.hours, FC.demo);
@@ -3789,11 +3792,11 @@ function niedApply(d) {
     if (x) { h.prob = x.rp; h.rain = x.mm; }
   });
   d.stufe = n.stufe; d.nied = n; d.prob = n.p; d.rain = n.mm;
-  var nassIc = ['rain', 'showers-day', 'showers-night', 'thunderstorm', 'hail', 'sleet', 'snow'].indexOf(d.icon) >= 0;
+  var nassIc = ['rain', 'showers-day', 'showers-night', 'thunderstorm', 'hail', 'sleet', 'snow', 'snow-light', 'flocken'].indexOf(d.icon) >= 0;
   var dry = d.cloud === null ? 'cloudy' : d.cloud < 25 ? 'clear-day' : d.cloud < 70 ? 'partly-cloudy-day' : 'cloudy';
   if (n.stufe === 'trocken' || n.stufe === 'vereinzelt') { if (nassIc) d.icon = dry; }
   else if (n.stufe === 'gewitter') d.icon = 'thunderstorm';
-  else if (n.schnee_tal) d.icon = 'snow';
+  else if (n.schnee_tal) { var cm = NIED_CM[d.date] || 0; d.icon = cm >= 1 ? 'snow' : (n.mm || 0) >= 0.5 ? 'snow-light' : 'flocken'; }   // 24.11.2026: Schnee nach Menge abgestuft
   else if (n.stufe === 'regen') d.icon = 'rain';
   else if (n.stufe === 'schauer' && d.icon !== 'showers-day') d.icon = 'showers-day';
 }
@@ -3824,13 +3827,13 @@ function summarize(date, hs, night) {
 /* Texte, automatisch aus den Vorhersagedaten */
 var SKY_DAY = {
   'clear-day': 'Viel Sonnenschein', 'partly-cloudy-day': 'Wechsel aus Sonne und Wolken', 'cloudy': 'Stark bewölkt bis bedeckt',
-  'fog': 'Neblig-trüb', 'rain': 'Wechselhaft mit Regen', 'sleet': 'Schneeregen', 'snow': 'Schneefall',
+  'fog': 'Neblig-trüb', 'rain': 'Wechselhaft mit Regen', 'sleet': 'Schneeregen', 'snow': 'Schneefall', 'snow-light': 'Leichter Schneefall', 'flocken': 'Bewölkt, einzelne Schneeflocken',
   'hail': 'Schauer, örtlich mit Hagel', 'thunderstorm': 'Schauer und Gewitter', 'wind': 'Windig',
   'showers-day': 'Wechselhaft mit Schauern, zwischendurch Sonne'
 };
 var SKY_NIGHT = {
   'clear-night': 'Klar', 'partly-cloudy-night': 'Teils wolkig', 'cloudy': 'Stark bewölkt', 'fog': 'Gebietsweise Nebel',
-  'rain': 'Zeitweise Regen', 'sleet': 'Schneeregen', 'snow': 'Schneefall', 'hail': 'Schauer, örtlich mit Hagel',
+  'rain': 'Zeitweise Regen', 'sleet': 'Schneeregen', 'snow': 'Schneefall', 'snow-light': 'Leichter Schneefall', 'flocken': 'Einzelne Schneeflocken', 'hail': 'Schauer, örtlich mit Hagel',
   'thunderstorm': 'Gewitter möglich', 'wind': 'Windig', 'showers-night': 'Einzelne Schauer'
 };
 function windWord(v) {
@@ -3857,7 +3860,7 @@ function rainPhrase(d) {
   if (r < 0.1) return 'Geringes Schauerrisiko (bis ' + nf(p, 0) + ' %).';
   if (d.icon === 'showers-day' || d.icon === 'showers-night')
     return 'Schauer, zusammen um ' + nf(r, r < 10 ? 1 : 0) + ' mm' + (p !== null ? ', Wahrscheinlichkeit bis ' + nf(p, 0) + ' %' : '') + ' – nicht überall und nicht durchgehend nass.';
-  var word = (d.icon === 'snow' || d.icon === 'sleet') ? 'Niederschlag' : (d.icon === 'rain' && d.conv !== null && d.conv < 0.3 && r >= 3) ? 'Länger anhaltender Regen' : 'Regen';
+  var word = (/^(snow|snow-light|flocken|sleet)$/.test(d.icon)) ? 'Niederschlag' : (d.icon === 'rain' && d.conv !== null && d.conv < 0.3 && r >= 3) ? 'Länger anhaltender Regen' : 'Regen';
   return word + ' um ' + nf(r, r < 10 ? 1 : 0) + ' mm' + (p !== null ? ', Wahrscheinlichkeit bis ' + nf(p, 0) + ' %' : '') + '.';
 }
 /* Heute + 3 Tage mit Werten, danach nur noch eine Tendenz aus den Modellen */
@@ -4357,7 +4360,7 @@ function renderOutlook() {
 
 /* Farb- und Klassenhelfer für den Vorhersage-Tab */
 function wxClass(ic) {
-  return ({ 'clear-day': 'wx-sun', 'partly-cloudy-day': 'wx-part', 'cloudy': 'wx-cloud', 'rain': 'wx-rain', 'sleet': 'wx-snow', 'snow': 'wx-snow',
+  return ({ 'clear-day': 'wx-sun', 'partly-cloudy-day': 'wx-part', 'cloudy': 'wx-cloud', 'rain': 'wx-rain', 'sleet': 'wx-snow', 'snow': 'wx-snow', 'snow-light': 'wx-snow', 'flocken': 'wx-snow',
     'hail': 'wx-storm', 'thunderstorm': 'wx-storm', 'showers-day': 'wx-rain', 'showers-night': 'wx-rain', 'fog': 'wx-fog', 'wind': 'wx-cloud', 'clear-night': 'wx-night', 'partly-cloudy-night': 'wx-night' })[ic] || 'wx-cloud';
 }
 function tColor(t, dark) {
@@ -4605,7 +4608,7 @@ function rgKreisTag(ds) {
   if (tx !== null) out.push('Höchstwerte in den Tälern um ' + nf(tx, 0) + ' °C' + (hx !== null ? ', auf den Höhen um ' + nf(hx, 0) + ' °C' : '') + '.');
   if (tn !== null) out.push('Nachts ' + (tn <= 0 ? 'Frost bis ' : 'um ') + nf(tn, 0) + ' °C' + (tn <= 0 ? ', Glätte möglich' : '') + '.');
   var pmax = mx(tage, 'prob', Math.max);
-  var schneeH = hoch.some(function (x) { return x.d.icon === 'snow' || x.d.icon === 'sleet'; }), schneeT = tal.some(function (x) { return x.d.icon === 'snow' || x.d.icon === 'sleet'; });
+  var schneeH = hoch.some(function (x) { return /^(snow|snow-light|sleet)$/.test(x.d.icon); }), schneeT = tal.some(function (x) { return /^(snow|snow-light|sleet)$/.test(x.d.icon); });
   if (schneeT) out.push('Schneefall bis in die Täler möglich.');
   else if (schneeH) out.push('Auf den Höhen Schnee oder Schneeregen möglich.');
   else if (typeof NIED !== 'undefined' && NIED[ds] && NIED[ds].stufe) {   /* 21.11.2026: Regen-Satz aus der gemeinsamen Einstufung (wie Max), nicht aus den Rohwerten je Ort über den ganzen Kalendertag */
