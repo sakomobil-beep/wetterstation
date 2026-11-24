@@ -548,9 +548,18 @@ def tagtext(d, wann, nachtfrost=True, hoch_temp=True):
     if Wk in ('Heute', 'Morgen'):
         opt += ['Und wie wird es %s? %s, bei rund %s Grad.' % (Wk.lower(), A, t),
                 'Was bringt der Tag %s? %s, und das Thermometer zeigt bis zu %s Grad.' % (Wk.lower(), A, t)]
-    if d['tmax'] <= 10: opt += ['%s wird es %s, und mehr als %s Grad sind nicht drin.' % (W, adj, t),
-                                '%s bleibt es kühl: %s, höchstens %s Grad.' % (W, art(d), t),
-                                '%s heißt es Jacke an – %s, und nur rund %s Grad.' % (W, art(d), t)]
+    if d['tmax'] < 0:   # 24.11.2026: eigene Sätze bei Dauerfrost
+        opt += ['%s bleibt es den ganzen Tag frostig, bei höchstens %s Grad.' % (W, t),
+                '%s gibt es Dauerfrost – über %s Grad kommen wir nicht hinaus.' % (W, t),
+                '%s heißt es Jacke an – %s, und nur rund %s Grad.' % (W, art(d), t)]
+    elif d['tmax'] <= 10:   # 24.11.2026: „sind nicht drin“ ersetzt, mehr Abwechslung
+        opt += ['%s wird es %s, und das Thermometer kommt über %s Grad nicht hinaus.' % (W, adj, t),
+                '%s bleibt es frisch: %s, mit höchstens %s Grad.' % (W, art(d), t),
+                '%s gibt es %s, und bei %s Grad ist schon Schluss.' % (W, art(d), t),
+                '%s wird es ungemütlich: %s und nur um die %s Grad.' % (W, art(d), t),
+                '%s bleibt es kühl: %s, höchstens %s Grad.' % (W, art(d), t),
+                '%s heißt es Jacke an – %s, und nur rund %s Grad.' % (W, art(d), t)]
+        if 'sonn' in adj: opt.append('%s wird es %s – mehr als %s Grad schafft die Sonne aber nicht.' % (W, adj, t))
     if d['tmax'] >= 22: opt += ['%s wird es %s – und mit %s Grad schön warm.' % (W, adj, t),
                                 '%s wird es richtig angenehm: %s bei %s Grad.' % (W, art(d), t)]
     s = frisch(rnd, 'tag', opt)
