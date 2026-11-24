@@ -3080,7 +3080,7 @@ def tafel_fuer(s, special):
     if s['art'] == 'special': return tafel_text('⚠ WETTER-SPECIAL'.replace('⚠ ', ''), [kurz(s.get('karte', s['text']), 120)], (200, 40, 40))
     if s['art'] == 'wissen': return tafel_text('WETTER-WISSEN', [kurz(s.get('titel_w', ''), 80)], (215, 160, 20))
     if s['art'] == 'frage': return tafel_text('💬 SCHREIBT UNS!'.replace('💬 ', ''), [kurz(s['frage'], 120)], (254, 44, 85))
-    if s['art'] == 'cta': return tafel_text('FOLGST DU UNS?', ['+ Folgen', '❤ Liken', '↻ Teilen', 'auf Facebook & Instagram'], (24, 119, 242))
+    if s['art'] == 'cta': return tafel_text('FOLGST DU UNS?', ['+ Folgen', '❤ Liken', '↻ Teilen', 'auf Facebook,', 'Instagram & Threads'], (24, 119, 242))
     if s['art'] == 'outro': return tafel_text('LIVE IM NETZ', ['wetter-badkoenig.de', 'Station Bad König · 184,5 m', 'Wetter für den ganzen Odenwald'], (25, 85, 160))
     return None
 
