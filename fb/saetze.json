@@ -1,6 +1,11 @@
 [
 {
 "d": "2026-11-22",
+"g": "ueberg_heute",
+"k": "Kommen wir zum Wetter. "
+},
+{
+"d": "2026-11-22",
 "g": "tag",
 "k": "Heute wird es neblig und trüb. Die Tempe"
 },
@@ -1941,62 +1946,57 @@
 },
 {
 "d": "2026-11-24",
+"g": "abend_gruss",
+"k": "Ei gude wie, Odenwald – hier ist euer Ab"
+},
+{
+"d": "2026-11-24",
 "g": "dwd",
 "k": "Ein Hinweis vorab: Für unsere Gegend gil"
 },
 {
 "d": "2026-11-24",
-"g": "ueberg_heute2",
-"k": "Kommen wir zum Wetter für heute. "
+"g": "abend_ueberg_nacht",
+"k": "Und was bringt die Nacht? "
 },
 {
 "d": "2026-11-24",
-"g": "tag",
-"k": "Heute: Nach Nebel am Morgen auch Sonne, "
-},
-{
-"d": "2026-11-24",
-"g": "kaltluft",
-"k": "In der klaren Nacht sammelt sich die kal"
-},
-{
-"d": "2026-11-24",
-"g": "seit_kalt",
-"k": "So kalt war es tagsüber zuletzt am 3. Fe"
-},
-{
-"d": "2026-11-24",
-"g": "ueberg_tipp",
-"k": "Bevor ich’s vergesse – mein Tipp: "
-},
-{
-"d": "2026-11-24",
-"g": "ueberg_morgen2",
+"g": "abend_ueberg_morgen",
 "k": "Schauen wir auf morgen. "
 },
 {
 "d": "2026-11-24",
 "g": "tag",
-"k": "Morgen, am Mittwoch, ist viele Wolken an"
+"k": "Morgen gibt es viele Wolken bei Höchstwe"
 },
 {
 "d": "2026-11-24",
-"g": "frost2",
-"k": "In der Nacht zum Mittwoch gibt es Frost:"
+"g": "tag",
+"k": "Dann wird es ziemlich grau, und das Ther"
 },
 {
 "d": "2026-11-24",
-"g": "frage",
-"k": "Wie sieht es bei euch heute früh aus – N"
+"g": "frost",
+"k": "Achtung, in der Nacht zum Donnerstag gib"
 },
 {
 "d": "2026-11-24",
-"g": "folgen",
-"k": "Folgt ihr uns eigentlich schon? Dann ver"
+"g": "folgen_abend",
+"k": "Kennt ihr jemanden im Odenwald, der wiss"
 },
 {
 "d": "2026-11-24",
-"g": "schluss_nebel",
-"k": "Kommt gut durch die graue Suppe – oben a"
+"g": "abend_ende",
+"k": "Das war euer Odenwald-Wetter am Abend."
+},
+{
+"d": "2026-11-24",
+"g": "abend_gute_nacht",
+"k": "Habt einen schönen Abend – morgen früh g"
+},
+{
+"d": "2026-11-24",
+"g": "abend_live",
+"k": "Alle Live-Werte gibt es auf wetter-badko"
 }
 ]
