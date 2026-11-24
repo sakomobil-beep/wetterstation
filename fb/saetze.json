@@ -1,21 +1,6 @@
 [
 {
 "d": "2026-11-22",
-"g": "ueberg_morgen",
-"k": "Was bringt der nächste Tag? "
-},
-{
-"d": "2026-11-22",
-"g": "tag",
-"k": "Morgen, am Montag, zeigt sich das Wetter"
-},
-{
-"d": "2026-11-22",
-"g": "frost",
-"k": "In der Nacht zum Montag wird es frostig,"
-},
-{
-"d": "2026-11-22",
 "g": "glatteis",
 "k": "Achtung, morgens droht Glatteis! Gefrier"
 },
@@ -1998,5 +1983,20 @@
 "d": "2026-11-24",
 "g": "schluss_nebel",
 "k": "Kommt gut durch die graue Suppe – oben a"
+},
+{
+"d": "2026-11-24",
+"g": "wissen_intro",
+"k": "Wetterwissen mit Max – schön, dass ihr d"
+},
+{
+"d": "2026-11-24",
+"g": "wissen_ende",
+"k": "Welches Wetter-Rätsel soll ich als Nächs"
+},
+{
+"d": "2026-11-24",
+"g": "wissen_thema",
+"k": "Heute geht es um die Frage: %s"
 }
 ]
