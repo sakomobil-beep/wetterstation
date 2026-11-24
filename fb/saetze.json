@@ -1,61 +1,6 @@
 [
 {
 "d": "2026-11-22",
-"g": "glatteis",
-"k": "Achtung, morgens droht Glatteis! Gefrier"
-},
-{
-"d": "2026-11-22",
-"g": "nebel_w",
-"k": "Morgens gibt es in den Tälern Nebel bis "
-},
-{
-"d": "2026-11-22",
-"g": "frage",
-"k": "Passt meine Vorhersage bei euch? Sagt’s "
-},
-{
-"d": "2026-11-22",
-"g": "folgen",
-"k": "Kennt ihr jemanden im Odenwald, der imme"
-},
-{
-"d": "2026-11-22",
-"g": "schluss_nebel",
-"k": "Abblendlicht an, Abstand halten – und da"
-},
-{
-"d": "2026-11-22",
-"g": "dwd",
-"k": "Kurz vorweg: Vom Deutschen Wetterdienst "
-},
-{
-"d": "2026-11-22",
-"g": "r_kalt",
-"k": "Brrr! "
-},
-{
-"d": "2026-11-22",
-"g": "ueberg_heute",
-"k": "Kommen wir zum Wetter. "
-},
-{
-"d": "2026-11-22",
-"g": "tag",
-"k": "Heute wird es neblig und trüb. Die Tempe"
-},
-{
-"d": "2026-11-22",
-"g": "glaette_r",
-"k": "Heute früh kann Reif auf Brücken und Neb"
-},
-{
-"d": "2026-11-22",
-"g": "gestern_kaelter",
-"k": "Deutlich kühler als gestern, um etwa 4 G"
-},
-{
-"d": "2026-11-22",
 "g": "ueberg_tipp",
 "k": "Kleiner Tipp am Rande: "
 },
@@ -1998,5 +1943,60 @@
 "d": "2026-11-24",
 "g": "wissen_thema",
 "k": "Heute geht es um die Frage: %s"
+},
+{
+"d": "2026-11-24",
+"g": "abend_gruss",
+"k": "Ei gude wie, Odenwald – hier ist euer Ab"
+},
+{
+"d": "2026-11-24",
+"g": "dwd",
+"k": "Ein Hinweis vorab: Für unsere Gegend gil"
+},
+{
+"d": "2026-11-24",
+"g": "abend_ueberg_nacht",
+"k": "Und was bringt die Nacht? "
+},
+{
+"d": "2026-11-24",
+"g": "abend_ueberg_morgen",
+"k": "Schauen wir auf morgen. "
+},
+{
+"d": "2026-11-24",
+"g": "tag",
+"k": "Morgen wird es ziemlich grau, und mehr a"
+},
+{
+"d": "2026-11-24",
+"g": "tag",
+"k": "Dann wird es ziemlich grau, und mehr als"
+},
+{
+"d": "2026-11-24",
+"g": "frost2",
+"k": "Frostig wird es in der Nacht zum Donners"
+},
+{
+"d": "2026-11-24",
+"g": "folgen_abend",
+"k": "Kennt ihr jemanden im Odenwald, der wiss"
+},
+{
+"d": "2026-11-24",
+"g": "abend_ende",
+"k": "Das war euer Odenwald-Wetter am Abend."
+},
+{
+"d": "2026-11-24",
+"g": "abend_gute_nacht",
+"k": "Habt einen schönen Abend – morgen früh g"
+},
+{
+"d": "2026-11-24",
+"g": "abend_live",
+"k": "Alle Live-Werte gibt es auf wetter-badko"
 }
 ]
