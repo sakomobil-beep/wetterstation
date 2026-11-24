@@ -24,7 +24,7 @@ P_KORR = {'IMICHE124': 2.4, 'IBREUB3': 0.7, 'IHCHST74': 6.4, 'IMOSSA13': 7.1, 'I
 P_ERSATZ = {'IBROMB4': 'IBROMB18'}   # Brombachtal: IBROMB4 (WH2600, kein Drucksensor) → Luftdruck von IBROMB18 (1,2 km)
 # 22.11.2026, 21:50 Uhr (Kingman, Variante 2): sendet die Hauptstation über 60 Min. nichts, springt eine Reserve-Station ein;
 # kommt die Hauptstation zurück, wird sie wieder genommen. Luftdruck der Reserve über P_KORR auf IBADKN33 abgeglichen.
-AUSFALL_ERSATZ = {'IMOSSA13': 'IMOSSA10'}   # Mossautal: IMOSSA13 offline seit 22.11. 19:42 → IMOSSA10 „Bauhof Mossautal“ (2,5 km)
+AUSFALL_ERSATZ = {'IMOSSA13': 'IMOSSA10', 'IBREUB3': 'IBREUB10'}   # 24.11.2026: Breuberg IBREUB3 Außensensor ausgefallen (nur Luftdruck) → IBREUB10 Rai-Breitenbach (1 km), vorübergehend   # Mossautal: IMOSSA13 offline seit 22.11. 19:42 → IMOSSA10 „Bauhof Mossautal“ (2,5 km)
 REGEN_ERSATZ = {'Höchst i. Odw.': ['IHCHSTIO2', 'IDTSANDB5']}   # private WU-Stationen in der Nähe, in dieser Reihenfolge; danach DWD (nächste Station)
 REGEN_MIN_MEDIAN = 5.0    # erst prüfen, wenn die anderen Orte im Mittel (Median) mindestens so viel Regen haben
 REGEN_ANTEIL = 0.25       # unplausibel: weniger als ein Viertel des Medians der anderen Orte
@@ -50,12 +50,14 @@ def stationen_alarm(orte, jetzt):
     for o in orte:
         n = o['name']; kn = n.replace(' i. Odw.', '')
         alter = (jetzt - dt.datetime.fromisoformat(o['zeit'])).total_seconds() / 60 if o.get('zeit') else 9999
-        rot = alter > 90 or bool(o.get('station_ersatz'))
+        ohne_t = o.get('t') is None and alter <= 90   # 24.11.2026: sendet, aber ohne Temperatur (Außensensor weg)
+        rot = alter > 90 or bool(o.get('station_ersatz')) or ohne_t
         if rot:
             neu[n] = A.get(n) or jetzt.isoformat(timespec='minutes')
             if n not in A:
-                push.append('📡 %s (%s) sendet seit %s nichts%s' % (kn, o.get('station') or '?', ('%d Min.' % alter) if alter < 600 else 'über 10 Std.',
-                            ' – Reserve %s ist eingesprungen' % o['station_ersatz'] if o.get('station_ersatz') else ''))
+                grund = 'liefert keine Temperatur mehr (Außensensor?)' if (ohne_t or o.get('ersatz_grund') == 'ohne_t') else \
+                        'sendet seit %s nichts' % (('%d Min.' % alter) if alter < 600 else 'über 10 Std.')
+                push.append('📡 %s (%s) %s%s' % (kn, o.get('station') or '?', grund, ' – Reserve %s ist eingesprungen' % o['station_ersatz'] if o.get('station_ersatz') else ''))
         elif n in A:
             push.append('✅ %s (%s) sendet wieder' % (kn, o.get('station') or '?'))
     if neu != A: json.dump(neu, open(ALARM, 'w', encoding='utf-8'), ensure_ascii=False)
@@ -358,11 +360,11 @@ def main():
             orte.append(alt_e); continue   # alter Wert bleibt bis zum nächsten Abruf
         try: v = wu(sid) if art == 'wu' else dwd(sid, heute)
         except Exception as e: print('Station %s nicht abrufbar:' % n, e); v = None
-        if sid in AUSFALL_ERSATZ and (not v or not v.get('zeit') or (jetzt - dt.datetime.fromisoformat(v['zeit'])).total_seconds() > 60 * 60):
+        if sid in AUSFALL_ERSATZ and (not v or not v.get('zeit') or v.get('t') is None or (jetzt - dt.datetime.fromisoformat(v['zeit'])).total_seconds() > 60 * 60):
             try: ve = wu(AUSFALL_ERSATZ[sid])
             except Exception as e: print('Reserve %s nicht abrufbar:' % AUSFALL_ERSATZ[sid], e); ve = None
             if ve and ve.get('zeit') and (jetzt - dt.datetime.fromisoformat(ve['zeit'])).total_seconds() <= 60 * 60:
-                ve['station_ersatz'] = AUSFALL_ERSATZ[sid]; v = ve
+                ve['station_ersatz'] = AUSFALL_ERSATZ[sid]; ve['ersatz_grund'] = 'ohne_t' if (v and v.get('zeit') and v.get('t') is None) else 'aus'; v = ve
                 print('%s: %s sendet nicht, Reserve %s eingesprungen' % (n, sid, AUSFALL_ERSATZ[sid]))
         alt_o = next((o for o in alt_alle if o['name'] == n), None) if alt.get('datum') == heute else None
         if not v and alt_o: v = {k: alt_o.get(k) for k in ('t', 'rh', 'w', 'g', 'r', 'rr', 'sol', 'p', 'wd', 'td', 'uv', 'gf', 'zeit')}
