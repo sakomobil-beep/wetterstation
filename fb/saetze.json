@@ -1,66 +1,6 @@
 [
 {
 "d": "2026-11-22",
-"g": "glatteis",
-"k": "Achtung, morgens droht Glatteis! Gefrier"
-},
-{
-"d": "2026-11-22",
-"g": "nebel_w",
-"k": "Morgens gibt es in den Tälern Nebel bis "
-},
-{
-"d": "2026-11-22",
-"g": "frage",
-"k": "Passt meine Vorhersage bei euch? Sagt’s "
-},
-{
-"d": "2026-11-22",
-"g": "folgen",
-"k": "Kennt ihr jemanden im Odenwald, der imme"
-},
-{
-"d": "2026-11-22",
-"g": "schluss_nebel",
-"k": "Abblendlicht an, Abstand halten – und da"
-},
-{
-"d": "2026-11-22",
-"g": "dwd",
-"k": "Kurz vorweg: Vom Deutschen Wetterdienst "
-},
-{
-"d": "2026-11-22",
-"g": "r_kalt",
-"k": "Brrr! "
-},
-{
-"d": "2026-11-22",
-"g": "ueberg_heute",
-"k": "Kommen wir zum Wetter. "
-},
-{
-"d": "2026-11-22",
-"g": "tag",
-"k": "Heute wird es neblig und trüb. Die Tempe"
-},
-{
-"d": "2026-11-22",
-"g": "glaette_r",
-"k": "Heute früh kann Reif auf Brücken und Neb"
-},
-{
-"d": "2026-11-22",
-"g": "gestern_kaelter",
-"k": "Deutlich kühler als gestern, um etwa 4 G"
-},
-{
-"d": "2026-11-22",
-"g": "ueberg_tipp",
-"k": "Kleiner Tipp am Rande: "
-},
-{
-"d": "2026-11-22",
 "g": "ueberg_morgen",
 "k": "Was bringt der nächste Tag? "
 },
@@ -1943,6 +1883,66 @@
 "d": "2026-11-24",
 "g": "dwd",
 "k": "Kurz vorweg: Vom Deutschen Wetterdienst "
+},
+{
+"d": "2026-11-24",
+"g": "ueberg_heute2",
+"k": "Kommen wir zum Wetter für heute. "
+},
+{
+"d": "2026-11-24",
+"g": "tag",
+"k": "Heute: Nach Nebel am Morgen auch Sonne, "
+},
+{
+"d": "2026-11-24",
+"g": "kaltluft",
+"k": "In der klaren Nacht sammelt sich die kal"
+},
+{
+"d": "2026-11-24",
+"g": "seit_kalt",
+"k": "So kalt war es tagsüber zuletzt am 3. Fe"
+},
+{
+"d": "2026-11-24",
+"g": "ueberg_tipp",
+"k": "Bevor ich’s vergesse – mein Tipp: "
+},
+{
+"d": "2026-11-24",
+"g": "ueberg_morgen2",
+"k": "Schauen wir auf morgen. "
+},
+{
+"d": "2026-11-24",
+"g": "tag",
+"k": "Morgen, am Mittwoch, ist viele Wolken an"
+},
+{
+"d": "2026-11-24",
+"g": "frost",
+"k": "In der Nacht zum Mittwoch friert es, bis"
+},
+{
+"d": "2026-11-24",
+"g": "frage",
+"k": "Wie sieht es bei euch heute früh aus – N"
+},
+{
+"d": "2026-11-24",
+"g": "folgen",
+"k": "Folgt ihr uns eigentlich schon? Dann ver"
+},
+{
+"d": "2026-11-24",
+"g": "schluss_nebel",
+"k": "Kommt gut durch die graue Suppe – oben a"
+},
+{
+"d": "2026-11-24",
+"g": "dwd",
+"k": "Ein Hinweis vorab: Für unsere Gegend gil"
 },
 {
 "d": "2026-11-24",
