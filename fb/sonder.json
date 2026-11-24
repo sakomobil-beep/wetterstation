@@ -1,14 +1,4 @@
 {
- "erstellt": "2026-11-24T00:26+01:00",
- "meldungen": [
-  {
-   "typ": "glaette",
-   "titel": "Glätte",
-   "emoji": "🧊",
-   "amtlich": true,
-   "stufe": "Stufe 1 – Wetterwarnung",
-   "bild": "sonder-glaette.jpg",
-   "text": "🧊 WETTER-SONDERMELDUNG für den Odenwald: Glätte 🧊\n\n⚠️ Stufe 1 – Wetterwarnung\n📍 Gilt für: ganzer Odenwaldkreis\n• DWD: Amtliche WARNUNG vor GLÄTTE\n🕒 Gültig von Montag 20:00 Uhr bis heute 10:00 Uhr\n\n👉 Hinweis auf: Rutschgefahr. \n\nLive-Werte, Radar & Warnungen 👉 https://wetter-badkoenig.de\n#Odenwald #Odenwaldkreis #BadKönig #Wetter #Glätte #Unwetter"
-  }
- ]
+ "erstellt": "2026-11-24T10:51+01:00",
+ "meldungen": []
 }
