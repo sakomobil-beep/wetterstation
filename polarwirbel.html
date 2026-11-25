@@ -220,6 +220,17 @@ dl.gloss dd { margin: 0; font-size: 15px; }
 @media (max-width: 760px) { .navrow { display: contents; } }
 </style>
 <script src="theme.js"></script>
+<script>/* 26.11.2026: eingebettet in wetter-badkoenig.de → Kopf/Fuß weg, Höhe melden, Links nach oben */
+if (window.self !== window.top) { document.documentElement.classList.add('eingebettet');
+  document.addEventListener('DOMContentLoaded', function () {
+    var T = {'elnino.html': 1, 'polarwirbel.html': 1, 'vulkane.html': 1, 'sommer2026.html': 1, 'index.html': 1};
+    document.querySelectorAll('a[href]').forEach(function (a) { var h = a.getAttribute('href'); if (h.charAt(0) === '#') return;
+      var f = h.split('#')[0]; if (T[f]) a.setAttribute('href', 'index.html' + (f === 'index.html' ? (h.split('#')[1] ? '#' + h.split('#')[1] : '') : '#' + f.replace('.html', ''))); a.setAttribute('target', '_top'); });
+    var meld = function () { parent.postMessage({typ: 'themaHoehe', h: document.documentElement.scrollHeight}, '*'); };
+    meld(); new ResizeObserver(meld).observe(document.body); window.addEventListener('load', meld); });
+}</script>
+<style>.eingebettet header.top, .eingebettet .foot, .eingebettet .photo, .eingebettet .dm-knopf { display: none !important } .eingebettet body { background: transparent }</style>
+
 </head>
 <body>
 <div class="wrap">
