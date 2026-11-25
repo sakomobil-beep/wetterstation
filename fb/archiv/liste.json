@@ -1,5 +1,16 @@
 [
  {
+  "datum": "2026-11-25",
+  "datei": "2026-11-25.mp4",
+  "art": "morgen",
+  "erstellt": "2026-11-25T05:37+00:00",
+  "special": false,
+  "warn": [
+   "Amtliche Warnung vor Frost"
+  ],
+  "dauer": 138.9
+ },
+ {
   "datum": "2026-11-24",
   "datei": "2026-11-24-abend.mp4",
   "art": "abend",
@@ -141,28 +152,5 @@
    "Amtliche Warnung vor Windböen"
   ],
   "dauer": 151.2
- },
- {
-  "datum": "2026-11-18",
-  "datei": "2026-11-18-abend.mp4",
-  "art": "abend",
-  "erstellt": "2026-11-18T18:06+00:00",
-  "special": false,
-  "warn": [
-   "Amtliche Warnung vor Sturmböen"
-  ],
-  "dauer": 100.1
- },
- {
-  "datum": "2026-11-18",
-  "datei": "2026-11-18.mp4",
-  "art": "morgen",
-  "erstellt": "2026-11-18T06:08+00:00",
-  "special": false,
-  "warn": [
-   "Amtliche Warnung vor Sturmböen",
-   "Amtliche Warnung vor Starkem Gewitter für Breuberg"
-  ],
-  "dauer": 123.1
  }
 ]
