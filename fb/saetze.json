@@ -1,21 +1,6 @@
 [
 {
 "d": "2026-11-22",
-"g": "frage",
-"k": "Wie sieht’s gerade bei euch draußen aus?"
-},
-{
-"d": "2026-11-22",
-"g": "folgen",
-"k": "Kennt ihr jemanden im Odenwald, der imme"
-},
-{
-"d": "2026-11-22",
-"g": "schluss_nebel",
-"k": "Abblendlicht an, Abstand halten – und da"
-},
-{
-"d": "2026-11-22",
 "g": "dwd",
 "k": "Kurz vorweg: Vom Deutschen Wetterdienst "
 },
@@ -1998,5 +1983,20 @@
 "d": "2026-11-25",
 "g": "folgen",
 "k": "Helft mir, den ganzen Odenwald zu erreic"
+},
+{
+"d": "2026-11-25",
+"g": "wissen_intro",
+"k": "Willkommen zu Wetterwissen mit Max!"
+},
+{
+"d": "2026-11-25",
+"g": "wissen_ende",
+"k": "Wieder was gelernt? Dann folgt uns für m"
+},
+{
+"d": "2026-11-25",
+"g": "wissen_thema",
+"k": "Die Frage des Tages: %s"
 }
 ]
