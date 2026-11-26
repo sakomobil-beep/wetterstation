@@ -1,8 +1,14 @@
 {
   "aktiv": true,
-  "geaendert": "2026-11-12T20:45",
+  "geaendert": "2026-11-26T11:55",
   "eintraege": [
-    { "text": "📰 NEU: NOAA-Bericht vom 12.11.: El Niño weiter sehr stark", "link": "elnino.html" },
-    { "text": "❄️ Polarwirbel: Rekord-Störung, Windumkehr erwartet", "link": "polarwirbel.html" }
+    {
+      "text": "❄️ NEU: Polarwirbel erholt sich – Rekord-Störung vom 11.11. bestätigt, Dezember bleibt spannend",
+      "link": "index.html#polarwirbel"
+    },
+    {
+      "text": "🌊 El Niño: Rekord vor Südamerika, NOAA sieht ihn stark bis ins Frühjahr",
+      "link": "index.html#elnino"
+    }
   ]
 }
