@@ -1,21 +1,6 @@
 [
 {
 "d": "2026-11-22",
-"g": "dwd",
-"k": "Wichtig zuerst: Der Deutsche Wetterdiens"
-},
-{
-"d": "2026-11-22",
-"g": "r_kalt",
-"k": "Brrr! "
-},
-{
-"d": "2026-11-22",
-"g": "ueberg_heute",
-"k": "Kommen wir zum Wetter. "
-},
-{
-"d": "2026-11-22",
 "g": "tag",
 "k": "Heute wird es neblig und trüb. Die Tempe"
 },
@@ -1998,5 +1983,20 @@
 "d": "2026-11-26",
 "g": "folgen",
 "k": "Bei Warnungen melden wir uns sofort – fo"
+},
+{
+"d": "2026-11-26",
+"g": "wissen_intro",
+"k": "Hallo Odenwald! Hier ist euer Max mit ei"
+},
+{
+"d": "2026-11-26",
+"g": "wissen_ende",
+"k": "Morgen gibt’s das nächste Wetterwissen –"
+},
+{
+"d": "2026-11-26",
+"g": "wissen_thema",
+"k": "Unser Thema heute: %s"
 }
 ]
