@@ -1,61 +1,6 @@
 [
 {
 "d": "2026-11-22",
-"g": "nebel_w",
-"k": "Morgens liegt in den Tälern Nebel bis et"
-},
-{
-"d": "2026-11-22",
-"g": "tag",
-"k": "Am Dienstag heißt es Jacke an – viele Wo"
-},
-{
-"d": "2026-11-22",
-"g": "frost",
-"k": "In der Nacht zum Dienstag friert es, bis"
-},
-{
-"d": "2026-11-22",
-"g": "glaette_r",
-"k": "Morgens kann Reif auf Brücken und Nebens"
-},
-{
-"d": "2026-11-22",
-"g": "tag",
-"k": "Am Mittwoch zeigt sich das Wetter ziemli"
-},
-{
-"d": "2026-11-22",
-"g": "frost",
-"k": "In der Nacht zum Mittwoch geht es runter"
-},
-{
-"d": "2026-11-22",
-"g": "kaltluft",
-"k": "Typisch Odenwald: In der klaren Nacht sa"
-},
-{
-"d": "2026-11-22",
-"g": "dwd",
-"k": "Wichtig zuerst: Der Deutsche Wetterdiens"
-},
-{
-"d": "2026-11-22",
-"g": "r_kalt",
-"k": "Brrr! "
-},
-{
-"d": "2026-11-22",
-"g": "ueberg_heute",
-"k": "Kommen wir zum Wetter. "
-},
-{
-"d": "2026-11-22",
-"g": "tag",
-"k": "Heute wird es neblig und trüb. Die Tempe"
-},
-{
-"d": "2026-11-22",
 "g": "glaette_r",
 "k": "Heute früh kann Reif auf Brücken und Neb"
 },
@@ -1998,5 +1943,60 @@
 "d": "2026-11-25",
 "g": "abend_live",
 "k": "Live dabei seid ihr auf wetter-badkoenig"
+},
+{
+"d": "2026-11-26",
+"g": "dwd",
+"k": "Bevor es losgeht – vom Deutschen Wetterd"
+},
+{
+"d": "2026-11-26",
+"g": "ueberg_heute2",
+"k": "Dann mal zum Wetter für heute. "
+},
+{
+"d": "2026-11-26",
+"g": "tag",
+"k": "Heute wird es ziemlich grau, und das The"
+},
+{
+"d": "2026-11-26",
+"g": "mundart",
+"k": "Do brauchd mer die dick Jack!"
+},
+{
+"d": "2026-11-26",
+"g": "ueberg_tipp",
+"k": "Übrigens, mein Tipp für heute: "
+},
+{
+"d": "2026-11-26",
+"g": "ueberg_morgen2",
+"k": "Kurzer Blick nach vorn. "
+},
+{
+"d": "2026-11-26",
+"g": "tag",
+"k": "Am Freitag bekommen wir viele Wolken – u"
+},
+{
+"d": "2026-11-26",
+"g": "frost2",
+"k": "Frostig wird es in der Nacht zum Freitag"
+},
+{
+"d": "2026-11-26",
+"g": "glaette_h",
+"k": "Oben auf den Höhen, Richtung Beerfelden,"
+},
+{
+"d": "2026-11-26",
+"g": "frage",
+"k": "Passt meine Vorhersage bei euch? Sagt’s "
+},
+{
+"d": "2026-11-26",
+"g": "folgen",
+"k": "Bei Warnungen melden wir uns sofort – fo"
 }
 ]
