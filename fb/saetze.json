@@ -1,66 +1,6 @@
 [
 {
 "d": "2026-11-22",
-"g": "tag",
-"k": "Heute wird es neblig und trüb. Die Tempe"
-},
-{
-"d": "2026-11-22",
-"g": "glaette_r",
-"k": "Heute früh kann Reif auf Brücken und Neb"
-},
-{
-"d": "2026-11-22",
-"g": "gestern_kaelter",
-"k": "Deutlich kühler als gestern, um etwa 4 G"
-},
-{
-"d": "2026-11-22",
-"g": "ueberg_tipp",
-"k": "Kleiner Tipp am Rande: "
-},
-{
-"d": "2026-11-22",
-"g": "ueberg_morgen",
-"k": ""
-},
-{
-"d": "2026-11-22",
-"g": "tag",
-"k": "Morgen, am Montag, zeigt sich das Wetter"
-},
-{
-"d": "2026-11-22",
-"g": "frost",
-"k": "In der Nacht zum Montag wird es frostig,"
-},
-{
-"d": "2026-11-22",
-"g": "glaette_r",
-"k": "Morgens kann Reif auf Brücken und Nebens"
-},
-{
-"d": "2026-11-22",
-"g": "nebel_w",
-"k": "Morgens gibt es in den Tälern Nebel bis "
-},
-{
-"d": "2026-11-22",
-"g": "frage",
-"k": "Passt meine Vorhersage bei euch? Sagt’s "
-},
-{
-"d": "2026-11-22",
-"g": "folgen",
-"k": "Wer uns folgt, weiß morgens als Erster B"
-},
-{
-"d": "2026-11-22",
-"g": "schluss_nebel",
-"k": "Nebel hin oder her – macht was Schönes a"
-},
-{
-"d": "2026-11-22",
 "g": "dwd",
 "k": "Wichtig zuerst: Der Deutsche Wetterdiens"
 },
@@ -1998,5 +1938,65 @@
 "d": "2026-11-26",
 "g": "wissen_thema",
 "k": "Unser Thema heute: %s"
+},
+{
+"d": "2026-11-26",
+"g": "abend_gruss",
+"k": "Guten Abend, Odenwald! Euer Max meldet s"
+},
+{
+"d": "2026-11-26",
+"g": "dwd",
+"k": "Bevor es losgeht – vom Deutschen Wetterd"
+},
+{
+"d": "2026-11-26",
+"g": "abend_ueberg_nacht",
+"k": "Dann zur kommenden Nacht. "
+},
+{
+"d": "2026-11-26",
+"g": "abend_ueberg_morgen",
+"k": "Und wie geht’s morgen weiter? "
+},
+{
+"d": "2026-11-26",
+"g": "tag",
+"k": "Morgen ist viele Wolken angesagt, bei bi"
+},
+{
+"d": "2026-11-26",
+"g": "glaette_h",
+"k": "Oben auf den Höhen, Richtung Beerfelden,"
+},
+{
+"d": "2026-11-26",
+"g": "tag",
+"k": "Dann wird es freundlich mit ein paar Wol"
+},
+{
+"d": "2026-11-26",
+"g": "frost2",
+"k": "Frostig wird es in der Nacht zum Samstag"
+},
+{
+"d": "2026-11-26",
+"g": "folgen_abend",
+"k": "Bei Warnungen melden wir uns sofort – au"
+},
+{
+"d": "2026-11-26",
+"g": "abend_ende",
+"k": "Und damit Feierabend hier im Studio."
+},
+{
+"d": "2026-11-26",
+"g": "abend_gute_nacht",
+"k": "Kommt gut durch die Nacht – bis morgen f"
+},
+{
+"d": "2026-11-26",
+"g": "abend_live",
+"k": "Wer nachts mal nachschauen will: wetter-"
 }
 ]
