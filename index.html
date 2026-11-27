@@ -7837,6 +7837,58 @@ function renderSaison() {
 renderSaison();
 setInterval(renderSaison, 600000);
 
+
+/* 27.11.2026 VORSCHAU 3 „Aktuell Odenwald – neues Gesicht“ – nur mit ?vorschau=odw3 (nur Design, keine neuen Funktionen) */
+(function () {
+  if (!/[?&]vorschau=odw3(&|$)/.test(location.search)) return;
+  var css = document.createElement('style');
+  css.textContent = '.v3-hero{border-radius:16px;padding:18px 20px;margin:0 0 12px;display:grid;grid-template-columns:auto 1fr auto;gap:20px;align-items:center;background:linear-gradient(135deg,rgba(31,143,192,.16),rgba(31,143,192,.04));border:1px solid var(--line)}' +
+    '.v3-big small{display:block;font-size:12px;color:var(--muted);letter-spacing:.04em}.v3-big b{display:block;font-size:50px;line-height:1.05;font-weight:700;color:var(--ink)}' +
+    '.v3-hero .owx-max{margin:0!important;border:0!important;background:none!important;box-shadow:none!important;padding:0 0 0 18px!important;border-left:1px solid var(--line)!important;border-radius:0!important}' +
+    '.v3-side{text-align:right;font-size:13px;color:var(--muted);line-height:1.9;white-space:nowrap}.v3-side b{color:var(--ink)}.v3-tag{display:inline-block;background:#0ca678;color:#fff;font-size:11px;font-weight:700;border-radius:8px;padding:2px 8px;margin:0 0 8px}' +
+    '#owxWarn>*{padding:8px 12px!important;min-height:0!important}#owxWarn{gap:6px!important}' +
+    '.owa-z{grid-template-columns:22px minmax(150px,auto) 1fr auto!important}.owa-z>span:nth-child(2){white-space:nowrap}.v3-bar{height:8px;border-radius:5px;background:rgba(127,127,127,.15);overflow:hidden}.v3-bar i{display:block;height:100%;border-radius:5px}' +
+    '.owa-z b{background:none!important;color:var(--ink)!important;min-width:54px!important;text-align:right!important;padding:0!important}' +
+    '.v3-chips{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;margin:12px 0 0!important}.v3-chips .ow-chip{padding:8px 10px!important}' +
+    '.owa-unten{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start}.owa-unten>details{flex:1 1 220px;margin:0!important}.owa-unten>details[open]{flex-basis:100%}' +
+    '#owMap .owk-k{stroke:rgba(0,0,0,.25)!important}' +
+    '@media(max-width:760px){.v3-hero{grid-template-columns:1fr;gap:10px}.v3-hero .owx-max{padding:10px 0 0!important;border-left:0!important;border-top:1px solid var(--line)!important}.v3-side{text-align:left}}';
+  document.head.appendChild(css);
+  function hell(c) { var n = parseInt(c.slice(1), 16), r = n >> 16, g = n >> 8 & 255, b = n & 255; return 'rgb(' + [r, g, b].map(function (x) { return Math.round(x + (255 - x) * .55); }).join(',') + ')'; }
+  function umbau() {
+    var d = OW.d; if (!d) return;
+    var A = (d.orte || []).filter(function (o) { return o.t !== null && o.t !== undefined && !owAlt(o); });
+    var hero = $('v3Hero');
+    if (!hero) {
+      $('owxMax').insertAdjacentHTML('beforebegin', '<span class="v3-tag">VORSCHAU – neues Design</span><div class="v3-hero" id="v3Hero"><div class="v3-big"><small>ODENWALD · JETZT</small><b id="v3T">–</b><small id="v3S"></small></div><div id="v3Max"></div><div class="v3-side" id="v3Side"></div></div>');
+      hero = $('v3Hero'); $('v3Max').appendChild($('owxMax'));
+      var ch = $('owChips'), rang = document.querySelector('.owa-rang'); if (ch && rang) { rang.appendChild(ch); ch.classList.add('v3-chips'); }
+    }
+    if (A.length) {
+      var m = A.reduce(function (s, o) { return s + o.t; }, 0) / A.length, lo = A.reduce(function (a, b) { return b.t < a.t ? b : a; }), hi = A.reduce(function (a, b) { return b.t > a.t ? b : a; });
+      var rs = A.reduce(function (s, o) { return s + (o.r || 0); }, 0), gm = A.reduce(function (a, b) { return (b.g || 0) > (a.g || 0) ? b : a; });
+      $('v3T').textContent = owNf(m, 1) + '°'; $('v3S').textContent = 'Mittel aus ' + A.length + ' Orten · ' + (d.stand || '').slice(11, 16) + ' Uhr';
+      var nm = function (o) { return esc(o.name.replace(' i. Odw.', '')); };
+      $('v3Side').innerHTML = '<div><span style="color:#2b7bd6">▼</span> <b>' + owNf(lo.t, 1) + '°</b> ' + nm(lo) + '</div><div><span style="color:#e8590c">▲</span> <b>' + owNf(hi.t, 1) + '°</b> ' + nm(hi) + '</div><div>' + (rs > 0.05 ? '🌧️ Regen im Kreis' : '💧 trocken') + ' · ' + ((gm.g || 0) >= 30 ? '💨 windig' : '💨 ruhig') + '</div>';
+    }
+    // Rangliste mit Balken
+    var k = OW.k || 't', z = document.querySelectorAll('#owaListe [data-ow]'), vals = [];
+    Array.prototype.forEach.call(z, function (r) { var t = r.querySelector('b').textContent.replace(/[^\d,\-−+]/g, '').replace(',', '.').replace('−', '-'); vals.push(parseFloat(t)); });
+    var ok = vals.filter(function (v) { return !isNaN(v); }), mn = Math.min.apply(null, ok), mx = Math.max.apply(null, ok);
+    Array.prototype.forEach.call(z, function (r, i) {
+      if (r.querySelector('.v3-bar')) return; var v = vals[i], b = r.querySelector('b'), f = b.style.background || '#9aa5ab';
+      var w = isNaN(v) ? 0 : mx === mn ? 100 : 18 + 82 * (v - mn) / (mx - mn);
+      b.insertAdjacentHTML('beforebegin', '<div class="v3-bar"><i style="width:' + w.toFixed(0) + '%;background:' + f + '"></i></div>');
+    });
+    // Karten-Pillen farbig
+    Array.prototype.forEach.call(document.querySelectorAll('#owMap g[data-ow]'), function (g) {
+      var o = (d.orte || []).filter(function (x) { return x.name === g.dataset.ow; })[0], p = g.querySelector('.owk-k'); if (!o || !p) return;
+      var v = k === 'gf' ? o.gf : o[k]; if (k === 'dt') return; p.setAttribute('fill', hell(owAlt(o) ? '#9aa5ab' : owFarbe(k === 'gf' ? 't' : k, v)));
+    });
+  }
+  var alt = owKarte;
+  window.owKarte = owKarte = function () { alt(); try { umbau(); } catch (e) { console.warn('v3', e); } };
+})();
 </script>
 <script>
 (function () {
