@@ -483,6 +483,20 @@ def warn_arten():
     except Exception: return ''
 
 
+def alltag(d, wann, rnd):
+    """27.11.2026 Idee 4: höchstens ein Alltags-Tipp, passend zum Wetter (Frost/Glätte/Nebel sagen andere Sätze)."""
+    if rnd.random() > 0.6: return ''
+    L = lage(d); mo = dt.date.today().month; st = stufe(d); opt = []
+    trocken = st == 'trocken' and L.get('nebel') in (None, 'keiner')
+    if d['boe'] >= 50: opt += ['Tipp: Gartenmöbel und Mülltonnen lieber sichern.', 'Alles, was im Garten locker steht, besser festmachen.']
+    elif st in ('schauer', 'regen') and d['tmax'] > 2: opt += ['Den Regenschirm also besser griffbereit halten.', 'Wer viel unterwegs ist: Regenjacke einpacken.']
+    elif trocken and 9 <= mo <= 11 and d['sonne'] >= 3 and d['tmax'] >= 5: opt += ['Gutes Wetter, um im Garten noch Laub zu rechen.', 'Ein guter Tag für die letzten Gartenarbeiten.']
+    elif trocken and 4 <= mo <= 9 and d['sonne'] >= 5 and d['tmax'] >= 15: opt += ['Wäsche draußen trocknen? Heute klappt das prima.', 'Perfekt, um die Wäsche mal draußen aufzuhängen.']
+    elif trocken and d['tmax'] <= 3: opt += ['Für den Spaziergang: Mütze und Handschuhe nicht vergessen.', 'Wer rausgeht, packt sich am besten warm ein.']
+    elif trocken and d['sonne'] >= 4 and d['tmax'] < 12: opt += ['Ideal für einen Spaziergang in der Sonne – warm anziehen!', 'Wer kann, nutzt die Sonne für eine Runde an der frischen Luft.']
+    return (' ' + frisch(rnd, 'alltag', opt, tage=5)) if opt else ''
+
+
 def winter_saetze(d, wann, rnd):
     """Nebel am Morgen, Kaltluft in den Tälern, Glätte – nur wenn die Einstufung es hergibt."""
     L = lage(d); out = []
@@ -560,6 +574,11 @@ def tagtext(d, wann, nachtfrost=True, hoch_temp=True):
                 '%s bleibt es kühl: %s, höchstens %s Grad.' % (W, art(d), t),
                 '%s heißt es Jacke an – %s, und nur rund %s Grad.' % (W, art(d), t)]
         if 'sonn' in adj: opt.append('%s wird es %s – mehr als %s Grad schafft die Sonne aber nicht.' % (W, adj, t))
+    # 27.11.2026 Idee 5: typische Wettersprecher-Wendungen
+    if d['sonne'] < 1 and d['tmax'] < 15: opt += ['%s lässt sich die Sonne kaum blicken – %s, bei %s Grad.' % (W, art(d), t),
+                                                  '%s bleibt die Sonne hinter den Wolken versteckt, die Höchstwerte liegen bei %s Grad.' % (W, t)]
+    if 0 <= d['tmax'] <= 5: opt.append('%s kommen die Temperaturen kaum aus dem Keller: %s, höchstens %s Grad.' % (W, art(d), t))
+    if d['sonne'] >= 6 and d['tmax'] < 15: opt.append('%s gibt es eine ordentliche Portion Sonne – %s, bei %s Grad.' % (W, art(d), t))
     if d['tmax'] >= 22: opt += ['%s wird es %s – und mit %s Grad schön warm.' % (W, adj, t),
                                 '%s wird es richtig angenehm: %s bei %s Grad.' % (W, art(d), t)]
     s = frisch(rnd, 'tag', opt)
@@ -613,6 +632,11 @@ def tagtext(d, wann, nachtfrost=True, hoch_temp=True):
                                     'Auf den Höhen gibt es nachts leichten Frost, bis %s Grad.' % zahl(H['tmin'])])
     # (14.11.2026) alte Regel „Regen auf gefrorenen Boden“ entfernt – Glätte sagt nur noch die gemeinsame Einstufung (winter_saetze)
     s += winter_saetze(d, wann, rnd)
+    s += alltag(d, wann, rnd)   # 27.11.2026 Idee 4
+    if d.get('sicher') == 'mittel' and stufe(d) not in ('trocken',) and rnd.random() < 0.5:   # 27.11.2026 Idee 6
+        s += ' ' + frisch(rnd, 'unsicher_m', ['Ganz festgelegt haben sich die Wettermodelle dabei noch nicht.',
+                                              'Beim genauen Zeitpunkt sind sich die Modelle noch nicht ganz einig.',
+                                              'Das ist noch etwas wackelig, wir schauen morgen nochmal drauf.'])
     if d.get('sicher') == 'gering':
         s += ' ' + rnd.choice(['Aber ehrlich gesagt: Da sind sich die Wettermodelle noch uneinig.',
                                 'Kleiner Haken: Die Wettermodelle sind sich da noch nicht einig, also lieber nochmal reinschauen.',
