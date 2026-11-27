@@ -1,71 +1,6 @@
 [
 {
 "d": "2026-11-22",
-"g": "dwd",
-"k": "Kurz vorweg: Vom Deutschen Wetterdienst "
-},
-{
-"d": "2026-11-22",
-"g": "seit_kalt",
-"k": "Das war der kälteste Tag seit dem 19. Fe"
-},
-{
-"d": "2026-11-22",
-"g": "abend_ueberg_nacht",
-"k": "Dann zur kommenden Nacht. "
-},
-{
-"d": "2026-11-22",
-"g": "abend_ueberg_morgen",
-"k": "Und wie geht’s morgen weiter? "
-},
-{
-"d": "2026-11-22",
-"g": "tag",
-"k": "Morgen wird es nach Nebel am Morgen freu"
-},
-{
-"d": "2026-11-22",
-"g": "glaette_r",
-"k": "Achtet morgen früh auf Reifglätte, vor a"
-},
-{
-"d": "2026-11-22",
-"g": "nebel_w",
-"k": "Morgen früh gibt es in den Tälern Nebel "
-},
-{
-"d": "2026-11-22",
-"g": "tag",
-"k": "Dann heißt es Jacke an – viele Wolken, u"
-},
-{
-"d": "2026-11-22",
-"g": "frost",
-"k": "Achtung, in der Nacht zum Dienstag gibt "
-},
-{
-"d": "2026-11-22",
-"g": "glaette_r",
-"k": "Morgens kann Reif auf Brücken und Nebens"
-},
-{
-"d": "2026-11-22",
-"g": "folgen_abend",
-"k": "Wenn euch der Abendausblick gefällt: Fol"
-},
-{
-"d": "2026-11-22",
-"g": "abend_ende",
-"k": "So viel für heute aus dem Studio."
-},
-{
-"d": "2026-11-22",
-"g": "abend_gute_nacht",
-"k": "Macht’s gut und gute Nacht – wir sehen u"
-},
-{
-"d": "2026-11-22",
 "g": "abend_live",
 "k": "Wer nachts mal nachschauen will: wetter-"
 },
@@ -1988,6 +1923,71 @@
 "d": "2026-11-27",
 "g": "glaette_h",
 "k": "Oben auf den Höhen, Richtung Beerfelden,"
+},
+{
+"d": "2026-11-27",
+"g": "frage",
+"k": "Was habt ihr am Wochenende vor? Schreibt"
+},
+{
+"d": "2026-11-27",
+"g": "folgen",
+"k": "Kennt ihr jemanden im Odenwald, der imme"
+},
+{
+"d": "2026-11-27",
+"g": "dwd",
+"k": "Wichtig zuerst: Der Deutsche Wetterdiens"
+},
+{
+"d": "2026-11-27",
+"g": "ueberg_heute2",
+"k": "Kommen wir zum Wetter für heute. "
+},
+{
+"d": "2026-11-27",
+"g": "tag",
+"k": "Was bringt der Tag heute? Viele Wolken, "
+},
+{
+"d": "2026-11-27",
+"g": "gestern_gleich",
+"k": "Kaum anders als gestern."
+},
+{
+"d": "2026-11-27",
+"g": "klima_kalt",
+"k": "Das ist deutlich kälter, als es um diese"
+},
+{
+"d": "2026-11-27",
+"g": "seit_kalt",
+"k": "So kalt war es tagsüber zuletzt am 25. J"
+},
+{
+"d": "2026-11-27",
+"g": "ueberg_tipp",
+"k": "Kleiner Tipp am Rande: "
+},
+{
+"d": "2026-11-27",
+"g": "ueberg_morgen2",
+"k": "Und wie geht’s morgen weiter? "
+},
+{
+"d": "2026-11-27",
+"g": "tag",
+"k": "Morgen, am Samstag, wird es ungemütlich:"
+},
+{
+"d": "2026-11-27",
+"g": "frost2",
+"k": "In der Nacht zum Samstag gibt es Frost: "
+},
+{
+"d": "2026-11-27",
+"g": "kaltluft",
+"k": "Typisch Odenwald: In der klaren Nacht sa"
 },
 {
 "d": "2026-11-27",
