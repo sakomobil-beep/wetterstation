@@ -2112,6 +2112,41 @@ html[data-theme="dark"] .luftnb{background:#4a3500;color:#ffd98a}
       <tr><th scope="row">Station bei Weather Underground</th><td><a href="https://www.wunderground.com/dashboard/pws/IBADKN33" target="_blank" rel="noopener" id="stnWuLink">IBADKN33</a></td></tr>
     </tbody></table></div>
 
+    <!-- 27.11.2026: Datenweg + Odenwald-Quellen -->
+    <style>
+      .dw-weg{list-style:none;margin:10px 0 6px;padding:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;text-align:center;position:relative}
+      .dw-weg li{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:13px}
+      .dw-weg li b{font-weight:600;color:var(--ink)} .dw-weg li span:last-child{font-size:12px;color:var(--muted);line-height:1.35}
+      .dw-ic{width:46px;height:46px;border-radius:50%;background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:3px}
+      .dw-txt{font-size:14px;line-height:1.6;color:var(--ink);margin:12px 0 4px}
+      .dw-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:10px 0 6px}
+      .dw-k{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:4px}
+      .dw-k b{font-size:14px;color:var(--ink)} .dw-k span{font-size:13px;color:var(--muted);line-height:1.45}
+      @media (max-width:760px){.dw-weg{grid-template-columns:1fr;text-align:left}.dw-weg li{flex-direction:row;flex-wrap:wrap;column-gap:10px}.dw-weg li span:last-child{flex-basis:100%;padding-left:56px;margin-top:-18px}.dw-grid{grid-template-columns:1fr}}
+    </style>
+    <h3 class="st-h">So kommen die Daten zu euch</h3>
+    <p class="src" style="margin-top:0">Vom Mast bis auf euer Handy – ganz ohne PC, jede Minute neu.</p>
+    <ol class="dw-weg">
+      <li><span class="dw-ic" aria-hidden="true">📡</span><b>Messen</b><span>Außensensor auf 2-m-Mast, 184,5 m ü. NN</span></li>
+      <li><span class="dw-ic" aria-hidden="true">〰️</span><b>Funk</b><span>drahtlos zur Basisstation im Haus</span></li>
+      <li><span class="dw-ic" aria-hidden="true">🖥️</span><b>Basis</b><span>misst zusätzlich den Luftdruck</span></li>
+      <li><span class="dw-ic" aria-hidden="true">📶</span><b>WLAN</b><span>jede Minute ins Internet</span></li>
+      <li><span class="dw-ic" aria-hidden="true">🗄️</span><b>Eigener Server</b><span>speichert und archiviert seit 20.01.2026</span></li>
+      <li><span class="dw-ic" aria-hidden="true">📱</span><b>Bei euch</b><span>Website, Max, Facebook, Instagram, Threads</span></li>
+    </ol>
+    <p class="dw-txt"><b>Auswertung:</b> Eigene Programme werten die Werte automatisch aus – für Live-Anzeige, Tagesverläufe und Rekorde. Die Präzisions-Vorhersage mischt vier Wettermodelle und lernt täglich aus den eigenen Messungen. Daraus entstehen auch Max’ Videos.<br><b>Reserve:</b> Parallel gehen die Werte an Weather Underground – fällt unser Server aus, springt das automatisch ein.</p>
+
+    <h3 class="st-h">Woher kommen die Odenwald-Werte?</h3>
+    <p class="src" style="margin-top:0">Für „Aktuell Odenwald“ und die Kreis-Vorhersage.</p>
+    <div class="dw-grid">
+      <div class="dw-k"><b><span aria-hidden="true">📍</span> Live-Werte der Orte</b><span>Bad König: unsere Station. Die 8 anderen Orte: private Wetterstationen aus dem Kreis, alle 20 Minuten abgerufen.</span></div>
+      <div class="dw-k"><b><span aria-hidden="true">✅</span> Geprüft</b><span>Jeder Wert wird auf Plausibilität geprüft, der Luftdruck auf unsere Station abgeglichen. Fällt eine Station aus, springt eine Ersatzstation ein. Regen und Böen gleichen wir mit Netatmo-Stationen ab.</span></div>
+      <div class="dw-k"><b><span aria-hidden="true">📈</span> Vorhersage</b><span>Vier Wettermodelle (ICON-D2, ICON-EU, AROME, ECMWF), je Ort mit seiner Höhe berechnet – und sie lernen aus den gemessenen Werten nach.</span></div>
+      <div class="dw-k"><b><span aria-hidden="true">⚠️</span> Warnungen</b><span>Amtliche Warnungen und Wetterlage vom Deutschen Wetterdienst.</span></div>
+      <div class="dw-k"><b><span aria-hidden="true">🌬️</span> Luftqualität</b><span>Amtliche Messstelle Michelstadt (HLNUG / Umweltbundesamt) und ein Sensor von Sensor.Community.</span></div>
+      <div class="dw-k"><b><span aria-hidden="true">🤝</span> Danke</b><span>An alle Hobby-Meteorologen im Odenwald, deren Stationen ihre Werte öffentlich teilen.</span></div>
+    </div>
+
     <h3 class="st-h">Chronik</h3>
     <ol class="chron">
       <li><b>20. Januar 2026</b><span>Inbetriebnahme der Bresser 8-in-1-Wetterstation in Bad König, erste Messwerte bei Weather Underground.</span></li>
@@ -2444,7 +2479,7 @@ html[data-theme="dark"] .luftnb{background:#4a3500;color:#ffd98a}
 
   <p class="foot" id="ortLinks">Wetter im Odenwald, live gemessen: <a href="michelstadt.html">Michelstadt</a> · <a href="hoechst.html">Höchst</a> · <a href="breuberg.html">Breuberg</a> · <a href="mossautal.html">Mossautal</a> · <a href="oberzent.html">Oberzent</a> · <a href="reichelsheim.html">Reichelsheim</a> · <a href="brombachtal.html">Brombachtal</a> · <a href="luetzelbach.html">Lützelbach</a></p>
   <!-- SEO-JETZT ANFANG --><p class="foot" id="seoJetzt" data-std="27.11.2026 22">Aktuell in Bad König (eigene Station, 21:56 Uhr): −0,4 °C, 84 % Luftfeuchte, windstill, Luftdruck 1028 hPa, Regen heute 0,0 l/m².</p><!-- SEO-JETZT ENDE -->
-  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a> · <a href="https://www.paypal.com/paypalme/wettermax" target="_blank" rel="noopener">☕ Max einen Kaffee ausgeben</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 26.11.2026, 00:45 Uhr</span></p>
+  <p class="foot">Bresser 8-in-1-Wetterstation in Bad König. Werte werden <span id="refreshTxt">regelmäßig</span> neu geladen. Vorhersage und Warnungen: Deutscher Wetterdienst.<br><a href="impressum.html">Impressum</a> · <a href="impressum.html#datenschutz">Datenschutz</a> · <a href="widget.html">🧩 Wetter-Widget für Ihre Website</a> · <a href="https://www.facebook.com/profile.php?id=61596151114564" target="_blank" rel="noopener">📘 Facebook</a> · <a href="https://www.instagram.com/wetterstation_badkoenig/" target="_blank" rel="noopener">📸 Instagram</a> · <a href="https://www.paypal.com/paypalme/wettermax" target="_blank" rel="noopener">☕ Max einen Kaffee ausgeben</a><br><span id="visits" class="visits" hidden></span><br><span id="webStand" class="visits">Website-Stand: 27.11.2026, 23:05 Uhr</span></p>
 
 </div>
 
