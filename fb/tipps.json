@@ -1,13 +1,6 @@
 [
 {
 "d": "2026-11-15",
-"k": "Ein Bummel durch die Michelstädter Altst",
-"o": [
-"Altstadt"
-]
-},
-{
-"d": "2026-11-15",
 "k": "Durchatmen bei Schmuddelwetter: Die Salz",
 "o": [
 "Salzgrotte"
@@ -490,6 +483,11 @@
 {
 "d": "2026-11-27",
 "k": "Eine Runde um die beiden Seen im Kurpark",
+"o": []
+},
+{
+"d": "2026-11-27",
+"k": "Wenn es früh dunkel wird: Die beleuchtet",
 "o": []
 }
 ]
