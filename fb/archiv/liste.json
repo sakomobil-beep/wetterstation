@@ -1,5 +1,16 @@
 [
  {
+  "datum": "2026-11-27",
+  "datei": "2026-11-27.mp4",
+  "art": "morgen",
+  "erstellt": "2026-11-27T05:37+00:00",
+  "special": false,
+  "warn": [
+   "Amtliche Warnung vor Frost"
+  ],
+  "dauer": 141.0
+ },
+ {
   "datum": "2026-11-26",
   "datei": "2026-11-26-abend.mp4",
   "art": "abend",
@@ -134,31 +145,5 @@
    "Amtliche Warnung vor Frost"
   ],
   "dauer": 124.1
- },
- {
-  "datum": "2026-11-20",
-  "datei": "2026-11-20-abend.mp4",
-  "art": "abend",
-  "erstellt": "2026-11-20T18:08+00:00",
-  "special": false,
-  "warn": [
-   "Amtliche Warnung vor Dauerregen für Bad König, Brensbach, Brombachtal, Erbach, Fränkisch-Crumbach, Höchst, Michelstadt, Mossautal, Oberzent, Reichelsheim",
-   "Amtliche Warnung vor Glätte",
-   "Amtliche Warnung vor Windböen für Erbach, Mossautal, Oberzent"
-  ],
-  "dauer": 94.8
- },
- {
-  "datum": "2026-11-20",
-  "datei": "2026-11-20.mp4",
-  "art": "morgen",
-  "erstellt": "2026-11-20T06:06+00:00",
-  "special": false,
-  "warn": [
-   "Amtliche Warnung vor Dauerregen für Bad König, Brensbach, Brombachtal, Erbach, Fränkisch-Crumbach, Höchst, Michelstadt, Mossautal, Oberzent, Reichelsheim",
-   "Amtliche Warnung vor Windböen für Bad König, Brombachtal, Erbach, Fränkisch-Crumbach, Lützelbach, Michelstadt, Mossautal, Oberzent, Reichelsheim",
-   "Amtliche Warnung vor Windböen für Erbach, Mossautal, Oberzent"
-  ],
-  "dauer": 120.1
  }
 ]
