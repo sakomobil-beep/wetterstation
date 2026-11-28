@@ -1,13 +1,5 @@
 [
 {
-"d": "2026-11-15",
-"k": "Ein Tag für drinnen: Schloss Erbach oder",
-"o": [
-"Elfenbein",
-"Schloss Erbach"
-]
-},
-{
 "d": "2026-11-16",
 "k": "Schmuddelwetter? Dann ab nach Erbach: Im",
 "o": [
@@ -486,6 +478,11 @@
 {
 "d": "2026-11-28",
 "k": "Dick einpacken und hoch auf die Odenwäld",
+"o": []
+},
+{
+"d": "2026-11-28",
+"k": "Erst durch die Kälte, dann in die Wärme:",
 "o": []
 }
 ]

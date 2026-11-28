@@ -1,60 +1,5 @@
 [
 {
-"d": "2026-11-22",
-"g": "tag",
-"k": "Am Dienstag heißt es Jacke an – viele Wo"
-},
-{
-"d": "2026-11-22",
-"g": "frost",
-"k": "In der Nacht zum Dienstag friert es, bis"
-},
-{
-"d": "2026-11-22",
-"g": "glaette_r",
-"k": "Morgens kann Reif auf Brücken und Nebens"
-},
-{
-"d": "2026-11-22",
-"g": "nebel_m",
-"k": "Hier und da kann sich morgens in den Täl"
-},
-{
-"d": "2026-11-22",
-"g": "frage",
-"k": "Wie sieht’s gerade bei euch draußen aus?"
-},
-{
-"d": "2026-11-22",
-"g": "folgen",
-"k": "Wer uns folgt, weiß morgens als Erster B"
-},
-{
-"d": "2026-11-22",
-"g": "schluss_nebel",
-"k": "Licht an im Nebel, fahrt vorsichtig – un"
-},
-{
-"d": "2026-11-23",
-"g": "dwd",
-"k": "Bevor es losgeht – vom Deutschen Wetterd"
-},
-{
-"d": "2026-11-23",
-"g": "ueberg_heute2",
-"k": "Schauen wir, was der Tag bringt. "
-},
-{
-"d": "2026-11-23",
-"g": "tag",
-"k": "Heute bekommen wir nach Nebel am Morgen "
-},
-{
-"d": "2026-11-23",
-"g": "glaette_r",
-"k": "Heute früh kann Reif auf Brücken und Neb"
-},
-{
 "d": "2026-11-23",
 "g": "nebel_w",
 "k": "Im Mümlingtal hängt heute früh der Nebel"
@@ -1998,5 +1943,60 @@
 "d": "2026-11-28",
 "g": "folgen",
 "k": "Damit ihr die nächste Unwetterwarnung ni"
+},
+{
+"d": "2026-11-28",
+"g": "dwd",
+"k": "Erst das Wichtige: Der Deutsche Wetterdi"
+},
+{
+"d": "2026-11-28",
+"g": "r_kalt",
+"k": "Tja, der Winter klopft an. "
+},
+{
+"d": "2026-11-28",
+"g": "ueberg_heute2",
+"k": "So, jetzt zum Wetter. "
+},
+{
+"d": "2026-11-28",
+"g": "tag",
+"k": "Heute erwartet uns viele Wolken – die Te"
+},
+{
+"d": "2026-11-28",
+"g": "ueberg_tipp",
+"k": "Und jetzt mein Tipp: "
+},
+{
+"d": "2026-11-28",
+"g": "ueberg_morgen2",
+"k": "Und dann? "
+},
+{
+"d": "2026-11-28",
+"g": "tag",
+"k": "Morgen, am Sonntag, wird es nass, und da"
+},
+{
+"d": "2026-11-28",
+"g": "frost2",
+"k": "In der Nacht zum Sonntag gibt es Frost: "
+},
+{
+"d": "2026-11-28",
+"g": "alltag",
+"k": "Wer viel unterwegs ist: Regenjacke einpa"
+},
+{
+"d": "2026-11-28",
+"g": "frage",
+"k": "Aus welchem Ort im Odenwald schaut ihr z"
+},
+{
+"d": "2026-11-28",
+"g": "folgen",
+"k": "Ein Daumen hoch und ein Follow – damit h"
 }
 ]
